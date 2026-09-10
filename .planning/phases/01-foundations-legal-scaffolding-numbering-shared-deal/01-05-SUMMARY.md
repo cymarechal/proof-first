@@ -234,6 +234,13 @@ None - no external service configuration required.
   plans in this phase; neither depends on anything this plan introduced beyond the file already
   being green.
 
+## Self-Check: PASSED
+
+- `tools/check_repo.py` exists on disk.
+- `.planning/phases/01-foundations-legal-scaffolding-numbering-shared-deal/01-05-SUMMARY.md` exists on disk.
+- Commits `3dde78a`, `45011a2`, `c742449` all present in `git log --oneline --all`.
+- All acceptance criteria for both tasks re-run and passed; the plan-level `<verification>` block re-run and passed.
+
 ---
 *Phase: 01-foundations-legal-scaffolding-numbering-shared-deal*
 *Completed: 2026-09-10*
