@@ -15,7 +15,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **CAT-04**: Writer gets the deletion test as the buzzword rule, stated with evidence-attachment framing rather than deletion alone
 - [ ] **CAT-05**: The deletion test retains a term that appears verbatim in the customer's own source material and marks it, instead of deleting it
 - [ ] **CAT-06**: Writer gets a self-contained prose mechanics section (sentence length, active voice, modal discipline, one claim per sentence) with no dependency on another skill
-- [ ] **CAT-07**: Rules carry stable citable IDs in two disjoint namespaces — `PF-<section>.<n>` for prose rules and `MC-<n>` for the completeness audit — with numeric ranges reserved per section before drafting
+- [x] **CAT-07**: Rules carry stable citable IDs in two disjoint namespaces — `PF-<section>.<n>` for prose rules and `MC-<n>` for the completeness audit — with numeric ranges reserved per section before drafting
 - [ ] **CAT-08**: SKILL.md stays under the progressive-disclosure ceiling (under 500 lines, approximately 5,000 tokens) with detail pushed into `references/`
 - [ ] **CAT-09**: SKILL.md frontmatter validates against the Agent Skills allow-list and loads without error in every target harness
 - [ ] **CAT-10**: The `description` field triggers the skill reliably on presales writing requests, acting as an explicit trigger list
@@ -135,7 +135,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-04 | Phase 2 | Pending |
 | CAT-05 | Phase 2 | Pending |
 | CAT-06 | Phase 2 | Pending |
-| CAT-07 | Phase 1 | Pending |
+| CAT-07 | Phase 1 | Complete |
 | CAT-08 | Phase 2 | Pending |
 | CAT-09 | Phase 2 | Pending |
 | CAT-10 | Phase 2 | Pending |
@@ -184,6 +184,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LEG-05 | Phase 6 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 53 total
 - Mapped to phases: 53
 - Unmapped: 0 ✓

@@ -34,12 +34,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The repo's LICENSE and NOTICES.md individually name all three frameworks (Command of the Message, MEDDICC, Challenger) with non-affiliation and trademark language, before any framework-derived content ships.
   4. Nothing in the repo reproduces proprietary framework text — framework concepts are paraphrased and sources are cited wherever they appear.
 
-**Plans**: 4 plans
+**Plans**: 1/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Tracer: freeze all three registry formats and prove them end-to-end with a stdlib-only checker in CI (NUMBERING.md, tools/check_repo.py, .github/workflows/ci.yml, plus the Canonical figures table and the attribution pointer block)
+- [x] 01-01-PLAN.md — Tracer: freeze all three registry formats and prove them end-to-end with a stdlib-only checker in CI (NUMBERING.md, tools/check_repo.py, .github/workflows/ci.yml, plus the Canonical figures table and the attribution pointer block)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -129,7 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 0/4 | Planned | - |
+| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 1/4 | In Progress|  |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 0/TBD | Not started | - |
 | 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
