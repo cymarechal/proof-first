@@ -292,9 +292,17 @@ def check_unlisted_figure(figures, repo_root):
             if re.match(r'^## Canonical figures\s*$', line):
                 in_canonical = True
                 continue
+            # Bound the exempt region by table shape, not only by the next
+            # heading: a blank/table-row line keeps it open; the first line
+            # that is neither ends it and is itself scanned below.
+            if in_canonical:
+                stripped = line.strip()
+                if stripped == '' or stripped.startswith('|'):
+                    continue
+                in_canonical = False
             if re.match(r'^## ', line):
                 in_canonical = False
-            if in_canonical or line.startswith('Last reviewed:'):
+            if line.startswith('Last reviewed:'):
                 continue
             tokens = CURRENCY_RE.findall(line) + PERCENT_RE.findall(line) + ISO_DATE_RE.findall(line)
             for tok in tokens:
@@ -490,6 +498,8 @@ def _bad_deal_brief():
 | total-contract-value | $6,000,000 | currency | Total contract value |
 | bidder-count | 3 | count | Number of bidders |
 | bidder-count | 4 | count | Duplicate key |
+
+A stray figure of $999,999,999 appears after the table, with no further heading in this fixture.
 """
 
 
@@ -499,6 +509,8 @@ def _good_deal_brief():
 |---|---|---|---|
 | bidder-count | 3 | count | Number of bidders |
 | total-contract-value | $6,000,000 | currency | Total contract value |
+
+This trailing line sits after the table's last row and cites no currency, percentage, or date.
 """
 
 
