@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
 current_phase: 01
-current_phase_name: foundations-legal-scaffolding-numbering-shared-deal
+current_phase_name: Foundations — Legal Scaffolding, Numbering, Shared Deal
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-09-10T09:43:18.881Z"
+stopped_at: Completed 01-05-PLAN.md
+last_updated: "2026-09-10T09:59:04.342Z"
 last_activity: 2026-09-10
 last_activity_desc: Phase 01 execution started
-state_head: 3967b95ea965adc71c89fe93150625c23f43aeca
+state_head: 3dbf329266d46edb6b13a3eb0cc5f136fa47d191
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 7
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 01 (foundations-legal-scaffolding-numbering-shared-deal) — READY TO EXECUTE
-Plan: 4 of 4
+Phase: 01 (Foundations — Legal Scaffolding, Numbering, Shared Deal) — EXECUTING
+Plan: 2 of 7
 Status: Ready to execute
 Last activity: 2026-09-10 — Phase 01 execution started
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P02 | 24 min | 2 tasks | 2 files |
 | Phase 01 P03 | 12min | 3 tasks | 3 files |
 | Phase 01 P04 | 20min | 2 tasks | 1 files |
+| Phase 01 P05 | 35 min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,7 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-03: LICENSE/NOTICES.md scope boundary established -- LICENSE governs copyright only (unmodified MIT text), NOTICES.md governs trademark/attribution/precedence, and all repo content is MIT-licensed unless a file states otherwise.
 - [Phase 01]: [Phase 01]: 01-04: README.md written at repo root (six sections: What this is, Status, Repository layout, Rule numbering, Versioning, License and notices) -- claim-free per LEG-05/PROJECT.md's evidence rule, documents the target layout (skills/proof-first/ and the rest) without pre-creating any of it, and is proven as the first real (non-fixture) carrier of NOTICES.md's attribution pointer.
 - [Phase 01]: [Phase 01]: 01-04: Full-repository integrity sweep and phase-closing legal read completed -- all eight Phase 1 files present/non-empty/checker-clean, no framework mark outside NOTICES.md, no proprietary framework text reproduced anywhere. Phase 1 is internally consistent and complete; LEG-04/LEG-05 and the WINDOWS.md open items remain correctly deferred to Phase 6.
+- [Phase 01]: [Phase 01]: 01-05: Attribution-pointer parsing rewritten on split_sections() with a new pointer-unparseable code and carrier-path containment, closing the CR-01/BLOCKER false-green defect against production NOTICES.md/README.md content.
 
 ### Pending Todos
 
@@ -107,6 +109,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T07:06:14.121Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-09-10T09:59:04.320Z
+Stopped at: Completed 01-05-PLAN.md
 Resume file: None
