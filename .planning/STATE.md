@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
-current_phase: 01
-current_phase_name: Foundations — Legal Scaffolding, Numbering, Shared Deal
-status: executing
-stopped_at: Completed 01-07-PLAN.md
-last_updated: "2026-09-10T10:20:57.559Z"
+current_phase: 2
+current_phase_name: Rule Catalog & Integrity — SKILL.md Core
+status: planning
+stopped_at: Phase 01 complete, ready to plan Phase 2
+last_updated: "2026-09-10T11:02:39.536Z"
 last_activity: 2026-09-10
-last_activity_desc: Phase 01 execution started
-state_head: c8d215bbd61db252d381a68359d23ff5530d4565
+last_activity_desc: Phase 01 complete, transitioned to Phase 2
+state_head: 2a460d2e798557b240425e9e22d92ba8e9143c02
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 7
   completed_plans: 7
-  percent: 0
+  percent: 17
 ---
 
 # Project State
@@ -27,18 +27,18 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 01 (Foundations — Legal Scaffolding, Numbering, Shared Deal) — EXECUTING
-Plan: 4 of 7
-Status: Ready to execute
-Last activity: 2026-09-10 — Phase 01 execution started
+Phase: 2 — Rule Catalog & Integrity — SKILL.md Core
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-10 — Phase 01 complete, transitioned to Phase 2
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 17%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0
+- Total plans completed: 7
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -46,7 +46,7 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 | 7 | - | - |
 
 **Recent Trend:**
 
@@ -101,7 +101,9 @@ None yet.
 - MEDDICC/MEDDIC trademark status beyond the "MEDDPICC ruled generic" ruling (E.D. Pa., April 2026) is unresolved. Must be reconfirmed against current sources before Phase 6's legal review gate (LEG-04) closes — do not assume the whole acronym family is safe by extension.
 - Linter's buzzword-proxy word list (EVAL-02) must be sourced independently from SKILL.md's own worked examples, or the Phase 5 benchmark becomes circular — flag explicitly during Phase 5 planning, not left implicit.
 - README badges (LEG-05) have a hard dependency on Phase 5's benchmark having actually run — sequence Phase 6 accordingly, do not draft badge claims early.
-- Two open unrun-verify items in .planning/WINDOWS.md (name-collision web search over 9 invented names in examples/deal-brief.md; independent read-through confirming no real-product/company comparison) need a human with live web access before the repo goes public -- should be resolved by Phase 6's legal review gate (LEG-04).
+- RESOLVED 2026-09-10: both .planning/WINDOWS.md unrun-verify items (name-collision web search over the 9 invented names; independent read-through confirming no real-product/company comparison) were signed off at Phase 01 UAT. Ledger open_count is now 0.
+- `.planning/` is git-tracked and its research files carry framework marks in headings (`### ...MEDDICC...`, `### ...Challenger...`, `### Command of the Message...`). The Phase 01 mark sweep covered the eight shipped files only. Before the repo goes public, either exclude `.planning/` or extend the sweep to it — routed to Phase 6 LEG-04. Recorded in 01-SECURITY.md Observations.
+- `pointer-*` checks in tools/check_repo.py still cannot fire when NOTICES.md is absent (`run_notices_checks()` early-returns). The equivalent hole in the LEG-02 check was closed in Phase 01; this one was left as out-of-scope. Same "check that cannot fire" class — worth a ticket.
 
 ## Deferred Items
 
@@ -114,5 +116,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-10T10:20:57.536Z
-Stopped at: Completed 01-07-PLAN.md
+Stopped at: Phase 01 complete, ready to plan Phase 2
 Resume file: None

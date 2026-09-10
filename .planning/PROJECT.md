@@ -27,7 +27,9 @@ The secondary job, downstream of trust: make the decision easy — remove the bu
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Legal scaffolding: MIT LICENSE plus three individually named non-affiliation and trademark statements in NOTICES.md — Phase 1 (LEG-01, LEG-02, LEG-03). Both the license and each framework statement are now mechanically enforced in CI, so deleting one fails the build.
+- ✓ Rule-numbering namespaces frozen: `PF-<section>.<n>` and `MC-<n>`, with ranges reserved per section before any drafting — Phase 1 (CAT-07)
+- ✓ One canonical fictional cloud-migration deal brief supplying every example's facts — Phase 1 (EX-01). The brief exists and its 18-key Canonical figures table is CI-enforced; the worked examples that will consume it are still Active.
 
 ### Active
 
@@ -42,8 +44,8 @@ The secondary job, downstream of trust: make the decision easy — remove the bu
 - [ ] A deterministic linter that counts observable proxies for the rules
 - [ ] A multi-model baseline-versus-skill benchmark with published, reproducible results
 - [ ] A blind pairwise judge run to measure quality, not just violation counts
-- [ ] Public repo scaffolding: README with before/after pairs, plugin manifests, output style, system prompt, MIT license
-- [ ] All worked examples running on one fictional cloud migration deal
+- [ ] Public repo scaffolding: README with before/after pairs, plugin manifests, output style, system prompt (MIT license and a claim-free README shipped in Phase 1; the before/after pairs, manifests, output style, and system prompt remain)
+- [ ] All worked examples running on one fictional cloud migration deal (the deal brief itself is frozen — Phase 1; the examples that cite it are not written yet)
 
 ### Out of Scope
 
@@ -89,6 +91,9 @@ This mirrors SimpleEnglish's own three-part shape: rule catalog, checklist, use-
 | Three frameworks, three distinct jobs | Command of the Message governs articulation, MEDDICC audits completeness, Challenger sets the opening. Blending them would produce a mushy catalog. | — Pending |
 | Deletion test over blocklist | One rule, no vocabulary to maintain, and it keeps real technical nouns legal while killing air | — Pending |
 | Fully self-contained prose mechanics | Zero dependency on simple-english; a second required install would kill adoption | — Pending |
+| Enforce every prose-only legal claim in CI | Phase 1 shipped a check that was named as covered, ran in CI, and could not fire. The fix was not a patch but a class closure: a `--mutation-test` mode that injects one named defect per violation code into a copy of the real repository and asserts the code fires. | ✓ Held — 12 codes proven live; a docstring/code mismatch and two dead checks were caught this way |
+| Declare every checker ceiling in its own docstring | A tool that overstates what it verifies is the exact failure the skill exists to prevent, committed by the repo itself. Each violation code states its real blind spots plainly (bare counts, value collision, first-line-only license match, code-point equality). | ✓ Held — human sign-off on docstring honesty passed at Phase 1 UAT |
+| Keep `.planning/` out of the published surface, or sweep it | The Phase 1 mark sweep covered the eight shipped files and found zero framework marks in paths or headings, but `.planning/` is git-tracked and its research files carry framework marks in headings. | — Open, routed to the Phase 6 LEG-04 gate |
 | Integrity as its own catalog section | Fabricated proof is the highest-cost failure in presales and the one models produce most readily | — Pending |
 | Full eval harness in v1 | Measured benchmarks are what separate this from a prompt repo, and the repo cannot demand evidence it does not itself provide | — Pending |
 | One fictional cloud migration deal for all examples | Keeps the repo vendor-neutral and the examples mutually reinforcing, exactly as sqlpipe does for SimpleEnglish | — Pending |
@@ -112,4 +117,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-10 after initialization*
+*Last updated: 2026-09-10 after Phase 1*

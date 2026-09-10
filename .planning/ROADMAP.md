@@ -13,7 +13,7 @@ Proof First ships as one dependency-free skill folder plus a reproducible eval h
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundations — Legal Scaffolding, Numbering, Shared Deal** - Freeze the rule-numbering namespaces, the shared deal brief, and the license/trademark scaffolding before any rule content is drafted.
+- [x] **Phase 1: Foundations — Legal Scaffolding, Numbering, Shared Deal** - Freeze the rule-numbering namespaces, the shared deal brief, and the license/trademark scaffolding before any rule content is drafted. (completed 2026-09-10)
 - [ ] **Phase 2: Rule Catalog & Integrity — SKILL.md Core** - Author SKILL.md's self-contained rule catalog, integrity section, and basic draft/check modes.
 - [ ] **Phase 3: Completeness Audit & Artifact Patterns** - Add the MEDDICC completeness audit and the four artifact-family patterns, and wire the classification and citation guarantees that depend on them.
 - [ ] **Phase 4: Distribution & Worked Examples** - Ship the skill through every promised channel with before/after examples citing real rule numbers.
@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | In Progress|  |
+| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 0/TBD | Not started | - |
 | 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
