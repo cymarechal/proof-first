@@ -40,3 +40,62 @@ Concepts here are paraphrased from publicly described sales frameworks. Not affi
 
 A listed path that does not exist yet is skipped by the checker. A listed path that does exist
 must carry the string above exactly once.
+
+## Framework statements
+
+The three statements below appear in a fixed order, and each carries the same four labelled
+elements in the same order, so a future diff to this section shows a content change and never a
+reordering.
+
+### Command of the Message
+
+**Mark:** Command of the Message
+
+**Rights-holder:** Force Management.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, sponsored by, or connected
+to Force Management.
+
+**Paraphrase boundary:** This repository restates concepts associated with Command of the Message
+in its own words and reproduces no training material, no course content, and no proprietary
+diagram belonging to Force Management.
+
+Last reviewed: 2026-09-10
+
+### MEDDIC, MEDDICC, and related marks
+
+**Mark:** MEDDIC, MEDDICC, MEDDPICC, and related marks in this family.
+
+**Rights-holder:** Ownership of these marks is claimed by multiple parties and is contested; this
+file does not attribute them to a single holder. This repository makes no claim about the
+validity of any mark in this family and no claim about the outcome of any proceeding, and a
+determination about one spelling in the family is not treated here as covering another.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, or sponsored by any party
+claiming rights in these marks.
+
+**Paraphrase boundary:** This repository restates concepts associated with this family of marks in
+its own words and reproduces no training material, no course content, and no proprietary diagram
+belonging to any claimant.
+
+Last reviewed: 2026-09-10
+
+### Challenger
+
+**Mark:** Challenger (the Challenger Sale methodology).
+
+**Rights-holder:** Challenger Inc. and its trademark successors.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, sponsored by, or connected
+to Challenger Inc. or its trademark successors.
+
+**Paraphrase boundary:** This repository restates concepts associated with Challenger in its own
+words and reproduces no training material, no course content, and no proprietary diagram belonging
+to Challenger Inc. or its trademark successors.
+
+Last reviewed: 2026-09-10
+
+None of the three statements above positions this project as a version, an implementation, an
+edition, or an automation of the named framework — each states only that concepts associated with
+the mark are paraphrased here, in this repository's own words, with no more use of the mark than
+is needed to identify what the concepts derive from.
