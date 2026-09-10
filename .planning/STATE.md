@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 01
 current_phase_name: Foundations — Legal Scaffolding, Numbering, Shared Deal
 status: executing
-stopped_at: Completed 01-06-PLAN.md
-last_updated: "2026-09-10T10:11:10.613Z"
+stopped_at: Completed 01-07-PLAN.md
+last_updated: "2026-09-10T10:20:57.559Z"
 last_activity: 2026-09-10
 last_activity_desc: Phase 01 execution started
-state_head: b319bac185b0fd3e4fffd6ab300b04f96839cbb1
+state_head: c8d215bbd61db252d381a68359d23ff5530d4565
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 7
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 01 (Foundations — Legal Scaffolding, Numbering, Shared Deal) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-09-10 — Phase 01 execution started
 
@@ -64,6 +64,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P04 | 20min | 2 tasks | 1 files |
 | Phase 01 P05 | 35 min | 2 tasks | 1 files |
 | Phase 01 P06 | 30 min | 3 tasks | 1 files |
+| Phase 01 P07 | 25 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,7 @@ Recent decisions affecting current work:
 - [Phase 01]: [Phase 01]: 01-04: Full-repository integrity sweep and phase-closing legal read completed -- all eight Phase 1 files present/non-empty/checker-clean, no framework mark outside NOTICES.md, no proprietary framework text reproduced anywhere. Phase 1 is internally consistent and complete; LEG-04/LEG-05 and the WINDOWS.md open items remain correctly deferred to Phase 6.
 - [Phase 01]: [Phase 01]: 01-05: Attribution-pointer parsing rewritten on split_sections() with a new pointer-unparseable code and carrier-path containment, closing the CR-01/BLOCKER false-green defect against production NOTICES.md/README.md content.
 - [Phase 01]: 01-06: check_repo.py's three open WARNINGs closed -- unlisted-figure's exempt region bounded by the Canonical figures table's own rows (not just the next heading), MC ID range enforcement split into per-dimension blocks (mc_ranges) instead of one aggregate range, and both undeclared ceilings (value-collision matching, code-point key ordering) written into the module docstring with a pinned fixture. WR-02's stronger key-binding fix deferred to a later phase (likely Phase 5) since it would rewrite the frozen Canonical figures interface. — Closes the WARNING-class findings 01-VERIFICATION.md and 01-REVIEW.md left behind the BLOCKER; the plan's own must_haves required per-block MC enforcement and end-of-file figure coverage as CAT-07/EX-01 edge cases.
+- [Phase 01]: 01-07: --mutation-test mode added to tools/check_repo.py, injecting one named defect per violation code (all 10) into a throwaway copy of the real repository and asserting it fires; wired into CI between the self-test and the live check, closing the regression class behind Phase 1's BLOCKER rather than only today's instances. — The verifier's strongest evidence was a manual mutation (delete the pointer line, observe 0 violations); committing that method as a CI-enforced mode prevents any future edit from silently making a check inert again.
 
 ### Pending Todos
 
@@ -111,6 +113,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T10:11:10.591Z
-Stopped at: Completed 01-06-PLAN.md
+Last session: 2026-09-10T10:20:57.536Z
+Stopped at: Completed 01-07-PLAN.md
 Resume file: None

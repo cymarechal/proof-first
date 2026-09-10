@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The repo's LICENSE and NOTICES.md individually name all three frameworks (Command of the Message, MEDDICC, Challenger) with non-affiliation and trademark language, before any framework-derived content ships.
   4. Nothing in the repo reproduces proprietary framework text — framework concepts are paraphrased and sources are cited wherever they appear.
 
-**Plans**: 6/7 plans executed (4 executed, 3 gap-closure plans pending)
+**Plans**: 7/7 plans executed (4 executed, 3 gap-closure plans pending)
 
 Plans:
 **Wave 1**
@@ -54,7 +54,7 @@ Plans:
 
 - [x] 01-05-PLAN.md — BLOCKER: parse the real NOTICES.md shape, fail loud on an unusable pointer definition, and prove `pointer-missing` fires against the shipped README.md (wave 1)
 - [x] 01-06-PLAN.md — WARNINGs: bound the Canonical figures exemption to the table, enforce MC reserved blocks per dimension, and declare the checker's real ceilings (wave 2)
-- [ ] 01-07-PLAN.md — Add a `--mutation-test` mode proving every check fires against mutated production content, and wire it into CI (wave 3)
+- [x] 01-07-PLAN.md — Add a `--mutation-test` mode proving every check fires against mutated production content, and wire it into CI (wave 3)
 
 ### Phase 2: Rule Catalog & Integrity — SKILL.md Core
 
@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 6/7 | In Progress|  |
+| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | In Progress|  |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 0/TBD | Not started | - |
 | 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |

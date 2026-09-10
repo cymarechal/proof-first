@@ -15,7 +15,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **CAT-04**: Writer gets the deletion test as the buzzword rule, stated with evidence-attachment framing rather than deletion alone
 - [ ] **CAT-05**: The deletion test retains a term that appears verbatim in the customer's own source material and marks it, instead of deleting it
 - [ ] **CAT-06**: Writer gets a self-contained prose mechanics section (sentence length, active voice, modal discipline, one claim per sentence) with no dependency on another skill
-- [ ] **CAT-07**: Rules carry stable citable IDs in two disjoint namespaces — `PF-<section>.<n>` for prose rules and `MC-<n>` for the completeness audit — with numeric ranges reserved per section before drafting
+- [x] **CAT-07**: Rules carry stable citable IDs in two disjoint namespaces — `PF-<section>.<n>` for prose rules and `MC-<n>` for the completeness audit — with numeric ranges reserved per section before drafting
 - [ ] **CAT-08**: SKILL.md stays under the progressive-disclosure ceiling (under 500 lines, approximately 5,000 tokens) with detail pushed into `references/`
 - [ ] **CAT-09**: SKILL.md frontmatter validates against the Agent Skills allow-list and loads without error in every target harness
 - [ ] **CAT-10**: The `description` field triggers the skill reliably on presales writing requests, acting as an explicit trigger list
@@ -52,7 +52,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Examples
 
-- [ ] **EX-01**: A single fictional cloud migration deal brief supplies the canonical facts that every example in the repo reuses
+- [x] **EX-01**: A single fictional cloud migration deal brief supplies the canonical facts that every example in the repo reuses
 - [ ] **EX-02**: Reader gets before/after pairs covering each artifact family, with the after column citing real rule numbers
 
 ### Distribution
@@ -83,7 +83,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **LEG-01**: The repo ships an MIT license covering all original content
 - [ ] **LEG-02**: NOTICES.md carries a separate, individually named non-affiliation and trademark statement for each of the three frameworks
-- [ ] **LEG-03**: The repo reproduces zero proprietary framework text — concepts are paraphrased and sources are cited
+- [x] **LEG-03**: The repo reproduces zero proprietary framework text — concepts are paraphrased and sources are cited
 - [ ] **LEG-04**: A legal review gate passes before public launch, with the MEDDIC-family trademark status reconfirmed against current sources
 - [ ] **LEG-05**: README claims and badges derive only from committed benchmark results, with the model versions and date stated
 
@@ -135,7 +135,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-04 | Phase 2 | Pending |
 | CAT-05 | Phase 2 | Pending |
 | CAT-06 | Phase 2 | Pending |
-| CAT-07 | Phase 1 | Gaps Found |
+| CAT-07 | Phase 1 | Complete |
 | CAT-08 | Phase 2 | Pending |
 | CAT-09 | Phase 2 | Pending |
 | CAT-10 | Phase 2 | Pending |
@@ -157,7 +157,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOD-03 | Phase 3 | Pending |
 | MOD-04 | Phase 3 | Pending |
 | MOD-05 | Phase 3 | Pending |
-| EX-01 | Phase 1 | Gaps Found |
+| EX-01 | Phase 1 | Complete |
 | EX-02 | Phase 4 | Pending |
 | DIST-01 | Phase 4 | Pending |
 | DIST-02 | Phase 4 | Pending |
@@ -179,7 +179,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EVAL-12 | Phase 5 | Pending |
 | LEG-01 | Phase 1 | Gaps Found |
 | LEG-02 | Phase 1 | Gaps Found |
-| LEG-03 | Phase 1 | Gaps Found |
+| LEG-03 | Phase 1 | Complete |
 | LEG-04 | Phase 6 | Pending |
 | LEG-05 | Phase 6 | Pending |
 
