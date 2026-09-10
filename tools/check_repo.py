@@ -11,6 +11,14 @@ introduced by this file or by the CI job that runs it.
 Usage:
   python3 tools/check_repo.py                # live run against this repo
   python3 tools/check_repo.py --self-test     # run fixture-based self-tests
+  python3 tools/check_repo.py --mutation-test # for each violation code, inject
+                                               # one named defect into a copy of
+                                               # this repository's real documents
+                                               # and assert that code fires
+
+Output ordering: the live run sorts violations on (code, subject) with
+Python's stable sort over sorted() file iteration, so violations that
+compare equal on that key keep their original insertion order.
 
 Violation codes implemented in this file:
   dup-id            - an ID appears in more than one row of the Allocated
@@ -67,6 +75,7 @@ Violation codes implemented in this file:
 """
 import argparse
 import re
+import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -450,6 +459,212 @@ def run_all_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
+# Mutation testing (CR-01 gap closure)
+#
+# The self-test above proves each check fires against a hand-built fixture.
+# It cannot prove a check fires against this repository's own production
+# document shapes -- that gap is exactly what let a dead check ship named as
+# covered (01-VERIFICATION.md). This section injects one named defect at a
+# time into a throwaway copy of the real repository files and asserts the
+# matching violation code fires, closing the class rather than today's
+# instances of it.
+# ---------------------------------------------------------------------------
+
+MUTATION_SOURCES = ('NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools')
+
+
+def _copy_repo_subset(repo_root, dest):
+    """Copy exactly MUTATION_SOURCES into dest. Never copies .git or
+    .planning -- only the repository-relative paths the checker reads."""
+    for name in MUTATION_SOURCES:
+        src = repo_root / name
+        if not src.exists():
+            continue
+        target = dest / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if src.is_dir():
+            shutil.copytree(src, target)
+        else:
+            shutil.copy2(src, target)
+
+
+def _insert_table_rows_after_heading(text, heading, new_rows):
+    """Insert new_rows immediately after the first Markdown table's
+    separator row that follows the '## {heading}' line -- the only
+    insertion point that works while a table has zero data rows."""
+    lines = text.splitlines()
+    heading_line = f'## {heading}'
+    h_idx = next(i for i, l in enumerate(lines) if l.strip() == heading_line)
+    i = h_idx + 1
+    while i < len(lines) and not lines[i].strip().startswith('|'):
+        i += 1
+    header_idx = i
+    sep_idx = header_idx + 1
+    insert_at = sep_idx + 1
+    out = lines[:insert_at] + list(new_rows) + lines[insert_at:]
+    return '\n'.join(out) + '\n'
+
+
+def _mutate_dup_id(root):
+    path = root / 'NUMBERING.md'
+    text = path.read_text(encoding='utf-8')
+    row = '| PF-0.1 | Mutation dup row | SKILL.md | v0.0.0 |'
+    text = _insert_table_rows_after_heading(text, 'Allocated IDs', [row, row])
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_range_id(root):
+    path = root / 'NUMBERING.md'
+    text = path.read_text(encoding='utf-8')
+    row = '| PF-0.99 | Mutation over-ceiling row | SKILL.md | v0.0.0 |'
+    text = _insert_table_rows_after_heading(text, 'Allocated IDs', [row])
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_revived_id(root):
+    path = root / 'NUMBERING.md'
+    text = path.read_text(encoding='utf-8')
+    text = _insert_table_rows_after_heading(
+        text, 'Allocated IDs', ['| PF-0.3 | Mutation revived row | SKILL.md | v0.0.0 |'])
+    text = _insert_table_rows_after_heading(
+        text, 'Deprecated IDs', ['| PF-0.3 | v0.0.0 | PF-0.1 |'])
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_undefined_id(root):
+    path = root / 'README.md'
+    text = path.read_text(encoding='utf-8')
+    if not text.endswith('\n'):
+        text += '\n'
+    text += '\nThis mutation cites PF-9.9, which no Allocated IDs row defines.\n'
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_dup_figure_key(root):
+    path = root / 'examples' / 'deal-brief.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    h_idx = next(i for i, l in enumerate(lines) if l.strip() == '## Canonical figures')
+    i = h_idx + 1
+    while not lines[i].strip().startswith('|'):
+        i += 1
+    first_row_idx = i + 2  # i = header row, i+1 = separator row, i+2 = first data row
+    lines.insert(first_row_idx + 1, lines[first_row_idx])
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_figure_order(root):
+    path = root / 'examples' / 'deal-brief.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    h_idx = next(i for i, l in enumerate(lines) if l.strip() == '## Canonical figures')
+    i = h_idx + 1
+    while not lines[i].strip().startswith('|'):
+        i += 1
+    first_row_idx = i + 2
+    j = first_row_idx
+    while j < len(lines) and lines[j].strip().startswith('|'):
+        j += 1
+    last_row_idx = j - 1
+    last_row = lines.pop(last_row_idx)
+    lines.insert(first_row_idx, last_row)
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_unlisted_figure(root):
+    path = root / 'examples' / 'deal-brief.md'
+    text = path.read_text(encoding='utf-8')
+    if not text.endswith('\n'):
+        text += '\n'
+    text += (
+        "This prose line was appended after the Canonical figures table, the "
+        "file's last section, and cites $123,456,789 which matches no row.\n"
+    )
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_pointer_missing(root):
+    pointer, _carriers = parse_notices(root / 'NOTICES.md')
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if l.strip() != pointer]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_pointer_duplicated(root):
+    pointer, _carriers = parse_notices(root / 'NOTICES.md')
+    path = root / 'README.md'
+    text = path.read_text(encoding='utf-8')
+    if not text.endswith('\n'):
+        text += '\n'
+    text += pointer + '\n'
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_pointer_unparseable(root):
+    path = root / 'NOTICES.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if l.strip() != '## Attribution pointer']
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+MUTATIONS = [
+    ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
+    ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
+    ('revived-id', "insert the same ID into both the Allocated IDs table and the Deprecated IDs table", _mutate_revived_id),
+    ('undefined-id', "cite a PF ID in README.md that no Allocated IDs row defines", _mutate_undefined_id),
+    ('dup-figure-key', "duplicate the first data row of the Canonical figures table", _mutate_dup_figure_key),
+    ('figure-order', "move the Canonical figures table's last data row to the top", _mutate_figure_order),
+    ('unlisted-figure', "append a stray currency token after the Canonical figures table, the file's last section", _mutate_unlisted_figure),
+    ('pointer-missing', "remove the canonical pointer line from README.md", _mutate_pointer_missing),
+    ('pointer-duplicated', "append a second copy of the canonical pointer line to README.md", _mutate_pointer_duplicated),
+    ('pointer-unparseable', "remove the Attribution pointer heading from NOTICES.md", _mutate_pointer_unparseable),
+]
+
+
+def mutation_test(repo_root):
+    """Run a clean control copy, then one isolated mutation per violation
+    code, and report per-code pass/fail. Returns True only when the control
+    was clean, every mutation fired its expected code, and every code in
+    ALL_CHECK_CODES has a registered mutation."""
+    all_ok = True
+    codes_covered = set()
+
+    with tempfile.TemporaryDirectory(prefix='check-repo-mutation-control-') as tmp:
+        control_root = Path(tmp) / 'control'
+        _copy_repo_subset(repo_root, control_root)
+        control_violations = run_all_checks(control_root)
+        print(f"mutation-test CONTROL: {len(control_violations)} violations on the unmutated copy")
+        if control_violations:
+            all_ok = False
+
+    for code, description, mutate_fn in MUTATIONS:
+        with tempfile.TemporaryDirectory(prefix=f'check-repo-mutation-{code}-') as tmp:
+            scratch_root = Path(tmp) / 'scratch'
+            _copy_repo_subset(repo_root, scratch_root)
+            mutate_fn(scratch_root)
+            violations = run_all_checks(scratch_root)
+            fired = any(line.split(' ', 1)[0] == code for _, line in violations)
+        if fired:
+            print(f"mutation-test OK: {code} {description}")
+            codes_covered.add(code)
+        else:
+            print(f"mutation-test FAIL: {code} {description}")
+            all_ok = False
+
+    uncovered = [c for c in ALL_CHECK_CODES if c not in {m[0] for m in MUTATIONS}]
+    for code in uncovered:
+        print(f"mutation-test FAIL: {code} has no registered mutation")
+        all_ok = False
+
+    if all_ok:
+        print(f"mutation-test PASS: {len(codes_covered)} codes proven live")
+    else:
+        failed = len(ALL_CHECK_CODES) - len(codes_covered)
+        print(f"mutation-test FAILED: {failed} codes not proven live")
+
+    return all_ok
+
+
+# ---------------------------------------------------------------------------
 # Self-test fixtures
 # ---------------------------------------------------------------------------
 
@@ -663,12 +878,18 @@ def self_test():
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--self-test', action='store_true')
+    parser.add_argument('--mutation-test', action='store_true')
     args = parser.parse_args()
 
     if args.self_test:
         ok = self_test()
+        sys.exit(0 if ok else 1)
+
+    if args.mutation_test:
+        ok = mutation_test(REPO_ROOT)
         sys.exit(0 if ok else 1)
 
     violations = run_all_checks(REPO_ROOT)
