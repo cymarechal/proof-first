@@ -13,14 +13,30 @@ Usage:
   python3 tools/check_repo.py --self-test     # run fixture-based self-tests
 
 Violation codes implemented in this file:
-  dup-id        - an ID appears in more than one row of the Allocated IDs
-                  table.
-  range-id      - an allocated ID sits outside its section's or dimension
-                  block's reserved range.
-  revived-id    - an ID appears in both the Allocated IDs table and the
-                  Deprecated IDs table.
-  undefined-id  - a PF-#.# or MC-# token is cited in skills/, examples/, or
-                  README.md but is absent from the Allocated IDs table.
+  dup-id            - an ID appears in more than one row of the Allocated
+                      IDs table.
+  range-id          - an allocated ID sits outside its section's or
+                      dimension block's reserved range.
+  revived-id        - an ID appears in both the Allocated IDs table and
+                      the Deprecated IDs table.
+  undefined-id      - a PF-#.# or MC-# token is cited in skills/,
+                      examples/, or README.md but is absent from the
+                      Allocated IDs table.
+  dup-figure-key    - two rows of examples/deal-brief.md's Canonical
+                      figures table share a key.
+  figure-order      - the Canonical figures table's rows are not in
+                      ascending key order.
+  unlisted-figure   - a currency amount, a percentage, or an ISO date in
+                      examples/**/*.md has no matching Canonical figures
+                      row. Declared ceiling: this check catches currency,
+                      percentages, and ISO dates only. It does not catch
+                      bare counts, so a bare count that drifts between
+                      examples is not detected by this tool.
+  pointer-missing   - a path listed in NOTICES.md under "Files required
+                      to carry it" exists on disk and does not contain
+                      the attribution pointer string.
+  pointer-duplicated - such a path contains the attribution pointer
+                      string more than once.
 """
 import argparse
 import re
@@ -205,11 +221,156 @@ def run_id_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
+# examples/deal-brief.md — figure integrity (D-10)
+# ---------------------------------------------------------------------------
+
+def parse_deal_brief(path):
+    text = path.read_text(encoding='utf-8')
+    sections = split_sections(text)
+    figures = []
+    for row in table_rows(sections.get('Canonical figures', '')):
+        if not row or not row[0]:
+            continue
+        figures.append({
+            'key': row[0].strip(),
+            'value': row[1].strip() if len(row) > 1 else '',
+            'type': row[2].strip() if len(row) > 2 else '',
+            'what': row[3].strip() if len(row) > 3 else '',
+        })
+    return figures
+
+
+def check_dup_figure_key(figures):
+    seen = {}
+    for f in figures:
+        seen.setdefault(f['key'], []).append(f)
+    violations = []
+    for key, rows in seen.items():
+        if len(rows) > 1:
+            violations.append((key, f"dup-figure-key {key} appears in {len(rows)} rows of the Canonical figures table"))
+    return violations
+
+
+def check_figure_order(figures):
+    keys = [f['key'] for f in figures]
+    if keys and keys != sorted(keys):
+        return [(keys[0], "figure-order the Canonical figures table's rows are not in ascending key order")]
+    return []
+
+
+CURRENCY_RE = re.compile(r'\$\d[\d,]*(?:\.\d+)?[MKB]?')
+PERCENT_RE = re.compile(r'\b\d+(?:\.\d+)?%')
+ISO_DATE_RE = re.compile(r'\b\d{4}-\d{2}-\d{2}\b')
+
+
+def check_unlisted_figure(figures, repo_root):
+    canonical_values = {f['value'] for f in figures}
+    examples_root = repo_root / 'examples'
+    violations = []
+    seen = set()
+    if not examples_root.exists():
+        return violations
+    for f in sorted(examples_root.rglob('*.md')):
+        text = strip_fences(f.read_text(encoding='utf-8'))
+        lines = text.splitlines()
+        in_canonical = False
+        for line in lines:
+            if re.match(r'^## Canonical figures\s*$', line):
+                in_canonical = True
+                continue
+            if re.match(r'^## ', line):
+                in_canonical = False
+            if in_canonical or line.startswith('Last reviewed:'):
+                continue
+            tokens = CURRENCY_RE.findall(line) + PERCENT_RE.findall(line) + ISO_DATE_RE.findall(line)
+            for tok in tokens:
+                if tok not in canonical_values:
+                    key = (tok, str(f))
+                    if key not in seen:
+                        seen.add(key)
+                        rel = f.relative_to(repo_root)
+                        violations.append((tok, f"unlisted-figure {tok} in {rel} has no matching Canonical figures row"))
+    return violations
+
+
+FIGURE_CHECK_CODES = ['dup-figure-key', 'figure-order', 'unlisted-figure']
+
+
+def run_figure_checks(repo_root):
+    brief_path = repo_root / 'examples' / 'deal-brief.md'
+    if not brief_path.exists():
+        return []
+    figures = parse_deal_brief(brief_path)
+    violations = []
+    violations += check_dup_figure_key(figures)
+    violations += check_figure_order(figures)
+    violations += check_unlisted_figure(figures, repo_root)
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# NOTICES.md — attribution integrity (D-14)
+# ---------------------------------------------------------------------------
+
+def parse_notices(path):
+    text = path.read_text(encoding='utf-8')
+    pointer = None
+    m = re.search(r'## Attribution pointer\s*\n+```[^\n]*\n(.*?)\n```', text, re.S)
+    if m:
+        pointer = m.group(1).strip()
+    carriers = []
+    idx = text.find('Files required to carry it')
+    if idx != -1:
+        tail = text[idx:]
+        for line in tail.splitlines()[1:]:
+            m2 = re.match(r'^\s*[-*]\s+`?([^`\n]+?)`?\s*$', line)
+            if m2:
+                carriers.append(m2.group(1).strip())
+            elif line.strip().startswith('#'):
+                break
+    return pointer, carriers
+
+
+def check_pointer(pointer, carriers, repo_root):
+    violations = []
+    if pointer is None:
+        return violations
+    for carrier in carriers:
+        p = repo_root / carrier
+        if not p.exists():
+            continue
+        count = sum(1 for line in p.read_text(encoding='utf-8').splitlines() if line.strip() == pointer)
+        if count == 0:
+            violations.append((carrier, f"pointer-missing {carrier} does not contain the attribution pointer string"))
+        elif count > 1:
+            violations.append((carrier, f"pointer-duplicated {carrier} contains the attribution pointer string {count} times"))
+    return violations
+
+
+NOTICES_CHECK_CODES = ['pointer-missing', 'pointer-duplicated']
+
+
+def run_notices_checks(repo_root):
+    notices_path = repo_root / 'NOTICES.md'
+    if not notices_path.exists():
+        return []
+    pointer, carriers = parse_notices(notices_path)
+    return check_pointer(pointer, carriers, repo_root)
+
+
+ALL_CHECK_CODES = ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
+
+
+# ---------------------------------------------------------------------------
 # Aggregation
 # ---------------------------------------------------------------------------
 
 def run_all_checks(repo_root):
-    return run_id_checks(repo_root)
+    violations = []
+    violations += run_id_checks(repo_root)
+    violations += run_figure_checks(repo_root)
+    violations += run_notices_checks(repo_root)
+    return violations
 
 
 # ---------------------------------------------------------------------------
@@ -272,6 +433,52 @@ def _good_numbering():
 """
 
 
+def _bad_deal_brief():
+    return """## Canonical figures
+| Key | Value | Type | What it is |
+|---|---|---|---|
+| total-contract-value | $6,000,000 | currency | Total contract value |
+| bidder-count | 3 | count | Number of bidders |
+| bidder-count | 4 | count | Duplicate key |
+"""
+
+
+def _good_deal_brief():
+    return """## Canonical figures
+| Key | Value | Type | What it is |
+|---|---|---|---|
+| bidder-count | 3 | count | Number of bidders |
+| total-contract-value | $6,000,000 | currency | Total contract value |
+"""
+
+
+def _bad_notices():
+    return """## Attribution pointer
+
+```
+Test pointer string.
+```
+
+### Files required to carry it
+
+- `carrier-missing.md`
+- `carrier-dup.md`
+"""
+
+
+def _good_notices():
+    return """## Attribution pointer
+
+```
+Test pointer string.
+```
+
+### Files required to carry it
+
+- `carrier-ok.md`
+"""
+
+
 def self_test():
     codes_covered = set()
     all_ok = True
@@ -282,14 +489,22 @@ def self_test():
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
+        _write(bad_root / 'examples' / 'deal-brief.md', _bad_deal_brief())
+        _write(bad_root / 'examples' / 'scenario.md', "The deal is valued at $999,999 over the term.\n")
+        _write(bad_root / 'NOTICES.md', _bad_notices())
+        _write(bad_root / 'carrier-missing.md', "This file does not carry the pointer.\n")
+        _write(bad_root / 'carrier-dup.md', "Test pointer string.\nSomething else.\nTest pointer string.\n")
 
         _write(good_root / 'NUMBERING.md', _good_numbering())
         _write(good_root / 'skills' / 'SKILL.md', "See PF-0.1 for details.\n")
+        _write(good_root / 'examples' / 'deal-brief.md', _good_deal_brief())
+        _write(good_root / 'NOTICES.md', _good_notices())
+        _write(good_root / 'carrier-ok.md', "Test pointer string.\n")
 
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
 
-        for code in ID_CHECK_CODES:
+        for code in ALL_CHECK_CODES:
             if code not in bad_codes:
                 print(f"FAIL: {code} did not fire on the known-bad fixture")
                 all_ok = False
