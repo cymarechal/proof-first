@@ -12,7 +12,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Run checker self-test and live check
+      - name: Run checker self-test, mutation test, and live check
         run: |
           python3 tools/check_repo.py --self-test
+          python3 tools/check_repo.py --mutation-test
           python3 tools/check_repo.py
