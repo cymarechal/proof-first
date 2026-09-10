@@ -40,6 +40,60 @@ Halverton Mutual's current estate runs on VMware vSphere across 850 virtual mach
 
 Proposals are due to Halverton Mutual on 2026-10-30. Halverton Mutual's next regulatory examination opens in 8 months, and Halverton wants the Oracle estate off-premises before that window opens. Kestrel Systems Group's own most comparable prior migration programme took 14 months — longer than the examination window Halverton is working against.
 
+## Inconvenient facts
+
+- The settlement batch overrun pain point above has no measured baseline, so Kestrel Systems Group cannot honestly quote a before-and-after number for it in this proposal.
+- Halverton Mutual's RFP requires a SOC 2 Type II report, and Kestrel Systems Group holds only a SOC 2 Type I report today; Kestrel's own Type II observation window closes after the RFP submission date.
+- Priya Raghunathan, the Chief Architect and a scored technical evaluator, said in the discovery call that she would rather extend the Ardent Digital contract than run a migration.
+- Halverton wants the Oracle estate off-premises before its next regulatory examination, and that examination window is shorter than Kestrel Systems Group's own comparable-programme duration.
+
+These facts are in this brief on purpose: they give the integrity requirements real material to fire on, and they stop the shared deal from being a favorable proving ground for the benchmark.
+
+## Customer source material
+
+The material below is written in Halverton Mutual's own voice, not Kestrel Systems Group's — its purpose is to supply words that exist outside the sentence a later example is writing.
+
+### Scored RFP questions
+
+These percentages score the five RFP questions against each other and are distinct from the three top-level evaluation weights keyed in the Canonical figures table below.
+
+| ID | Question | Weight |
+|---|---|---|
+| Q1 | Describe the migration approach and cut-over plan. | 30% |
+| Q2 | Describe data residency and encryption controls for policyholder records. | 20% |
+| Q3 | Describe the operating model after go-live. | 15% |
+| Q4 | Provide evidence of comparable regulated-sector migrations. | 15% |
+| Q5 | Describe the commercial model and exit provisions. | 20% |
+
+### Discovery call quotes
+
+- Marcus Feld: "We need a landing zone we can actually govern — right now every VM is a snowflake."
+- Priya Raghunathan: "Honestly, I'd rather extend the Ardent Digital contract than gamble on a migration during an exam year."
+- Diane Osoria: "I'm measured on run-rate reduction and a clean exam, not on architecture elegance."
+- Tom Weatherly: "Every vendor gets scored against the same five questions — no exceptions, no side conversations."
+
+### Economic buyer stated priorities
+
+- "I need the current annual run rate down from $2,300,000 — that is the number I answer for."
+- "A clean regulatory examination matters more to me than any feature list."
+- "I will not sign a contract that locks us into one vendor's commercial terms for longer than this term."
+
+### Decision criteria
+
+| Criterion | Weight | Stated by |
+|---|---|---|
+| Technical approach | 55% | Halverton Mutual (RFP scoring rubric) |
+| Commercial model | 25% | Halverton Mutual (RFP scoring rubric) |
+| Security posture | 20% | Halverton Mutual (RFP scoring rubric) |
+
+### Paper process
+
+The proposal moves through three reviews in sequence: a security review owned by Priya Raghunathan that takes 15 business days, a procurement review owned by Tom Weatherly with no fixed duration stated by Halverton Mutual, and a legal review owned by Gina Almeida that takes 10 business days.
+
+## What this file does not own
+
+This file carries facts only. It holds no rule content and no persuasion technique. Anything a later example asserts beyond the facts stated here is an invented fact and a defect.
+
 ## Canonical figures
 
 Every dollar amount, date, percentage, and count cited anywhere in this repository's examples
@@ -57,6 +111,8 @@ table claim the same key.
 | legal-review-days | 10 | count | Business days Halverton Mutual's legal review step is expected to take |
 | oracle-database-count | 40 | count | Number of Oracle Database instances in the estate being migrated |
 | rfp-commercial-weight | 25% | percent | Weight the buyer's top-level scoring rubric assigns to the commercial section of the response |
+| rfp-question-weight-mid | 15% | percent | Weight assigned to each of the two mid-weighted scored RFP questions (Q3 and Q4) |
+| rfp-question-weight-top | 30% | percent | Weight assigned to the highest-weighted scored RFP question (Q1) |
 | rfp-security-weight | 20% | percent | Weight the buyer's top-level scoring rubric assigns to the security section of the response |
 | rfp-submission-date | 2026-10-30 | date | Date proposals are due to the buyer |
 | rfp-technical-weight | 55% | percent | Weight the buyer's top-level scoring rubric assigns to the technical section of the response |
