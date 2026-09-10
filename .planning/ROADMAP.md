@@ -7,6 +7,7 @@ Proof First ships as one dependency-free skill folder plus a reproducible eval h
 ## Phases
 
 **Phase Numbering:**
+
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
@@ -22,77 +23,103 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Foundations — Legal Scaffolding, Numbering, Shared Deal
+
 **Goal**: The project's foundational scaffolding — rule numbering, shared example data, and legal posture — is frozen before any rule content is drafted, so nothing downstream forces a renumbering or a retrofit.
 **Depends on**: Nothing (first phase)
 **Requirements**: CAT-07, EX-01, LEG-01, LEG-02, LEG-03
 **Success Criteria** (what must be TRUE):
+
   1. A contributor drafting a new rule can look up the next free ID in either the `PF-<section>.<n>` or `MC-<n>` namespace without guessing, because ranges are reserved per section before drafting starts.
   2. Every worked example anywhere in the repo can cite facts (dollar figures, roles, timeline, competitors) from one canonical fictional cloud-migration deal brief.
   3. The repo's LICENSE and NOTICES.md individually name all three frameworks (Command of the Message, MEDDICC, Challenger) with non-affiliation and trademark language, before any framework-derived content ships.
   4. Nothing in the repo reproduces proprietary framework text — framework concepts are paraphrased and sources are cited wherever they appear.
+
 **Plans**: 4 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 01-01-PLAN.md — Tracer: freeze all three registry formats and prove them end-to-end with a stdlib-only checker in CI (NUMBERING.md, tools/check_repo.py, .github/workflows/ci.yml, plus the Canonical figures table and the attribution pointer block)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — Fill examples/deal-brief.md with the one canonical fictional deal, its customer source material, and the facts that are awkward for the vendor
 - [ ] 01-03-PLAN.md — Legal posture: MIT LICENSE, three individually named framework statements in NOTICES.md, and the approved-source list plus reproduction boundary in SOURCES.md
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 01-04-PLAN.md — Claim-free README documenting the target layout, plus the full-repository integrity sweep and phase-closing legal read
 
 ### Phase 2: Rule Catalog & Integrity — SKILL.md Core
+
 **Goal**: A writer can open SKILL.md and draft or spot-check presales prose against a persuasion-preserving, self-contained rule catalog that never lets a fabricated claim through.
 **Depends on**: Phase 1
 **Requirements**: CAT-01, CAT-02, CAT-03, CAT-04, CAT-05, CAT-06, CAT-08, CAT-09, CAT-10, INT-01, INT-02, INT-03, INT-04, INT-05, INT-06, MOD-01, MOD-02
 **Success Criteria** (what must be TRUE):
+
   1. Writer can read one numbered rule catalog organized by Command of the Message elements, fully self-contained under the progressive-disclosure ceiling, with valid frontmatter and a reliably triggering description.
   2. Writer asking the skill to draft gets output where every deleted buzzword is replaced by an instruction to attach specific evidence in its place, not just silence — and a term appearing verbatim in the customer's own source material is marked, not deleted.
   3. Writer gets exactly one opening instruction — a single reframe-the-problem rule resolved from the three overlapping source frameworks, not three conflicting ones to reconcile.
   4. Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite.
   5. Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve.
+
 **Plans**: TBD
 
 ### Phase 3: Completeness Audit & Artifact Patterns
+
 **Goal**: A writer can classify a document by artifact family, apply that family's conventions, and get a document-level completeness verdict and trustworthy rule citations — independent of the prose rules.
 **Depends on**: Phase 2
 **Requirements**: AUD-01, AUD-02, AUD-03, ART-01, ART-02, ART-03, ART-04, MOD-03, MOD-04, MOD-05
 **Success Criteria** (what must be TRUE):
+
   1. Writer can run a document-level completeness audit derived from MEDDICC — covering metric, economic buyer, decision criteria, decision process, paper process, pain, champion, and competition — and get a verdict in its own `MC-` namespace and reference file, never blended into the prose rules.
   2. Writer drafting an RFP/RFI response, a solution proposal, an executive summary, or demo/discovery material each gets that family's own conventions (answer-first ordering and criteria-mirroring; architecture narrative and risk treatment; problem-reframe-then-business-case; discovery-to-follow-up structure, respectively).
   3. Skill states which artifact family it classified the document as before applying any rules.
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
+
 **Plans**: TBD
 
 ### Phase 4: Distribution & Worked Examples
+
 **Goal**: The finished rule catalog reaches a writer through every distribution channel the project promises, backed by real worked examples.
 **Depends on**: Phase 2, Phase 3
 **Requirements**: EX-02, DIST-01, DIST-02, DIST-03, DIST-04, DIST-05, DIST-06
 **Success Criteria** (what must be TRUE):
+
   1. Reader sees before/after pairs covering each of the four artifact families, with the after column citing real, shipped rule numbers.
   2. User can install the skill via the skills CLI with one command, and separately as a Claude Code plugin from a marketplace manifest in this repo.
   3. User can turn the discipline on permanently as an output style, or paste a system-prompt version in a harness with no skill support, and get equivalent behavior either way.
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
+
 **Plans**: TBD
 
 ### Phase 5: Evaluation Harness
+
 **Goal**: Anyone can reproduce a credible, honestly-caveated measurement of the skill's effect using only committed scripts and data.
 **Depends on**: Phase 2, Phase 3
 **Requirements**: EVAL-01, EVAL-02, EVAL-03, EVAL-04, EVAL-05, EVAL-06, EVAL-07, EVAL-08, EVAL-09, EVAL-10, EVAL-11, EVAL-12
 **Success Criteria** (what must be TRUE):
+
   1. A deterministic linter counts rule-proxy violations using only the Python standard library, passes its own self-test, and states plainly that the deletion test is a semantic judgment it cannot perform.
   2. The linter's buzzword proxy list is sourced independently of the skill's own worked examples, so a reviewer can confirm the measured improvement isn't circular.
   3. A committed scenario set drives generations across all four artifact families, run headlessly across multiple pinned Claude models, at least three times per cell.
   4. A blind pairwise judge scores skill-on against skill-off with labels stripped and both text orders run, scoring persuasive force as its own dimension so a flat-but-clean draft can't pass on clarity alone.
   5. Published results report mechanical-proxy counts and judged persuasion as two separately labeled figures with variance alongside the mean, name honest caveats (position bias, judge-family bias, baseline prompt parity, proxy provenance, sample size), and every raw generation and judgement is committed so any number can be recomputed with one documented command.
+
 **Plans**: TBD — likely splits across the linter, the scenario/benchmark runner, and the judge; EVAL-06's mandatory 3x-per-cell repetition raises benchmark runtime meaningfully and may warrant its own plan separate from the linter.
 
 ### Phase 6: Legal Review Gate & Launch
+
 **Goal**: The repo is legally cleared and honestly marketed before anyone outside the project sees it.
 **Depends on**: Phase 4, Phase 5
 **Requirements**: LEG-04, LEG-05
 **Success Criteria** (what must be TRUE):
+
   1. A legal review gate passes before public launch, with MEDDIC-family trademark status (including the MEDDPICC genericness ruling) reconfirmed against current sources.
   2. Every claim and badge in README derives only from committed benchmark results in RESULTS.md, stating model versions and date.
+
 **Plans**: TBD
 
 ## Progress
