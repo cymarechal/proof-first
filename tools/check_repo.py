@@ -34,12 +34,20 @@ Violation codes implemented in this file:
                       examples is not detected by this tool.
   pointer-missing   - a path listed in NOTICES.md under "Files required
                       to carry it" exists on disk and does not contain
-                      the attribution pointer string.
+                      the attribution pointer string. Declared ceiling:
+                      each line of the carrier is UTF-8 decoded and
+                      stripped, then compared to the canonical string
+                      with Python string equality - code-point
+                      equality, with no Unicode normalisation and no
+                      case folding, so a visually identical line built
+                      from different code points is reported as
+                      missing.
   pointer-duplicated - such a path contains the attribution pointer
                       string more than once.
-  pointer-unparseable - NOTICES.md's "Attribution pointer" section
-                      yields no usable pointer definition (no fenced
-                      block, or an empty fenced block).
+  pointer-unparseable - either NOTICES.md's "Attribution pointer"
+                      section yields no usable pointer definition (no
+                      fenced block, or an empty one), or a required
+                      carrier entry is not a repository-relative path.
 """
 import argparse
 import re
@@ -508,6 +516,7 @@ Test pointer string.
 
 - `carrier-missing.md`
 - `carrier-dup.md`
+- `carrier-lookalike.md`
 """
 
 
@@ -539,6 +548,22 @@ fenced block entirely so the section yields no usable pointer definition.
 """
 
 
+def _escaping_notices():
+    return """## Attribution pointer
+
+The following string is the canonical, verbatim attribution pointer. A human contributor and
+`tools/check_repo.py` both read this fenced block as the single source of truth for the string.
+
+```
+Test pointer string.
+```
+
+### Files required to carry it
+
+- `../escaped.md`
+"""
+
+
 def self_test():
     codes_covered = set()
     all_ok = True
@@ -547,6 +572,7 @@ def self_test():
         bad_root = tmp_root / 'bad'
         good_root = tmp_root / 'good'
         unparseable_root = tmp_root / 'unparseable'
+        escaping_root = tmp_root / 'escaping'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -555,6 +581,7 @@ def self_test():
         _write(bad_root / 'NOTICES.md', _bad_notices())
         _write(bad_root / 'carrier-missing.md', "This file does not carry the pointer.\n")
         _write(bad_root / 'carrier-dup.md', "Test pointer string.\nSomething else.\nTest pointer string.\n")
+        _write(bad_root / 'carrier-lookalike.md', "Test pointer\u00a0string.\n")
 
         _write(good_root / 'NUMBERING.md', _good_numbering())
         _write(good_root / 'skills' / 'SKILL.md', "See PF-0.1 for details.\n")
@@ -562,20 +589,23 @@ def self_test():
         _write(good_root / 'NOTICES.md', _good_notices())
         _write(good_root / 'carrier-ok.md', "Test pointer string.\n")
 
-        # Third scratch root isolates the `pointer-unparseable` trigger so it
-        # fires alone, on its own root, and stays silent on both bad_root and
-        # good_root.
+        # Third and fourth scratch roots isolate the two `pointer-unparseable`
+        # triggers so each fires alone, on its own root, and stays silent on
+        # both bad_root and good_root.
         _write(unparseable_root / 'NOTICES.md', _unparseable_notices())
         _write(unparseable_root / 'carrier-ok.md', "Test pointer string.\n")
+
+        _write(escaping_root / 'NOTICES.md', _escaping_notices())
 
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
+        escaping_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(escaping_root)}
 
-        # Union the third root's codes into the bad-code set so the coverage
-        # loop below needs no edit — it still just checks "did the code fire
-        # on some known-bad fixture and stay silent on good_root".
-        bad_codes |= unparseable_codes
+        # Union the third/fourth roots' codes into the bad-code set so the
+        # coverage loop below needs no edit — it still just checks "did the
+        # code fire on some known-bad fixture and stay silent on good_root".
+        bad_codes |= unparseable_codes | escaping_codes
 
         for code in ALL_CHECK_CODES:
             if code not in bad_codes:
