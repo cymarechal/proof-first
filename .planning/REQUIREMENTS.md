@@ -52,7 +52,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Examples
 
-- [ ] **EX-01**: A single fictional cloud migration deal brief supplies the canonical facts that every example in the repo reuses
+- [x] **EX-01**: A single fictional cloud migration deal brief supplies the canonical facts that every example in the repo reuses
 - [ ] **EX-02**: Reader gets before/after pairs covering each artifact family, with the after column citing real rule numbers
 
 ### Distribution
@@ -157,7 +157,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOD-03 | Phase 3 | Pending |
 | MOD-04 | Phase 3 | Pending |
 | MOD-05 | Phase 3 | Pending |
-| EX-01 | Phase 1 | Pending |
+| EX-01 | Phase 1 | Complete |
 | EX-02 | Phase 4 | Pending |
 | DIST-01 | Phase 4 | Pending |
 | DIST-02 | Phase 4 | Pending |

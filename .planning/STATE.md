@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 01
 current_phase_name: Foundations — Legal Scaffolding, Numbering, Shared Deal
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-09-10T06:35:42.654Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-09-10T06:51:08.778Z"
 last_activity: 2026-09-10
 last_activity_desc: Phase 01 execution started
-state_head: d487e32a5c2fe2213c835890999056c71b591778
+state_head: d1f5595c3f25fe9a056689583c01f5ee392ad478
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 01 (Foundations — Legal Scaffolding, Numbering, Shared Deal) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-09-10 — Phase 01 execution started
 
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 01 P01 | 20 min | 2 tasks | 5 files |
+| Phase 01 P02 | 24 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,9 @@ Recent decisions affecting current work:
 - Roadmap: Phase 4 (distribution) and Phase 5 (eval harness) both depend only on Phases 2-3 and not on each other — flagged as parallelizable given config's parallelization setting.
 - [Phase 01]: 01-01: PF-1 ceiling resolved to PF-1.28 (widen-to-28) via the plan's blocking-human checkpoint -- four slots per Command of the Message element (Before scenario 1.1-1.4, After scenario 1.5-1.8, Required Capabilities 1.9-1.12, Metrics 1.13-1.16, Proof Points 1.17-1.20, Differentiators 1.21-1.24, Positive Business Outcomes 1.25-1.28), superseding the PF-1.20 research proposal.
 - [Phase 01]: 01-01: Canonical figures and attribution pointer registries frozen -- 6-key Canonical figures table in examples/deal-brief.md ($6M/3yr deal, 3 bidders, 62% incumbent share, 55% scoring weight, 2026-10-30 submission date) and the verbatim NOTICES.md attribution pointer string with its 4-file carriers list, both enforced by tools/check_repo.py in CI.
+- [Phase 01]: [Phase 01]: 01-02: examples/deal-brief.md completed with the full deal spine, an 18-key Canonical figures table (adding annual-run-rate-current, examination-window-months, legal-review-days, oracle-database-count, rfp-commercial-weight, rfp-question-weight-mid, rfp-question-weight-top, rfp-security-weight, security-review-days, settlement-batch-window-hours, vendor-comparable-duration-months, vm-count), and renamed rfp-technical-scoring-weight to rfp-technical-weight (value unchanged, 55%) to match the plan's own verify script.
+- [Phase 01]: [Phase 01]: 01-02: Inconvenient facts (unmeasured settlement-batch overrun, SOC 2 Type II gap, technical evaluator's stated incumbent preference, examination window shorter than Kestrel's comparable-programme duration) and Customer source material (5 scored RFP questions Q1-Q5 weighted 30/20/15/15/20, discovery quotes incl. verbatim "landing zone", economic-buyer priorities, decision criteria, paper process) added per D-08.
+- [Phase 01]: [Phase 01]: 01-02: Task 2's two <manual> reviewer checks (name-collision web search over 9 invented names; no-real-product-comparison read-through) could not be completed in this environment (no live network access) -- logged as open unrun-verify items in .planning/WINDOWS.md pending human confirmation before the repo goes public.
 
 ### Pending Todos
 
@@ -84,6 +88,7 @@ None yet.
 - MEDDICC/MEDDIC trademark status beyond the "MEDDPICC ruled generic" ruling (E.D. Pa., April 2026) is unresolved. Must be reconfirmed against current sources before Phase 6's legal review gate (LEG-04) closes — do not assume the whole acronym family is safe by extension.
 - Linter's buzzword-proxy word list (EVAL-02) must be sourced independently from SKILL.md's own worked examples, or the Phase 5 benchmark becomes circular — flag explicitly during Phase 5 planning, not left implicit.
 - README badges (LEG-05) have a hard dependency on Phase 5's benchmark having actually run — sequence Phase 6 accordingly, do not draft badge claims early.
+- Two open unrun-verify items in .planning/WINDOWS.md (name-collision web search over 9 invented names in examples/deal-brief.md; independent read-through confirming no real-product/company comparison) need a human with live web access before the repo goes public -- should be resolved by Phase 6's legal review gate (LEG-04).
 
 ## Deferred Items
 
@@ -95,6 +100,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T06:35:33.700Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-09-10T06:51:08.585Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
