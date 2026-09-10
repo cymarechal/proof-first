@@ -30,7 +30,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Every worked example anywhere in the repo can cite facts (dollar figures, roles, timeline, competitors) from one canonical fictional cloud-migration deal brief.
   3. The repo's LICENSE and NOTICES.md individually name all three frameworks (Command of the Message, MEDDICC, Challenger) with non-affiliation and trademark language, before any framework-derived content ships.
   4. Nothing in the repo reproduces proprietary framework text — framework concepts are paraphrased and sources are cited wherever they appear.
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Tracer: freeze all three registry formats and prove them end-to-end with a stdlib-only checker in CI (NUMBERING.md, tools/check_repo.py, .github/workflows/ci.yml, plus the Canonical figures table and the attribution pointer block)
+- [ ] 01-02-PLAN.md — Fill examples/deal-brief.md with the one canonical fictional deal, its customer source material, and the facts that are awkward for the vendor
+- [ ] 01-03-PLAN.md — Legal posture: MIT LICENSE, three individually named framework statements in NOTICES.md, and the approved-source list plus reproduction boundary in SOURCES.md
+- [ ] 01-04-PLAN.md — Claim-free README documenting the target layout, plus the full-repository integrity sweep and phase-closing legal read
 
 ### Phase 2: Rule Catalog & Integrity — SKILL.md Core
 **Goal**: A writer can open SKILL.md and draft or spot-check presales prose against a persuasion-preserving, self-contained rule catalog that never lets a fabricated claim through.
@@ -96,7 +102,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 0/TBD | Not started | - |
+| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 0/4 | Planned | - |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 0/TBD | Not started | - |
 | 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
