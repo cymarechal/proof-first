@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 01
 current_phase_name: Foundations — Legal Scaffolding, Numbering, Shared Deal
-status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-09-10T06:57:32.752Z"
+status: verifying
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-09-10T07:06:22.599Z"
 last_activity: 2026-09-10
 last_activity_desc: Phase 01 execution started
-state_head: 913a112155766953dcf51ec238a771554422e6a3
+state_head: 8e06830a86df492fbe60b467546b332ea7e54a40
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 Phase: 01 (Foundations — Legal Scaffolding, Numbering, Shared Deal) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-10 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P01 | 20 min | 2 tasks | 5 files |
 | Phase 01 P02 | 24 min | 2 tasks | 2 files |
 | Phase 01 P03 | 12min | 3 tasks | 3 files |
+| Phase 01 P04 | 20min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-03: All 6 SOURCES.md rows marked unverified (Where: 'to confirm at LEG-04') rather than confirmed -- this execution environment has no live network access to check a public location, so no citation is asserted as checked even for high-confidence titles (Dixon/Adamson's 'The Challenger Sale'; Andy Whyte's 'MEDDICC').
 - [Phase 01]: 01-03: NOTICES.md's MEDDIC-family framework statement records ownership as claimed by multiple parties and contested, with no single holder named and no claim on mark validity or litigation outcomes -- matching the standing STATE.md blocker and D-13.
 - [Phase 01]: 01-03: LICENSE/NOTICES.md scope boundary established -- LICENSE governs copyright only (unmodified MIT text), NOTICES.md governs trademark/attribution/precedence, and all repo content is MIT-licensed unless a file states otherwise.
+- [Phase 01]: [Phase 01]: 01-04: README.md written at repo root (six sections: What this is, Status, Repository layout, Rule numbering, Versioning, License and notices) -- claim-free per LEG-05/PROJECT.md's evidence rule, documents the target layout (skills/proof-first/ and the rest) without pre-creating any of it, and is proven as the first real (non-fixture) carrier of NOTICES.md's attribution pointer.
+- [Phase 01]: [Phase 01]: 01-04: Full-repository integrity sweep and phase-closing legal read completed -- all eight Phase 1 files present/non-empty/checker-clean, no framework mark outside NOTICES.md, no proprietary framework text reproduced anywhere. Phase 1 is internally consistent and complete; LEG-04/LEG-05 and the WINDOWS.md open items remain correctly deferred to Phase 6.
 
 ### Pending Todos
 
@@ -104,6 +107,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T06:57:32.733Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-09-10T07:06:14.121Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None

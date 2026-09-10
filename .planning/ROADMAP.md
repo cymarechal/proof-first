@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The repo's LICENSE and NOTICES.md individually name all three frameworks (Command of the Message, MEDDICC, Challenger) with non-affiliation and trademark language, before any framework-derived content ships.
   4. Nothing in the repo reproduces proprietary framework text — framework concepts are paraphrased and sources are cited wherever they appear.
 
-**Plans**: 3/4 plans executed
+**Plans**: 4/4 plans executed
 
 Plans:
 **Wave 1**
@@ -48,7 +48,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-04-PLAN.md — Claim-free README documenting the target layout, plus the full-repository integrity sweep and phase-closing legal read
+- [x] 01-04-PLAN.md — Claim-free README documenting the target layout, plus the full-repository integrity sweep and phase-closing legal read
 
 ### Phase 2: Rule Catalog & Integrity — SKILL.md Core
 
@@ -129,7 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 3/4 | In Progress|  |
+| 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 4/4 | In Progress|  |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 0/TBD | Not started | - |
 | 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
