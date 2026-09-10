@@ -81,8 +81,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Legal
 
-- [ ] **LEG-01**: The repo ships an MIT license covering all original content
-- [ ] **LEG-02**: NOTICES.md carries a separate, individually named non-affiliation and trademark statement for each of the three frameworks
+- [x] **LEG-01**: The repo ships an MIT license covering all original content
+- [x] **LEG-02**: NOTICES.md carries a separate, individually named non-affiliation and trademark statement for each of the three frameworks
 - [ ] **LEG-03**: The repo reproduces zero proprietary framework text — concepts are paraphrased and sources are cited
 - [ ] **LEG-04**: A legal review gate passes before public launch, with the MEDDIC-family trademark status reconfirmed against current sources
 - [ ] **LEG-05**: README claims and badges derive only from committed benchmark results, with the model versions and date stated
@@ -177,8 +177,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EVAL-10 | Phase 5 | Pending |
 | EVAL-11 | Phase 5 | Pending |
 | EVAL-12 | Phase 5 | Pending |
-| LEG-01 | Phase 1 | Pending |
-| LEG-02 | Phase 1 | Pending |
+| LEG-01 | Phase 1 | Complete |
+| LEG-02 | Phase 1 | Complete |
 | LEG-03 | Phase 1 | Pending |
 | LEG-04 | Phase 6 | Pending |
 | LEG-05 | Phase 6 | Pending |
