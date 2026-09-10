@@ -72,6 +72,22 @@ Violation codes implemented in this file:
                       section yields no usable pointer definition (no
                       fenced block, or an empty one), or a required
                       carrier entry is not a repository-relative path.
+  license-missing   - the LICENSE file is absent from the repository
+                      root, is empty, or does not begin with the string
+                      "MIT License". Declared ceiling: only the first line
+                      is inspected; the license body is never compared
+                      against the full MIT text, so a file carrying
+                      "MIT License" as its first line over a different
+                      license body is accepted.
+  framework-statement-missing - NOTICES.md is absent, or its
+                      "Framework statements" section is missing one of the
+                      three required framework subsections (Command of the
+                      Message, MEDDIC/MEDDICC, or Challenger), or one of
+                      those subsections is present but missing its
+                      non-affiliation or trademark-rights language. The
+                      check fires per-missing-framework, naming which one.
+                      When NOTICES.md is absent, all three frameworks are
+                      reported as missing.
 """
 import argparse
 import re
@@ -423,6 +439,101 @@ def check_pointer(pointer, carriers, repo_root):
 NOTICES_CHECK_CODES = ['pointer-missing', 'pointer-duplicated', 'pointer-unparseable']
 
 
+# ---------------------------------------------------------------------------
+# LICENSE.md — license integrity (LEG-01)
+# ---------------------------------------------------------------------------
+
+def check_license_missing(repo_root):
+    """Check that LICENSE exists at repo root, is non-empty, and begins
+    with 'MIT License'."""
+    violations = []
+    license_path = repo_root / 'LICENSE'
+    if not license_path.exists():
+        violations.append(('LICENSE', "license-missing LICENSE file is absent from the repository root"))
+        return violations
+
+    text = license_path.read_text(encoding='utf-8')
+    if not text:
+        violations.append(('LICENSE', "license-missing LICENSE file is empty"))
+        return violations
+
+    first_line = text.split('\n')[0] if text else ''
+    if not first_line.startswith('MIT License'):
+        violations.append(('LICENSE', "license-missing LICENSE file does not identify itself as the MIT License"))
+
+    return violations
+
+
+LICENSE_CHECK_CODES = ['license-missing']
+
+
+def run_license_checks(repo_root):
+    violations = []
+    violations += check_license_missing(repo_root)
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# NOTICES.md — framework statements integrity (LEG-02)
+# ---------------------------------------------------------------------------
+
+def check_framework_statements(repo_root):
+    """Check that NOTICES.md carries the three required framework statements
+    with their non-affiliation and trademark-rights language."""
+    violations = []
+    notices_path = repo_root / 'NOTICES.md'
+
+    # Define required frameworks and their required sub-heading patterns
+    frameworks = {
+        'Command of the Message': ('### Command of the Message', 'Non-affiliation'),
+        'MEDDIC/MEDDICC': ('### MEDDIC, MEDDICC, and related marks', 'Non-affiliation'),
+        'Challenger': ('### Challenger', 'Non-affiliation'),
+    }
+
+    if not notices_path.exists():
+        # If NOTICES.md is missing, all three frameworks are missing
+        for framework_name in frameworks.keys():
+            violations.append((framework_name, f"framework-statement-missing {framework_name} subsection is missing from NOTICES.md"))
+        return violations
+
+    text = notices_path.read_text(encoding='utf-8')
+
+    for framework_name, (heading_pattern, required_language) in frameworks.items():
+        if heading_pattern not in text:
+            violations.append((framework_name, f"framework-statement-missing {framework_name} subsection is missing from NOTICES.md"))
+            continue
+
+        # Find the section for this framework
+        heading_idx = text.find(heading_pattern)
+        # Find the end of this section (next ### or ##)
+        next_section = len(text)
+        for pattern in ['### ', '## ']:
+            idx = text.find('\n' + pattern, heading_idx + 1)
+            if idx != -1 and idx < next_section:
+                next_section = idx
+
+        framework_section = text[heading_idx:next_section]
+
+        # Check for non-affiliation language
+        if 'Non-affiliation' not in framework_section or 'not affiliated' not in framework_section.lower():
+            violations.append((framework_name, f"framework-statement-missing {framework_name} subsection missing non-affiliation language"))
+
+        # Check for trademark/rights language
+        if 'Rights-holder' not in framework_section:
+            violations.append((framework_name, f"framework-statement-missing {framework_name} subsection missing trademark-rights language"))
+
+    return violations
+
+
+FRAMEWORK_CHECK_CODES = ['framework-statement-missing']
+
+
+def run_framework_checks(repo_root):
+    violations = []
+    violations += check_framework_statements(repo_root)
+    return violations
+
+
 def run_notices_checks(repo_root):
     notices_path = repo_root / 'NOTICES.md'
     if not notices_path.exists():
@@ -443,7 +554,7 @@ def run_notices_checks(repo_root):
     return violations
 
 
-ALL_CHECK_CODES = ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
+ALL_CHECK_CODES = ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES + LICENSE_CHECK_CODES + FRAMEWORK_CHECK_CODES
 
 
 # ---------------------------------------------------------------------------
@@ -455,6 +566,8 @@ def run_all_checks(repo_root):
     violations += run_id_checks(repo_root)
     violations += run_figure_checks(repo_root)
     violations += run_notices_checks(repo_root)
+    violations += run_license_checks(repo_root)
+    violations += run_framework_checks(repo_root)
     return violations
 
 
@@ -470,7 +583,7 @@ def run_all_checks(repo_root):
 # instances of it.
 # ---------------------------------------------------------------------------
 
-MUTATION_SOURCES = ('NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools')
+MUTATION_SOURCES = ('LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools')
 
 
 def _copy_repo_subset(repo_root, dest):
@@ -606,6 +719,18 @@ def _mutate_pointer_unparseable(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_license_missing(root):
+    path = root / 'LICENSE'
+    if path.exists():
+        path.unlink()
+
+
+def _mutate_framework_statement_missing(root):
+    path = root / 'NOTICES.md'
+    if path.exists():
+        path.unlink()
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -617,6 +742,8 @@ MUTATIONS = [
     ('pointer-missing', "remove the canonical pointer line from README.md", _mutate_pointer_missing),
     ('pointer-duplicated', "append a second copy of the canonical pointer line to README.md", _mutate_pointer_duplicated),
     ('pointer-unparseable', "remove the Attribution pointer heading from NOTICES.md", _mutate_pointer_unparseable),
+    ('license-missing', "delete the LICENSE file from the repository root", _mutate_license_missing),
+    ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
 ]
 
 
@@ -785,6 +912,41 @@ Test pointer string.
 ### Files required to carry it
 
 - `carrier-ok.md`
+
+## Framework statements
+
+The three statements below appear in a fixed order.
+
+### Command of the Message
+
+**Mark:** Command of the Message
+
+**Rights-holder:** Force Management.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, sponsored by, or connected
+to Force Management.
+
+**Paraphrase boundary:** This repository restates concepts.
+
+### MEDDIC, MEDDICC, and related marks
+
+**Mark:** MEDDIC, MEDDICC, MEDDPICC.
+
+**Rights-holder:** Multiple parties.
+
+**Non-affiliation:** This project is not affiliated with any party claiming rights.
+
+**Paraphrase boundary:** This repository restates concepts.
+
+### Challenger
+
+**Mark:** Challenger.
+
+**Rights-holder:** Challenger Inc.
+
+**Non-affiliation:** This project is not affiliated with Challenger Inc.
+
+**Paraphrase boundary:** This repository restates concepts.
 """
 
 
@@ -816,6 +978,108 @@ Test pointer string.
 """
 
 
+def _bad_license():
+    return ""  # Empty file
+
+
+def _good_license():
+    return """MIT License
+
+Copyright (c) 2026 Proof First contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+"""
+
+
+def _bad_notices_frameworks():
+    return """## Framework statements
+
+The three statements below appear in a fixed order, and each carries the same four labelled
+elements in the same order, so a future diff to this section shows a content change and never a
+reordering.
+
+### MEDDIC, MEDDICC, and related marks
+
+**Mark:** MEDDIC, MEDDICC, MEDDPICC, and related marks in this family.
+
+**Rights-holder:** Ownership of these marks is claimed by multiple parties and is contested.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, or sponsored by any party
+claiming rights in these marks.
+
+**Paraphrase boundary:** This repository restates concepts associated with this family of marks in
+its own words and reproduces no training material.
+
+### Challenger
+
+**Mark:** Challenger (the Challenger Sale methodology).
+
+**Rights-holder:** Challenger Inc. and its trademark successors.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, sponsored by, or connected
+to Challenger Inc. or its trademark successors.
+
+**Paraphrase boundary:** This repository restates concepts associated with Challenger in its own
+words and reproduces no training material.
+"""
+
+
+def _good_notices_frameworks():
+    return """## Framework statements
+
+The three statements below appear in a fixed order, and each carries the same four labelled
+elements in the same order, so a future diff to this section shows a content change and never a
+reordering.
+
+### Command of the Message
+
+**Mark:** Command of the Message
+
+**Rights-holder:** Force Management.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, sponsored by, or connected
+to Force Management.
+
+**Paraphrase boundary:** This repository restates concepts associated with Command of the Message
+in its own words and reproduces no training material, no course content, and no proprietary
+diagram belonging to Force Management.
+
+### MEDDIC, MEDDICC, and related marks
+
+**Mark:** MEDDIC, MEDDICC, MEDDPICC, and related marks in this family.
+
+**Rights-holder:** Ownership of these marks is claimed by multiple parties and is contested.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, or sponsored by any party
+claiming rights in these marks.
+
+**Paraphrase boundary:** This repository restates concepts associated with this family of marks in
+its own words and reproduces no training material, no course content, and no proprietary diagram
+belonging to any claimant.
+
+### Challenger
+
+**Mark:** Challenger (the Challenger Sale methodology).
+
+**Rights-holder:** Challenger Inc. and its trademark successors.
+
+**Non-affiliation:** This project is not affiliated with, endorsed by, sponsored by, or connected
+to Challenger Inc. or its trademark successors.
+
+**Paraphrase boundary:** This repository restates concepts associated with Challenger in its own
+words and reproduces no training material, no course content, and no proprietary diagram belonging
+to Challenger Inc. or its trademark successors.
+"""
+
+
 def self_test():
     codes_covered = set()
     all_ok = True
@@ -825,6 +1089,8 @@ def self_test():
         good_root = tmp_root / 'good'
         unparseable_root = tmp_root / 'unparseable'
         escaping_root = tmp_root / 'escaping'
+        bad_license_root = tmp_root / 'bad_license'
+        bad_frameworks_root = tmp_root / 'bad_frameworks'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -834,30 +1100,48 @@ def self_test():
         _write(bad_root / 'carrier-missing.md', "This file does not carry the pointer.\n")
         _write(bad_root / 'carrier-dup.md', "Test pointer string.\nSomething else.\nTest pointer string.\n")
         _write(bad_root / 'carrier-lookalike.md', "Test pointer\u00a0string.\n")
+        _write(bad_root / 'LICENSE', _bad_license())
 
         _write(good_root / 'NUMBERING.md', _good_numbering())
         _write(good_root / 'skills' / 'SKILL.md', "See PF-0.1 for details.\n")
         _write(good_root / 'examples' / 'deal-brief.md', _good_deal_brief())
         _write(good_root / 'NOTICES.md', _good_notices())
         _write(good_root / 'carrier-ok.md', "Test pointer string.\n")
+        _write(good_root / 'LICENSE', _good_license())
 
         # Third and fourth scratch roots isolate the two `pointer-unparseable`
         # triggers so each fires alone, on its own root, and stays silent on
         # both bad_root and good_root.
         _write(unparseable_root / 'NOTICES.md', _unparseable_notices())
         _write(unparseable_root / 'carrier-ok.md', "Test pointer string.\n")
+        _write(unparseable_root / 'LICENSE', _good_license())
 
         _write(escaping_root / 'NOTICES.md', _escaping_notices())
+        _write(escaping_root / 'LICENSE', _good_license())
+
+        # Fifth root tests license-missing
+        _write(bad_license_root / 'NUMBERING.md', _good_numbering())
+        _write(bad_license_root / 'NOTICES.md', _good_notices())
+        _write(bad_license_root / 'carrier-ok.md', "Test pointer string.\n")
+        # Deliberately omit LICENSE file
+
+        # Sixth root tests framework-statement-missing
+        _write(bad_frameworks_root / 'NUMBERING.md', _good_numbering())
+        _write(bad_frameworks_root / 'NOTICES.md', _bad_notices_frameworks())
+        _write(bad_frameworks_root / 'carrier-ok.md', "Test pointer string.\n")
+        _write(bad_frameworks_root / 'LICENSE', _good_license())
+
 
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
         escaping_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(escaping_root)}
-
+        bad_license_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_license_root)}
+        bad_frameworks_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_frameworks_root)}
         # Union the third/fourth roots' codes into the bad-code set so the
         # coverage loop below needs no edit — it still just checks "did the
         # code fire on some known-bad fixture and stay silent on good_root".
-        bad_codes |= unparseable_codes | escaping_codes
+        bad_codes |= unparseable_codes | escaping_codes | bad_license_codes | bad_frameworks_codes
 
         for code in ALL_CHECK_CODES:
             if code not in bad_codes:
