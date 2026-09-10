@@ -27,13 +27,27 @@ Violation codes implemented in this file:
   dup-figure-key    - two rows of examples/deal-brief.md's Canonical
                       figures table share a key.
   figure-order      - the Canonical figures table's rows are not in
-                      ascending key order.
+                      ascending key order. Ordering rule: keys are
+                      compared with Python's default string ordering
+                      over code points (plain `sorted()`), so two keys
+                      differing only by case or by separator character
+                      have a specified, reproducible position. Reports
+                      the first key of the table that is not in
+                      ascending order.
   unlisted-figure   - a currency amount, a percentage, or an ISO date in
                       examples/**/*.md has no matching Canonical figures
-                      row. Declared ceiling: this check catches currency,
-                      percentages, and ISO dates only. It does not catch
-                      bare counts, so a bare count that drifts between
-                      examples is not detected by this tool.
+                      row. Declared ceiling (bare count): this check
+                      catches currency, percentages, and ISO dates only.
+                      It does not catch bare counts, so a bare count
+                      that drifts between examples is not detected by
+                      this tool. Declared ceiling (value collision):
+                      matching is by formatted value string with no binding to a canonical key,
+                      so two Canonical figures rows may share one
+                      formatted value, and a new fact whose formatted
+                      value coincides with an unrelated canonical row's
+                      value is accepted even though no row actually
+                      backs that new fact. This is a limitation of this
+                      tool, not a property of the data.
   pointer-missing   - a path listed in NOTICES.md under "Files required
                       to carry it" exists on disk and does not contain
                       the attribution pointer string. Declared ceiling:
@@ -515,9 +529,12 @@ def _good_deal_brief():
     return """## Canonical figures
 | Key | Value | Type | What it is |
 |---|---|---|---|
+| audit-fee-rate | 5% | percent | Fee rate charged for the audit engagement |
 | bidder-count | 3 | count | Number of bidders |
+| escrow-fee-rate | 5% | percent | Fee rate charged for the escrow arrangement |
 | total-contract-value | $6,000,000 | currency | Total contract value |
 
+The escrow fee rate is 5%, a value-collision fixture pinning the documented matching ceiling.
 This trailing line sits after the table's last row and cites no currency, percentage, or date.
 """
 
