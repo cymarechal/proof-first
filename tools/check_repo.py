@@ -15,8 +15,10 @@ Usage:
 Violation codes implemented in this file:
   dup-id            - an ID appears in more than one row of the Allocated
                       IDs table.
-  range-id          - an allocated ID sits outside its section's or
-                      dimension block's reserved range.
+  range-id          - a PF ID sits outside its section's reserved range, or
+                      an MC ID belongs to no declared MC dimension block
+                      (checked per block, not against one aggregate range
+                      spanning all blocks).
   revived-id        - an ID appears in both the Allocated IDs table and
                       the Deprecated IDs table.
   undefined-id      - a PF-#.# or MC-# token is cited in skills/,
@@ -119,10 +121,12 @@ def parse_numbering(path):
         if len(nums) >= 2:
             pf_ranges[section] = (int(nums[0]), int(nums[-1]))
 
-    mc_nums = []
+    mc_ranges = {}
     for row in table_rows(sections.get('MC reserved blocks', '')):
-        mc_nums.extend(int(n) for n in re.findall(r'MC-(\d+)', row[1]))
-    mc_range = (min(mc_nums), max(mc_nums)) if mc_nums else None
+        dimension = row[0].strip()
+        nums = [int(n) for n in re.findall(r'MC-(\d+)', row[1])]
+        if len(nums) >= 2:
+            mc_ranges[dimension] = (min(nums), max(nums))
 
     allocated = []
     for row in table_rows(sections.get('Allocated IDs', '')):
@@ -142,7 +146,7 @@ def parse_numbering(path):
 
     return {
         'pf_ranges': pf_ranges,
-        'mc_range': mc_range,
+        'mc_ranges': mc_ranges,
         'allocated': allocated,
         'deprecated': deprecated_ids,
     }
@@ -163,7 +167,7 @@ def check_dup_id(allocated):
     return violations
 
 
-def check_range_id(allocated, pf_ranges, mc_range):
+def check_range_id(allocated, pf_ranges, mc_ranges):
     violations = []
     for row in allocated:
         id_ = row['id']
@@ -178,8 +182,8 @@ def check_range_id(allocated, pf_ranges, mc_range):
         m = MC_ID_RE.match(id_)
         if m:
             n = int(m.group(1))
-            if mc_range is None or not (mc_range[0] <= n <= mc_range[1]):
-                violations.append((id_, f"range-id {id_} sits outside the MC reserved range"))
+            if not any(rng[0] <= n <= rng[1] for rng in mc_ranges.values()):
+                violations.append((id_, f"range-id {id_} belongs to no declared MC dimension block"))
     return violations
 
 
@@ -228,7 +232,7 @@ def run_id_checks(repo_root):
     data = parse_numbering(numbering_path)
     violations = []
     violations += check_dup_id(data['allocated'])
-    violations += check_range_id(data['allocated'], data['pf_ranges'], data['mc_range'])
+    violations += check_range_id(data['allocated'], data['pf_ranges'], data['mc_ranges'])
     violations += check_revived_id(data['allocated'], data['deprecated'])
     violations += check_undefined_id(data['allocated'], repo_root)
     return violations
@@ -451,6 +455,7 @@ def _bad_numbering():
 | Dimension | Range |
 |---|---|
 | Metric | MC-1-MC-5 |
+| Economic Buyer | MC-8-MC-10 |
 
 ## Allocated IDs
 | ID | Title | Defined in | Added in |
@@ -458,6 +463,7 @@ def _bad_numbering():
 | PF-0.1 | Opening rule | SKILL.md | v1.0.0 |
 | PF-0.1 | Opening rule dup | SKILL.md | v1.0.0 |
 | PF-1.9 | Out of range rule | SKILL.md | v1.0.0 |
+| MC-6 | Gap-landing rule | SKILL.md | v1.0.0 |
 | MC-99 | Out of range MC | SKILL.md | v1.0.0 |
 | PF-0.5 | Revived rule | SKILL.md | v1.0.0 |
 
@@ -484,6 +490,8 @@ def _good_numbering():
 | ID | Title | Defined in | Added in |
 |---|---|---|---|
 | PF-0.1 | Opening rule | SKILL.md | v1.0.0 |
+| MC-1 | Lower boundary rule | SKILL.md | v1.0.0 |
+| MC-5 | Upper boundary rule | SKILL.md | v1.0.0 |
 
 ## Deprecated IDs
 | ID | Deprecated in | Absorbed by |
