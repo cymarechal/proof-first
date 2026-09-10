@@ -37,6 +37,9 @@ Violation codes implemented in this file:
                       the attribution pointer string.
   pointer-duplicated - such a path contains the attribution pointer
                       string more than once.
+  pointer-unparseable - NOTICES.md's "Attribution pointer" section
+                      yields no usable pointer definition (no fenced
+                      block, or an empty fenced block).
 """
 import argparse
 import re
@@ -49,6 +52,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 PF_ID_RE = re.compile(r'^PF-(\d+)\.(\d+)$')
 MC_ID_RE = re.compile(r'^MC-(\d+)$')
 FENCE_RE = re.compile(r'```.*?```', re.S)
+
+POINTER_SECTION = 'Attribution pointer'
+CARRIERS_MARKER = 'Files required to carry it'
 
 
 def strip_fences(text):
@@ -312,16 +318,40 @@ def run_figure_checks(repo_root):
 # NOTICES.md — attribution integrity (D-14)
 # ---------------------------------------------------------------------------
 
+FENCE_CONTENT_RE = re.compile(r'```[^\n]*\n(.*?)\n```', re.S)
+
+
+def _carrier_is_repo_relative(carrier):
+    """True unless carrier is absolute, a drive-letter path, or escapes the
+    repository via a '..' path segment. A carrier failing this test is never
+    opened (T-01-01: pathlib's '/' operator silently discards the base for an
+    absolute right-hand side)."""
+    if carrier.startswith('/') or carrier.startswith('\\'):
+        return False
+    if re.match(r'^[A-Za-z]:', carrier):
+        return False
+    parts = re.split(r'[\\/]', carrier)
+    if '..' in parts:
+        return False
+    return True
+
+
 def parse_notices(path):
     text = path.read_text(encoding='utf-8')
+    sections = split_sections(text)
+    body = sections.get(POINTER_SECTION, '')
+
     pointer = None
-    m = re.search(r'## Attribution pointer\s*\n+```[^\n]*\n(.*?)\n```', text, re.S)
+    m = FENCE_CONTENT_RE.search(body)
     if m:
-        pointer = m.group(1).strip()
+        content = m.group(1).strip()
+        if content:
+            pointer = content
+
     carriers = []
-    idx = text.find('Files required to carry it')
+    idx = body.find(CARRIERS_MARKER)
     if idx != -1:
-        tail = text[idx:]
+        tail = body[idx:]
         for line in tail.splitlines()[1:]:
             m2 = re.match(r'^\s*[-*]\s+`?([^`\n]+?)`?\s*$', line)
             if m2:
@@ -347,7 +377,7 @@ def check_pointer(pointer, carriers, repo_root):
     return violations
 
 
-NOTICES_CHECK_CODES = ['pointer-missing', 'pointer-duplicated']
+NOTICES_CHECK_CODES = ['pointer-missing', 'pointer-duplicated', 'pointer-unparseable']
 
 
 def run_notices_checks(repo_root):
@@ -355,7 +385,19 @@ def run_notices_checks(repo_root):
     if not notices_path.exists():
         return []
     pointer, carriers = parse_notices(notices_path)
-    return check_pointer(pointer, carriers, repo_root)
+    if pointer is None:
+        return [('NOTICES.md', "pointer-unparseable NOTICES.md's Attribution pointer section yields no usable pointer definition")]
+
+    violations = []
+    valid_carriers = []
+    for carrier in carriers:
+        if not _carrier_is_repo_relative(carrier):
+            violations.append((carrier, f"pointer-unparseable {carrier} is a required-carrier entry that is not a repository-relative path"))
+            continue
+        valid_carriers.append(carrier)
+
+    violations += check_pointer(pointer, valid_carriers, repo_root)
+    return violations
 
 
 ALL_CHECK_CODES = ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
@@ -455,6 +497,9 @@ def _good_deal_brief():
 def _bad_notices():
     return """## Attribution pointer
 
+The following string is the canonical, verbatim attribution pointer. A human contributor and
+`tools/check_repo.py` both read this fenced block as the single source of truth for the string.
+
 ```
 Test pointer string.
 ```
@@ -469,9 +514,24 @@ Test pointer string.
 def _good_notices():
     return """## Attribution pointer
 
+The following string is the canonical, verbatim attribution pointer. A human contributor and
+`tools/check_repo.py` both read this fenced block as the single source of truth for the string.
+
 ```
 Test pointer string.
 ```
+
+### Files required to carry it
+
+- `carrier-ok.md`
+"""
+
+
+def _unparseable_notices():
+    return """## Attribution pointer
+
+The following string is the canonical, verbatim attribution pointer, but this fixture omits the
+fenced block entirely so the section yields no usable pointer definition.
 
 ### Files required to carry it
 
@@ -486,6 +546,7 @@ def self_test():
         tmp_root = Path(tmp)
         bad_root = tmp_root / 'bad'
         good_root = tmp_root / 'good'
+        unparseable_root = tmp_root / 'unparseable'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -501,8 +562,20 @@ def self_test():
         _write(good_root / 'NOTICES.md', _good_notices())
         _write(good_root / 'carrier-ok.md', "Test pointer string.\n")
 
+        # Third scratch root isolates the `pointer-unparseable` trigger so it
+        # fires alone, on its own root, and stays silent on both bad_root and
+        # good_root.
+        _write(unparseable_root / 'NOTICES.md', _unparseable_notices())
+        _write(unparseable_root / 'carrier-ok.md', "Test pointer string.\n")
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
+        unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
+
+        # Union the third root's codes into the bad-code set so the coverage
+        # loop below needs no edit — it still just checks "did the code fire
+        # on some known-bad fixture and stay silent on good_root".
+        bad_codes |= unparseable_codes
 
         for code in ALL_CHECK_CODES:
             if code not in bad_codes:
