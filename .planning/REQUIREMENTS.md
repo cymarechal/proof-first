@@ -129,13 +129,65 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (populated by roadmapper) | | |
+| CAT-01 | Phase 2 | Pending |
+| CAT-02 | Phase 2 | Pending |
+| CAT-03 | Phase 2 | Pending |
+| CAT-04 | Phase 2 | Pending |
+| CAT-05 | Phase 2 | Pending |
+| CAT-06 | Phase 2 | Pending |
+| CAT-07 | Phase 1 | Pending |
+| CAT-08 | Phase 2 | Pending |
+| CAT-09 | Phase 2 | Pending |
+| CAT-10 | Phase 2 | Pending |
+| INT-01 | Phase 2 | Pending |
+| INT-02 | Phase 2 | Pending |
+| INT-03 | Phase 2 | Pending |
+| INT-04 | Phase 2 | Pending |
+| INT-05 | Phase 2 | Pending |
+| INT-06 | Phase 2 | Pending |
+| AUD-01 | Phase 3 | Pending |
+| AUD-02 | Phase 3 | Pending |
+| AUD-03 | Phase 3 | Pending |
+| ART-01 | Phase 3 | Pending |
+| ART-02 | Phase 3 | Pending |
+| ART-03 | Phase 3 | Pending |
+| ART-04 | Phase 3 | Pending |
+| MOD-01 | Phase 2 | Pending |
+| MOD-02 | Phase 2 | Pending |
+| MOD-03 | Phase 3 | Pending |
+| MOD-04 | Phase 3 | Pending |
+| MOD-05 | Phase 3 | Pending |
+| EX-01 | Phase 1 | Pending |
+| EX-02 | Phase 4 | Pending |
+| DIST-01 | Phase 4 | Pending |
+| DIST-02 | Phase 4 | Pending |
+| DIST-03 | Phase 4 | Pending |
+| DIST-04 | Phase 4 | Pending |
+| DIST-05 | Phase 4 | Pending |
+| DIST-06 | Phase 4 | Pending |
+| EVAL-01 | Phase 5 | Pending |
+| EVAL-02 | Phase 5 | Pending |
+| EVAL-03 | Phase 5 | Pending |
+| EVAL-04 | Phase 5 | Pending |
+| EVAL-05 | Phase 5 | Pending |
+| EVAL-06 | Phase 5 | Pending |
+| EVAL-07 | Phase 5 | Pending |
+| EVAL-08 | Phase 5 | Pending |
+| EVAL-09 | Phase 5 | Pending |
+| EVAL-10 | Phase 5 | Pending |
+| EVAL-11 | Phase 5 | Pending |
+| EVAL-12 | Phase 5 | Pending |
+| LEG-01 | Phase 1 | Pending |
+| LEG-02 | Phase 1 | Pending |
+| LEG-03 | Phase 1 | Pending |
+| LEG-04 | Phase 6 | Pending |
+| LEG-05 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 53 total
-- Mapped to phases: 0
-- Unmapped: 53 ⚠️
+- Mapped to phases: 53
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-10*
-*Last updated: 2026-09-10 after initial definition*
+*Last updated: 2026-09-10 after roadmap creation — 53/53 requirements mapped across 6 phases*
