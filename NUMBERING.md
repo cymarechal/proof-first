@@ -16,10 +16,10 @@ thing that two bare numbers (`2.3` and `2`) drawn from unrelated catalogs would 
 
 | Section | Range | Concern | Allocated | Next free |
 |---|---|---|---|---|
-| PF-0 | PF-0.1-PF-0.9 | Opening / Reframe | 0 | PF-0.1 |
+| PF-0 | PF-0.1-PF-0.9 | Opening / Reframe | 1 | PF-0.2 |
 | PF-1 | PF-1.1-PF-1.28 | Structure — the message-articulation spine | 0 | PF-1.1 |
-| PF-2 | PF-2.1-PF-2.20 | Proof and Integrity | 0 | PF-2.1 |
-| PF-3 | PF-3.1-PF-3.10 | Specificity and Buzzwords | 0 | PF-3.1 |
+| PF-2 | PF-2.1-PF-2.20 | Proof and Integrity | 1 | PF-2.12 |
+| PF-3 | PF-3.1-PF-3.10 | Specificity and Buzzwords | 1 | PF-3.2 |
 | PF-4 | PF-4.1-PF-4.20 | Prose Mechanics | 0 | PF-4.1 |
 | PF-5 | PF-5.1-PF-5.10 | Consistency and Voice | 0 | PF-5.1 |
 
@@ -48,6 +48,19 @@ situation, and gives every element the same room to grow. This supersedes the `P
 proposed in `.planning/research/ARCHITECTURE.md:166`, which was a research proposal, not a locked
 decision — seven elements do not divide evenly into twenty slots.
 
+## PF-2 sub-blocks
+
+`PF-2`'s reserved range (`PF-2.1`-`PF-2.20`) is carved into two named sub-blocks: Proof rules
+attach evidence and name its source; Integrity rules refuse fabrication and flag what needs human
+review. A rule added later to Integrity must not land next to a Proof rule — the two are
+different jobs, and the range split keeps a contributor from inferring the wrong one from a bare
+number.
+
+| Element | Range |
+|---|---|
+| Proof | PF-2.1-PF-2.10 |
+| Integrity | PF-2.11-PF-2.20 |
+
 ## MC reserved blocks
 
 | Dimension | Range |
@@ -66,10 +79,13 @@ Ceiling: `MC-40`.
 ## Allocated IDs
 
 Rows are kept sorted ascending by ID. Phase 2 adds `PF-*` rows as prose rules are written; Phase 3
-adds `MC-*` rows as the completeness audit is written. Zero rules are allocated as of this plan.
+adds `MC-*` rows as the completeness audit is written.
 
 | ID | Title | Defined in | Added in |
 |---|---|---|---|
+| PF-0.1 | The opening reframe | SKILL.md | v0.1.0 |
+| PF-2.11 | Never invent a metric, a baseline, or a benchmark number | SKILL.md | v0.1.0 |
+| PF-3.1 | The deletion test | SKILL.md | v0.1.0 |
 
 ## Deprecated IDs
 

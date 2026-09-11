@@ -43,9 +43,13 @@ Violation codes implemented in this file:
                       the first key of the table that is not in
                       ascending order.
   unlisted-figure   - a currency amount, a percentage, or an ISO date in
-                      examples/**/*.md has no matching Canonical figures
-                      row. Declared ceiling (bare count): this check
-                      catches currency, percentages, and ISO dates only.
+                      examples/**/*.md or skills/**/*.md has no matching
+                      Canonical figures row. Scan roots are examples/ and
+                      skills/; evals/ is deliberately excluded because
+                      Phase 5's benchmark data is not bound by the
+                      Canonical figures interface. Declared ceiling (bare
+                      count): this check catches currency, percentages,
+                      and ISO dates only.
                       It does not catch bare counts, so a bare count
                       that drifts between examples is not detected by
                       this tool. Declared ceiling (value collision):
@@ -320,14 +324,22 @@ PERCENT_RE = re.compile(r'\b\d+(?:\.\d+)?%')
 ISO_DATE_RE = re.compile(r'\b\d{4}-\d{2}-\d{2}\b')
 
 
+UNLISTED_FIGURE_SCAN_ROOTS = ('examples', 'skills')
+
+
 def check_unlisted_figure(figures, repo_root):
     canonical_values = {f['value'] for f in figures}
-    examples_root = repo_root / 'examples'
     violations = []
     seen = set()
-    if not examples_root.exists():
-        return violations
-    for f in sorted(examples_root.rglob('*.md')):
+    files = []
+    for root_name in UNLISTED_FIGURE_SCAN_ROOTS:
+        root = repo_root / root_name
+        if not root.exists():
+            continue
+        files.extend(sorted(root.rglob('*.md')))
+    for f in files:
+        if f.name == 'NUMBERING.md':
+            continue
         text = strip_fences(f.read_text(encoding='utf-8'))
         lines = text.splitlines()
         in_canonical = False
@@ -583,7 +595,7 @@ def run_all_checks(repo_root):
 # instances of it.
 # ---------------------------------------------------------------------------
 
-MUTATION_SOURCES = ('LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools')
+MUTATION_SOURCES = ('LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools', 'skills')
 
 
 def _copy_repo_subset(repo_root, dest):
