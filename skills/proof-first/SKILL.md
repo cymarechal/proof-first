@@ -35,7 +35,7 @@ listed in `references/checklist.md`; never a number recalled from memory, and ne
 outside the stated total below. An invented rule number is a worse failure than no citation at
 all.
 
-This catalog contains 22 rules in 4 numbered sections.
+This catalog contains 24 rules in 4 numbered sections.
 
 ## Marker vocabulary
 
@@ -67,8 +67,8 @@ the tools that check its output.
 
 ## Reference files
 
-- Before applying PF-3.1 to a compound term, or to any term appearing in the customer's own
-  source material, read `references/deletion-test.md`.
+- Before applying the deletion test to a compound term, or to any term appearing in the
+  customer's own supplied source material, read `references/deletion-test.md`.
 - Before emitting any rule citation in check mode, read `references/checklist.md`.
 
 ## PF-0 — Opening and reframe
@@ -371,3 +371,39 @@ marker naming what evidence is missing.
 ✗ "A robust, enterprise-grade landing zone governs every account."
 ✓ "A landing zone governed by account-level guardrails replaces 850 ungoverned virtual
    machines with one governance boundary."
+
+### PF-3.2 — Apply the test to each token, not the phrase
+
+A compound term where one half is a real technical noun and the other is pure decoration survives
+a whole-phrase deletion test, because the noun carries the phrase's meaning even once the
+decoration is gone. Delete each token in the compound independently and judge it on its own —
+never the phrase as one unit, or the decoration launders itself as part of the noun it rides on.
+
+**Replace with:** the load-bearing token kept in place, the decorative token cut, and evidence
+attached where the decoration used to be.
+
+✗ "An enterprise-grade AWS Control Tower deployment governs the new account structure."
+✓ "An AWS Control Tower deployment governs the new account structure across Halverton
+   Mutual's 850 virtual machines."
+
+### PF-3.3 — Retain a customer's own term, mark it, and let the integrity flag fire too
+
+A term appearing verbatim in the customer's own supplied source material is retained and marked,
+not deleted — the buyer's evaluator scores against their own vocabulary, not a paraphrase of it.
+The override fires only against material the writer actually supplied as customer source
+material, so nothing the vendor wrote can launder itself as the customer's own term. A retained
+term is marked on its first occurrence only, not on every repetition — noise is bounded by the
+count of distinct retained terms, not by total uses. Retention never suppresses an integrity
+rule: a retained term that also asserts something this catalog cannot make good on carries both
+the retention marker and a `REVIEW` marker on the same phrase, because retention is a vocabulary
+decision and the flag is a truth decision.
+
+**Replace with:** the retention marker naming its source, `[PF-3.3: customer's term, retained —
+source]`.
+
+✗ "The proposal replaces ungoverned VM sprawl with a landing zone that will be fully governed
+   from day one."
+✓ "The proposal replaces ungoverned VM sprawl with a landing zone
+   [PF-3.3: customer's term, retained — Marcus Feld, discovery] that will be fully governed
+   from day one — [PF-2.14 REVIEW (commitment): confirm 'fully governed from day one' before
+   this ships]."

@@ -33,3 +33,5 @@ ship to an installed copy of this skill.
 | PF-2.16 | Flag competitor comparisons |
 | PF-2.17 | Flag compliance, certification, and export claims |
 | PF-3.1 | The deletion test |
+| PF-3.2 | Apply the test to each token, not the phrase |
+| PF-3.3 | Retain a customer's own term, mark it, and let the integrity flag fire too |
