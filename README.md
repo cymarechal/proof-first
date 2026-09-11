@@ -13,13 +13,20 @@ no install step.
 
 ## Status
 
-This repository is in early construction. The foundational scaffolding is in place; the skill
-itself has not been written yet.
+This repository is under active construction. `NUMBERING.md`'s rule-ID registry, the
+`skills/proof-first/` rule catalog and its reference files, and the integrity checker are in
+place.
 
 What exists today:
 
 - `NUMBERING.md` — the frozen rule-ID registry.
-- `examples/deal-brief.md` — the one canonical fictional deal every worked example will cite.
+- `skills/proof-first/SKILL.md` — the 31-rule prose catalog.
+- `skills/proof-first/references/checklist.md` — the rule-ID index.
+- `skills/proof-first/references/deletion-test.md` — deletion-test edge cases.
+- `skills/proof-first/references/worked-examples.md` — the 20 worked ✗/✓ pairs, keyed by rule ID.
+- `examples/deal-brief.md` — the one canonical fictional deal every worked example cites.
+- `evals/pressure-tests.md` — the trigger-pressure-test method; no observation has been recorded
+  yet, see the file itself.
 - `LICENSE` — the MIT grant.
 - `NOTICES.md` — the trademark and attribution posture.
 - `SOURCES.md` — the approved-source list and the paraphrase boundary.
@@ -27,13 +34,13 @@ What exists today:
 
 What does not exist yet:
 
-- The skill itself.
-- Its reference files.
-- The distribution manifests.
+- The distribution manifests (`.claude-plugin/`).
 - The output style.
 - The paste-able system prompt.
 - The worked before-and-after examples.
-- The evaluation harness.
+- The two Phase 3 reference files (`references/completeness-audit.md`,
+  `references/artifact-patterns.md`).
+- A run evaluation benchmark (the pressure-test method exists; no observations are recorded yet).
 
 No measured claim is published in this repository yet. The benchmark has not run. Any number
 this README ever carries in the future will be sourced from committed benchmark results, and it
@@ -53,7 +60,8 @@ proof-first/
 │           ├── checklist.md
 │           ├── completeness-audit.md   (planned)
 │           ├── artifact-patterns.md    (planned)
-│           └── deletion-test.md
+│           ├── deletion-test.md
+│           └── worked-examples.md
 ├── output-styles/
 │   └── proof-first.md                  (planned)
 ├── prompts/
