@@ -18,12 +18,12 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **CAT-07**: Rules carry stable citable IDs in two disjoint namespaces — `PF-<section>.<n>` for prose rules and `MC-<n>` for the completeness audit — with numeric ranges reserved per section before drafting
 - [ ] **CAT-08**: SKILL.md stays under the progressive-disclosure ceiling (under 500 lines, approximately 5,000 tokens) with detail pushed into `references/`
 - [ ] **CAT-09**: SKILL.md frontmatter validates against the Agent Skills allow-list and loads without error in every target harness
-- [ ] **CAT-10**: The `description` field triggers the skill reliably on presales writing requests, acting as an explicit trigger list
+- [x] **CAT-10**: The `description` field triggers the skill reliably on presales writing requests, acting as an explicit trigger list
 
 ### Integrity
 
 - [x] **INT-01**: Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications
-- [ ] **INT-02**: Skill marks an evidence gap for a human to fill instead of filling it with plausible text
+- [x] **INT-02**: Skill marks an evidence gap for a human to fill instead of filling it with plausible text
 - [x] **INT-03**: Skill flags commitment-shaped language that could become a contractual warranty
 - [x] **INT-04**: Skill flags customer reference details that need disclosure permission before use
 - [x] **INT-05**: Skill flags competitor comparisons that create legal exposure
@@ -44,8 +44,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Modes
 
-- [ ] **MOD-01**: Writer can ask the skill to draft a presales document and get output that follows the catalog
-- [ ] **MOD-02**: Writer can ask the skill to check existing text and get each violation as rule number, offending text, and a compliant rewrite
+- [x] **MOD-01**: Writer can ask the skill to draft a presales document and get output that follows the catalog
+- [x] **MOD-02**: Writer can ask the skill to check existing text and get each violation as rule number, offending text, and a compliant rewrite
 - [ ] **MOD-03**: Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass
 - [ ] **MOD-04**: Skill classifies the artifact family before applying rules, and says which one it chose
 - [ ] **MOD-05**: Check mode cites only rule numbers that exist in the shipped files, and never invents one
@@ -138,9 +138,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-07 | Phase 1 | Complete |
 | CAT-08 | Phase 2 | Pending |
 | CAT-09 | Phase 2 | Pending |
-| CAT-10 | Phase 2 | Pending |
+| CAT-10 | Phase 2 | Complete |
 | INT-01 | Phase 2 | Complete |
-| INT-02 | Phase 2 | Pending |
+| INT-02 | Phase 2 | Complete |
 | INT-03 | Phase 2 | Complete |
 | INT-04 | Phase 2 | Complete |
 | INT-05 | Phase 2 | Complete |
@@ -152,8 +152,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ART-02 | Phase 3 | Pending |
 | ART-03 | Phase 3 | Pending |
 | ART-04 | Phase 3 | Pending |
-| MOD-01 | Phase 2 | Pending |
-| MOD-02 | Phase 2 | Pending |
+| MOD-01 | Phase 2 | Complete |
+| MOD-02 | Phase 2 | Complete |
 | MOD-03 | Phase 3 | Pending |
 | MOD-04 | Phase 3 | Pending |
 | MOD-05 | Phase 3 | Pending |

@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
 status: executing
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-09-11T01:09:58.035Z"
+stopped_at: Completed 02-05-PLAN.md
+last_updated: "2026-09-11T01:25:56.046Z"
 last_activity: 2026-09-11
 last_activity_desc: Phase 02 execution started
-state_head: 99fc9d38506bcc7fa362eebf1d9570a16c589c7e
+state_head: 23e61cfd549f16443a0af57e64ab6d9c1e645c8b
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
   percent: 17
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 Status: Ready to execute
 Last activity: 2026-09-11 — Phase 02 execution started
 
@@ -69,6 +69,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 02 P02 | 8 min | 2 tasks | 3 files |
 | Phase 02 P03 | 14min | 2 tasks | 3 files |
 | Phase 02 P04 | 9min | 2 tasks | 4 files |
+| Phase 02 P05 | 12min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,9 @@ Recent decisions affecting current work:
 - [Phase 02]: [Phase 02]: 02-03: PF-2 Proof and Integrity complete — eleven rules (PF-2.1-PF-2.4 Proof, PF-2.11-PF-2.17 Integrity), each of the four presales hazards (commitment/reference/competitor/compliance) its own numbered rule raising its own frozen REVIEW category. Reworded 02-01's generic 'REVIEW (category)' placeholder to avoid colliding with the four-category grep check (Rule 1 bug fix, grammar unchanged).
 - [Phase 02]: [Phase 02]: 02-04: PF-3 completed (PF-3.2 per-token deletion test, PF-3.3 customer-verbatim retention with both-markers-fire precedence); PF-4 Prose mechanics and PF-5 Consistency and voice authored; catalog closed at 31 rules across 6 sections, measured at exactly 480 lines against CAT-08's 500-line ceiling.
 - [Phase 02]: [Phase 02]: 02-04: A literal multi-word grep anchor (the PF-3.3 marker text 'customer's term, retained', and PF-5.3's 'Check mode never') silently failed when split across an authored line-wrap boundary -- fixed by moving the wrap point, not the wording (Rule 1 bug fix).
+- [Phase 02]: 02-05: Dewrapped SKILL.md's existing prose (soft-wrapped paragraphs joined to one physical line each, no content changed) before adding Write mode/Check mode/Self-check/Limits — reclaimed 162 lines of CAT-08 budget (480->318), verified content-identical via literal-anchor grep counts and a 0-violations check_repo.py run on the intermediate copy; landed at 368 lines after the new sections, well under the 490-line working ceiling.
+- [Phase 02]: 02-05: evals/pressure-tests.md phrasing rows written without surrounding quotation marks after quoted cells silently failed the acceptance script's row-detection regex (a cell opening with a quote character does not match ^\| [A-Za-z]) -- Rule 3 blocking fix, no content change.
+- [Phase 02]: 02-05: Every pressure-test Observed cell reads 'not yet observed' -- this environment cannot drive a fresh harness session to install the skill and read back activation. Logged as .planning/WINDOWS.md open unrun-verify entry id 4.
 
 ### Pending Todos
 
@@ -126,6 +130,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-11T01:09:57.961Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-09-11T01:25:55.970Z
+Stopped at: Completed 02-05-PLAN.md
 Resume file: None
