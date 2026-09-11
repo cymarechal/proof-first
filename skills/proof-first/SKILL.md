@@ -35,7 +35,7 @@ listed in `references/checklist.md`; never a number recalled from memory, and ne
 outside the stated total below. An invented rule number is a worse failure than no citation at
 all.
 
-This catalog contains 24 rules in 4 numbered sections.
+This catalog contains 31 rules in 6 numbered sections.
 
 ## Marker vocabulary
 
@@ -407,3 +407,74 @@ source]`.
    [PF-3.3: customer's term, retained — Marcus Feld, discovery] that will be fully governed
    from day one — [PF-2.14 REVIEW (commitment): confirm 'fully governed from day one' before
    this ships]."
+
+## PF-4 — Prose mechanics
+
+This section restates only the subset of general prose discipline instrumental to writing
+evidence-backed presales prose — sentence length, active voice, modal discipline, and one claim
+per sentence. It depends on no other skill, tool, or standard being installed.
+
+### PF-4.1 — Sentence length
+
+No sentence runs longer than 25 words, counted as words delimited by whitespace — one stated
+definition of length, not an implied one.
+
+**Replace with:** split at 25 words into two sentences, one claim per resulting sentence, with its
+evidence kept adjacent to the claim it supports.
+
+### PF-4.2 — Active voice
+
+Name the actor performing the verb as the sentence's subject, so the reader knows who is
+committing to what. The one admissible exception is a sentence whose actor is genuinely unknown —
+a passive used instead to avoid naming who commits is itself a finding, not a stylistic choice.
+
+**Replace with:** the actor named as the subject, or — if genuinely unknown — that stated plainly,
+never hidden behind a passive verb.
+
+### PF-4.3 — Modal discipline
+
+`Will`, `does`, and `is` carry a commitment; `may`, `might`, and `could` carry a possibility. A
+sentence must not mix the two — a claim cannot both promise an outcome and hedge about whether it
+happens.
+
+**Replace with:** choose one register and keep it. A possibility-shaped hedge on a real commitment
+is what `PF-2.3` already rules out; a commitment-shaped verb is what `PF-2.14` flags for review.
+
+### PF-4.4 — One claim per sentence
+
+A sentence carrying two claims lets one ride on the other's evidence, so a reader who checks one
+number assumes the other has been checked too.
+
+**Replace with:** split the sentence in two and attach evidence to each claim separately.
+
+## PF-5 — Consistency and voice
+
+A subtractive catalog applied without this section produces correct, evidenced, dead prose. This
+section names the devices the rest of this catalog must not strip, and requires check mode to
+leave them alone.
+
+### PF-5.1 — Keep an explicit before/after contrast
+
+The document contains at least one explicit before-and-after pair, the structure `PF-1.5`
+produces. Check mode never reports a contrast structure as a prose violation — a document stating
+a before state next to its after state is doing exactly what this catalog asks.
+
+**Replace with:** a document missing the contrast raises a `GAP` marker through `PF-2.13`, exactly
+as a missing metric does.
+
+### PF-5.2 — Address the buyer's stated priorities in the second person
+
+Where the buyer has stated a priority, in their own words, the document addresses it directly to
+them — "you" and their own terms, not "the organization" or "stakeholders." Check mode never
+reports second-person address to a stated priority as a violation.
+
+**Replace with:** replace third-person distance ("the organization needs") with direct address
+using the buyer's own stated priority in their own words.
+
+### PF-5.3 — Keep an evidenced claim unhedged
+
+A claim whose evidence sits adjacent to it is written flat and confident, with no hedge.
+Check mode never reports a confident, evidenced claim as a violation, and never proposes a
+hedge as the repair for anything.
+
+**Replace with:** an unevidenced claim goes to `PF-2.4` instead of being softened in place.

@@ -35,3 +35,10 @@ ship to an installed copy of this skill.
 | PF-3.1 | The deletion test |
 | PF-3.2 | Apply the test to each token, not the phrase |
 | PF-3.3 | Retain a customer's own term, mark it, and let the integrity flag fire too |
+| PF-4.1 | Sentence length |
+| PF-4.2 | Active voice |
+| PF-4.3 | Modal discipline |
+| PF-4.4 | One claim per sentence |
+| PF-5.1 | Keep an explicit before/after contrast |
+| PF-5.2 | Address the buyer's stated priorities in the second person |
+| PF-5.3 | Keep an evidenced claim unhedged |

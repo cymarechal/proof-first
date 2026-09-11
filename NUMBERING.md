@@ -20,8 +20,8 @@ thing that two bare numbers (`2.3` and `2`) drawn from unrelated catalogs would 
 | PF-1 | PF-1.1-PF-1.28 | Structure — the message-articulation spine | 9 | PF-1.26 |
 | PF-2 | PF-2.1-PF-2.20 | Proof and Integrity | 11 | PF-2.18 |
 | PF-3 | PF-3.1-PF-3.10 | Specificity and Buzzwords | 3 | PF-3.4 |
-| PF-4 | PF-4.1-PF-4.20 | Prose Mechanics | 0 | PF-4.1 |
-| PF-5 | PF-5.1-PF-5.10 | Consistency and Voice | 0 | PF-5.1 |
+| PF-4 | PF-4.1-PF-4.20 | Prose Mechanics | 4 | PF-4.5 |
+| PF-5 | PF-5.1-PF-5.10 | Consistency and Voice | 3 | PF-5.4 |
 
 ## PF-1 sub-blocks
 
@@ -107,6 +107,13 @@ adds `MC-*` rows as the completeness audit is written.
 | PF-3.1 | The deletion test | SKILL.md | v0.1.0 |
 | PF-3.2 | Apply the test to each token, not the phrase | SKILL.md | v0.1.0 |
 | PF-3.3 | Retain a customer's own term, mark it, and let the integrity flag fire too | SKILL.md | v0.1.0 |
+| PF-4.1 | Sentence length | SKILL.md | v0.1.0 |
+| PF-4.2 | Active voice | SKILL.md | v0.1.0 |
+| PF-4.3 | Modal discipline | SKILL.md | v0.1.0 |
+| PF-4.4 | One claim per sentence | SKILL.md | v0.1.0 |
+| PF-5.1 | Keep an explicit before/after contrast | SKILL.md | v0.1.0 |
+| PF-5.2 | Address the buyer's stated priorities in the second person | SKILL.md | v0.1.0 |
+| PF-5.3 | Keep an evidenced claim unhedged | SKILL.md | v0.1.0 |
 
 ## Deprecated IDs
 
