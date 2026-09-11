@@ -35,7 +35,7 @@ listed in `references/checklist.md`; never a number recalled from memory, and ne
 outside the stated total below. An invented rule number is a worse failure than no citation at
 all.
 
-This catalog contains 7 rules in 4 numbered sections.
+This catalog contains 12 rules in 4 numbered sections.
 
 ## Marker vocabulary
 
@@ -145,6 +145,72 @@ as the means of delivering that capability — never as the subject of the sente
 ✗ "AWS Control Tower gives you comprehensive landing-zone governance."
 ✓ "Halverton Mutual needs a landing zone it can actually govern account by account; AWS Control
    Tower provides that governance boundary across the new account structure."
+
+### PF-1.13 — Name the measure and its current baseline
+
+A metric with no baseline is a target, not a metric. Name the buyer's own stated figure for the
+measure, or state plainly that it has never been captured.
+
+**Replace with:** the buyer's own stated figure, or an explicit gap marker naming what would need
+to be measured.
+
+✗ "Settlement batches will run significantly faster after migration."
+✓ "Settlement batches will complete inside the required 6-hour window; Halverton Mutual has
+   never measured the size of the current overrun — [PF-1.13 GAP: no measured baseline for
+   the settlement batch overrun]."
+
+### PF-1.14 — Name where the baseline came from
+
+A baseline with no stated provenance cannot be checked by the evaluator. Name the source — the
+buyer's own figure, a named measurement, or the document it came from.
+
+**Replace with:** the attribution — who stated the figure, or what document it came from.
+
+✗ "The current run rate is $2,300,000."
+✓ "Diane Osoria, Halverton Mutual's CFO, states the current annual run rate at $2,300,000 —
+   the figure she is measured against."
+
+### PF-1.17 — Attach one comparable, verifiable proof to each capability claim
+
+One named, checkable comparable beats three unnamed ones. A capability claim with no attached
+proof is an assertion, not evidence.
+
+**Replace with:** a comparable this vendor can actually produce, or an explicit gap marker naming
+what proof is missing.
+
+✗ "We have deep experience running migrations exactly like this one."
+✓ "Kestrel Systems Group's most comparable prior migration programme ran 14 months —
+   [PF-1.17 GAP: no published case study or reference customer identified for that
+   programme yet]."
+
+### PF-1.21 — Claim a differentiator only where a named alternative cannot do it
+
+A differentiator every bidder could also claim is a feature, not a differentiator. A claim about
+what a specific named rival cannot do is an integrity matter this catalog's Proof and Integrity
+section addresses separately — restate the claim as what this vendor does, evidenced, without
+asserting what a rival cannot. A comparison that names a rival carries a `REVIEW (competitor)`
+marker.
+
+**Replace with:** the claim restated as an evidenced statement of what this vendor does.
+
+✗ "Only Kestrel Systems Group can deliver a truly governable landing zone — no other bidder
+   comes close."
+✓ "Kestrel Systems Group delivers landing-zone governance through AWS Control Tower's
+   account-level guardrails, evidenced by our own comparable migration programme —
+   [PF-1.21 REVIEW (competitor): confirm no comparison naming another bidder is implied
+   before this ships]."
+
+### PF-1.25 — Tie the outcome to the stated priority of the person who owns it
+
+An outcome is addressed to the person measured on it, in the terms they used — not to "the
+organization" or "the business" in the abstract.
+
+**Replace with:** the role, named, and the priority that role stated in their own words.
+
+✗ "This migration delivers significant business value across the organization."
+✓ "For Diane Osoria, Halverton Mutual's CFO: this migration is measured on the run rate she
+   needs down from $2,300,000 and on a clean regulatory examination — not on architecture
+   elegance."
 
 ## PF-2 — Proof and integrity
 

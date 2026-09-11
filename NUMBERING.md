@@ -17,7 +17,7 @@ thing that two bare numbers (`2.3` and `2`) drawn from unrelated catalogs would 
 | Section | Range | Concern | Allocated | Next free |
 |---|---|---|---|---|
 | PF-0 | PF-0.1-PF-0.9 | Opening / Reframe | 1 | PF-0.2 |
-| PF-1 | PF-1.1-PF-1.28 | Structure — the message-articulation spine | 4 | PF-1.10 |
+| PF-1 | PF-1.1-PF-1.28 | Structure — the message-articulation spine | 9 | PF-1.26 |
 | PF-2 | PF-2.1-PF-2.20 | Proof and Integrity | 1 | PF-2.12 |
 | PF-3 | PF-3.1-PF-3.10 | Specificity and Buzzwords | 1 | PF-3.2 |
 | PF-4 | PF-4.1-PF-4.20 | Prose Mechanics | 0 | PF-4.1 |
@@ -88,6 +88,11 @@ adds `MC-*` rows as the completeness audit is written.
 | PF-1.2 | Name what the current state costs | SKILL.md | v0.1.0 |
 | PF-1.5 | State the after-state as an observable change, paired with its before | SKILL.md | v0.1.0 |
 | PF-1.9 | State the capability the buyer needs, not the product that has it | SKILL.md | v0.1.0 |
+| PF-1.13 | Name the measure and its current baseline | SKILL.md | v0.1.0 |
+| PF-1.14 | Name where the baseline came from | SKILL.md | v0.1.0 |
+| PF-1.17 | Attach one comparable, verifiable proof to each capability claim | SKILL.md | v0.1.0 |
+| PF-1.21 | Claim a differentiator only where a named alternative cannot do it | SKILL.md | v0.1.0 |
+| PF-1.25 | Tie the outcome to the stated priority of the person who owns it | SKILL.md | v0.1.0 |
 | PF-2.11 | Never invent a metric, a baseline, or a benchmark number | SKILL.md | v0.1.0 |
 | PF-3.1 | The deletion test | SKILL.md | v0.1.0 |
 

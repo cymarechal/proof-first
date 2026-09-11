@@ -16,5 +16,10 @@ ship to an installed copy of this skill.
 | PF-1.2 | Name what the current state costs |
 | PF-1.5 | State the after-state as an observable change, paired with its before |
 | PF-1.9 | State the capability the buyer needs, not the product that has it |
+| PF-1.13 | Name the measure and its current baseline |
+| PF-1.14 | Name where the baseline came from |
+| PF-1.17 | Attach one comparable, verifiable proof to each capability claim |
+| PF-1.21 | Claim a differentiator only where a named alternative cannot do it |
+| PF-1.25 | Tie the outcome to the stated priority of the person who owns it |
 | PF-2.11 | Never invent a metric, a baseline, or a benchmark number |
 | PF-3.1 | The deletion test |
