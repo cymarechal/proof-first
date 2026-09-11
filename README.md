@@ -47,12 +47,12 @@ created — this repository does not ship empty placeholder files for work that 
 ```
 proof-first/
 ├── skills/
-│   └── proof-first/                    (planned)
+│   └── proof-first/
 │       ├── SKILL.md
 │       └── references/
 │           ├── checklist.md
-│           ├── completeness-audit.md
-│           ├── artifact-patterns.md
+│           ├── completeness-audit.md   (planned)
+│           ├── artifact-patterns.md    (planned)
 │           └── deletion-test.md
 ├── output-styles/
 │   └── proof-first.md                  (planned)
@@ -61,7 +61,8 @@ proof-first/
 ├── examples/
 │   ├── deal-brief.md                   (exists)
 │   └── before-after.md                 (planned)
-├── evals/                              (planned)
+├── evals/
+│   └── pressure-tests.md
 ├── .claude-plugin/                     (planned)
 ├── tools/
 │   └── check_repo.py                   (exists)
