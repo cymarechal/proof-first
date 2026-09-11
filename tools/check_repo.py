@@ -23,10 +23,19 @@ compare equal on that key keep their original insertion order.
 Violation codes implemented in this file:
   dup-id            - an ID appears in more than one row of the Allocated
                       IDs table.
-  range-id          - a PF ID sits outside its section's reserved range, or
-                      an MC ID belongs to no declared MC dimension block
+  range-id          - a PF ID sits outside its section's reserved range, an
+                      MC ID belongs to no declared MC dimension block
                       (checked per block, not against one aggregate range
-                      spanning all blocks).
+                      spanning all blocks), or a PF ID sits inside its
+                      section's reserved range but outside every sub-block
+                      that section's own NUMBERING.md table declares (a
+                      section declaring no sub-blocks keeps exactly the
+                      section-range behaviour, unchanged). Declared ceiling:
+                      when a section's sub-blocks tile its whole reserved
+                      range — which both PF-1 and PF-2 currently do — this
+                      test adds nothing beyond the section-range test; it
+                      exists so a future narrowed or gapped sub-block table
+                      is enforced rather than decorative.
   revived-id        - an ID appears in both the Allocated IDs table and
                       the Deprecated IDs table.
   undefined-id      - a PF-#.# or MC-# token is cited in skills/,
@@ -106,6 +115,65 @@ Violation codes implemented in this file:
                       drifted from its registry row; and it reads only
                       paths one directory level below skills/, so a
                       SKILL.md placed anywhere else is not validated.
+  frontmatter-unparseable - a skills/*/SKILL.md's frontmatter block has no
+                      `---` delimited block at the file's first line, is
+                      unterminated (no closing `---`), is missing one of
+                      the two required keys (`name`, `description`), or
+                      repeats a column-zero key. A repeated key is
+                      reported rather than silently kept as a last-value-
+                      wins merge — the first value is what the parser
+                      keeps, but the repetition itself is the violation.
+                      Declared ceiling: this parser recognises only a
+                      column-zero key, a `|` block scalar, and an
+                      indented nested map; a value written with any other
+                      construct is read as an opaque string, never
+                      individually validated.
+  frontmatter-unknown-key - a skills/*/SKILL.md's frontmatter carries a
+                      column-zero key outside the Agent Skills
+                      specification's six-key allow-list (`name`,
+                      `description`, `license`, `compatibility`,
+                      `metadata`, `allowed-tools`), naming the key.
+                      Declared ceiling: only the key's name is checked,
+                      never the shape of its value.
+  frontmatter-name-mismatch - a skills/*/SKILL.md's frontmatter `name`
+                      value differs from its own parent directory name,
+                      naming both. Declared ceiling: this check compares
+                      `name` against the parent directory only; it does
+                      not enforce the specification's own character-set
+                      or length rules for `name`.
+  frontmatter-description-invalid - a skills/*/SKILL.md's frontmatter
+                      `description` is absent, empty after whitespace
+                      collapse, shorter than 200 characters, or longer
+                      than 1024 characters, naming the measured length
+                      and the bound it broke. Declared ceiling: 200 is
+                      this project's own chosen floor, not a
+                      specification requirement; 1024 is the
+                      specification's own ceiling, used here unchanged.
+  catalog-count-unstated - a skills/*/SKILL.md contains no line matching
+                      the frozen stated-count template ("This catalog
+                      contains {N} rules in {M} numbered sections.").
+                      Absence of the file is still not a violation.
+                      Declared ceiling: the template is matched
+                      byte-exactly, so a reworded but equivalent sentence
+                      is reported as unstated rather than as a mismatch.
+  catalog-count-mismatch - a skills/*/SKILL.md's stated rule count or
+                      stated section count disagrees with the count of
+                      PF rows (or distinct PF sections among them) in
+                      NUMBERING.md's Allocated IDs table, naming both the
+                      stated and the registry figures. Declared ceiling:
+                      this check compares the two stated numbers against
+                      the registry only — it does not detect a stated
+                      total that is right while a rule body is missing
+                      from the file entirely; that direction is
+                      catalog-id-drift's.
+  skill-too-long    - a skills/*/SKILL.md exceeds 500 lines, naming the
+                      measured count and the ceiling. Silent at exactly
+                      500. Declared ceiling: line count is a proxy for
+                      the Agent Skills specification's approximate
+                      5,000-token progressive-disclosure budget; a file
+                      under 500 lines with unusually long lines can still
+                      exceed that token budget, which this check cannot
+                      detect.
 """
 import argparse
 import re
@@ -122,6 +190,8 @@ FENCE_RE = re.compile(r'```.*?```', re.S)
 
 POINTER_SECTION = 'Attribution pointer'
 CARRIERS_MARKER = 'Files required to carry it'
+
+SKILL_GLOB = 'skills/*/SKILL.md'
 
 
 def strip_fences(text):
@@ -209,6 +279,35 @@ def parse_numbering(path):
     }
 
 
+def parse_pf_subblocks(path):
+    """Return {section: [(low, high, element_name), ...]} built from every
+    '## PF-<n> sub-blocks' section, reusing split_sections/table_rows rather
+    than a second table reader. A section with no such heading (PF-0, PF-3,
+    PF-4, and PF-5 as of this writing) is simply absent from the returned
+    mapping -- absence means "no sub-blocks declared", not a defect, and
+    check_range_id below keeps exactly today's section-range-only behaviour
+    for it."""
+    text = path.read_text(encoding='utf-8')
+    sections = split_sections(text)
+    subblocks = {}
+    for heading, body in sections.items():
+        m = re.match(r'^(PF-\d+) sub-blocks$', heading)
+        if not m:
+            continue
+        section = m.group(1)
+        blocks = []
+        for row in table_rows(body):
+            if len(row) < 2:
+                continue
+            element_name = row[0].strip()
+            nums = re.findall(r'PF-\d+\.(\d+)', row[1])
+            if len(nums) >= 2:
+                blocks.append((int(nums[0]), int(nums[-1]), element_name))
+        if blocks:
+            subblocks[section] = blocks
+    return subblocks
+
+
 # ---------------------------------------------------------------------------
 # ID-integrity checks (D-05)
 # ---------------------------------------------------------------------------
@@ -224,7 +323,8 @@ def check_dup_id(allocated):
     return violations
 
 
-def check_range_id(allocated, pf_ranges, mc_ranges):
+def check_range_id(allocated, pf_ranges, mc_ranges, pf_subblocks=None):
+    pf_subblocks = pf_subblocks or {}
     violations = []
     for row in allocated:
         id_ = row['id']
@@ -235,6 +335,10 @@ def check_range_id(allocated, pf_ranges, mc_ranges):
             rng = pf_ranges.get(section)
             if rng is None or not (rng[0] <= n <= rng[1]):
                 violations.append((id_, f"range-id {id_} sits outside section {section}'s reserved range"))
+                continue
+            blocks = pf_subblocks.get(section)
+            if blocks and not any(lo <= n <= hi for lo, hi, _ in blocks):
+                violations.append((id_, f"range-id {id_} sits inside section {section}'s reserved range but outside every sub-block {section} declares"))
             continue
         m = MC_ID_RE.match(id_)
         if m:
@@ -287,9 +391,10 @@ def run_id_checks(repo_root):
     if not numbering_path.exists():
         return []
     data = parse_numbering(numbering_path)
+    pf_subblocks = parse_pf_subblocks(numbering_path)
     violations = []
     violations += check_dup_id(data['allocated'])
-    violations += check_range_id(data['allocated'], data['pf_ranges'], data['mc_ranges'])
+    violations += check_range_id(data['allocated'], data['pf_ranges'], data['mc_ranges'], pf_subblocks)
     violations += check_revived_id(data['allocated'], data['deprecated'])
     violations += check_undefined_id(data['allocated'], repo_root)
     return violations
@@ -581,13 +686,138 @@ def run_notices_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
+# skills/*/SKILL.md — frontmatter integrity (D-33)
+#
+# No general-purpose config-format parser exists in the standard library and
+# none is added here (D-33). Only six top-level keys are ever legal, so a
+# targeted extractor -- in parse_notices's style of finding a specific known
+# shape line by line, not a general parser -- is sufficient.
+# ---------------------------------------------------------------------------
+
+ALLOWED_FRONTMATTER_KEYS = frozenset({
+    'name', 'description', 'license', 'compatibility', 'metadata', 'allowed-tools',
+})
+REQUIRED_FRONTMATTER_KEYS = frozenset({'name', 'description'})
+DESCRIPTION_MIN = 200
+DESCRIPTION_MAX = 1024
+FRONTMATTER_DELIM = '---'
+
+FRONTMATTER_KEY_RE = re.compile(r'^([A-Za-z][A-Za-z0-9_-]*):(.*)$')
+
+
+def parse_frontmatter(path):
+    """Parse the frontmatter block of a SKILL.md file with a targeted,
+    stdlib-only extractor -- not a general-purpose parser. Returns
+    (keys, problems): keys maps each column-zero key found to its value as
+    a plain scalar, a `|` block scalar's joined body, or a nested map's raw
+    indented text kept as an opaque string (the way parse_notices already
+    keeps a fenced block's content opaque). problems is a list of
+    human-readable structural defects -- no opening delimiter at the file's
+    first line, no closing delimiter, or a column-zero key repeated (kept
+    at its FIRST value, never silently overwritten by a later one). Key
+    order carries no meaning: the parser reads keys into a mapping and
+    never depends on the order they appear in."""
+    text = path.read_text(encoding='utf-8')
+    lines = text.splitlines()
+    problems = []
+
+    if not lines or lines[0].strip() != FRONTMATTER_DELIM:
+        problems.append(f"no `{FRONTMATTER_DELIM}` block at the file's first line")
+        return {}, problems
+
+    end_idx = None
+    for i in range(1, len(lines)):
+        if lines[i].strip() == FRONTMATTER_DELIM:
+            end_idx = i
+            break
+    if end_idx is None:
+        problems.append(f"unterminated frontmatter block (no closing `{FRONTMATTER_DELIM}`)")
+        return {}, problems
+
+    keys = {}
+    current_key = None
+    current_lines = []
+
+    def _flush():
+        if current_key is None:
+            return
+        value = '\n'.join(l.strip() for l in current_lines).strip()
+        if current_key in keys:
+            problems.append(f"repeated top-level key '{current_key}'")
+        else:
+            keys[current_key] = value
+
+    for line in lines[1:end_idx]:
+        m = FRONTMATTER_KEY_RE.match(line)
+        if m:
+            _flush()
+            current_key = m.group(1)
+            rest = m.group(2).strip()
+            current_lines = [rest] if rest and rest != '|' else []
+        else:
+            if current_key is not None:
+                current_lines.append(line)
+    _flush()
+
+    missing_required = sorted(k for k in REQUIRED_FRONTMATTER_KEYS if k not in keys)
+    if missing_required:
+        problems.append(f"missing required key(s): {', '.join(missing_required)}")
+
+    return keys, problems
+
+
+def _collapse_whitespace(text):
+    return ' '.join(text.split())
+
+
+def check_frontmatter(repo_root):
+    violations = []
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        rel = skill_path.relative_to(repo_root)
+        keys, problems = parse_frontmatter(skill_path)
+
+        for problem in problems:
+            violations.append((str(rel), f"frontmatter-unparseable {rel} {problem}"))
+
+        for key in keys:
+            if key not in ALLOWED_FRONTMATTER_KEYS:
+                violations.append((str(rel), f"frontmatter-unknown-key {rel} declares unknown key '{key}'"))
+
+        if 'name' in keys:
+            name_value = keys['name']
+            dir_name = skill_path.parent.name
+            if name_value != dir_name:
+                violations.append((str(rel), f"frontmatter-name-mismatch {rel} name '{name_value}' differs from parent directory '{dir_name}'"))
+
+        if 'description' in keys:
+            description = _collapse_whitespace(keys['description'])
+            desc_len = len(description)
+            if desc_len == 0:
+                violations.append((str(rel), f"frontmatter-description-invalid {rel} description is empty after whitespace collapse"))
+            elif desc_len < DESCRIPTION_MIN:
+                violations.append((str(rel), f"frontmatter-description-invalid {rel} description length {desc_len} is below the {DESCRIPTION_MIN}-character floor"))
+            elif desc_len > DESCRIPTION_MAX:
+                violations.append((str(rel), f"frontmatter-description-invalid {rel} description length {desc_len} exceeds the {DESCRIPTION_MAX}-character ceiling"))
+    return violations
+
+
+FRONTMATTER_CHECK_CODES = [
+    'frontmatter-unparseable', 'frontmatter-unknown-key',
+    'frontmatter-name-mismatch', 'frontmatter-description-invalid',
+]
+
+
+def run_frontmatter_checks(repo_root):
+    return check_frontmatter(repo_root)
+
+
+# ---------------------------------------------------------------------------
 # Skill catalog ID-set integrity (D-32) -- closes the drift a third file
 # holding PF IDs (references/checklist.md) can create: an ID registered in
 # NUMBERING.md's Allocated IDs table but missing from the checklist, or a
 # rule heading defined in SKILL.md with no registry row at all.
 # ---------------------------------------------------------------------------
 
-SKILL_GLOB = 'skills/*/SKILL.md'
 RULE_HEADING_RE = re.compile(r'^### (PF-\d+\.\d+) — ')
 
 
@@ -663,7 +893,65 @@ def check_catalog_id_drift(allocated, repo_root):
     return violations
 
 
-CATALOG_CHECK_CODES = ['catalog-id-drift']
+# ---------------------------------------------------------------------------
+# skills/*/SKILL.md — stated rule count vs registry (D-32)
+# ---------------------------------------------------------------------------
+
+COUNT_SENTENCE_RE = re.compile(r'^This catalog contains (\d+) rules in (\d+) numbered sections\.$')
+
+
+def check_catalog_count(allocated, repo_root):
+    """For each skill file, require exactly the frozen stated-count
+    template and require its two numbers to match the registry: the count
+    of PF rows in the Allocated IDs table, and the count of distinct PF
+    sections among those rows. Absence of the file is not a violation."""
+    violations = []
+    pf_ids = {row['id'] for row in allocated if PF_ID_RE.match(row['id'])}
+    registry_rule_count = len(pf_ids)
+    registry_section_count = len({PF_ID_RE.match(id_).group(1) for id_ in pf_ids})
+
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        rel = skill_path.relative_to(repo_root)
+        text = skill_path.read_text(encoding='utf-8')
+        stated = None
+        for line in text.splitlines():
+            m = COUNT_SENTENCE_RE.match(line.strip())
+            if m:
+                stated = (int(m.group(1)), int(m.group(2)))
+                break
+        if stated is None:
+            violations.append((str(rel), f"catalog-count-unstated {rel} contains no line matching the frozen stated-count template"))
+            continue
+        stated_rules, stated_sections = stated
+        if stated_rules != registry_rule_count or stated_sections != registry_section_count:
+            violations.append((str(rel), (
+                f"catalog-count-mismatch {rel} states {stated_rules} rules in {stated_sections} numbered sections, "
+                f"but the registry has {registry_rule_count} rules in {registry_section_count} numbered sections"
+            )))
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# skills/*/SKILL.md — progressive-disclosure ceiling (CAT-08)
+# ---------------------------------------------------------------------------
+
+SKILL_LINE_CEILING = 500
+
+
+def check_skill_too_long(repo_root):
+    violations = []
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        rel = skill_path.relative_to(repo_root)
+        line_count = len(skill_path.read_text(encoding='utf-8').splitlines())
+        if line_count > SKILL_LINE_CEILING:
+            violations.append((str(rel), f"skill-too-long {rel} has {line_count} lines, exceeding the {SKILL_LINE_CEILING}-line ceiling"))
+    return violations
+
+
+CATALOG_CHECK_CODES = [
+    'catalog-id-drift', 'catalog-count-unstated', 'catalog-count-mismatch',
+    'skill-too-long',
+]
 
 
 def run_catalog_checks(repo_root):
@@ -671,10 +959,18 @@ def run_catalog_checks(repo_root):
     if not numbering_path.exists():
         return []
     data = parse_numbering(numbering_path)
-    return check_catalog_id_drift(data['allocated'], repo_root)
+    violations = []
+    violations += check_catalog_id_drift(data['allocated'], repo_root)
+    violations += check_catalog_count(data['allocated'], repo_root)
+    violations += check_skill_too_long(repo_root)
+    return violations
 
 
-ALL_CHECK_CODES = ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES + LICENSE_CHECK_CODES + FRAMEWORK_CHECK_CODES + CATALOG_CHECK_CODES
+ALL_CHECK_CODES = (
+    ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
+    + LICENSE_CHECK_CODES + FRAMEWORK_CHECK_CODES + FRONTMATTER_CHECK_CODES
+    + CATALOG_CHECK_CODES
+)
 
 
 # ---------------------------------------------------------------------------
@@ -688,6 +984,7 @@ def run_all_checks(repo_root):
     violations += run_notices_checks(repo_root)
     violations += run_license_checks(repo_root)
     violations += run_framework_checks(repo_root)
+    violations += run_frontmatter_checks(repo_root)
     violations += run_catalog_checks(repo_root)
     return violations
 
@@ -864,6 +1161,88 @@ def _mutate_catalog_id_drift(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_frontmatter_unparseable(root):
+    """Remove the real SKILL.md's opening '---' line, so no frontmatter
+    block can be isolated at all."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    del lines[0]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_frontmatter_unknown_key(root):
+    """Insert a column-zero key outside the six-key allow-list (D-33) into
+    the real frontmatter. 'compatibility' is deliberately NOT used here --
+    it is one of the six *allowed* keys per the Agent Skills specification
+    (this project simply omits it by convention, per D-29/D-30), so
+    inserting it would prove nothing about this check."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    text = path.read_text(encoding='utf-8')
+    text = text.replace('license: MIT\n', 'license: MIT\nauthor: Mutation Author\n', 1)
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_frontmatter_name_mismatch(root):
+    """Change the real frontmatter's name value so it no longer equals its
+    parent directory."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    text = path.read_text(encoding='utf-8')
+    text = text.replace('name: proof-first\n', 'name: not-proof-first\n', 1)
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_frontmatter_description_invalid(root):
+    """Truncate the real description body (the indented lines following
+    'description: |') to a few characters, well below the floor."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    out = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        out.append(line)
+        if line.strip() == 'description: |':
+            i += 1
+            while i < len(lines) and (lines[i].startswith(' ') or lines[i].strip() == ''):
+                i += 1
+            out.append('  short')
+            continue
+        i += 1
+    path.write_text('\n'.join(out) + '\n', encoding='utf-8')
+
+
+def _mutate_catalog_count_unstated(root):
+    """Delete the stated-count line from the real SKILL.md."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if not COUNT_SENTENCE_RE.match(l.strip())]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_catalog_count_mismatch(root):
+    """Change the rule-count number in the real SKILL.md's stated-count
+    line so it disagrees with the registry."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    text = path.read_text(encoding='utf-8')
+    text = text.replace(
+        'This catalog contains 31 rules in 6 numbered sections.',
+        'This catalog contains 30 rules in 6 numbered sections.',
+        1,
+    )
+    path.write_text(text, encoding='utf-8')
+
+
+def _mutate_skill_too_long(root):
+    """Append filler lines to the real SKILL.md past its 500-line ceiling."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    text = path.read_text(encoding='utf-8')
+    if not text.endswith('\n'):
+        text += '\n'
+    filler = '\n'.join(f"Filler line {i} pushing the file past its line ceiling." for i in range(200)) + '\n'
+    text += filler
+    path.write_text(text, encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -878,6 +1257,13 @@ MUTATIONS = [
     ('license-missing', "delete the LICENSE file from the repository root", _mutate_license_missing),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
     ('catalog-id-drift', "delete one PF data row from references/checklist.md's PF rules table", _mutate_catalog_id_drift),
+    ('frontmatter-unparseable', "remove the opening '---' line from the real skills/proof-first/SKILL.md frontmatter block", _mutate_frontmatter_unparseable),
+    ('frontmatter-unknown-key', "add an 'author:' key (outside the six-key allow-list) to the real skills/proof-first/SKILL.md frontmatter block", _mutate_frontmatter_unknown_key),
+    ('frontmatter-name-mismatch', "change the real skills/proof-first/SKILL.md frontmatter's name value so it no longer equals its parent directory", _mutate_frontmatter_name_mismatch),
+    ('frontmatter-description-invalid', "truncate the real skills/proof-first/SKILL.md frontmatter description to a few characters", _mutate_frontmatter_description_invalid),
+    ('catalog-count-unstated', "delete the stated-count line from the real skills/proof-first/SKILL.md", _mutate_catalog_count_unstated),
+    ('catalog-count-mismatch', "change the rule-count number in the real skills/proof-first/SKILL.md's stated-count line", _mutate_catalog_count_mismatch),
+    ('skill-too-long', "append filler lines to the real skills/proof-first/SKILL.md past its 500-line ceiling", _mutate_skill_too_long),
 ]
 
 
@@ -1239,6 +1625,194 @@ def _bad_checklist():
 """
 
 
+def _good_frontmatter():
+    return (
+        "---\n"
+        "name: good-skill\n"
+        "description: |\n"
+        f"  {'x' * DESCRIPTION_MIN}\n"
+        "license: MIT\n"
+        "metadata:\n"
+        "  version: \"1.0.0\"\n"
+        "---\n"
+        "\n# Good skill\n\nBody text.\n"
+    )
+
+
+def _bad_frontmatter():
+    """One root, three codes: an unknown 'author' key (not one of the six
+    allowed keys -- 'compatibility' is allowed and deliberately not used
+    here, see _mutate_frontmatter_unknown_key), a name that differs from
+    its own directory, and a three-character description."""
+    return (
+        "---\n"
+        "name: wrong-name\n"
+        "description: hi\n"
+        "author: Someone Else\n"
+        "---\n"
+        "\n# Bad skill\n\nBody text.\n"
+    )
+
+
+def _dupkey_frontmatter():
+    return (
+        "---\n"
+        "name: dupkey-skill\n"
+        "name: dupkey-skill-again\n"
+        f"description: {'x' * (DESCRIPTION_MIN + 10)}\n"
+        "---\n"
+        "\n# Dup key skill\n\nBody text.\n"
+    )
+
+
+def _reordered_frontmatter():
+    """The same allowed keys as _good_frontmatter, in a different order,
+    still valid -- and its description is exactly DESCRIPTION_MAX
+    characters, the upper boundary, which must also stay silent."""
+    return (
+        "---\n"
+        "license: MIT\n"
+        "metadata:\n"
+        "  version: \"1.0.0\"\n"
+        "description: |\n"
+        f"  {'x' * DESCRIPTION_MAX}\n"
+        "name: reordered-skill\n"
+        "---\n"
+        "\n# Reordered skill\n\nBody text.\n"
+    )
+
+
+def _overmax_frontmatter():
+    """Description at DESCRIPTION_MAX + 1 -- the one character past the
+    ceiling that must fire, isolated from every other frontmatter code."""
+    return (
+        "---\n"
+        "name: overmax-skill\n"
+        f"description: {'x' * (DESCRIPTION_MAX + 1)}\n"
+        "---\n"
+        "\n# Overmax skill\n\nBody text.\n"
+    )
+
+
+def _minimal_frontmatter_lines():
+    """A valid, minimal frontmatter block (name equals 'proof-first',
+    matching the directory every catalog/line-ceiling/token-budget fixture
+    below uses) so those fixtures exercise only the one code each is built
+    to test, with no incidental frontmatter-code noise."""
+    return [
+        '---',
+        'name: proof-first',
+        f"description: {'x' * DESCRIPTION_MIN}",
+        '---',
+        '',
+    ]
+
+
+def _skill_body_at_line_count(n, extra_lines):
+    """Build a full SKILL.md fixture: valid minimal frontmatter, the given
+    extra content lines, then trailing blank filler lines so the file's
+    total line count is exactly n."""
+    lines = _minimal_frontmatter_lines() + list(extra_lines)
+    filler_needed = n - len(lines)
+    if filler_needed < 0:
+        raise ValueError('extra_lines already exceeds the requested line count')
+    lines += [''] * filler_needed
+    return '\n'.join(lines) + '\n'
+
+
+_LINE_CEILING_HEADING = ['### PF-0.1 — Opening rule', '', 'Body text for the opening rule.']
+
+
+def _skill_at_line_count(n):
+    return _skill_body_at_line_count(n, _LINE_CEILING_HEADING)
+
+
+def _numbering_for_catalog_count():
+    return """## PF reserved ranges
+| Section | Range | Concern | Allocated | Next free |
+|---|---|---|---|---|
+| PF-0 | PF-0.1-PF-0.9 | Opening | 1 | PF-0.2 |
+| PF-1 | PF-1.1-PF-1.4 | Structure | 2 | PF-1.3 |
+
+## Allocated IDs
+| ID | Title | Defined in | Added in |
+|---|---|---|---|
+| PF-0.1 | Opening rule | SKILL.md | v1.0.0 |
+| PF-1.1 | Rule one | SKILL.md | v1.0.0 |
+| PF-1.2 | Rule two | SKILL.md | v1.0.0 |
+
+## Deprecated IDs
+| ID | Deprecated in | Absorbed by |
+|---|---|---|
+"""
+
+
+def _checklist_for_catalog_count():
+    return """## PF rules
+
+| ID | Rule |
+|---|---|
+| PF-0.1 | Opening rule |
+| PF-1.1 | Rule one |
+| PF-1.2 | Rule two |
+"""
+
+
+def _catalog_count_extra_lines(count_line):
+    lines = [
+        '### PF-0.1 — Opening rule', '', 'Body text.', '',
+        '### PF-1.1 — Rule one', '', 'Body text.', '',
+        '### PF-1.2 — Rule two', '', 'Body text.', '',
+    ]
+    if count_line is not None:
+        lines.append(count_line)
+    return lines
+
+
+def _good_catalog_count_skill():
+    return _skill_body_at_line_count(
+        60, _catalog_count_extra_lines('This catalog contains 3 rules in 2 numbered sections.'))
+
+
+def _unstated_count_skill():
+    return _skill_body_at_line_count(60, _catalog_count_extra_lines(None))
+
+
+def _mismatched_count_skill():
+    return _skill_body_at_line_count(
+        60, _catalog_count_extra_lines('This catalog contains 5 rules in 2 numbered sections.'))
+
+
+def _subblock_numbering():
+    """A PF-2 sub-block table with a deliberate gap: Proof covers
+    PF-2.1-PF-2.5 and Integrity covers PF-2.15-PF-2.20, leaving
+    PF-2.6-PF-2.14 declared by neither. PF-2.10 sits inside PF-2's overall
+    reserved range (so the pre-existing section-range test passes) but
+    lands in that gap, so only the new sub-block containment test fires --
+    the same technique _bad_numbering already uses for MC dimension
+    blocks."""
+    return """## PF reserved ranges
+| Section | Range | Concern | Allocated | Next free |
+|---|---|---|---|---|
+| PF-2 | PF-2.1-PF-2.20 | Proof and Integrity | 1 | PF-2.11 |
+
+## PF-2 sub-blocks
+| Element | Range |
+|---|---|
+| Proof | PF-2.1-PF-2.5 |
+| Integrity | PF-2.15-PF-2.20 |
+
+## Allocated IDs
+| ID | Title | Defined in | Added in |
+|---|---|---|---|
+| PF-2.10 | Gap-landing rule | SKILL.md | v1.0.0 |
+
+## Deprecated IDs
+| ID | Deprecated in | Absorbed by |
+|---|---|---|
+"""
+
+
 def self_test():
     codes_covered = set()
     all_ok = True
@@ -1253,6 +1827,21 @@ def self_test():
         bad_catalog_root = tmp_root / 'bad_catalog'
         good_catalog_root = tmp_root / 'good_catalog'
 
+        fm_good_root = tmp_root / 'fm_good'
+        fm_bad_root = tmp_root / 'fm_bad'
+        fm_dupkey_root = tmp_root / 'fm_dupkey'
+        fm_reordered_root = tmp_root / 'fm_reordered'
+        fm_overmax_root = tmp_root / 'fm_overmax'
+
+        line500_root = tmp_root / 'line500'
+        line501_root = tmp_root / 'line501'
+
+        count_good_root = tmp_root / 'count_good'
+        count_unstated_root = tmp_root / 'count_unstated'
+        count_mismatch_root = tmp_root / 'count_mismatch'
+
+        subblock_root = tmp_root / 'subblock'
+
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
         _write(bad_root / 'examples' / 'deal-brief.md', _bad_deal_brief())
@@ -1260,7 +1849,7 @@ def self_test():
         _write(bad_root / 'NOTICES.md', _bad_notices())
         _write(bad_root / 'carrier-missing.md', "This file does not carry the pointer.\n")
         _write(bad_root / 'carrier-dup.md', "Test pointer string.\nSomething else.\nTest pointer string.\n")
-        _write(bad_root / 'carrier-lookalike.md', "Test pointer\u00a0string.\n")
+        _write(bad_root / 'carrier-lookalike.md', "Test pointer string.\n")
         _write(bad_root / 'LICENSE', _bad_license())
 
         _write(good_root / 'NUMBERING.md', _good_numbering())
@@ -1305,6 +1894,44 @@ def self_test():
         _write(good_catalog_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
         _write(good_catalog_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
 
+        # Frontmatter fixtures (D-33): each root isolates its own code(s),
+        # each written one level below skills/ so SKILL_GLOB matches.
+        _write(fm_good_root / 'skills' / 'good-skill' / 'SKILL.md', _good_frontmatter())
+        _write(fm_bad_root / 'skills' / 'actual-dir' / 'SKILL.md', _bad_frontmatter())
+        _write(fm_dupkey_root / 'skills' / 'dupkey-skill' / 'SKILL.md', _dupkey_frontmatter())
+        _write(fm_reordered_root / 'skills' / 'reordered-skill' / 'SKILL.md', _reordered_frontmatter())
+        _write(fm_overmax_root / 'skills' / 'overmax-skill' / 'SKILL.md', _overmax_frontmatter())
+
+        # Line-ceiling boundary fixtures (CAT-08): 500 lines stays silent,
+        # 501 fires. Each carries a matching NUMBERING.md/checklist.md so
+        # catalog-id-drift and the frontmatter codes stay silent, isolating
+        # skill-too-long as the only code under test.
+        _write(line500_root / 'NUMBERING.md', _good_numbering())
+        _write(line500_root / 'skills' / 'proof-first' / 'SKILL.md', _skill_at_line_count(500))
+        _write(line500_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+
+        _write(line501_root / 'NUMBERING.md', _good_numbering())
+        _write(line501_root / 'skills' / 'proof-first' / 'SKILL.md', _skill_at_line_count(501))
+        _write(line501_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+
+        # Stated-count fixtures (D-32): a self-contained 3-rule/2-section
+        # registry, isolated from the real 31-rule catalog.
+        _write(count_good_root / 'NUMBERING.md', _numbering_for_catalog_count())
+        _write(count_good_root / 'skills' / 'proof-first' / 'SKILL.md', _good_catalog_count_skill())
+        _write(count_good_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _checklist_for_catalog_count())
+
+        _write(count_unstated_root / 'NUMBERING.md', _numbering_for_catalog_count())
+        _write(count_unstated_root / 'skills' / 'proof-first' / 'SKILL.md', _unstated_count_skill())
+        _write(count_unstated_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _checklist_for_catalog_count())
+
+        _write(count_mismatch_root / 'NUMBERING.md', _numbering_for_catalog_count())
+        _write(count_mismatch_root / 'skills' / 'proof-first' / 'SKILL.md', _mismatched_count_skill())
+        _write(count_mismatch_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _checklist_for_catalog_count())
+
+        # PF sub-block containment fixture (D-05): a gapped PF-2 sub-block
+        # table with an allocated ID landing in the gap.
+        _write(subblock_root / 'NUMBERING.md', _subblock_numbering())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -1313,13 +1940,76 @@ def self_test():
         bad_frameworks_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_frameworks_root)}
         bad_catalog_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_catalog_root)}
         good_catalog_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_catalog_root)}
-        # Union the extra roots' codes into the bad-code set so the coverage
+
+        fm_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(fm_good_root)}
+        fm_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(fm_bad_root)}
+        fm_dupkey_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(fm_dupkey_root)}
+        fm_reordered_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(fm_reordered_root)}
+        fm_overmax_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(fm_overmax_root)}
+
+        line500_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(line500_root)}
+        line501_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(line501_root)}
+
+        count_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(count_good_root)}
+        count_unstated_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(count_unstated_root)}
+        count_mismatch_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(count_mismatch_root)}
+
+        subblock_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(subblock_root)}
+
+        # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
-        bad_codes |= unparseable_codes | escaping_codes | bad_license_codes | bad_frameworks_codes | bad_catalog_codes
+        bad_codes |= (
+            unparseable_codes | escaping_codes | bad_license_codes | bad_frameworks_codes
+            | bad_catalog_codes | fm_bad_codes | fm_dupkey_codes | fm_overmax_codes
+            | line501_codes | count_unstated_codes | count_mismatch_codes | subblock_codes
+        )
 
         if 'catalog-id-drift' in good_catalog_codes:
             print("FAIL: catalog-id-drift fired on the known-good skill/checklist fixture")
+            all_ok = False
+
+        # Frontmatter-specific assertions.
+        if FRONTMATTER_CHECK_CODES and set(FRONTMATTER_CHECK_CODES) & fm_good_codes:
+            print("FAIL: a frontmatter code fired on the known-good frontmatter fixture")
+            all_ok = False
+        if set(FRONTMATTER_CHECK_CODES) & fm_reordered_codes:
+            print("FAIL: a frontmatter code fired on the reordered-but-valid frontmatter fixture")
+            all_ok = False
+        if fm_bad_codes & {'frontmatter-unknown-key', 'frontmatter-name-mismatch', 'frontmatter-description-invalid'} != {
+            'frontmatter-unknown-key', 'frontmatter-name-mismatch', 'frontmatter-description-invalid',
+        }:
+            print("FAIL: the bad frontmatter fixture did not fire all three of its expected codes")
+            all_ok = False
+        if 'frontmatter-unparseable' not in fm_dupkey_codes:
+            print("FAIL: frontmatter-unparseable did not fire on the duplicate-key fixture")
+            all_ok = False
+        if 'frontmatter-description-invalid' not in fm_overmax_codes:
+            print("FAIL: frontmatter-description-invalid did not fire one character past the ceiling")
+            all_ok = False
+
+        # Line-ceiling boundary assertions.
+        if 'skill-too-long' in line500_codes:
+            print("FAIL: skill-too-long fired at exactly the 500-line ceiling")
+            all_ok = False
+        if 'skill-too-long' not in line501_codes:
+            print("FAIL: skill-too-long did not fire at 501 lines")
+            all_ok = False
+
+        # Stated-count assertions.
+        if 'catalog-count-unstated' in count_good_codes or 'catalog-count-mismatch' in count_good_codes:
+            print("FAIL: a catalog-count code fired on the known-good stated-count fixture")
+            all_ok = False
+        if 'catalog-count-unstated' not in count_unstated_codes:
+            print("FAIL: catalog-count-unstated did not fire when the stated-count line is absent")
+            all_ok = False
+        if 'catalog-count-mismatch' not in count_mismatch_codes:
+            print("FAIL: catalog-count-mismatch did not fire when the stated numbers disagree with the registry")
+            all_ok = False
+
+        # Sub-block containment assertion.
+        if 'range-id' not in subblock_codes:
+            print("FAIL: range-id did not fire for a PF ID landing in a gap between declared sub-blocks")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
@@ -1367,4 +2057,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
