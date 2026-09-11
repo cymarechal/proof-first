@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
-status: executing
-stopped_at: Completed 02-05-PLAN.md
-last_updated: "2026-09-11T01:25:56.046Z"
+status: verifying
+stopped_at: Completed 02-06-PLAN.md
+last_updated: "2026-09-11T01:51:36.256Z"
 last_activity: 2026-09-11
 last_activity_desc: Phase 02 execution started
-state_head: 23e61cfd549f16443a0af57e64ab6d9c1e645c8b
+state_head: 96e7a3577c40e96eeddaa40e1ca8cefdd61d83eb
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 13
-  completed_plans: 12
+  completed_plans: 13
   percent: 17
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — EXECUTING
 Plan: 6 of 6
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-11 — Phase 02 execution started
 
 Progress: [██░░░░░░░░] 17%
@@ -70,6 +70,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 02 P03 | 14min | 2 tasks | 3 files |
 | Phase 02 P04 | 9min | 2 tasks | 4 files |
 | Phase 02 P05 | 12min | 2 tasks | 4 files |
+| Phase 02 P06 | 22min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,8 @@ Recent decisions affecting current work:
 - [Phase 02]: 02-05: Dewrapped SKILL.md's existing prose (soft-wrapped paragraphs joined to one physical line each, no content changed) before adding Write mode/Check mode/Self-check/Limits — reclaimed 162 lines of CAT-08 budget (480->318), verified content-identical via literal-anchor grep counts and a 0-violations check_repo.py run on the intermediate copy; landed at 368 lines after the new sections, well under the 490-line working ceiling.
 - [Phase 02]: 02-05: evals/pressure-tests.md phrasing rows written without surrounding quotation marks after quoted cells silently failed the acceptance script's row-detection regex (a cell opening with a quote character does not match ^\| [A-Za-z]) -- Rule 3 blocking fix, no content change.
 - [Phase 02]: 02-05: Every pressure-test Observed cell reads 'not yet observed' -- this environment cannot drive a fresh harness session to install the skill and read back activation. Logged as .planning/WINDOWS.md open unrun-verify entry id 4.
+- [Phase 02]: 02-06: Frontmatter validity, stated-count/registry binding, 500-line ceiling, and PF sub-block containment CI-enforced (7 codes, 20 proven live); authorized addition of skill-token-budget-exceeded (8th code) enforces CAT-08's token half and correctly fires against the real SKILL.md (~6,207 estimated tokens vs. 5,000 ceiling) -- an open, tracked content-volume finding (WINDOWS.md id 5), not resolved by re-wrapping or raising the ceiling.
+- [Phase 02]: 02-06: Fixed the plan's own action text, which named 'compatibility' as the frontmatter-unknown-key mutation target -- compatibility is one of the Agent Skills specification's six allowed keys per the plan's own interfaces table, so the literal instruction would have shipped an inert mutation. Used 'author' instead.
 
 ### Pending Todos
 
@@ -130,6 +133,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-11T01:25:55.970Z
-Stopped at: Completed 02-05-PLAN.md
+Last session: 2026-09-11T01:51:25.657Z
+Stopped at: Completed 02-06-PLAN.md
 Resume file: None

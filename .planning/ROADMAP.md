@@ -69,7 +69,7 @@ Plans:
   4. Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite.
   5. Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve.
 
-**Plans**: 5/6 plans executed
+**Plans**: 6/6 plans executed
 
 Plans:
 **Wave 1**
@@ -94,7 +94,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 02-06-PLAN.md — Enforcement: four frontmatter codes, the stated-count and line-ceiling codes, PF sub-block containment, and twenty violation codes proven live
+- [x] 02-06-PLAN.md — Enforcement: four frontmatter codes, the stated-count and line-ceiling codes, PF sub-block containment, and twenty violation codes proven live
 
 ### Phase 3: Completeness Audit & Artifact Patterns
 
@@ -161,7 +161,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
-| 2. Rule Catalog & Integrity — SKILL.md Core | 5/6 | In Progress|  |
+| 2. Rule Catalog & Integrity — SKILL.md Core | 6/6 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
