@@ -92,6 +92,20 @@ Violation codes implemented in this file:
                       check fires per-missing-framework, naming which one.
                       When NOTICES.md is absent, all three frameworks are
                       reported as missing.
+  catalog-id-drift  - for each installed skill folder (a path matching
+                      skills/*/SKILL.md), the PF subset of NUMBERING.md's
+                      Allocated IDs, the SKILL.md's own rule-defining
+                      headings, and references/checklist.md's listed PF
+                      rows are not all equal. Fires once per divergent ID,
+                      naming the files it is inconsistent between. A repo
+                      with no path matching skills/*/SKILL.md yields no
+                      violations. Declared ceiling: this check compares ID
+                      sets only. It does not detect a rule whose title in
+                      checklist.md disagrees with its title in
+                      NUMBERING.md, nor a heading whose title text has
+                      drifted from its registry row; and it reads only
+                      paths one directory level below skills/, so a
+                      SKILL.md placed anywhere else is not validated.
 """
 import argparse
 import re
@@ -566,7 +580,101 @@ def run_notices_checks(repo_root):
     return violations
 
 
-ALL_CHECK_CODES = ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES + LICENSE_CHECK_CODES + FRAMEWORK_CHECK_CODES
+# ---------------------------------------------------------------------------
+# Skill catalog ID-set integrity (D-32) -- closes the drift a third file
+# holding PF IDs (references/checklist.md) can create: an ID registered in
+# NUMBERING.md's Allocated IDs table but missing from the checklist, or a
+# rule heading defined in SKILL.md with no registry row at all.
+# ---------------------------------------------------------------------------
+
+SKILL_GLOB = 'skills/*/SKILL.md'
+RULE_HEADING_RE = re.compile(r'^### (PF-\d+\.\d+) — ')
+
+
+def parse_skill_catalog(path):
+    """Return the ordered list of PF IDs a SKILL.md *defines* via its rule
+    headings. This is distinct from the citation tokens check_undefined_id
+    already scans for -- a heading defines a rule, a bracketed marker or a
+    prose reference only cites one."""
+    text = strip_fences(path.read_text(encoding='utf-8'))
+    ids = []
+    for line in text.splitlines():
+        m = RULE_HEADING_RE.match(line)
+        if m:
+            ids.append(m.group(1))
+    return ids
+
+
+def parse_checklist(path):
+    """Return the PF IDs listed in a references/checklist.md's '## PF rules'
+    table, built on the same split_sections/table_rows pair every other
+    parser in this file reuses rather than a second table reader."""
+    text = path.read_text(encoding='utf-8')
+    sections = split_sections(text)
+    ids = []
+    for row in table_rows(sections.get('PF rules', '')):
+        if row and row[0]:
+            ids.append(row[0].strip())
+    return ids
+
+
+def check_catalog_id_drift(allocated, repo_root):
+    """Compare three sets per installed skill folder: the PF subset of
+    NUMBERING.md's Allocated IDs, the SKILL.md's defined-heading IDs, and
+    references/checklist.md's listed rows. Report one violation per
+    divergent ID, naming the files it is inconsistent between. Absence is
+    not failure: a repo with no path matching SKILL_GLOB returns no
+    violations, matching this checker's established posture."""
+    violations = []
+    skill_paths = sorted(repo_root.glob(SKILL_GLOB))
+    if not skill_paths:
+        return violations
+
+    numbering_pf_ids = {row['id'] for row in allocated if PF_ID_RE.match(row['id'])}
+
+    for skill_path in skill_paths:
+        skill_rel = skill_path.relative_to(repo_root)
+        skill_ids = set(parse_skill_catalog(skill_path))
+
+        checklist_path = skill_path.parent / 'references' / 'checklist.md'
+        checklist_rel = checklist_path.relative_to(repo_root)
+        checklist_ids = set(parse_checklist(checklist_path)) if checklist_path.exists() else set()
+
+        all_ids = numbering_pf_ids | skill_ids | checklist_ids
+        for id_ in sorted(all_ids):
+            in_numbering = id_ in numbering_pf_ids
+            in_skill = id_ in skill_ids
+            in_checklist = id_ in checklist_ids
+            if in_numbering and in_skill and in_checklist:
+                continue
+            present_in = []
+            missing_from = []
+            for label, present in (
+                ('NUMBERING.md', in_numbering),
+                (str(skill_rel), in_skill),
+                (str(checklist_rel), in_checklist),
+            ):
+                (present_in if present else missing_from).append(label)
+            violations.append((
+                id_,
+                f"catalog-id-drift {id_} is present in {', '.join(present_in)} "
+                f"but missing from {', '.join(missing_from)}",
+            ))
+    return violations
+
+
+CATALOG_CHECK_CODES = ['catalog-id-drift']
+
+
+def run_catalog_checks(repo_root):
+    numbering_path = repo_root / 'NUMBERING.md'
+    if not numbering_path.exists():
+        return []
+    data = parse_numbering(numbering_path)
+    return check_catalog_id_drift(data['allocated'], repo_root)
+
+
+ALL_CHECK_CODES = ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES + LICENSE_CHECK_CODES + FRAMEWORK_CHECK_CODES + CATALOG_CHECK_CODES
 
 
 # ---------------------------------------------------------------------------
@@ -580,6 +688,7 @@ def run_all_checks(repo_root):
     violations += run_notices_checks(repo_root)
     violations += run_license_checks(repo_root)
     violations += run_framework_checks(repo_root)
+    violations += run_catalog_checks(repo_root)
     return violations
 
 
@@ -743,6 +852,18 @@ def _mutate_framework_statement_missing(root):
         path.unlink()
 
 
+def _mutate_catalog_id_drift(root):
+    path = root / 'skills' / 'proof-first' / 'references' / 'checklist.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    h_idx = next(i for i, l in enumerate(lines) if l.strip() == '## PF rules')
+    i = h_idx + 1
+    while not lines[i].strip().startswith('|'):
+        i += 1
+    first_row_idx = i + 2  # i = header row, i+1 = separator row, i+2 = first data row
+    del lines[first_row_idx]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -756,6 +877,7 @@ MUTATIONS = [
     ('pointer-unparseable', "remove the Attribution pointer heading from NOTICES.md", _mutate_pointer_unparseable),
     ('license-missing', "delete the LICENSE file from the repository root", _mutate_license_missing),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
+    ('catalog-id-drift', "delete one PF data row from references/checklist.md's PF rules table", _mutate_catalog_id_drift),
 ]
 
 
@@ -1092,6 +1214,31 @@ to Challenger Inc. or its trademark successors.
 """
 
 
+def _good_skill():
+    return "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n"
+
+
+def _bad_skill():
+    return "### PF-9.9 — Mutation-only rule\n\nBody text citing no registered ID.\n"
+
+
+def _good_checklist():
+    return """## PF rules
+
+| ID | Rule |
+|---|---|
+| PF-0.1 | Opening rule |
+"""
+
+
+def _bad_checklist():
+    return """## PF rules
+
+| ID | Rule |
+|---|---|
+"""
+
+
 def self_test():
     codes_covered = set()
     all_ok = True
@@ -1103,6 +1250,8 @@ def self_test():
         escaping_root = tmp_root / 'escaping'
         bad_license_root = tmp_root / 'bad_license'
         bad_frameworks_root = tmp_root / 'bad_frameworks'
+        bad_catalog_root = tmp_root / 'bad_catalog'
+        good_catalog_root = tmp_root / 'good_catalog'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -1143,6 +1292,18 @@ def self_test():
         _write(bad_frameworks_root / 'carrier-ok.md', "Test pointer string.\n")
         _write(bad_frameworks_root / 'LICENSE', _good_license())
 
+        # Seventh/eighth roots isolate catalog-id-drift: bad_catalog_root's
+        # SKILL.md defines PF-9.9 (no registry row anywhere) and its
+        # checklist.md is missing PF-0.1 (registered in NUMBERING.md but
+        # absent from the checklist) -- both divergence directions in one
+        # fixture. good_catalog_root keeps all three files in agreement.
+        _write(bad_catalog_root / 'NUMBERING.md', _good_numbering())
+        _write(bad_catalog_root / 'skills' / 'proof-first' / 'SKILL.md', _bad_skill())
+        _write(bad_catalog_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _bad_checklist())
+
+        _write(good_catalog_root / 'NUMBERING.md', _good_numbering())
+        _write(good_catalog_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(good_catalog_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
 
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
@@ -1150,10 +1311,16 @@ def self_test():
         escaping_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(escaping_root)}
         bad_license_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_license_root)}
         bad_frameworks_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_frameworks_root)}
-        # Union the third/fourth roots' codes into the bad-code set so the
-        # coverage loop below needs no edit — it still just checks "did the
-        # code fire on some known-bad fixture and stay silent on good_root".
-        bad_codes |= unparseable_codes | escaping_codes | bad_license_codes | bad_frameworks_codes
+        bad_catalog_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_catalog_root)}
+        good_catalog_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_catalog_root)}
+        # Union the extra roots' codes into the bad-code set so the coverage
+        # loop below needs no edit -- it still just checks "did the code
+        # fire on some known-bad fixture and stay silent on good_root".
+        bad_codes |= unparseable_codes | escaping_codes | bad_license_codes | bad_frameworks_codes | bad_catalog_codes
+
+        if 'catalog-id-drift' in good_catalog_codes:
+            print("FAIL: catalog-id-drift fired on the known-good skill/checklist fixture")
+            all_ok = False
 
         for code in ALL_CHECK_CODES:
             if code not in bad_codes:
