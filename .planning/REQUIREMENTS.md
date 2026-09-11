@@ -9,15 +9,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Rule Catalog
 
-- [ ] **CAT-01**: Writer gets a numbered rule catalog whose sections follow the Command of the Message elements (Before scenario, After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, Positive Business Outcomes)
-- [ ] **CAT-02**: Every subtractive rule is paired with a constructive rule that names what evidence to attach in place of the deleted text
-- [ ] **CAT-03**: Writer gets exactly one opening rule, resolving the Before-scenario / Identify-Pain / Reframe convergence into a single instruction
-- [ ] **CAT-04**: Writer gets the deletion test as the buzzword rule, stated with evidence-attachment framing rather than deletion alone
-- [ ] **CAT-05**: The deletion test retains a term that appears verbatim in the customer's own source material and marks it, instead of deleting it
-- [ ] **CAT-06**: Writer gets a self-contained prose mechanics section (sentence length, active voice, modal discipline, one claim per sentence) with no dependency on another skill
+- [x] **CAT-01**: Writer gets a numbered rule catalog whose sections follow the Command of the Message elements (Before scenario, After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, Positive Business Outcomes)
+- [x] **CAT-02**: Every subtractive rule is paired with a constructive rule that names what evidence to attach in place of the deleted text
+- [x] **CAT-03**: Writer gets exactly one opening rule, resolving the Before-scenario / Identify-Pain / Reframe convergence into a single instruction
+- [x] **CAT-04**: Writer gets the deletion test as the buzzword rule, stated with evidence-attachment framing rather than deletion alone
+- [x] **CAT-05**: The deletion test retains a term that appears verbatim in the customer's own source material and marks it, instead of deleting it
+- [x] **CAT-06**: Writer gets a self-contained prose mechanics section (sentence length, active voice, modal discipline, one claim per sentence) with no dependency on another skill
 - [x] **CAT-07**: Rules carry stable citable IDs in two disjoint namespaces — `PF-<section>.<n>` for prose rules and `MC-<n>` for the completeness audit — with numeric ranges reserved per section before drafting
-- [ ] **CAT-08**: SKILL.md stays under the progressive-disclosure ceiling (under 500 lines, approximately 5,000 tokens) with detail pushed into `references/`
-- [ ] **CAT-09**: SKILL.md frontmatter validates against the Agent Skills allow-list and loads without error in every target harness
+- [x] **CAT-08**: SKILL.md stays under the progressive-disclosure ceiling (under 500 lines, approximately 5,000 tokens) with detail pushed into `references/`
+- [x] **CAT-09**: SKILL.md frontmatter validates against the Agent Skills allow-list and loads without error in every target harness
 - [ ] **CAT-10**: The `description` field triggers the skill reliably on presales writing requests, acting as an explicit trigger list
 
 ### Integrity
@@ -129,15 +129,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CAT-01 | Phase 2 | Gaps Found |
-| CAT-02 | Phase 2 | Gaps Found |
-| CAT-03 | Phase 2 | Gaps Found |
-| CAT-04 | Phase 2 | Gaps Found |
-| CAT-05 | Phase 2 | Gaps Found |
-| CAT-06 | Phase 2 | Gaps Found |
+| CAT-01 | Phase 2 | Complete |
+| CAT-02 | Phase 2 | Complete |
+| CAT-03 | Phase 2 | Complete |
+| CAT-04 | Phase 2 | Complete |
+| CAT-05 | Phase 2 | Complete |
+| CAT-06 | Phase 2 | Complete |
 | CAT-07 | Phase 1 | Complete |
-| CAT-08 | Phase 2 | Gaps Found |
-| CAT-09 | Phase 2 | Gaps Found |
+| CAT-08 | Phase 2 | Complete |
+| CAT-09 | Phase 2 | Complete |
 | CAT-10 | Phase 2 | Gaps Found |
 | INT-01 | Phase 2 | Gaps Found |
 | INT-02 | Phase 2 | Gaps Found |

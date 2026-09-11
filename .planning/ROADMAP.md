@@ -69,7 +69,7 @@ Plans:
   4. Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite.
   5. Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve.
 
-**Plans**: 9 plans — 6/6 executed, 3 gap-closure plans added after verification found gaps
+**Plans**: 7/9 plans executed — 6/6 executed, 3 gap-closure plans added after verification found gaps
 
 Plans:
 **Wave 1**
@@ -98,7 +98,7 @@ Plans:
 
 **Gap closure Wave 1** *(from 02-VERIFICATION.md; run with `/gsd-execute-phase 2 --gaps-only`)*
 
-- [ ] 02-07-PLAN.md — CAT-08's token ceiling met by moving the 20 worked ✗/✓ pairs into `references/` and tightening prose, leaving every rule, every constructive half and every enforcement path intact; closes the red CI step by construction
+- [x] 02-07-PLAN.md — CAT-08's token ceiling met by moving the 20 worked ✗/✓ pairs into `references/` and tightening prose, leaving every rule, every constructive half and every enforcement path intact; closes the red CI step by construction
 
 **Gap closure Wave 2** *(blocked on gap closure Wave 1)*
 
@@ -170,7 +170,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
-| 2. Rule Catalog & Integrity — SKILL.md Core | 6/6 | In Progress|  |
+| 2. Rule Catalog & Integrity — SKILL.md Core | 7/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
