@@ -18,7 +18,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **CAT-07**: Rules carry stable citable IDs in two disjoint namespaces — `PF-<section>.<n>` for prose rules and `MC-<n>` for the completeness audit — with numeric ranges reserved per section before drafting
 - [x] **CAT-08**: SKILL.md stays under the progressive-disclosure ceiling (under 500 lines, approximately 5,000 tokens) with detail pushed into `references/`
 - [x] **CAT-09**: SKILL.md frontmatter validates against the Agent Skills allow-list and loads without error in every target harness
-- [ ] **CAT-10**: The `description` field triggers the skill reliably on presales writing requests, acting as an explicit trigger list
+- [x] **CAT-10**: The `description` field triggers the skill reliably on presales writing requests, acting as an explicit trigger list
 
 ### Integrity
 
@@ -138,7 +138,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-07 | Phase 1 | Complete |
 | CAT-08 | Phase 2 | Complete |
 | CAT-09 | Phase 2 | Complete |
-| CAT-10 | Phase 2 | Gaps Found |
+| CAT-10 | Phase 2 | Complete |
 | INT-01 | Phase 2 | Gaps Found |
 | INT-02 | Phase 2 | Gaps Found |
 | INT-03 | Phase 2 | Gaps Found |

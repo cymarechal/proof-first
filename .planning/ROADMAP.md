@@ -103,7 +103,7 @@ Plans:
 **Gap closure Wave 2** *(blocked on gap closure Wave 1)*
 
 - [x] 02-08-PLAN.md — `--mutation-test` asserts discrimination instead of firing, reports any fire-only code separately, empties the stale known-open allowance, and corrects both overclaiming docstrings
-- [ ] 02-09-PLAN.md — README's Status prose reconciled with its own tree and the repository, the pending trigger observations made attributable, and WINDOWS ids 3 and 4 routed to human checks rather than machine-closed
+- [x] 02-09-PLAN.md — README's Status prose reconciled with its own tree and the repository, the pending trigger observations made attributable, and WINDOWS ids 3 and 4 routed to human checks rather than machine-closed
 
 ### Phase 3: Completeness Audit & Artifact Patterns
 

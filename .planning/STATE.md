@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
 status: executing
-stopped_at: Completed 02-08-PLAN.md
-last_updated: "2026-09-11T04:43:12.335Z"
+stopped_at: Completed 02-09-PLAN.md
+last_updated: "2026-09-11T04:49:08.209Z"
 last_activity: 2026-09-11
 last_activity_desc: Phase 02 execution started
-state_head: f04e29876918f32ef883947bc7ce144502ecb29d
+state_head: d5bfd575465f3a3035468dd0ad9383f67caa6236
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
   percent: 17
 ---
 
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — EXECUTING
-Plan: 3 of 9
-Status: Ready to execute
-Last activity: 2026-09-11 — Phase 02 execution started
+Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — PLANS COMPLETE
+Plan: 9 of 9
+Status: All plans executed; WINDOWS.md ids 3 and 4 open pending human verification (paraphrase-boundary judgment, live trigger-pressure-test run) before phase can be considered fully verified
+Last activity: 2026-09-11 — Completed 02-09-PLAN.md (README/pressure-test documentation gap closure)
 
 Progress: [██░░░░░░░░] 17%
 
@@ -73,6 +73,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 02 P06 | 22min | 2 tasks | 2 files |
 | Phase 02 P07 | 25min | 3 tasks | 3 files |
 | Phase 02 P08 | 20min | 2 tasks | 1 files |
+| Phase 02-rule-catalog-integrity-skill-md-core P09 | 15min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,8 @@ Recent decisions affecting current work:
 - [Phase 02]: 02-06: Fixed the plan's own action text, which named 'compatibility' as the frontmatter-unknown-key mutation target -- compatibility is one of the Agent Skills specification's six allowed keys per the plan's own interfaces table, so the literal instruction would have shipped an inert mutation. Used 'author' instead.
 - [Phase 02]: [Phase 02]: 02-07: Checkpoint resolved option-a — D-25 amended to permit a fourth Phase 2 reference file, skills/proof-first/references/worked-examples.md, carrying all 20 worked pairs verbatim; SKILL.md trimmed from 4775 to 3694 words (4802 estimated tokens) via full Replace-with and 26-of-31 rule-statement tightening, closing WINDOWS.md id 5 and making python3 tools/check_repo.py exit 0 for the first time.
 - [Phase 02]: 02-08: mutation_test() now asserts discrimination (silent-on-control, fires-on-mutated) instead of mere post-mutation firing; KNOWN_OPEN_VIOLATIONS emptied to frozenset() with a comment naming .planning/WINDOWS.md id 5 as closed; docstrings for _mutate_skill_token_budget_exceeded and frontmatter-description-invalid corrected to state what is now true, closing 02-REVIEW.md CR-01, CR-02, and WR-01.
+- [Phase 02]: [Phase 02]: 02-09: README.md Status prose reconciled with its own tree diagram and disk state (02-REVIEW.md CR-03 closed) — self-contradicting 'has not been written yet' assertion removed, worked-examples.md added to the tree untagged, no measured claim introduced.
+- [Phase 02]: [Phase 02]: 02-09: evals/pressure-tests.md gained a scope note binding its 14 pending observations to SKILL.md's frontmatter description state (first line, 439-char length, sha256 of first 14 lines) — no Observed/Date/Harness cell filled; WINDOWS.md ids 3 and 4 correctly left open, restated verbatim in the SUMMARY for /gsd-verify-work.
 
 ### Pending Todos
 
@@ -137,6 +140,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-11T04:43:12.257Z
-Stopped at: Completed 02-08-PLAN.md
+Last session: 2026-09-11T04:49:08.131Z
+Stopped at: Completed 02-09-PLAN.md
 Resume file: None
