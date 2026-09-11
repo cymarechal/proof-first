@@ -11,7 +11,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **CAT-01**: Writer gets a numbered rule catalog whose sections follow the Command of the Message elements (Before scenario, After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, Positive Business Outcomes)
 - [ ] **CAT-02**: Every subtractive rule is paired with a constructive rule that names what evidence to attach in place of the deleted text
-- [ ] **CAT-03**: Writer gets exactly one opening rule, resolving the Before-scenario / Identify-Pain / Reframe convergence into a single instruction
+- [x] **CAT-03**: Writer gets exactly one opening rule, resolving the Before-scenario / Identify-Pain / Reframe convergence into a single instruction
 - [ ] **CAT-04**: Writer gets the deletion test as the buzzword rule, stated with evidence-attachment framing rather than deletion alone
 - [ ] **CAT-05**: The deletion test retains a term that appears verbatim in the customer's own source material and marks it, instead of deleting it
 - [ ] **CAT-06**: Writer gets a self-contained prose mechanics section (sentence length, active voice, modal discipline, one claim per sentence) with no dependency on another skill
@@ -131,7 +131,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | CAT-01 | Phase 2 | Pending |
 | CAT-02 | Phase 2 | Pending |
-| CAT-03 | Phase 2 | Pending |
+| CAT-03 | Phase 2 | Complete |
 | CAT-04 | Phase 2 | Pending |
 | CAT-05 | Phase 2 | Pending |
 | CAT-06 | Phase 2 | Pending |

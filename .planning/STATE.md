@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
 status: executing
-stopped_at: Phase 2 context gathered
-last_updated: "2026-09-11T00:12:06.312Z"
-last_activity: 2026-09-10
-last_activity_desc: Phase 01 complete, transitioned to Phase 2
-state_head: 4581bea0ca1a7b13cb4b027edbbddf3a5612fb6f
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-09-11T00:38:56.010Z"
+last_activity: 2026-09-11
+last_activity_desc: Phase 02 execution started
+state_head: 23f95e0bdaefd497112c368742d2eb5bec71a44f
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 13
-  completed_plans: 7
+  completed_plans: 8
   percent: 17
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** A technical evaluator finishes the document believing the author genuinely understands their problem — because complex things were made simple without being made wrong.
-**Current focus:** Phase 01 — Foundations — Legal Scaffolding, Numbering, Shared Deal
+**Current focus:** Phase 02 — Rule Catalog & Integrity — SKILL.md Core
 
 ## Current Position
 
-Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — READY TO EXECUTE
-Plan: Not started
+Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-09-10 — Phase 01 complete, transitioned to Phase 2
+Last activity: 2026-09-11 — Phase 02 execution started
 
 Progress: [██░░░░░░░░] 17%
 
@@ -65,6 +65,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 01 P05 | 35 min | 2 tasks | 1 files |
 | Phase 01 P06 | 30 min | 3 tasks | 1 files |
 | Phase 01 P07 | 25 min | 2 tasks | 2 files |
+| Phase 02 P01 | 11 min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,8 @@ Recent decisions affecting current work:
 - [Phase 01]: [Phase 01]: 01-05: Attribution-pointer parsing rewritten on split_sections() with a new pointer-unparseable code and carrier-path containment, closing the CR-01/BLOCKER false-green defect against production NOTICES.md/README.md content.
 - [Phase 01]: 01-06: check_repo.py's three open WARNINGs closed -- unlisted-figure's exempt region bounded by the Canonical figures table's own rows (not just the next heading), MC ID range enforcement split into per-dimension blocks (mc_ranges) instead of one aggregate range, and both undeclared ceilings (value-collision matching, code-point key ordering) written into the module docstring with a pinned fixture. WR-02's stronger key-binding fix deferred to a later phase (likely Phase 5) since it would rewrite the frozen Canonical figures interface. — Closes the WARNING-class findings 01-VERIFICATION.md and 01-REVIEW.md left behind the BLOCKER; the plan's own must_haves required per-block MC enforcement and end-of-file figure coverage as CAT-07/EX-01 edge cases.
 - [Phase 01]: 01-07: --mutation-test mode added to tools/check_repo.py, injecting one named defect per violation code (all 10) into a throwaway copy of the real repository and asserting it fires; wired into CI between the self-test and the live check, closing the regression class behind Phase 1's BLOCKER rather than only today's instances. — The verifier's strongest evidence was a manual mutation (delete the pointer line, observe 0 violations); committing that method as a CI-enforced mode prevents any future edit from silently making a check inert again.
+- [Phase 02]: 02-01: Checkpoint resolved adopt-as-proposed — marker keywords GAP/REVIEW (categories commitment/reference/competitor/compliance), register heading '## Unresolved before this document is sent', and the 31-rule ID allocation map frozen exactly as proposed, no field amended. — These become one-way interfaces Phases 3-5 bind to (check output grouping, committed examples, linter parsing); amending after adoption would invalidate published artifacts.
+- [Phase 02]: 02-01: SKILL.md's marker-vocabulary section uses a <rule> placeholder instead of the checkpoint's illustrative concrete IDs (PF-2.17, PF-3.3), since those sub-rules are allocated by later plans (02-03/02-04) and citing them now would fail undefined-id. — The marker grammar itself (bracket form, keywords, categories, rule-number-first ordering) is unchanged from the frozen decision — only the illustrative example numbers are deferred.
 
 ### Pending Todos
 
@@ -115,6 +118,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T23:09:45.578Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-rule-catalog-integrity-skill-md-core/02-CONTEXT.md
+Last session: 2026-09-11T00:38:55.941Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None
