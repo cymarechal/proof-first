@@ -1359,12 +1359,25 @@ MUTATIONS = [
 
 def mutation_test(repo_root):
     """Run a clean control copy, then one isolated mutation per violation
-    code, and report per-code pass/fail. Returns True only when the control
-    had no *unexpected* violations (KNOWN_OPEN_VIOLATIONS aside -- see that
+    code, and report per-code pass/fail. A code only counts as
+    discrimination-proven when it was silent on the control copy and fires
+    on its mutated copy -- silent-then-fires is what actually demonstrates
+    the check can tell good content from bad. A code that already fires on
+    the control copy cannot demonstrate that, even if it also fires after
+    the mutation, so it is counted separately as confirmed-fire-only and
+    never folded into the discrimination-proven total. This makes the
+    tool's own printed claim state-independent: the comparison runs for
+    every code regardless of whether the control happens to be clean, so a
+    future drift back over a ceiling degrades what is printed instead of
+    silently invalidating it. Returns True only when the control had no
+    *unexpected* violations (KNOWN_OPEN_VIOLATIONS aside -- see that
     constant's own comment), every mutation fired its expected code, and
-    every code in ALL_CHECK_CODES has a registered mutation."""
+    every code in ALL_CHECK_CODES has a registered mutation. A
+    confirmed-fire-only code does not by itself fail the run -- it makes
+    the run disclose rather than fail."""
     all_ok = True
-    codes_covered = set()
+    discrimination_proven = set()
+    fire_only = set()
 
     with tempfile.TemporaryDirectory(prefix='check-repo-mutation-control-') as tmp:
         control_root = Path(tmp) / 'control'
@@ -1381,6 +1394,11 @@ def mutation_test(repo_root):
         )
         if unexpected_control_violations:
             all_ok = False
+        # The control copy is the identical pre-state for every mutation --
+        # every scratch root below starts from the same _copy_repo_subset of
+        # the same tree -- so this one control run is a sound pre-state for
+        # all of them; no second control run per mutation is needed.
+        control_codes = {v[1].split(' ', 1)[0] for v in control_violations}
 
     for code, description, mutate_fn in MUTATIONS:
         with tempfile.TemporaryDirectory(prefix=f'check-repo-mutation-{code}-') as tmp:
@@ -1389,12 +1407,19 @@ def mutation_test(repo_root):
             mutate_fn(scratch_root)
             violations = run_all_checks(scratch_root)
             fired = any(line.split(' ', 1)[0] == code for _, line in violations)
-        if fired:
-            print(f"mutation-test OK: {code} {description}")
-            codes_covered.add(code)
-        else:
+        if not fired:
             print(f"mutation-test FAIL: {code} {description}")
             all_ok = False
+        elif code in control_codes:
+            fire_only.add(code)
+            print(
+                f"mutation-test FIRE-ONLY: {code} {description} "
+                f"(the control copy was already non-clean for this code, so this mutation "
+                f"cannot demonstrate discrimination between good content and bad)"
+            )
+        else:
+            discrimination_proven.add(code)
+            print(f"mutation-test OK: {code} {description}")
 
     uncovered = [c for c in ALL_CHECK_CODES if c not in {m[0] for m in MUTATIONS}]
     for code in uncovered:
@@ -1402,10 +1427,16 @@ def mutation_test(repo_root):
         all_ok = False
 
     if all_ok:
-        print(f"mutation-test PASS: {len(codes_covered)} codes proven live")
+        print(f"mutation-test PASS: {len(discrimination_proven)} codes discrimination-proven")
+        if fire_only:
+            print(
+                f"mutation-test PASS: {len(fire_only)} codes confirmed-fire-only, not "
+                f"discrimination-proven ({', '.join(sorted(fire_only))}) -- see the FIRE-ONLY "
+                f"line above for each one's reason"
+            )
     else:
-        failed = len(ALL_CHECK_CODES) - len(codes_covered)
-        print(f"mutation-test FAILED: {failed} codes not proven live")
+        failed = len(ALL_CHECK_CODES) - len(discrimination_proven) - len(fire_only)
+        print(f"mutation-test FAILED: {failed} codes not discrimination-proven")
 
     return all_ok
 
