@@ -2,12 +2,12 @@
 phase: 02-rule-catalog-integrity-skill-md-core
 verified: 2026-09-11T13:30:00Z
 status: human_needed
-score: 5/5 roadmap success criteria verified (17 requirement IDs: 16 satisfied, 1 needs human)
+score: "5/5 roadmap success criteria verified (17 requirement IDs: 16 satisfied, 1 needs human)"
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
   previous_status: gaps_found
-  previous_score: 4/5 roadmap success criteria verified (17 requirement IDs: 15 satisfied, 1 blocked, 1 needs human)
+  previous_score: "4/5 roadmap success criteria verified (17 requirement IDs: 15 satisfied, 1 blocked, 1 needs human)"
   gaps_closed:
     - "SKILL.md is under the 5,000-token progressive-disclosure ceiling (CAT-08 / Roadmap SC1) — 3,694 words / 4,802 estimated tokens, a 198-token margin, confirmed by direct `wc -w` and by `python3 tools/check_repo.py` exiting 0."
     - "`.github/workflows/ci.yml`'s three-step job is green against the real repository state — all three commands (`--self-test`, `--mutation-test`, plain run) exit 0, confirmed by running each live in this pass."
