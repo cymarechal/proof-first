@@ -21,5 +21,9 @@ ship to an installed copy of this skill.
 | PF-1.17 | Attach one comparable, verifiable proof to each capability claim |
 | PF-1.21 | Claim a differentiator only where a named alternative cannot do it |
 | PF-1.25 | Tie the outcome to the stated priority of the person who owns it |
+| PF-2.1 | Every claim carries its evidence |
+| PF-2.2 | Name the source of the evidence |
+| PF-2.3 | Adjacent evidence licenses an unhedged claim |
+| PF-2.4 | No evidence: cut the claim and mark the gap in its place |
 | PF-2.11 | Never invent a metric, a baseline, or a benchmark number |
 | PF-3.1 | The deletion test |

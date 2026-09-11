@@ -35,7 +35,7 @@ listed in `references/checklist.md`; never a number recalled from memory, and ne
 outside the stated total below. An invented rule number is a worse failure than no citation at
 all.
 
-This catalog contains 12 rules in 4 numbered sections.
+This catalog contains 16 rules in 4 numbered sections.
 
 ## Marker vocabulary
 
@@ -213,6 +213,43 @@ organization" or "the business" in the abstract.
    elegance."
 
 ## PF-2 — Proof and integrity
+
+This section is carved into two sub-blocks: Proof rules attach evidence to a claim and name where
+that evidence came from; Integrity rules refuse two classes of fabrication and flag four presales
+hazards for a human to confirm. A rule added later to one sub-block must not land inside the
+other's reserved range.
+
+### PF-2.1 — Every claim carries its evidence
+
+A sentence asserting something about the customer's estate, the vendor's capability, or an outcome
+carries the evidence for that assertion in the same sentence or the next one.
+
+**Replace with:** the customer's own stated figure, a named artefact the reader could ask for, or
+a `GAP` marker — no fourth option.
+
+### PF-2.2 — Name the source of the evidence
+
+Evidence with no named source is an assertion wearing a number. Name the source inline — the
+person, the document, or the measurement that produced it.
+
+**Replace with:** the source stated by name; "industry data" and "our experience" are not sources.
+
+### PF-2.3 — Adjacent evidence licenses an unhedged claim
+
+A claim whose evidence sits in the same or the next sentence is written flat and confident, with
+no hedge. Hedging is never the repair for missing evidence.
+
+**Replace with:** strip the hedge from an evidenced claim; send an unevidenced claim to `PF-2.4`
+instead.
+
+### PF-2.4 — No evidence: cut the claim and mark the gap in its place
+
+When no evidence exists, the claim is cut and a `GAP` marker takes its exact place, so the omission
+is visible where the claim would have been, not only in the register. The marker's rule token is
+the rule that raised it, which is what lets a check report cite an integrity finding exactly as it
+cites a prose violation.
+
+**Replace with:** `[PF-2.4 GAP: what is missing — why it is missing]`.
 
 ### PF-2.11 — Never invent a metric, a baseline, or a benchmark number
 
