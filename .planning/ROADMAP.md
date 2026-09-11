@@ -69,7 +69,7 @@ Plans:
   4. Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite.
   5. Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve.
 
-**Plans**: 6/6 plans executed
+**Plans**: 9 plans — 6/6 executed, 3 gap-closure plans added after verification found gaps
 
 Plans:
 **Wave 1**
@@ -95,6 +95,15 @@ Plans:
 **Wave 6** *(blocked on Wave 5 completion)*
 
 - [x] 02-06-PLAN.md — Enforcement: four frontmatter codes, the stated-count and line-ceiling codes, PF sub-block containment, and twenty violation codes proven live
+
+**Gap closure Wave 1** *(from 02-VERIFICATION.md; run with `/gsd-execute-phase 2 --gaps-only`)*
+
+- [ ] 02-07-PLAN.md — CAT-08's token ceiling met by moving the 20 worked ✗/✓ pairs into `references/` and tightening prose, leaving every rule, every constructive half and every enforcement path intact; closes the red CI step by construction
+
+**Gap closure Wave 2** *(blocked on gap closure Wave 1)*
+
+- [ ] 02-08-PLAN.md — `--mutation-test` asserts discrimination instead of firing, reports any fire-only code separately, empties the stale known-open allowance, and corrects both overclaiming docstrings
+- [ ] 02-09-PLAN.md — README's Status prose reconciled with its own tree and the repository, the pending trigger observations made attributable, and WINDOWS ids 3 and 4 routed to human checks rather than machine-closed
 
 ### Phase 3: Completeness Audit & Artifact Patterns
 
