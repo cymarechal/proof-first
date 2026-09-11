@@ -142,10 +142,14 @@ Violation codes implemented in this file:
                       not enforce the specification's own character-set
                       or length rules for `name`.
   frontmatter-description-invalid - a skills/*/SKILL.md's frontmatter
-                      `description` is absent, empty after whitespace
-                      collapse, shorter than 200 characters, or longer
-                      than 1024 characters, naming the measured length
-                      and the bound it broke. Declared ceiling: 200 is
+                      `description` key is present but, after whitespace
+                      collapse, is empty, shorter than 200 characters, or
+                      longer than 1024 characters, naming the measured
+                      length and the bound it broke. A frontmatter with no
+                      `description` key at all is frontmatter-unparseable's
+                      missing-required-key case, not this code's -- the
+                      length evaluation below only runs once the key is
+                      known to be present. Declared ceiling: 200 is
                       this project's own chosen floor, not a
                       specification requirement; 1024 is the
                       specification's own ceiling, used here unchanged.
@@ -1045,22 +1049,25 @@ def run_all_checks(repo_root):
 # ---------------------------------------------------------------------------
 # Known, tracked, currently-open violations -- see .planning/WINDOWS.md
 #
-# skill-token-budget-exceeded is, as of this writing, a real and open
-# finding against CAT-08: skills/proof-first/SKILL.md's own word-count
-# estimate genuinely exceeds the 5,000-token ceiling this check enforces
-# (see the docstring paragraph for the derivation). This is not a defect in
-# the check -- the live `check_repo.py` run below still reports it in full,
-# unsuppressed. The one place this constant is consulted is mutation-test's
-# CONTROL step, which is otherwise a "this repository has zero violations"
-# assertion; without this narrow, named allowance, adding this one already-
-# true violation would make mutation-test's CONTROL step permanently red
-# for a reason mutation-test itself did not introduce and cannot fix,
-# masking any *different*, truly unexpected control violation introduced
-# later. Every other code stays held to the original, unweakened "zero
-# violations on an unmutated copy" bar.
+# This set is deliberately empty. It previously excused
+# skill-token-budget-exceeded against skills/proof-first/SKILL.md
+# (.planning/WINDOWS.md id 5), but that finding is now closed -- 02-07's
+# trim brought the file under the 5,000-token ceiling, so mutation-test's
+# CONTROL step is back to an unweakened "zero violations on an unmutated
+# copy" assertion for every code, with no allowance masking a future
+# regression.
+#
+# If a future finding needs this set populated again, name the specific
+# (code, subject) pair it excuses -- e.g.
+# frozenset({('skill-token-budget-exceeded', 'skills/proof-first/SKILL.md')})
+# -- never a bare code. A bare code excuses every subject that code could
+# ever fire against, so a second skill folder independently breaching the
+# same ceiling for an unrelated reason would be silently absorbed into the
+# known-open bucket instead of surfacing as the new, unexpected regression
+# it actually is (02-REVIEW.md WR-01).
 # ---------------------------------------------------------------------------
 
-KNOWN_OPEN_VIOLATIONS = frozenset({'skill-token-budget-exceeded'})
+KNOWN_OPEN_VIOLATIONS = frozenset()
 
 
 # ---------------------------------------------------------------------------
@@ -1318,12 +1325,13 @@ def _mutate_skill_too_long(root):
 
 
 def _mutate_skill_token_budget_exceeded(root):
-    """Append filler words to the real SKILL.md, further increasing its
-    estimated token count. The real file already exceeds the ceiling
-    before this mutation (a known, tracked, open finding -- see
-    KNOWN_OPEN_VIOLATIONS and .planning/WINDOWS.md); this mutation still
-    registers a named, independent defect so the code is proven to react
-    to a fresh injected change, not merely to already-present content."""
+    """Append filler words to the real SKILL.md, pushing its estimated
+    token count over the ceiling. The control copy is under the ceiling
+    (3,694 words / 4,802 estimated tokens as of 02-07's trim, a 198-token
+    margin below the 5,000-token ceiling), so this mutation is clean ->
+    fires like every other mutation: mutation_test()'s discrimination
+    comparison applies to this code exactly as it applies to every other
+    one, rather than depending on a pre-trimmed scratch copy."""
     path = root / 'skills' / 'proof-first' / 'SKILL.md'
     text = path.read_text(encoding='utf-8')
     if not text.endswith('\n'):
@@ -1353,7 +1361,7 @@ MUTATIONS = [
     ('catalog-count-unstated', "delete the stated-count line from the real skills/proof-first/SKILL.md", _mutate_catalog_count_unstated),
     ('catalog-count-mismatch', "change the rule-count number in the real skills/proof-first/SKILL.md's stated-count line", _mutate_catalog_count_mismatch),
     ('skill-too-long', "append filler lines to the real skills/proof-first/SKILL.md past its 500-line ceiling", _mutate_skill_too_long),
-    ('skill-token-budget-exceeded', "append filler words to the real skills/proof-first/SKILL.md, further increasing its already-over-ceiling estimated token count", _mutate_skill_token_budget_exceeded),
+    ('skill-token-budget-exceeded', "append filler words to the real skills/proof-first/SKILL.md, an under-ceiling control, pushing its estimated token count over the ceiling", _mutate_skill_token_budget_exceeded),
 ]
 
 
