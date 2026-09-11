@@ -26,4 +26,10 @@ ship to an installed copy of this skill.
 | PF-2.3 | Adjacent evidence licenses an unhedged claim |
 | PF-2.4 | No evidence: cut the claim and mark the gap in its place |
 | PF-2.11 | Never invent a metric, a baseline, or a benchmark number |
+| PF-2.12 | Never invent a reference customer, a logo, or a named account |
+| PF-2.13 | An absence found by the additive sweep is marked like any other gap |
+| PF-2.14 | Flag commitment-shaped language |
+| PF-2.15 | Flag customer reference details that need disclosure permission |
+| PF-2.16 | Flag competitor comparisons |
+| PF-2.17 | Flag compliance, certification, and export claims |
 | PF-3.1 | The deletion test |

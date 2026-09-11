@@ -18,7 +18,7 @@ thing that two bare numbers (`2.3` and `2`) drawn from unrelated catalogs would 
 |---|---|---|---|---|
 | PF-0 | PF-0.1-PF-0.9 | Opening / Reframe | 1 | PF-0.2 |
 | PF-1 | PF-1.1-PF-1.28 | Structure — the message-articulation spine | 9 | PF-1.26 |
-| PF-2 | PF-2.1-PF-2.20 | Proof and Integrity | 5 | PF-2.12 |
+| PF-2 | PF-2.1-PF-2.20 | Proof and Integrity | 11 | PF-2.18 |
 | PF-3 | PF-3.1-PF-3.10 | Specificity and Buzzwords | 1 | PF-3.2 |
 | PF-4 | PF-4.1-PF-4.20 | Prose Mechanics | 0 | PF-4.1 |
 | PF-5 | PF-5.1-PF-5.10 | Consistency and Voice | 0 | PF-5.1 |
@@ -98,6 +98,12 @@ adds `MC-*` rows as the completeness audit is written.
 | PF-2.3 | Adjacent evidence licenses an unhedged claim | SKILL.md | v0.1.0 |
 | PF-2.4 | No evidence: cut the claim and mark the gap in its place | SKILL.md | v0.1.0 |
 | PF-2.11 | Never invent a metric, a baseline, or a benchmark number | SKILL.md | v0.1.0 |
+| PF-2.12 | Never invent a reference customer, a logo, or a named account | SKILL.md | v0.1.0 |
+| PF-2.13 | An absence found by the additive sweep is marked like any other gap | SKILL.md | v0.1.0 |
+| PF-2.14 | Flag commitment-shaped language | SKILL.md | v0.1.0 |
+| PF-2.15 | Flag customer reference details that need disclosure permission | SKILL.md | v0.1.0 |
+| PF-2.16 | Flag competitor comparisons | SKILL.md | v0.1.0 |
+| PF-2.17 | Flag compliance, certification, and export claims | SKILL.md | v0.1.0 |
 | PF-3.1 | The deletion test | SKILL.md | v0.1.0 |
 
 ## Deprecated IDs

@@ -35,7 +35,7 @@ listed in `references/checklist.md`; never a number recalled from memory, and ne
 outside the stated total below. An invented rule number is a worse failure than no citation at
 all.
 
-This catalog contains 16 rules in 4 numbered sections.
+This catalog contains 22 rules in 4 numbered sections.
 
 ## Marker vocabulary
 
@@ -45,9 +45,9 @@ inside the bracket:
 
 - `[<rule> GAP: what is missing]` — an evidence gap: a claim that needed a number, a source, or a
   fact that was not supplied or measured. See PF-2.11 below for a worked instance.
-- `[<rule> REVIEW (category): what needs confirming]` — a flag needing human confirmation before
-  the document ships. The category is always exactly one of `commitment`, `reference`,
-  `competitor`, or `compliance`.
+- `[<rule> REVIEW (<one of the four categories below>): what needs confirming]` — a flag needing
+  human confirmation before the document ships. The four categories are exactly `commitment`,
+  `reference`, `competitor`, and `compliance` — see PF-2.14 through PF-2.17 below.
 - `[<rule>: customer's term, retained — source]` — a customer-verbatim term that the deletion
   test would otherwise remove, kept and marked instead.
 
@@ -265,6 +265,95 @@ need to be measured.
 ✓ "Settlement batches will complete inside the window they currently overrun; Halverton
    Mutual has never measured the size of that overrun — [PF-2.11 GAP: no measured
    baseline for the settlement batch overrun]."
+
+### PF-2.12 — Never invent a reference customer, a logo, or a named account
+
+Refuse to name a client, a logo, or an account as a reference unless the writer supplied it as a
+fact. A named party invented to sound like a proof point is a fabrication the reader has no way to
+detect until they ask for it.
+
+**Replace with:** the true part of the sentence, with a `GAP` marker in place of the named
+reference — never a plausible anonymised substitute standing in for it.
+
+✗ "A large regulated insurer already runs this exact migration pattern in production."
+✓ "Kestrel Systems Group has not been given a reference customer to cite for this migration
+   pattern — [PF-2.12 GAP: no reference customer supplied]."
+
+### PF-2.13 — An absence found by the additive sweep is marked like any other gap
+
+The additive sweep specified later in this catalog checks for a missing differentiator, a missing
+baseline, or a missing reframe. Each absence it finds raises a `GAP` marker through the same
+mechanism as an invented number, so a thin-input draft comes back heavily marked — the correct
+signal, not a defect.
+
+**Replace with:** `[PF-2.13 GAP: what the sweep found missing — why it is missing]`.
+
+✗ "Kestrel Systems Group delivers landing-zone governance for the new account structure."
+✓ "Kestrel Systems Group delivers landing-zone governance for the new account structure —
+   [PF-2.13 GAP: no differentiator supplied against either rival bidder for this capability]."
+
+### PF-2.14 — Flag commitment-shaped language
+
+Language that reads as a promise about a date, a volume, a performance level, or an outcome can
+become a contractual warranty, and this catalog cannot judge whether a given sentence forms one.
+It raises `REVIEW (commitment)` rather than deciding.
+
+**Replace with:** restate as what the vendor will do with the buyer's own stated precondition
+attached, or keep the commitment and carry the marker for a human to confirm.
+
+✗ "Kestrel Systems Group will complete the migration within Halverton Mutual's 8-month
+   examination window."
+✓ "Kestrel Systems Group's own most comparable prior migration programme ran 14 months, longer
+   than Halverton Mutual's 8-month examination window — [PF-2.14 REVIEW (commitment): confirm
+   the proposed timeline against that comparable duration before this date is promised]."
+
+### PF-2.15 — Flag customer reference details that need disclosure permission
+
+Naming a prior client, quoting them, or describing their estate specifically enough to identify
+them needs that client's permission, which this catalog has no way to check. It raises
+`REVIEW (reference)`.
+
+**Replace with:** reduce the identifying detail to what the vendor can evidence without naming the
+client, with the marker carried until permission is confirmed.
+
+✗ "Our 14-month migration for a comparable regulated insurer proves we can deliver this on
+   schedule."
+✓ "Kestrel Systems Group's own most comparable prior migration programme ran 14 months —
+   [PF-2.15 REVIEW (reference): confirm that prior client has agreed to be cited before this
+   comparison ships]."
+
+### PF-2.16 — Flag competitor comparisons
+
+A claim about what a named rival does, does not do, or cannot do creates exposure this catalog
+cannot assess. It raises `REVIEW (competitor)`.
+
+**Replace with:** restate the claim as what this vendor does, evidenced, with no assertion about
+the rival — and keep the marker if the comparison must stay.
+
+✗ "Ardent Digital manages 62% of the estate today and cannot deliver the governance boundary
+   Halverton Mutual needs — only Kestrel Systems Group can."
+✓ "Kestrel Systems Group delivers landing-zone governance through account-level guardrails
+   across the new account structure — [PF-2.16 REVIEW (competitor): confirm no claim about
+   the incumbent's capability is implied before this ships]."
+
+### PF-2.17 — Flag compliance, certification, and export claims
+
+A statement that the vendor holds a certification, meets a control, or may export a capability is
+external state this catalog cannot verify. It raises `REVIEW (compliance)`.
+
+**Replace with:** narrow the claim to exactly what the vendor holds today, with the gap between
+that and what the buyer asked for stated plainly rather than omitted.
+
+✗ "Kestrel Systems Group meets Halverton Mutual's SOC 2 Type II requirement."
+✓ "Kestrel Systems Group holds a SOC 2 Type I report today; Halverton Mutual's RFP requires
+   Type II, and Kestrel's Type II observation window closes after the 2026-10-30 submission
+   date — [PF-2.17 REVIEW (compliance): confirm this gap is acceptable to the buyer before
+   this ships]."
+
+The closed `REVIEW` category vocabulary — `commitment`, `reference`, `competitor`, `compliance` —
+maps one-to-one onto the four rules above: `PF-2.14` raises `commitment`, `PF-2.15` raises
+`reference`, `PF-2.16` raises `competitor`, and `PF-2.17` raises `compliance`, so a reader and a
+later linter both have the mapping in one place.
 
 ## PF-3 — Specificity and buzzwords
 
