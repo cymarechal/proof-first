@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
 status: executing
-stopped_at: Completed 02-07-PLAN.md
-last_updated: "2026-09-11T04:35:53.182Z"
+stopped_at: Completed 02-08-PLAN.md
+last_updated: "2026-09-11T04:43:12.335Z"
 last_activity: 2026-09-11
 last_activity_desc: Phase 02 execution started
-state_head: ed869a470697c30cb3679922215221e0d13c6c98
+state_head: f04e29876918f32ef883947bc7ce144502ecb29d
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 16
-  completed_plans: 14
+  completed_plans: 15
   percent: 17
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — EXECUTING
-Plan: 2 of 9
+Plan: 3 of 9
 Status: Ready to execute
 Last activity: 2026-09-11 — Phase 02 execution started
 
@@ -72,6 +72,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 02 P05 | 12min | 2 tasks | 4 files |
 | Phase 02 P06 | 22min | 2 tasks | 2 files |
 | Phase 02 P07 | 25min | 3 tasks | 3 files |
+| Phase 02 P08 | 20min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -111,6 +112,7 @@ Recent decisions affecting current work:
 - [Phase 02]: 02-06: Frontmatter validity, stated-count/registry binding, 500-line ceiling, and PF sub-block containment CI-enforced (7 codes, 20 proven live); authorized addition of skill-token-budget-exceeded (8th code) enforces CAT-08's token half and correctly fires against the real SKILL.md (~6,207 estimated tokens vs. 5,000 ceiling) -- an open, tracked content-volume finding (WINDOWS.md id 5), not resolved by re-wrapping or raising the ceiling.
 - [Phase 02]: 02-06: Fixed the plan's own action text, which named 'compatibility' as the frontmatter-unknown-key mutation target -- compatibility is one of the Agent Skills specification's six allowed keys per the plan's own interfaces table, so the literal instruction would have shipped an inert mutation. Used 'author' instead.
 - [Phase 02]: [Phase 02]: 02-07: Checkpoint resolved option-a — D-25 amended to permit a fourth Phase 2 reference file, skills/proof-first/references/worked-examples.md, carrying all 20 worked pairs verbatim; SKILL.md trimmed from 4775 to 3694 words (4802 estimated tokens) via full Replace-with and 26-of-31 rule-statement tightening, closing WINDOWS.md id 5 and making python3 tools/check_repo.py exit 0 for the first time.
+- [Phase 02]: 02-08: mutation_test() now asserts discrimination (silent-on-control, fires-on-mutated) instead of mere post-mutation firing; KNOWN_OPEN_VIOLATIONS emptied to frozenset() with a comment naming .planning/WINDOWS.md id 5 as closed; docstrings for _mutate_skill_token_budget_exceeded and frontmatter-description-invalid corrected to state what is now true, closing 02-REVIEW.md CR-01, CR-02, and WR-01.
 
 ### Pending Todos
 
@@ -135,6 +137,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-11T04:35:53.100Z
-Stopped at: Completed 02-07-PLAN.md
+Last session: 2026-09-11T04:43:12.257Z
+Stopped at: Completed 02-08-PLAN.md
 Resume file: None
