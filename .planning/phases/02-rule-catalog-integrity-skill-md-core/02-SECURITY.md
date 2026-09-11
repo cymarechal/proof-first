@@ -134,7 +134,8 @@ checklist column path-valued, this threat reopens and the anchored-regex claim w
 not save it.
 
 **Open follow-up, outside this audit's scope.** `.planning/WINDOWS.md` ids 3 and 4
-remain `open` while `02-UAT.md` records both as passed. Id 4 in particular should
+remain `open`. `02-UAT.md` records test 1 passed and test 2 **blocked** — the 14
+trigger phrasings were never run. Id 4 in particular must
 **not** be closed while all 14 Observed cells in `evals/pressure-tests.md` still
 read `not yet observed`. With `workflow.windows_enforce` on, `/gsd-ship` blocks
 while `open_count > 0`.

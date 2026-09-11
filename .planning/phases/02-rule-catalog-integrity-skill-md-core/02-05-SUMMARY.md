@@ -11,7 +11,7 @@ requires:
 provides:
   - "Write mode and check mode fully specified in SKILL.md: the three-part write-mode output shape, the register's exact three-column table, check mode's two fixed-order category groups with document-order/ascending-ID tiebreaks, D-17's surviving-marker contract, and the checklist.md citation gate"
   - "The two-pass self-check (subtractive, then a mandatory additive sweep) and a two-half Limits section (cannot-verify, out-of-scope)"
-  - "evals/pressure-tests.md: the trigger pressure-test method, a 9-row must-fire table and a 6-row must-not-fire table, and an honestly-unobserved Observations section"
+  - "evals/pressure-tests.md: the trigger pressure-test method, a 9-row must-fire table and a 5-row must-not-fire table, and an honestly-unobserved Observations section"
   - "README.md's Repository layout tree corrected to state which of the three Phase 2 skill files now exist"
 affects: [02-06]
 
@@ -63,7 +63,7 @@ coverage:
     human_judgment: true
     rationale: "Whether SKILL.md's new mode/self-check/Limits prose reads as this repository's own restatement (no reproduced framework wording or structure) is a semantic judgment no tool in this project's stack performs. Per workflow.human_verify_mode=end-of-phase this is harvested into the phase's end-of-phase UAT batch rather than halting this plan, exactly as 02-01 through 02-04's equivalent human-checks were deferred. A self-read during execution found no reproduced wording from any of the three anchor frameworks or from the sibling skill (structure-only precedent, per canonical_refs)."
   - id: D2
-    description: "evals/pressure-tests.md: a stated method, a 9-row must-fire table and a 6-row must-not-fire table (columns Phrasing | Expected | Observed | Date | Harness) drawn from the description's own trigger terms and near-miss boundaries, and an Observations section stating every Observed cell is honestly unobserved rather than blank or claimed, with the gap logged to .planning/WINDOWS.md"
+    description: "evals/pressure-tests.md: a stated method, a 9-row must-fire table and a 5-row must-not-fire table (columns Phrasing | Expected | Observed | Date | Harness) drawn from the description's own trigger terms and near-miss boundaries, and an Observations section stating every Observed cell is honestly unobserved rather than blank or claimed, with the gap logged to .planning/WINDOWS.md"
     requirement: "CAT-10"
     verification:
       - kind: other
@@ -107,7 +107,7 @@ status: complete
 - Specified `## Self-check before delivering`: two named passes (subtractive, then a mandatory additive sweep checking for a contrast, a metric with a baseline, a differentiator, and the opening reframe), stating plainly that a subtract-only self-check has skipped pass two.
 - Specified `## Limits`: what the skill flags but cannot verify (disclosure authorization, certification status, competitor-claim accuracy, legal exposure — with "a clean check report is not legal clearance") and what it does not produce (from PROJECT.md's Out of Scope list), plus the fact-checking disclaimer.
 - Dewrapped the entire pre-existing SKILL.md body (every soft-wrapped paragraph joined to one physical line, content unchanged) to reclaim 162 lines of budget before adding the four new sections — verified content-identical by re-running every literal grep anchor from 02-01 through 02-04's SUMMARYs against the dewrapped-only intermediate copy, and confirming `check_repo.py` still reported 0 violations before any new prose was added.
-- Created `evals/pressure-tests.md`: the method paragraph, a 9-row must-fire table (RFP response, RFI, solution proposal, executive summary, demo script, discovery notes, generic presales request, bid response, scored technical response) and a 6-row must-not-fire table (marketing/launch copy, slide deck, pricing/sizing, API docs, plain-English rewrite), and an Observations section stating every Observed cell is honestly `not yet observed` because this environment cannot drive a fresh harness session.
+- Created `evals/pressure-tests.md`: the method paragraph, a 9-row must-fire table (RFP response, RFI, solution proposal, executive summary, demo script, discovery notes, generic presales request, bid response, scored technical response) and a 5-row must-not-fire table (marketing/launch copy, slide deck, pricing/sizing, API docs, plain-English rewrite), and an Observations section stating every Observed cell is honestly `not yet observed` because this environment cannot drive a fresh harness session.
 - Logged the unobserved pressure-test as `.planning/WINDOWS.md` entry id 4 (open, unrun-verify), matching Phase 1's precedent for logging environment-limited verification steps.
 - Corrected README.md's Repository layout tree: removed `(planned)` from `skills/proof-first/`, marked `completeness-audit.md` and `artifact-patterns.md` individually as `(planned)` (the two remaining Phase 3 files), and changed `evals/` from a single `(planned)` line to a two-level entry showing `pressure-tests.md` beneath it. No other line in README.md changed.
 

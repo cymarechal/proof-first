@@ -142,3 +142,44 @@ Neither WINDOWS.md id 3 nor id 4 was touched by this pass, exactly as instructed
 
 _Verified: 2026-09-11_
 _Verifier: Claude (gsd-verifier)_
+
+---
+
+## Addendum 2026-09-11 — post-verification corrections
+
+Two things recorded above have since changed. Both are stated here rather than
+edited in place, so the original measurements stay auditable against the commits
+that produced them.
+
+**1. The checker is now 22 codes, not 21.** Every "21 codes" figure in this
+report (frontmatter `re_verification.gaps_closed`, the Evidence table rows for
+`--self-test` and `--mutation-test`, and the mutation-test overclaim entry) was
+true when measured at commit `4b9bf79`. Commit `42607c4` then added
+`catalog-opening-rule-count`, closing CAT-03's "exactly one opening rule" with a
+check, self-test fixtures, and its own mutation. The live suite now prints
+`self-test PASS` over 22 codes and `mutation-test PASS: 22 codes
+discrimination-proven`, still 0 violations, all three commands exit 0. The
+finding those rows recorded — that discrimination is genuinely measured rather
+than asserted — is unchanged and now covers one more code.
+
+**2. UAT test 2 was recorded pass, then corrected to blocked.** Commit `50ed9fd`
+reverted this report's frontmatter `status` from `passed` back to `human_needed`.
+The operator confirmed the 14 trigger phrasings in `evals/pressure-tests.md` were
+never run, so CAT-10 remains `? NEEDS HUMAN` exactly as this report's
+per-requirement table already graded it, and `score:` ("16 satisfied, 1 needs
+human") remains accurate. `human_verification` item 1 (paraphrase-boundary read)
+was signed off at UAT and stands; item 2 is unmet and is the sole blocker on
+phase advancement. `.planning/REQUIREMENTS.md` had CAT-10 marked `[x]` /
+`Complete` since commit `a39dc95` — before verification ran — and has now been
+corrected to match this report.
+
+**Flagged, not resolved: CAT-09 rests on the same evidence class as CAT-10.**
+CAT-09 reads "SKILL.md frontmatter validates against the Agent Skills allow-list
+**and loads without error in every target harness**" and is graded `✓ SATISFIED`
+above. The allow-list half is genuinely proven — four `frontmatter-*` codes,
+each mutation-proven. The "loads in every target harness" half has never been
+observed in any harness, which is the same unobserved state that keeps CAT-10 at
+`? NEEDS HUMAN`. This is not a claim that the verdict is wrong; the two halves
+differ in how much a static check can carry. But under this repository's own
+evidence rule the asymmetry should be settled deliberately at Phase 6 rather than
+left implicit, and it is recorded here so it is not missed.
