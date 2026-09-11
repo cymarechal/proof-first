@@ -69,7 +69,32 @@ Plans:
   4. Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite.
   5. Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve.
 
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Tracer: three rules (PF-0.1, PF-2.11, PF-3.1) end-to-end in a real skill folder, registered in NUMBERING.md and indexed in checklist.md, with `catalog-id-drift` proven live and the mutation control copy widened to include `skills/`
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — PF-1: the Command of the Message spine, nine rules across the seven frozen sub-blocks, plus the mid-draft line-count checkpoint
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-03-PLAN.md — PF-2: four Proof rules and seven Integrity rules, with each of the four presales hazards as its own numbered, citable rule
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 02-04-PLAN.md — PF-3.2/PF-3.3 and the deletion-test reference table's four documented classes, PF-4's self-contained prose mechanics, PF-5's protective rules, and the final line measurement
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 02-05-PLAN.md — Write mode, check mode, the two-pass self-check, the register and Limits sections, the recorded trigger pressure-test, and the README layout correction
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 02-06-PLAN.md — Enforcement: four frontmatter codes, the stated-count and line-ceiling codes, PF sub-block containment, and twenty violation codes proven live
 
 ### Phase 3: Completeness Audit & Artifact Patterns
 
@@ -136,7 +161,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
-| 2. Rule Catalog & Integrity — SKILL.md Core | 0/TBD | Not started | - |
+| 2. Rule Catalog & Integrity — SKILL.md Core | 0/6 | Planned     | - |
 | 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
