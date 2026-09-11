@@ -48,6 +48,7 @@ Every marker produced in a document is also listed, once drafting is complete, i
 
 - Before applying the deletion test to a compound term, or to any term appearing in the customer's own supplied source material, read `references/deletion-test.md`.
 - Before emitting any rule citation in check mode, read `references/checklist.md`.
+- Before writing or checking a ✗/✓ contrast for a rule, read `references/worked-examples.md`.
 
 ## PF-0 — Opening and reframe
 
@@ -232,9 +233,6 @@ A claim about what a named rival does, does not do, or cannot do creates exposur
 A statement that the vendor holds a certification, meets a control, or may export a capability is external state this catalog cannot verify. It raises `REVIEW (compliance)`.
 
 **Replace with:** narrow the claim to exactly what the vendor holds today, with the gap between that and what the buyer asked for stated plainly rather than omitted.
-
-✗ "Kestrel Systems Group meets Halverton Mutual's SOC 2 Type II requirement."
-✓ "Kestrel Systems Group holds a SOC 2 Type I report today; Halverton Mutual's RFP requires Type II, and Kestrel's Type II observation window closes after the 2026-10-30 submission date — [PF-2.17 REVIEW (compliance): confirm this gap is acceptable to the buyer before this ships]."
 
 The closed `REVIEW` category vocabulary — `commitment`, `reference`, `competitor`, `compliance` — maps one-to-one onto the four rules above: `PF-2.14` raises `commitment`, `PF-2.15` raises `reference`, `PF-2.16` raises `competitor`, and `PF-2.17` raises `compliance`, so a reader and a later linter both have the mapping in one place.
 
