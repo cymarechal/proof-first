@@ -22,12 +22,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Integrity
 
-- [ ] **INT-01**: Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications
+- [x] **INT-01**: Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications
 - [ ] **INT-02**: Skill marks an evidence gap for a human to fill instead of filling it with plausible text
-- [ ] **INT-03**: Skill flags commitment-shaped language that could become a contractual warranty
-- [ ] **INT-04**: Skill flags customer reference details that need disclosure permission before use
-- [ ] **INT-05**: Skill flags competitor comparisons that create legal exposure
-- [ ] **INT-06**: Skill flags compliance, certification, and export claims for human verification
+- [x] **INT-03**: Skill flags commitment-shaped language that could become a contractual warranty
+- [x] **INT-04**: Skill flags customer reference details that need disclosure permission before use
+- [x] **INT-05**: Skill flags competitor comparisons that create legal exposure
+- [x] **INT-06**: Skill flags compliance, certification, and export claims for human verification
 
 ### Completeness Audit
 
@@ -139,12 +139,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-08 | Phase 2 | Pending |
 | CAT-09 | Phase 2 | Pending |
 | CAT-10 | Phase 2 | Pending |
-| INT-01 | Phase 2 | Pending |
+| INT-01 | Phase 2 | Complete |
 | INT-02 | Phase 2 | Pending |
-| INT-03 | Phase 2 | Pending |
-| INT-04 | Phase 2 | Pending |
-| INT-05 | Phase 2 | Pending |
-| INT-06 | Phase 2 | Pending |
+| INT-03 | Phase 2 | Complete |
+| INT-04 | Phase 2 | Complete |
+| INT-05 | Phase 2 | Complete |
+| INT-06 | Phase 2 | Complete |
 | AUD-01 | Phase 3 | Pending |
 | AUD-02 | Phase 3 | Pending |
 | AUD-03 | Phase 3 | Pending |
