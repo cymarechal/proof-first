@@ -11,6 +11,29 @@ claimed as a result. Trigger reliability at scale — a measured rate across man
 models — is Phase 5's eval-harness work; this file records a method and, where available, a real
 observation, never an extrapolated figure.
 
+## Scope
+
+The 14 phrasings below were authored against, and must be run against, the frontmatter
+`description` in `skills/proof-first/SKILL.md` as of the commit this note lands in. That
+description's first line reads `Write or check RFP and RFI responses, solution proposals,
+executive` and its whitespace-collapsed length is 439 characters — both greppable facts an
+auditor can check against the live file without this note carrying a second copy of the
+description text, which would only create a place for the two to silently drift apart.
+
+The Phase 2 gap-closure trim (plan 02-07) did not modify this `description` — its frontmatter is
+byte-identical before and after that trim (sha256 of `SKILL.md`'s first 14 lines:
+`d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`) — so every row below remains
+runnable exactly as written; none was invalidated by that trim.
+
+An observation recorded in the tables below is valid only for the `description` it was run
+against. If the `description` changes in a later phase, previously recorded observations must be
+re-run against the new text rather than carried forward as still-current.
+
+No observation exists yet, for either table. This execution environment cannot start a fresh
+harness session, install the skill into it, and read back whether the skill activated — that is
+an interactive, per-session harness action outside what this environment can perform. This is a
+statement of what has not been done, not a hedge implying the rows are probably fine.
+
 ## Must fire
 
 Each phrasing below draws on a term the frontmatter `description` itself front-loads (RFP, RFI,
