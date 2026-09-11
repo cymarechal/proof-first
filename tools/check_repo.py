@@ -960,6 +960,38 @@ def check_catalog_count(allocated, repo_root):
     return violations
 
 
+def check_catalog_opening_rule_count(allocated, repo_root):
+    """Enforce that PF-0 (Opening / Reframe section) has exactly one allocated
+    ID, closing CAT-03. The Before-scenario / Identify-Pain / Reframe
+    convergence must resolve into a single instruction, never multiple rules
+    the writer must reconcile. This check fires if any allocated row's ID
+    starts with 'PF-0.' but the count is not exactly 1."""
+    violations = []
+    pf0_ids = [row['id'] for row in allocated if row['id'].startswith('PF-0.')]
+
+    if len(pf0_ids) != 1:
+        violations.append((
+            'PF-0',
+            f"catalog-opening-rule-count PF-0 section has {len(pf0_ids)} allocated IDs, "
+            f"but CAT-03 requires exactly 1 (Writer must get one opening rule resolving "
+            f"the Before-scenario / Identify-Pain / Reframe convergence)"
+        ))
+
+    # Also verify the checklist has exactly one PF-0.x row for consistency
+    checklist_path = repo_root / 'skills' / 'proof-first' / 'references' / 'checklist.md'
+    if checklist_path.exists():
+        checklist_ids = parse_checklist(checklist_path)
+        pf0_checklist = [id_ for id_ in checklist_ids if id_.startswith('PF-0.')]
+        if len(pf0_checklist) != 1:
+            violations.append((
+                'PF-0',
+                f"catalog-opening-rule-count references/checklist.md has {len(pf0_checklist)} PF-0 rows, "
+                f"but exactly 1 is required for consistency with the Opening section"
+            ))
+
+    return violations
+
+
 # ---------------------------------------------------------------------------
 # skills/*/SKILL.md — progressive-disclosure ceiling (CAT-08)
 # ---------------------------------------------------------------------------
@@ -1006,7 +1038,7 @@ def check_skill_token_budget(repo_root):
 
 CATALOG_CHECK_CODES = [
     'catalog-id-drift', 'catalog-count-unstated', 'catalog-count-mismatch',
-    'skill-too-long', 'skill-token-budget-exceeded',
+    'catalog-opening-rule-count', 'skill-too-long', 'skill-token-budget-exceeded',
 ]
 
 
@@ -1018,6 +1050,7 @@ def run_catalog_checks(repo_root):
     violations = []
     violations += check_catalog_id_drift(data['allocated'], repo_root)
     violations += check_catalog_count(data['allocated'], repo_root)
+    violations += check_catalog_opening_rule_count(data['allocated'], repo_root)
     violations += check_skill_too_long(repo_root)
     violations += check_skill_token_budget(repo_root)
     return violations
@@ -1340,6 +1373,23 @@ def _mutate_skill_token_budget_exceeded(root):
     path.write_text(text, encoding='utf-8')
 
 
+def _mutate_catalog_opening_rule_count(root):
+    """Add a second PF-0 rule to both NUMBERING.md and the checklist, violating
+    CAT-03 which requires exactly one opening rule resolving the Before-scenario /
+    Identify-Pain / Reframe convergence."""
+    path = root / 'NUMBERING.md'
+    text = path.read_text(encoding='utf-8')
+    text = _insert_table_rows_after_heading(
+        text, 'Allocated IDs', ['| PF-0.2 | Mutation second opening rule | SKILL.md | v0.0.0 |'])
+    path.write_text(text, encoding='utf-8')
+
+    checklist_path = root / 'skills' / 'proof-first' / 'references' / 'checklist.md'
+    checklist_text = checklist_path.read_text(encoding='utf-8')
+    checklist_text = _insert_table_rows_after_heading(
+        checklist_text, 'PF rules', ['| PF-0.2 | Mutation second opening rule |'])
+    checklist_path.write_text(checklist_text, encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -1354,6 +1404,7 @@ MUTATIONS = [
     ('license-missing', "delete the LICENSE file from the repository root", _mutate_license_missing),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
     ('catalog-id-drift', "delete one PF data row from references/checklist.md's PF rules table", _mutate_catalog_id_drift),
+    ('catalog-opening-rule-count', "add a second PF-0 rule to NUMBERING.md and checklist.md, violating CAT-03's exactly-one requirement", _mutate_catalog_opening_rule_count),
     ('frontmatter-unparseable', "remove the opening '---' line from the real skills/proof-first/SKILL.md frontmatter block", _mutate_frontmatter_unparseable),
     ('frontmatter-unknown-key', "add an 'author:' key (outside the six-key allow-list) to the real skills/proof-first/SKILL.md frontmatter block", _mutate_frontmatter_unknown_key),
     ('frontmatter-name-mismatch', "change the real skills/proof-first/SKILL.md frontmatter's name value so it no longer equals its parent directory", _mutate_frontmatter_name_mismatch),
@@ -1921,6 +1972,66 @@ def _mismatched_count_skill():
         60, _catalog_count_extra_lines('This catalog contains 5 rules in 2 numbered sections.'))
 
 
+def _single_opening_rule_numbering():
+    """A registry with exactly one PF-0 rule allocated (the good case for
+    catalog-opening-rule-count)."""
+    return """## PF reserved ranges
+| Section | Range | Concern | Allocated | Next free |
+|---|---|---|---|---|
+| PF-0 | PF-0.1-PF-0.9 | Opening | 1 | PF-0.2 |
+
+## Allocated IDs
+| ID | Title | Defined in | Added in |
+|---|---|---|---|
+| PF-0.1 | Opening rule | SKILL.md | v1.0.0 |
+
+## Deprecated IDs
+| ID | Deprecated in | Absorbed by |
+|---|---|---|
+"""
+
+
+def _multiple_opening_rules_numbering():
+    """A registry with multiple PF-0 rules allocated (the bad case for
+    catalog-opening-rule-count). Adding PF-0.2 violates CAT-03."""
+    return """## PF reserved ranges
+| Section | Range | Concern | Allocated | Next free |
+|---|---|---|---|---|
+| PF-0 | PF-0.1-PF-0.9 | Opening | 2 | PF-0.3 |
+
+## Allocated IDs
+| ID | Title | Defined in | Added in |
+|---|---|---|---|
+| PF-0.1 | Opening rule | SKILL.md | v1.0.0 |
+| PF-0.2 | Conflicting opening rule | SKILL.md | v1.0.0 |
+
+## Deprecated IDs
+| ID | Deprecated in | Absorbed by |
+|---|---|---|
+"""
+
+
+def _single_opening_rule_checklist():
+    """Checklist with exactly one PF-0 rule."""
+    return """## PF rules
+
+| ID | Rule |
+|---|---|
+| PF-0.1 | Opening rule |
+"""
+
+
+def _multiple_opening_rules_checklist():
+    """Checklist with multiple PF-0 rules (mismatches the NUMBERING.md)."""
+    return """## PF rules
+
+| ID | Rule |
+|---|---|
+| PF-0.1 | Opening rule |
+| PF-0.2 | Conflicting opening rule |
+"""
+
+
 def _subblock_numbering():
     """A PF-2 sub-block table with a deliberate gap: Proof covers
     PF-2.1-PF-2.5 and Integrity covers PF-2.15-PF-2.20, leaving
@@ -1992,6 +2103,9 @@ def self_test():
 
         token_good_root = tmp_root / 'token_good'
         token_bad_root = tmp_root / 'token_bad'
+
+        opening_good_root = tmp_root / 'opening_good'
+        opening_bad_root = tmp_root / 'opening_bad'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -2092,6 +2206,17 @@ def self_test():
         _write(token_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _token_budget_bad_skill())
         _write(token_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
 
+        # Opening-rule-count fixtures (CAT-03 enforcement): exactly one PF-0
+        # rule must exist, closing the Before-scenario / Identify-Pain /
+        # Reframe convergence into a single instruction.
+        _write(opening_good_root / 'NUMBERING.md', _single_opening_rule_numbering())
+        _write(opening_good_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(opening_good_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _single_opening_rule_checklist())
+
+        _write(opening_bad_root / 'NUMBERING.md', _multiple_opening_rules_numbering())
+        _write(opening_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(opening_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _multiple_opening_rules_checklist())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -2119,6 +2244,9 @@ def self_test():
         token_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(token_good_root)}
         token_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(token_bad_root)}
 
+        opening_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(opening_good_root)}
+        opening_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(opening_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -2126,7 +2254,7 @@ def self_test():
             unparseable_codes | escaping_codes | bad_license_codes | bad_frameworks_codes
             | bad_catalog_codes | fm_bad_codes | fm_dupkey_codes | fm_overmax_codes
             | line501_codes | count_unstated_codes | count_mismatch_codes | subblock_codes
-            | token_bad_codes
+            | token_bad_codes | opening_bad_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -2182,6 +2310,14 @@ def self_test():
             all_ok = False
         if 'skill-token-budget-exceeded' not in token_bad_codes:
             print("FAIL: skill-token-budget-exceeded did not fire on the high-word-count fixture")
+            all_ok = False
+
+        # Opening-rule-count assertions.
+        if 'catalog-opening-rule-count' in opening_good_codes:
+            print("FAIL: catalog-opening-rule-count fired on the known-good (exactly one PF-0) fixture")
+            all_ok = False
+        if 'catalog-opening-rule-count' not in opening_bad_codes:
+            print("FAIL: catalog-opening-rule-count did not fire on the multiple-opening-rules fixture")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
