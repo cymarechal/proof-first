@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-09-11T00:38:56.010Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-09-11T00:48:07.675Z"
 last_activity: 2026-09-11
 last_activity_desc: Phase 02 execution started
-state_head: 23f95e0bdaefd497112c368742d2eb5bec71a44f
+state_head: fb5f6f1b25dad677ee4b1500ca13d48223400f54
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 13
-  completed_plans: 8
+  completed_plans: 9
   percent: 17
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — EXECUTING
-Plan: 2 of 6
+Plan: 3 of 6
 Status: Ready to execute
 Last activity: 2026-09-11 — Phase 02 execution started
 
@@ -66,6 +66,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 01 P06 | 30 min | 3 tasks | 1 files |
 | Phase 01 P07 | 25 min | 2 tasks | 2 files |
 | Phase 02 P01 | 11 min | 3 tasks | 5 files |
+| Phase 02 P02 | 8 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,8 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-07: --mutation-test mode added to tools/check_repo.py, injecting one named defect per violation code (all 10) into a throwaway copy of the real repository and asserting it fires; wired into CI between the self-test and the live check, closing the regression class behind Phase 1's BLOCKER rather than only today's instances. — The verifier's strongest evidence was a manual mutation (delete the pointer line, observe 0 violations); committing that method as a CI-enforced mode prevents any future edit from silently making a check inert again.
 - [Phase 02]: 02-01: Checkpoint resolved adopt-as-proposed — marker keywords GAP/REVIEW (categories commitment/reference/competitor/compliance), register heading '## Unresolved before this document is sent', and the 31-rule ID allocation map frozen exactly as proposed, no field amended. — These become one-way interfaces Phases 3-5 bind to (check output grouping, committed examples, linter parsing); amending after adoption would invalidate published artifacts.
 - [Phase 02]: 02-01: SKILL.md's marker-vocabulary section uses a <rule> placeholder instead of the checkpoint's illustrative concrete IDs (PF-2.17, PF-3.3), since those sub-rules are allocated by later plans (02-03/02-04) and citing them now would fail undefined-id. — The marker grammar itself (bracket form, keywords, categories, rule-number-first ordering) is unchanged from the frozen decision — only the illustrative example numbers are deferred.
+- [Phase 02]: [Phase 02]: 02-02: PF-1's nine rules reference two future rule mechanisms (a PF-5 before/after presence check, a PF-2 competitor-flag rule) whose IDs are not yet allocated -- worded as prose describing the mechanism's catalog location rather than citing the literal unallocated PF-#.# token, avoiding the same undefined-id forward-reference trap 02-01 already hit.
+- [Phase 02]: [Phase 02]: 02-02: unlisted-figure's currency regex absorbs a trailing sentence-punctuation comma into the matched token, turning a valid Canonical figures value into a reported-unmatched string -- fixed by rewording two example sentences (not touching the checker), a declared ceiling of the existing tool rather than a defect.
 
 ### Pending Todos
 
@@ -118,6 +121,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-11T00:38:55.941Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-09-11T00:47:59.215Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
