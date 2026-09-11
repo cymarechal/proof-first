@@ -35,7 +35,7 @@ listed in `references/checklist.md`; never a number recalled from memory, and ne
 outside the stated total below. An invented rule number is a worse failure than no citation at
 all.
 
-This catalog contains 3 rules in 3 numbered sections.
+This catalog contains 7 rules in 4 numbered sections.
 
 ## Marker vocabulary
 
@@ -89,6 +89,62 @@ name for what it is selling.
 ✓ "Halverton Mutual's 850-VM estate is at capacity, and its nightly settlement batch
    regularly overruns its required window. This proposal describes an estate the team
    can govern, not one it has to manage VM by VM."
+
+## PF-1 — Structure
+
+The Command of the Message spine is carved into seven sub-blocks, each reserved four IDs: Before
+scenario, After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, and
+Positive Business Outcomes. A sub-block with no rule in this version is intentional headroom for a
+later minor version, not an omission.
+
+### PF-1.1 — Name the current state in the buyer's own terms
+
+Describe the before state in the words the buyer used about their own estate, never in the
+vendor's category language. A before state that only speaks the vendor's own taxonomy has not
+named anything the buyer will recognize as their situation.
+
+**Replace with:** the buyer's own phrasing drawn from supplied source material, or the concrete
+system, count, or process the buyer actually named.
+
+✗ "Halverton Mutual's infrastructure suffers from significant technical debt and sprawl."
+✓ "Halverton Mutual runs its policy-administration and settlement estate on 850 VMware vSphere
+   virtual machines and 40 Oracle Database instances, all on-premises."
+
+### PF-1.2 — Name what the current state costs
+
+A before state with no stated cost is scene-setting, not a case for change. Name the cost the
+buyer already states, never a cost invented to sound significant.
+
+**Replace with:** the run-rate figure, the manual process, or the constrained rollout the buyer
+already named — or an explicit gap marker if the buyer has never quantified it.
+
+✗ "Running the current estate is expensive and holds the business back."
+✓ "The current annual run rate is $2,300,000. Oracle Database licensing is an increasing
+   share of it with no ceiling under the existing on-premises model."
+
+### PF-1.5 — State the after-state as an observable change, paired with its before
+
+An after state ships next to the before state it replaces, so the contrast is visible on the page
+rather than left for the reader to reconstruct. A later rule in this catalog's Consistency and
+Voice section makes this pairing a checkable presence requirement, not only a style preference.
+
+**Replace with:** the paired form — before and after in the same sentence or the same pair of
+sentences.
+
+✗ "The new platform will be highly scalable and resilient."
+✓ "Failover across the 850-VM estate is a manual process today; on Amazon EC2, failover is
+   automated and no longer extends incident response time."
+
+### PF-1.9 — State the capability the buyer needs, not the product that has it
+
+State the capability as what the buyer must be able to do. A product name enters only afterward,
+as the means of delivering that capability — never as the subject of the sentence.
+
+**Replace with:** the reordering — capability stated first, product named second as the means.
+
+✗ "AWS Control Tower gives you comprehensive landing-zone governance."
+✓ "Halverton Mutual needs a landing zone it can actually govern account by account; AWS Control
+   Tower provides that governance boundary across the new account structure."
 
 ## PF-2 — Proof and integrity
 

@@ -12,5 +12,9 @@ ship to an installed copy of this skill.
 | ID | Rule |
 |---|---|
 | PF-0.1 | The opening reframe |
+| PF-1.1 | Name the current state in the buyer's own terms |
+| PF-1.2 | Name what the current state costs |
+| PF-1.5 | State the after-state as an observable change, paired with its before |
+| PF-1.9 | State the capability the buyer needs, not the product that has it |
 | PF-2.11 | Never invent a metric, a baseline, or a benchmark number |
 | PF-3.1 | The deletion test |
