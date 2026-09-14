@@ -37,10 +37,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Artifact Patterns
 
-- [ ] **ART-01**: Writer gets an RFP/RFI response pattern covering answer-first ordering, compliance-versus-value separation, and mirroring the buyer's stated evaluation criteria
-- [ ] **ART-02**: Writer gets a solution proposal pattern covering architecture narrative, required-capability mapping, and risk treatment
-- [ ] **ART-03**: Writer gets an executive summary pattern that opens with the problem reframe and states the business case before the capability list
-- [ ] **ART-04**: Writer gets a demo and discovery pattern covering discovery notes, demo scripts, POC success criteria, and follow-up
+- [x] **ART-01**: Writer gets an RFP/RFI response pattern covering answer-first ordering, compliance-versus-value separation, and mirroring the buyer's stated evaluation criteria
+- [x] **ART-02**: Writer gets a solution proposal pattern covering architecture narrative, required-capability mapping, and risk treatment
+- [x] **ART-03**: Writer gets an executive summary pattern that opens with the problem reframe and states the business case before the capability list
+- [x] **ART-04**: Writer gets a demo and discovery pattern covering discovery notes, demo scripts, POC success criteria, and follow-up
 
 ### Modes
 
@@ -148,10 +148,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUD-01 | Phase 3 | Complete |
 | AUD-02 | Phase 3 | Complete |
 | AUD-03 | Phase 3 | Pending |
-| ART-01 | Phase 3 | Pending |
-| ART-02 | Phase 3 | Pending |
-| ART-03 | Phase 3 | Pending |
-| ART-04 | Phase 3 | Pending |
+| ART-01 | Phase 3 | Complete |
+| ART-02 | Phase 3 | Complete |
+| ART-03 | Phase 3 | Complete |
+| ART-04 | Phase 3 | Complete |
 | MOD-01 | Phase 2 | Gaps Found |
 | MOD-02 | Phase 2 | Gaps Found |
 | MOD-03 | Phase 3 | Pending |

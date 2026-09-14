@@ -131,7 +131,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 03-03-PLAN.md — `references/artifact-patterns.md`: the classification procedure and its no-family fallback, all four artifact families with their conventions and their own expected order, and `artifact-family-section-missing` proven live
+- [x] 03-03-PLAN.md — `references/artifact-patterns.md`: the classification procedure and its no-family fallback, all four artifact families with their conventions and their own expected order, and `artifact-family-section-missing` proven live
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
