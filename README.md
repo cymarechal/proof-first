@@ -22,8 +22,10 @@ What exists today:
 - `NUMBERING.md` — the frozen rule-ID registry.
 - `skills/proof-first/SKILL.md` — the 31-rule prose catalog.
 - `skills/proof-first/references/checklist.md` — the rule-ID index.
+- `skills/proof-first/references/completeness-audit.md` — the MEDDICC-derived completeness audit, in its own `MC-` namespace.
+- `skills/proof-first/references/artifact-patterns.md` — the four artifact families' conventions and expected orders.
 - `skills/proof-first/references/deletion-test.md` — deletion-test edge cases.
-- `skills/proof-first/references/worked-examples.md` — the 20 worked ✗/✓ pairs, keyed by rule ID.
+- `skills/proof-first/references/worked-examples.md` — the 28 worked ✗/✓ pairs, keyed by rule ID.
 - `examples/deal-brief.md` — the one canonical fictional deal every worked example cites.
 - `evals/pressure-tests.md` — the trigger-pressure-test method; no observation has been recorded
   yet, see the file itself.
@@ -38,8 +40,6 @@ What does not exist yet:
 - The output style.
 - The paste-able system prompt.
 - The worked before-and-after examples.
-- The two Phase 3 reference files (`references/completeness-audit.md`,
-  `references/artifact-patterns.md`).
 - A run evaluation benchmark (the pressure-test method exists; no observations are recorded yet).
 
 No measured claim is published in this repository yet. The benchmark has not run. Any number
@@ -58,8 +58,8 @@ proof-first/
 │       ├── SKILL.md
 │       └── references/
 │           ├── checklist.md
-│           ├── completeness-audit.md   (planned)
-│           ├── artifact-patterns.md    (planned)
+│           ├── completeness-audit.md
+│           ├── artifact-patterns.md
 │           ├── deletion-test.md
 │           └── worked-examples.md
 ├── output-styles/

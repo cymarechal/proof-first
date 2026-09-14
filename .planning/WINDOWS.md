@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 2
+open_count: 3
 waived_count: 0
 fixed_count: 3
-total_count: 5
-last_updated: 2026-09-11T04:32:38.278Z
+total_count: 6
+last_updated: 2026-09-14T08:17:27.877Z
 ---
 
 # Broken Windows Ledger
@@ -20,6 +20,7 @@ last_updated: 2026-09-11T04:32:38.278Z
 | 3 | 02 | unrun-verify | skills/proof-first/SKILL.md |  | Tracer feedback human-check (02-01 Task 1): SOURCES.md reproduction-boundary read plus PF-0.1/PF-3.1 framing judgment (CAT-03/CAT-04 flagged assumptions A-03/A-04) - signed off at end-of-phase UAT 2026-09-11 (02-UAT.md test 1, result pass); stays open because the formal reproduction-boundary gate is Phase 6 LEG-04 | open |  | 2026-09-11T00:38:23.292Z |  |
 | 4 | 02 | unrun-verify | evals/pressure-tests.md |  | D-31 trigger pressure-test: must-fire/must-not-fire phrasings recorded with method only — this environment cannot drive a fresh harness session to install the skill and observe activation, so every Observed cell reads 'not yet observed'; a human must run each phrasing in a real harness session and fill in Observed/Date/Harness before this is fixed | open |  | 2026-09-11T01:22:59.066Z |  |
 | 5 | 02 | unmet-truth | skills/proof-first/SKILL.md |  | CAT-08 token half: skill-token-budget-exceeded fires against the real SKILL.md (estimated 6207 tokens, words x 1.3, against the 5000-token ceiling) -- content-volume finding, not a formatting artifact (368 lines, well under the line ceiling). Needs catalog trimming or content restructuring in a future plan; do not resolve by re-wrapping or raising the ceiling. | fixed |  | 2026-09-11T01:48:55.000Z | 2026-09-11T04:32:38.278Z |
+| 6 | 03 | unrun-verify | skills/proof-first/references/completeness-audit.md |  | The eight MC dimension names (Metric, Economic Buyer, Decision Criteria, Decision Process, Paper Process, Pain, Champion, Competition) and their MC-1 through MC-40 ID-range order were frozen in NUMBERING.md and .planning/REQUIREMENTS.md before Phase 3 began, and that order matches the MEDDICC acronym's own canonical sequence. SOURCES.md states that a source's own ordered list reproduced in its order is reproduction, not paraphrase, and that no tool in this stack performs that judgment. Phase 3 used content levers only: every dimension's audit question is written in this repository's own words, grounded entirely in examples/deal-brief.md's facts, and Phase 3 deliberately did not reorder or rename any dimension. The paraphrase-boundary judgment on the inherited ID-range order itself is routed to Phase 6's LEG-04 gate, which is this entry's closure condition. | open |  | 2026-09-14T08:17:27.877Z |  |
 
 ````json
 [
@@ -82,6 +83,18 @@ last_updated: 2026-09-11T04:32:38.278Z
     "reason": "",
     "recorded_at": "2026-09-11T01:48:55.000Z",
     "resolved_at": "2026-09-11T04:32:38.278Z"
+  },
+  {
+    "id": 6,
+    "kind": "unrun-verify",
+    "phase": "03",
+    "file": "skills/proof-first/references/completeness-audit.md",
+    "line": null,
+    "description": "The eight MC dimension names (Metric, Economic Buyer, Decision Criteria, Decision Process, Paper Process, Pain, Champion, Competition) and their MC-1 through MC-40 ID-range order were frozen in NUMBERING.md and .planning/REQUIREMENTS.md before Phase 3 began, and that order matches the MEDDICC acronym's own canonical sequence. SOURCES.md states that a source's own ordered list reproduced in its order is reproduction, not paraphrase, and that no tool in this stack performs that judgment. Phase 3 used content levers only: every dimension's audit question is written in this repository's own words, grounded entirely in examples/deal-brief.md's facts, and Phase 3 deliberately did not reorder or rename any dimension. The paraphrase-boundary judgment on the inherited ID-range order itself is routed to Phase 6's LEG-04 gate, which is this entry's closure condition.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-14T08:17:27.877Z",
+    "resolved_at": null
   }
 ]
 ````
