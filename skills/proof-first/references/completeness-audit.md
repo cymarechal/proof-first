@@ -28,6 +28,18 @@ what this dimension asks it to name honestly.
 **Replace with:** the buyer's own stated figure and the source that produced it, or a
 `[MC-1 GAP: what baseline is missing]` marker where the buyer's own figure was never captured.
 
+### MC-6 — Name the person who signs and the priority they stated in their own words
+
+A document missing this dimension addresses the buyer as an undifferentiated organisation rather
+than naming the person whose signature closes the deal, or names a title with no priority in that
+person's own words attached to it. Halverton Mutual's economic buyer is Diane Osoria, its Chief
+Financial Officer, and she states her own priorities directly. A document that substitutes a
+generic reference to "the buyer" or "stakeholders" for her name, or that states a priority in the
+vendor's language rather than hers, has not named its economic buyer.
+
+**Replace with:** the named economic buyer's role and one priority stated in their own words, or a
+`[MC-6 GAP: what is missing]` marker where neither was captured.
+
 ## What this file does not do
 
 This file is not a scoring rubric, and it is not a pass/fail gate that substitutes for a human's

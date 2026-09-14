@@ -1,9 +1,10 @@
 # Worked Examples
 
 This file carries the worked ✗/✓ contrast for each catalog rule that has one. Every fact in every
-example comes from `examples/deal-brief.md`; the rule statements themselves, and each rule's
-`**Replace with:**` line, live in `SKILL.md` — this file supplies the contrast only, keyed by the
-ID of the rule it belongs to.
+example comes from `examples/deal-brief.md`. Each rule's own statement and its `**Replace with:**`
+line live in `SKILL.md` for the prose catalog and in `references/completeness-audit.md` for the
+completeness audit — this file supplies the contrast only, keyed by the ID of the rule it belongs
+to.
 
 ## PF-0.1
 
@@ -104,3 +105,8 @@ ID of the rule it belongs to.
 
 ✗ "The proposal replaces ungoverned VM sprawl with a landing zone that will be fully governed from day one."
 ✓ "The proposal replaces ungoverned VM sprawl with a landing zone [PF-3.3: customer's term, retained — Marcus Feld, discovery] that will be fully governed from day one — [PF-2.14 REVIEW (commitment): confirm 'fully governed from day one' before this ships]."
+
+## MC-6
+
+✗ "This proposal addresses Halverton Mutual's leadership team, who value cost efficiency and operational excellence across the organization."
+✓ "Diane Osoria, Halverton Mutual's Chief Financial Officer, states her own priority directly: 'the current annual run rate down from $2,300,000 — that is the number I answer for.'"

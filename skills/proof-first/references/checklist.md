@@ -48,3 +48,4 @@ ship to an installed copy of this skill.
 | ID | Rule |
 |---|---|
 | MC-1 | Name the buyer's own measure and where its baseline came from |
+| MC-6 | Name the person who signs and the priority they stated in their own words |
