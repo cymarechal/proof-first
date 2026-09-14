@@ -26,7 +26,7 @@ Select a mode before drafting or reviewing anything:
 - **Write mode** — the request asks for new or revised presales prose (an RFP/RFI answer, a proposal section, an executive summary, demo or discovery material).
 - **Check mode** — the request asks you to review an existing draft.
 
-Apply the rule catalog below in either mode. Cite only rule numbers defined in this file or listed in `references/checklist.md`; never a number recalled from memory, and never a number outside the stated total below. An invented rule number is a worse failure than no citation at all.
+Apply the rule catalog below in either mode. Cite only rule numbers defined in this file or listed in `references/checklist.md`; never a number recalled from memory, and never a number outside the stated total below. An invented rule number is a worse failure than no citation at all. In either mode, no rule ID is cited and no finding is reported before the artifact family is named.
 
 This catalog contains 31 rules in 6 numbered sections.
 
@@ -260,7 +260,7 @@ A claim whose evidence sits adjacent to it is written flat and confident, with n
 
 Output is exactly three parts, in order: one line naming the artifact family this response assumes (an RFP answer, a proposal section, an executive summary, or demo or discovery material), the prose itself, then the trailing register. No list of applied rules follows the prose — write mode writes, check mode explains, and the register already carries everything the writer must act on.
 
-At the start of a drafting task, name what counts as customer source material — RFP question text, discovery notes, stated requirements — and ask for it once, proceeding either way. `PF-3.3` fires only against material actually supplied for this task; inferring provenance from whatever the writer pasted would let the vendor's own wording launder itself as the customer's own term. With nothing supplied, say once that the provenance override cannot fire and every term will be judged by the deletion test alone, so a writer whose own RFP vocabulary gets stripped knows supplying that text would have prevented it.
+At the start of a drafting task, name what counts as customer source material — RFP question text, discovery notes, stated requirements — and ask for it once. The ask never ends the turn: the draft follows in the same response whether or not material is supplied. `PF-3.3` fires only against material actually supplied for this task; inferring provenance from whatever the writer pasted would let the vendor's own wording launder itself as the customer's own term. With nothing supplied, say once that the provenance override cannot fire and every term will be judged by the deletion test alone, so a writer whose own RFP vocabulary gets stripped knows supplying that text would have prevented it.
 
 When a claim cannot be made, the true part of the sentence ships and a marker takes the exact place the claim would have occupied, so the omission is visible in position and not only in the register a reader may not reach. Nothing false is emitted and nothing silently disappears.
 
