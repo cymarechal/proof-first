@@ -48,6 +48,7 @@ Every marker produced in a document is also listed, once drafting is complete, i
 - Before emitting any rule citation in check mode, read `references/checklist.md`.
 - Before writing or checking a ✗/✓ contrast for a rule, read `references/worked-examples.md`.
 - Before running a document-level completeness audit, or before reporting a completeness gap in check mode, read `references/completeness-audit.md`.
+- Before classifying a document into an artifact family, or before applying that family's conventions, read `references/artifact-patterns.md`.
 
 ## PF-0 — Opening and reframe
 
@@ -282,7 +283,11 @@ Findings are grouped under two labelled sections in this fixed order: `## Integr
 
 `## Prose violations` comes second. Within a group, findings run in document order, so the writer works top to bottom through their own document; two findings on the same line are ordered by ascending rule ID. Two findings raised on the same offending text are reported as two separate blocks, each carrying its own rule ID, never merged into one.
 
-Both category headings always print. A group with nothing to report carries an explicit no-findings line rather than disappearing, so a clean document still produces a report. Check mode given no text to check says so rather than returning an empty report.
+`## Completeness gaps` comes third, carrying the document-level findings `references/completeness-audit.md` defines, each citing its own `MC-` number. `## Structural ordering` comes fourth, reporting one verdict on whether the document follows the order its classified artifact family expects; a finding there names the family and the convention it breaks and cites no rule number, because no numbered namespace covers those conventions.
+
+A writer can also ask for the completeness audit on its own, separate from a full check-mode pass; that run returns `## Completeness gaps` and its verdict alone, with no prose findings and no rewritten document — see `references/completeness-audit.md`.
+
+All four section headings always print. A group with nothing to report carries an explicit no-findings line rather than disappearing, so a clean document still produces a report. Check mode given no text to check says so rather than returning an empty report.
 
 A marker still present when check mode runs means the rule was honoured — nothing was fabricated — so it is not a prose violation. It still surfaces in the register so it cannot ship unresolved. This is what distinguishes the writer having done the right thing from the document being ready to send.
 
