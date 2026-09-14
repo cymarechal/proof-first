@@ -42,3 +42,9 @@ ship to an installed copy of this skill.
 | PF-5.1 | Keep an explicit before/after contrast |
 | PF-5.2 | Address the buyer's stated priorities in the second person |
 | PF-5.3 | Keep an evidenced claim unhedged |
+
+## MC rules
+
+| ID | Rule |
+|---|---|
+| MC-1 | Name the buyer's own measure and where its baseline came from |

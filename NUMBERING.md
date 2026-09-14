@@ -114,6 +114,7 @@ adds `MC-*` rows as the completeness audit is written.
 | PF-5.1 | Keep an explicit before/after contrast | SKILL.md | v0.1.0 |
 | PF-5.2 | Address the buyer's stated priorities in the second person | SKILL.md | v0.1.0 |
 | PF-5.3 | Keep an evidenced claim unhedged | SKILL.md | v0.1.0 |
+| MC-1 | Name the buyer's own measure and where its baseline came from | completeness-audit.md | v0.1.0 |
 
 ## Deprecated IDs
 

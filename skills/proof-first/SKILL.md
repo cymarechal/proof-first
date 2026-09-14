@@ -49,6 +49,7 @@ Every marker produced in a document is also listed, once drafting is complete, i
 - Before applying the deletion test to a compound term, or to any term appearing in the customer's own supplied source material, read `references/deletion-test.md`.
 - Before emitting any rule citation in check mode, read `references/checklist.md`.
 - Before writing or checking a ✗/✓ contrast for a rule, read `references/worked-examples.md`.
+- Before running a document-level completeness audit, or before reporting a completeness gap in check mode, read `references/completeness-audit.md`.
 
 ## PF-0 — Opening and reframe
 
