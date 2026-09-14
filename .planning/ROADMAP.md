@@ -118,9 +118,12 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 4/4 plans executed
+**Plans**: 4/5 plans executed
 
 Plans:
+
+- [ ] 03-05-PLAN.md
+
 **Wave 1**
 
 - [x] 03-01-PLAN.md — Tracer: MC-1 end-to-end in a new `references/completeness-audit.md`, registered in NUMBERING.md, indexed in a new `## MC rules` checklist section and pointed at from SKILL.md, with `mc-catalog-id-drift` and `mc-rule-in-skill` proven live; freezes the eight-ID MC map, the four check-mode report sections and their order, and the four artifact-family headings behind a blocking decision checkpoint
@@ -188,7 +191,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
-| 3. Completeness Audit & Artifact Patterns | 4/4 | In Progress|  |
+| 3. Completeness Audit & Artifact Patterns | 4/5 | In Progress|  |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
