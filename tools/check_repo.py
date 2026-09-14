@@ -214,6 +214,24 @@ Violation codes implemented in this file:
                       only — it does not detect a stated total that is
                       right while a check body is missing from the file
                       entirely; that direction is mc-catalog-id-drift's.
+  artifact-family-section-missing - a skill folder's
+                      references/artifact-patterns.md exists and is missing
+                      one of the four frozen artifact-family section
+                      headings (## RFP and RFI response, ## Solution
+                      proposal, ## Executive summary, ## Demo and discovery
+                      material). Absence of the file is not a violation,
+                      matching this checker's established posture for
+                      references/completeness-audit.md. Declared ceiling:
+                      this check is heading presence only — it says nothing
+                      about whether a section's content is correct or
+                      complete, and it does not check that each section
+                      carries exactly one **Order:** line or that the
+                      fifteen frozen element labels are present, both
+                      enforced at plan level instead of here. It also emits
+                      no violation for an extra section the file also
+                      contains: the classification section and the closing
+                      refusal section are both legitimate and neither is a
+                      family.
   skill-too-long    - a skills/*/SKILL.md exceeds 500 lines, naming the
                       measured count and the ceiling. Silent at exactly
                       500. Declared ceiling: line count is a proxy for
@@ -1167,6 +1185,73 @@ def check_mc_count(allocated, repo_root, mc_ranges):
     return violations
 
 
+# ---------------------------------------------------------------------------
+# Artifact-family section presence (P3-08) -- the four frozen artifact-family
+# section headings in references/artifact-patterns.md are a build-enforced
+# structure, not a convention: SKILL.md's classification instruction, Phase
+# 4's committed examples, and Phase 5's linter all read them verbatim.
+# ---------------------------------------------------------------------------
+
+ARTIFACT_FAMILY_SECTIONS = (
+    # Frozen interface (P3-11) -- do not reword, re-case, pluralise, or
+    # reorder these four strings. SKILL.md's classification instruction,
+    # Phase 4's committed before/after examples, and Phase 5's linter all
+    # bind to them exactly as written here.
+    'RFP and RFI response',
+    'Solution proposal',
+    'Executive summary',
+    'Demo and discovery material',
+)
+
+ARTIFACT_FAMILY_REQUIREMENT = {
+    'RFP and RFI response': 'ART-01',
+    'Solution proposal': 'ART-02',
+    'Executive summary': 'ART-03',
+    'Demo and discovery material': 'ART-04',
+}
+
+
+def check_artifact_family_sections(repo_root):
+    """For each installed skill folder (a path matching skills/*/SKILL.md)
+    whose references/artifact-patterns.md exists, require all four frozen
+    artifact-family section headings in ARTIFACT_FAMILY_SECTIONS to be
+    present, firing once per missing heading and naming the file, the
+    missing heading, and the requirement clause (ART-01..04) that family's
+    section carries.
+
+    Return no violations for a folder whose references/artifact-patterns.md
+    does not exist, checked before any read -- the same declared ceiling
+    mc-catalog-id-drift, mc-rule-in-skill, and mc-count all share: no
+    existing self-test fixture root ships that file, so an unguarded
+    implementation would fire on every one of them and disable the whole
+    suite.
+
+    Declared ceiling: this check is heading presence only. It says nothing
+    about whether a section's content is correct or complete, and it does
+    not check that each section carries exactly one **Order:** line or that
+    the fifteen frozen element labels are present -- that parity is
+    enforced at plan level, the same way the rule-heading-versus-**Replace
+    with:**-count parity is. It also emits no violation for an extra
+    section the file also contains: the classification section and the
+    closing refusal section are both legitimate and neither is a family."""
+    violations = []
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        patterns_path = skill_path.parent / 'references' / 'artifact-patterns.md'
+        if not patterns_path.exists():
+            continue
+        rel = patterns_path.relative_to(repo_root)
+        text = strip_fences(patterns_path.read_text(encoding='utf-8'))
+        sections = split_sections(text)
+        for heading in ARTIFACT_FAMILY_SECTIONS:
+            if heading not in sections:
+                requirement = ARTIFACT_FAMILY_REQUIREMENT[heading]
+                violations.append((str(rel), (
+                    f"artifact-family-section-missing {rel} is missing the "
+                    f"required '## {heading}' section, which {requirement} requires"
+                )))
+    return violations
+
+
 def check_catalog_opening_rule_count(allocated, repo_root):
     """Enforce that PF-0 (Opening / Reframe section) has exactly one allocated
     ID, closing CAT-03. The Before-scenario / Identify-Pain / Reframe
@@ -1247,6 +1332,7 @@ CATALOG_CHECK_CODES = [
     'catalog-id-drift', 'catalog-count-unstated', 'catalog-count-mismatch',
     'catalog-opening-rule-count', 'skill-too-long', 'skill-token-budget-exceeded',
     'mc-catalog-id-drift', 'mc-rule-in-skill', 'mc-count-unstated', 'mc-count-mismatch',
+    'artifact-family-section-missing',
 ]
 
 
@@ -1264,6 +1350,7 @@ def run_catalog_checks(repo_root):
     violations += check_mc_catalog_id_drift(data['allocated'], repo_root)
     violations += check_mc_rule_in_skill(repo_root)
     violations += check_mc_count(data['allocated'], repo_root, data['mc_ranges'])
+    violations += check_artifact_family_sections(repo_root)
     return violations
 
 
@@ -1633,6 +1720,17 @@ def _mutate_skill_token_budget_exceeded(root):
     path.write_text(text, encoding='utf-8')
 
 
+def _mutate_artifact_family_section_missing(root):
+    """Delete the '## Solution proposal' heading line from the copied
+    real skills/proof-first/references/artifact-patterns.md, leaving its
+    body in place -- a minimal mutation targeting exactly the heading the
+    check reads."""
+    path = root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if l.strip() != '## Solution proposal']
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 def _mutate_catalog_opening_rule_count(root):
     """Add a second PF-0 rule to both NUMBERING.md and the checklist, violating
     CAT-03 which requires exactly one opening rule resolving the Before-scenario /
@@ -1677,6 +1775,7 @@ MUTATIONS = [
     ('mc-rule-in-skill', "insert an MC-shaped rule heading into the real skills/proof-first/SKILL.md", _mutate_mc_rule_in_skill),
     ('mc-count-unstated', "delete the stated-count line from the real skills/proof-first/references/completeness-audit.md", _mutate_mc_count_unstated),
     ('mc-count-mismatch', "change the checks number in the real skills/proof-first/references/completeness-audit.md's stated-count line", _mutate_mc_count_mismatch),
+    ('artifact-family-section-missing', "delete the '## Solution proposal' heading from the real skills/proof-first/references/artifact-patterns.md, leaving its body in place", _mutate_artifact_family_section_missing),
 ]
 
 
@@ -2374,6 +2473,27 @@ def _bad_completeness_audit():
     return "### MC-1 — Fixture metric rule one\n\nBody text for fixture rule one.\n"
 
 
+def _good_artifact_patterns():
+    """All four frozen artifact-family headings, each with a short filler
+    body -- self-contained, not a copy of the real file's content."""
+    return (
+        "## RFP and RFI response\n\nFixture body.\n\n"
+        "## Solution proposal\n\nFixture body.\n\n"
+        "## Executive summary\n\nFixture body.\n\n"
+        "## Demo and discovery material\n\nFixture body.\n"
+    )
+
+
+def _bad_artifact_patterns():
+    """Omits '## Solution proposal' -- the missing-heading case
+    artifact-family-section-missing exists to catch."""
+    return (
+        "## RFP and RFI response\n\nFixture body.\n\n"
+        "## Executive summary\n\nFixture body.\n\n"
+        "## Demo and discovery material\n\nFixture body.\n"
+    )
+
+
 def _mc_rule_in_skill_bad_skill():
     """An MC-shaped rule heading defined directly inside a SKILL.md -- the
     structural violation mc-rule-in-skill exists to catch."""
@@ -2486,6 +2606,9 @@ def self_test():
         mc_count_good_root = tmp_root / 'mc_count_good'
         mc_count_unstated_root = tmp_root / 'mc_count_unstated'
         mc_count_mismatch_root = tmp_root / 'mc_count_mismatch'
+
+        artifact_good_root = tmp_root / 'artifact_good'
+        artifact_bad_root = tmp_root / 'artifact_bad'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -2635,6 +2758,22 @@ def self_test():
         _write(mc_count_mismatch_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _mc_checklist_for_count())
         _write(mc_count_mismatch_root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md', _mismatched_mc_count_completeness_audit())
 
+        # Artifact-family-section fixtures (artifact-family-section-missing):
+        # artifact_good_root's artifact-patterns.md carries all four frozen
+        # family headings; artifact_bad_root's omits one. NUMBERING.md/
+        # SKILL.md/checklist.md are the same known-consistent trio
+        # good_catalog_root/bad_catalog_root already use, so this pair
+        # isolates the one new code under test.
+        _write(artifact_good_root / 'NUMBERING.md', _good_numbering())
+        _write(artifact_good_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(artifact_good_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+        _write(artifact_good_root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md', _good_artifact_patterns())
+
+        _write(artifact_bad_root / 'NUMBERING.md', _good_numbering())
+        _write(artifact_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(artifact_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+        _write(artifact_bad_root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md', _bad_artifact_patterns())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -2672,6 +2811,9 @@ def self_test():
         mc_count_unstated_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_count_unstated_root)}
         mc_count_mismatch_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_count_mismatch_root)}
 
+        artifact_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(artifact_good_root)}
+        artifact_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(artifact_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -2680,7 +2822,7 @@ def self_test():
             | bad_catalog_codes | fm_bad_codes | fm_dupkey_codes | fm_overmax_codes
             | line501_codes | count_unstated_codes | count_mismatch_codes | subblock_codes
             | token_bad_codes | opening_bad_codes | mc_bad_codes
-            | mc_count_unstated_codes | mc_count_mismatch_codes
+            | mc_count_unstated_codes | mc_count_mismatch_codes | artifact_bad_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -2769,6 +2911,14 @@ def self_test():
             all_ok = False
         if 'mc-count-mismatch' not in mc_count_mismatch_codes:
             print("FAIL: mc-count-mismatch did not fire when the stated numbers disagree with the registry")
+            all_ok = False
+
+        # Artifact-family-section assertions.
+        if 'artifact-family-section-missing' in artifact_good_codes:
+            print("FAIL: artifact-family-section-missing fired on the known-good four-heading fixture")
+            all_ok = False
+        if 'artifact-family-section-missing' not in artifact_bad_codes:
+            print("FAIL: artifact-family-section-missing did not fire when a required heading is missing")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
