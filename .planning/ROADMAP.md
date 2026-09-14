@@ -118,7 +118,24 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Tracer: MC-1 end-to-end in a new `references/completeness-audit.md`, registered in NUMBERING.md, indexed in a new `## MC rules` checklist section and pointed at from SKILL.md, with `mc-catalog-id-drift` and `mc-rule-in-skill` proven live; freezes the eight-ID MC map, the four check-mode report sections and their order, and the four artifact-family headings behind a blocking decision checkpoint
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — The remaining seven MC dimensions, eight keyed worked pairs in `worked-examples.md`, the standalone-audit section answering AUD-03, and the MC stated-count guard proven live as two more codes
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 03-03-PLAN.md — `references/artifact-patterns.md`: the classification procedure and its no-family fallback, all four artifact families with their conventions and their own expected order, and `artifact-family-section-missing` proven live
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 03-04-PLAN.md — SKILL.md's token budget bought back by trimming restatement, then spent on the check-mode classification line, the third and fourth report sections, the standalone-audit instruction and the second reference pointer; README, the WINDOWS ledger entry routing the MC ordering tension to LEG-04, and the provisional requirement marks
 
 ### Phase 4: Distribution & Worked Examples
 
