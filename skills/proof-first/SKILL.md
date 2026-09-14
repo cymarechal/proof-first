@@ -40,9 +40,7 @@ When a rule requires marking rather than silently omitting or silently complying
 
 In every form, `<rule>` is the ID of the rule that raised the marker — never omitted, never a number invented for the occasion.
 
-A retained term under the third form is marked on its first occurrence only, not on every repetition. A term that is both customer-verbatim and integrity-risky carries both a retention marker and a `REVIEW` marker — retention is a vocabulary decision, the flag is a truth decision, and neither one suppresses the other.
-
-Every marker produced in a document is also listed, once drafting is complete, in a trailing register under the heading `## Unresolved before this document is sent`. That register's full column shape is specified in Write mode below.
+Every marker produced in a document is also listed, once drafting is complete, in a trailing register under the heading `## Unresolved before this document is sent`.
 
 ## Reference files
 
@@ -187,8 +185,6 @@ A statement that the vendor holds a certification, meets a control, or may expor
 
 **Replace with:** narrow the claim to what the vendor holds today, with the gap to what the buyer asked for stated plainly, not omitted.
 
-The closed `REVIEW` category vocabulary — `commitment`, `reference`, `competitor`, `compliance` — maps one-to-one onto the four rules above: `PF-2.14` raises `commitment`, `PF-2.15` raises `reference`, `PF-2.16` raises `competitor`, and `PF-2.17` raises `compliance`, so a reader and a later linter both have the mapping in one place.
-
 ## PF-3 — Specificity and buzzwords
 
 ### PF-3.1 — The deletion test
@@ -271,12 +267,12 @@ The register lists every marker as a three-column table, with no Owner column �
 
 | Marker | Rule | What is needed |
 |---|---|---|
-| GAP | PF-2.11 | A measured baseline for the settlement overrun |
-| REVIEW | PF-2.17 | Confirm the Type I framing is acceptable to send |
 
 Every marker appearing inline also appears as a register row.
 
 ## Check mode
+
+Check mode names the artifact family it is reading the document as before reporting any finding, states when no family fits and applies only the family-independent rules, and follows `references/artifact-patterns.md`'s classification procedure rather than restating it here.
 
 Output is a report, never a corrected document — every change stays a decision the writer makes with the rule number in front of them, so a rushed writer never gets an autocorrect that undercuts the citation this mode exists to deliver.
 
@@ -289,10 +285,6 @@ Findings are grouped under two labelled sections in this fixed order: `## Integr
 Both category headings always print. A group with nothing to report carries an explicit no-findings line rather than disappearing, so a clean document still produces a report. Check mode given no text to check says so rather than returning an empty report.
 
 A marker still present when check mode runs means the rule was honoured — nothing was fabricated — so it is not a prose violation. It still surfaces in the register so it cannot ship unresolved. This is what distinguishes the writer having done the right thing from the document being ready to send.
-
-Check mode never reports a contrast structure, a second-person address to a stated priority, or a confident evidenced claim as a violation, and never proposes a hedge as a repair — see `PF-5.1` through `PF-5.3`.
-
-Before emitting any rule citation, read `references/checklist.md`. Cite only a number defined there or in this file, never one recalled from memory, and never one outside the stated total.
 
 ## Self-check before delivering
 
