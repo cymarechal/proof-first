@@ -115,6 +115,31 @@ Violation codes implemented in this file:
                       drifted from its registry row; and it reads only
                       paths one directory level below skills/, so a
                       SKILL.md placed anywhere else is not validated.
+  mc-catalog-id-drift - for each installed skill folder (a path matching
+                      skills/*/SKILL.md) whose references/completeness-
+                      audit.md exists, the MC subset of NUMBERING.md's
+                      Allocated IDs, that file's own rule-defining
+                      headings, and references/checklist.md's listed MC
+                      rows are not all equal. Fires once per divergent ID,
+                      naming the files it is inconsistent between, via the
+                      same three-way comparison catalog-id-drift uses for
+                      the PF namespace. A skill folder with no
+                      completeness-audit.md yields no violations for that
+                      folder -- absence is not failure, matching this
+                      checker's established posture. Declared ceiling:
+                      this check compares ID sets only, exactly like
+                      catalog-id-drift; it says nothing about whether a
+                      cited MC-# token is valid, which is undefined-id's
+                      job.
+  mc-rule-in-skill  - a skills/*/SKILL.md defines an MC-# rule via a
+                      heading matching the same shape MC rule headings use
+                      in references/completeness-audit.md. AUD-02 requires
+                      every MC rule to be defined in that reference file,
+                      never blended into the prose catalog; this check
+                      turns that requirement into a build failure. Declared
+                      ceiling: this matches heading shape only -- it cannot
+                      distinguish a genuine rule definition from a heading
+                      that merely happens to look like one.
   frontmatter-unparseable - a skills/*/SKILL.md's frontmatter block has no
                       `---` delimited block at the file's first line, is
                       unterminated (no closing `---`), is missing one of
@@ -848,6 +873,7 @@ def run_frontmatter_checks(repo_root):
 # ---------------------------------------------------------------------------
 
 RULE_HEADING_RE = re.compile(r'^### (PF-\d+\.\d+) — ')
+MC_HEADING_RE = re.compile(r'^### (MC-\d+) — ')
 
 
 def parse_skill_catalog(path):
@@ -864,17 +890,63 @@ def parse_skill_catalog(path):
     return ids
 
 
-def parse_checklist(path):
-    """Return the PF IDs listed in a references/checklist.md's '## PF rules'
+def parse_completeness_audit(path):
+    """Return the ordered list of MC IDs a references/completeness-audit.md
+    *defines* via its rule headings, mirroring parse_skill_catalog's shape
+    but pointed at the MC reference file instead of SKILL.md. A heading
+    defines a rule; a bracketed marker or a prose reference only cites one,
+    and check_undefined_id already owns citations."""
+    text = strip_fences(path.read_text(encoding='utf-8'))
+    ids = []
+    for line in text.splitlines():
+        m = MC_HEADING_RE.match(line)
+        if m:
+            ids.append(m.group(1))
+    return ids
+
+
+def parse_checklist(path, section_name='PF rules'):
+    """Return the IDs listed in a references/checklist.md's named section's
     table, built on the same split_sections/table_rows pair every other
-    parser in this file reuses rather than a second table reader."""
+    parser in this file reuses rather than a second table reader. The
+    section_name default ('PF rules') preserves every existing call site's
+    behaviour unchanged; the MC call site passes 'MC rules' explicitly."""
     text = path.read_text(encoding='utf-8')
     sections = split_sections(text)
     ids = []
-    for row in table_rows(sections.get('PF rules', '')):
+    for row in table_rows(sections.get(section_name, '')):
         if row and row[0]:
             ids.append(row[0].strip())
     return ids
+
+
+def _three_way_id_diff(code, sets_by_label):
+    """Shared three-way divergence comparison behind both
+    check_catalog_id_drift (PF) and check_mc_catalog_id_drift (MC).
+    sets_by_label is an ordered sequence of exactly three (label, id_set)
+    pairs. Returns one (id, message) tuple per ID that is not present in
+    all three sets, naming which labels it is present in and which it is
+    missing from -- the same comparison shape and message wording
+    check_catalog_id_drift has always produced, now shared by construction
+    rather than by copy-paste, so a future rule about definitional
+    agreement cannot be fixed in one namespace and silently drift from the
+    other."""
+    all_ids = set()
+    for _, id_set in sets_by_label:
+        all_ids |= id_set
+    violations = []
+    for id_ in sorted(all_ids):
+        presence = [(label, id_ in id_set) for label, id_set in sets_by_label]
+        if all(present for _, present in presence):
+            continue
+        present_in = [label for label, present in presence if present]
+        missing_from = [label for label, present in presence if not present]
+        violations.append((
+            id_,
+            f"{code} {id_} is present in {', '.join(present_in)} "
+            f"but missing from {', '.join(missing_from)}",
+        ))
+    return violations
 
 
 def check_catalog_id_drift(allocated, repo_root):
@@ -899,26 +971,92 @@ def check_catalog_id_drift(allocated, repo_root):
         checklist_rel = checklist_path.relative_to(repo_root)
         checklist_ids = set(parse_checklist(checklist_path)) if checklist_path.exists() else set()
 
-        all_ids = numbering_pf_ids | skill_ids | checklist_ids
-        for id_ in sorted(all_ids):
-            in_numbering = id_ in numbering_pf_ids
-            in_skill = id_ in skill_ids
-            in_checklist = id_ in checklist_ids
-            if in_numbering and in_skill and in_checklist:
-                continue
-            present_in = []
-            missing_from = []
-            for label, present in (
-                ('NUMBERING.md', in_numbering),
-                (str(skill_rel), in_skill),
-                (str(checklist_rel), in_checklist),
-            ):
-                (present_in if present else missing_from).append(label)
-            violations.append((
-                id_,
-                f"catalog-id-drift {id_} is present in {', '.join(present_in)} "
-                f"but missing from {', '.join(missing_from)}",
-            ))
+        violations += _three_way_id_diff(
+            'catalog-id-drift',
+            [
+                ('NUMBERING.md', numbering_pf_ids),
+                (str(skill_rel), skill_ids),
+                (str(checklist_rel), checklist_ids),
+            ],
+        )
+    return violations
+
+
+def check_mc_catalog_id_drift(allocated, repo_root):
+    """Compare three sets per installed skill folder: the MC subset of
+    NUMBERING.md's Allocated IDs, references/completeness-audit.md's
+    defined-heading IDs, and references/checklist.md's '## MC rules'
+    listed rows -- the MC-namespace sibling of check_catalog_id_drift,
+    sharing its comparison body via _three_way_id_diff.
+
+    Absence is not failure: if a skill folder has no
+    references/completeness-audit.md, this function reports no violations
+    for that folder, before computing any set. This early return is
+    required, not optional: _good_numbering() (the fixture behind most
+    self-test roots, and several other roots below it) already allocates
+    MC-1 and MC-5 with no completeness-audit.md anywhere in those roots,
+    so an implementation without this guard would report "allocated in
+    NUMBERING.md, missing from the other two" and fire on every one of
+    those known-good fixtures, breaking the whole self-test suite.
+    Declared ceiling: like catalog-id-drift, this check compares ID sets
+    only -- it says nothing about whether a cited MC-# token is valid,
+    which is undefined-id's job."""
+    violations = []
+    skill_paths = sorted(repo_root.glob(SKILL_GLOB))
+    if not skill_paths:
+        return violations
+
+    numbering_mc_ids = {row['id'] for row in allocated if MC_ID_RE.match(row['id'])}
+
+    for skill_path in skill_paths:
+        audit_path = skill_path.parent / 'references' / 'completeness-audit.md'
+        if not audit_path.exists():
+            continue
+        audit_rel = audit_path.relative_to(repo_root)
+        audit_ids = set(parse_completeness_audit(audit_path))
+
+        checklist_path = skill_path.parent / 'references' / 'checklist.md'
+        checklist_rel = checklist_path.relative_to(repo_root)
+        checklist_ids = (
+            set(parse_checklist(checklist_path, 'MC rules'))
+            if checklist_path.exists() else set()
+        )
+
+        violations += _three_way_id_diff(
+            'mc-catalog-id-drift',
+            [
+                ('NUMBERING.md', numbering_mc_ids),
+                (str(audit_rel), audit_ids),
+                (str(checklist_rel), checklist_ids),
+            ],
+        )
+    return violations
+
+
+def check_mc_rule_in_skill(repo_root):
+    """Scan each skills/*/SKILL.md for a line matching the MC heading
+    shape and emit one violation per match, naming the file and the ID.
+    AUD-02 requires every MC rule to be defined in
+    references/completeness-audit.md, never blended into the prose
+    catalog; this turns that requirement into a build failure instead of
+    a convention -- the structural half of AUD-02 that mc-catalog-id-drift
+    does not cover, since that check never reads SKILL.md at all. Declared
+    ceiling: this matches heading shape only -- it cannot distinguish a
+    genuine rule definition from a heading that merely happens to look
+    like one."""
+    violations = []
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        rel = skill_path.relative_to(repo_root)
+        text = strip_fences(skill_path.read_text(encoding='utf-8'))
+        for line in text.splitlines():
+            m = MC_HEADING_RE.match(line)
+            if m:
+                mc_id = m.group(1)
+                violations.append((str(rel), (
+                    f"mc-rule-in-skill {rel} defines {mc_id} via a rule heading, "
+                    f"but AUD-02 requires every MC rule to be defined in "
+                    f"references/completeness-audit.md, never blended into the prose catalog"
+                )))
     return violations
 
 
@@ -1039,6 +1177,7 @@ def check_skill_token_budget(repo_root):
 CATALOG_CHECK_CODES = [
     'catalog-id-drift', 'catalog-count-unstated', 'catalog-count-mismatch',
     'catalog-opening-rule-count', 'skill-too-long', 'skill-token-budget-exceeded',
+    'mc-catalog-id-drift', 'mc-rule-in-skill',
 ]
 
 
@@ -1053,6 +1192,8 @@ def run_catalog_checks(repo_root):
     violations += check_catalog_opening_rule_count(data['allocated'], repo_root)
     violations += check_skill_too_long(repo_root)
     violations += check_skill_token_budget(repo_root)
+    violations += check_mc_catalog_id_drift(data['allocated'], repo_root)
+    violations += check_mc_rule_in_skill(repo_root)
     return violations
 
 
@@ -1275,6 +1416,34 @@ def _mutate_catalog_id_drift(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_mc_catalog_id_drift(root):
+    """Delete the single MC data row from references/checklist.md's
+    '## MC rules' table in the copied tree, mirroring
+    _mutate_catalog_id_drift's shape for the MC namespace."""
+    path = root / 'skills' / 'proof-first' / 'references' / 'checklist.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    h_idx = next(i for i, l in enumerate(lines) if l.strip() == '## MC rules')
+    i = h_idx + 1
+    while not lines[i].strip().startswith('|'):
+        i += 1
+    first_row_idx = i + 2  # i = header row, i+1 = separator row, i+2 = first data row
+    del lines[first_row_idx]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_mc_rule_in_skill(root):
+    """Insert one MC-shaped rule heading into the copied
+    skills/proof-first/SKILL.md. Because check_mc_catalog_id_drift compares
+    the registry, the audit file and the checklist -- and never SKILL.md --
+    this mutation fires the in-skill code alone."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    text = path.read_text(encoding='utf-8')
+    if not text.endswith('\n'):
+        text += '\n'
+    text += '\n### MC-1 — Mutation-inserted MC rule inside SKILL.md\n\nBody text.\n'
+    path.write_text(text, encoding='utf-8')
+
+
 def _mutate_frontmatter_unparseable(root):
     """Remove the real SKILL.md's opening '---' line, so no frontmatter
     block can be isolated at all."""
@@ -1413,6 +1582,8 @@ MUTATIONS = [
     ('catalog-count-mismatch', "change the rule-count number in the real skills/proof-first/SKILL.md's stated-count line", _mutate_catalog_count_mismatch),
     ('skill-too-long', "append filler lines to the real skills/proof-first/SKILL.md past its 500-line ceiling", _mutate_skill_too_long),
     ('skill-token-budget-exceeded', "append filler words to the real skills/proof-first/SKILL.md, an under-ceiling control, pushing its estimated token count over the ceiling", _mutate_skill_token_budget_exceeded),
+    ('mc-catalog-id-drift', "delete the single MC data row from references/checklist.md's MC rules table", _mutate_mc_catalog_id_drift),
+    ('mc-rule-in-skill', "insert an MC-shaped rule heading into the real skills/proof-first/SKILL.md", _mutate_mc_rule_in_skill),
 ]
 
 
@@ -2062,6 +2233,60 @@ def _subblock_numbering():
 """
 
 
+def _mc_numbering():
+    """A registry allocating a small, self-contained MC set (MC-1, MC-2)
+    inside the Metric block -- distinct from the real repository's 8-ID
+    content, per this plan's fixture-isolation discipline."""
+    return """## MC reserved blocks
+| Dimension | Range |
+|---|---|
+| Metric | MC-1-MC-5 |
+
+## Allocated IDs
+| ID | Title | Defined in | Added in |
+|---|---|---|---|
+| MC-1 | Fixture metric rule one | completeness-audit.md | v1.0.0 |
+| MC-2 | Fixture metric rule two | completeness-audit.md | v1.0.0 |
+
+## Deprecated IDs
+| ID | Deprecated in | Absorbed by |
+|---|---|---|
+"""
+
+
+def _mc_checklist():
+    """The matching MC checklist fixture, used for both the good and bad
+    mc-catalog-id-drift roots -- the divergence in the bad root comes from
+    the completeness-audit fixture omitting an ID, not from this file."""
+    return """## MC rules
+
+| ID | Rule |
+|---|---|
+| MC-1 | Fixture metric rule one |
+| MC-2 | Fixture metric rule two |
+"""
+
+
+def _good_completeness_audit():
+    """Defines exactly the two IDs _mc_numbering() allocates."""
+    return (
+        "### MC-1 — Fixture metric rule one\n\nBody text for fixture rule one.\n\n"
+        "### MC-2 — Fixture metric rule two\n\nBody text for fixture rule two.\n"
+    )
+
+
+def _bad_completeness_audit():
+    """Omits MC-2 -- present in NUMBERING.md and the checklist, missing
+    from this file, the divergence mc-catalog-id-drift must catch."""
+    return "### MC-1 — Fixture metric rule one\n\nBody text for fixture rule one.\n"
+
+
+def _mc_rule_in_skill_bad_skill():
+    """An MC-shaped rule heading defined directly inside a SKILL.md -- the
+    structural violation mc-rule-in-skill exists to catch."""
+    return "### MC-1 — Rule blended directly into SKILL.md\n\nBody text.\n"
+
+
 def _token_budget_good_skill():
     return _skill_body_at_line_count(
         10, ['### PF-0.1 — Opening rule', '', 'Short body text, well under the token budget.'])
@@ -2106,6 +2331,9 @@ def self_test():
 
         opening_good_root = tmp_root / 'opening_good'
         opening_bad_root = tmp_root / 'opening_bad'
+
+        mc_good_root = tmp_root / 'mc_good'
+        mc_bad_root = tmp_root / 'mc_bad'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -2217,6 +2445,24 @@ def self_test():
         _write(opening_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
         _write(opening_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _multiple_opening_rules_checklist())
 
+        # MC-namespace fixtures (mc-catalog-id-drift, mc-rule-in-skill):
+        # mc_good_root keeps the registry, the completeness-audit headings,
+        # and the checklist in agreement, with no MC-shaped heading in
+        # SKILL.md. mc_bad_root's completeness-audit fixture omits MC-2
+        # (firing mc-catalog-id-drift) and its SKILL.md carries an
+        # MC-shaped rule heading (firing mc-rule-in-skill) -- both codes
+        # isolated from each other since neither check reads the other
+        # check's source file.
+        _write(mc_good_root / 'NUMBERING.md', _mc_numbering())
+        _write(mc_good_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(mc_good_root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md', _good_completeness_audit())
+        _write(mc_good_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _mc_checklist())
+
+        _write(mc_bad_root / 'NUMBERING.md', _mc_numbering())
+        _write(mc_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _mc_rule_in_skill_bad_skill())
+        _write(mc_bad_root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md', _bad_completeness_audit())
+        _write(mc_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _mc_checklist())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -2247,6 +2493,9 @@ def self_test():
         opening_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(opening_good_root)}
         opening_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(opening_bad_root)}
 
+        mc_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_good_root)}
+        mc_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -2254,7 +2503,7 @@ def self_test():
             unparseable_codes | escaping_codes | bad_license_codes | bad_frameworks_codes
             | bad_catalog_codes | fm_bad_codes | fm_dupkey_codes | fm_overmax_codes
             | line501_codes | count_unstated_codes | count_mismatch_codes | subblock_codes
-            | token_bad_codes | opening_bad_codes
+            | token_bad_codes | opening_bad_codes | mc_bad_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -2318,6 +2567,20 @@ def self_test():
             all_ok = False
         if 'catalog-opening-rule-count' not in opening_bad_codes:
             print("FAIL: catalog-opening-rule-count did not fire on the multiple-opening-rules fixture")
+            all_ok = False
+
+        # MC-namespace assertions.
+        if 'mc-catalog-id-drift' in mc_good_codes:
+            print("FAIL: mc-catalog-id-drift fired on the known-good MC completeness-audit/checklist fixture")
+            all_ok = False
+        if 'mc-catalog-id-drift' not in mc_bad_codes:
+            print("FAIL: mc-catalog-id-drift did not fire when completeness-audit.md omits an allocated MC ID")
+            all_ok = False
+        if 'mc-rule-in-skill' in mc_good_codes:
+            print("FAIL: mc-rule-in-skill fired on a SKILL.md with no MC-shaped rule heading")
+            all_ok = False
+        if 'mc-rule-in-skill' not in mc_bad_codes:
+            print("FAIL: mc-rule-in-skill did not fire when SKILL.md defines an MC-shaped rule heading")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
