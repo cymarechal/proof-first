@@ -14,6 +14,9 @@ order is inherited numbering-scheme structure, fixed in this repository's regist
 file was written — it states nothing about which order is correct or original for the
 methodology these dimensions derive from.
 
+This audit contains 8 checks across 8 dimensions.
+An MC number outside that count does not exist and must never be cited.
+
 ### MC-1 — Name the buyer's own measure and where its baseline came from
 
 A document missing this dimension never names the figure the economic buyer is actually measured

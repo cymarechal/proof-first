@@ -195,6 +195,25 @@ Violation codes implemented in this file:
                       total that is right while a rule body is missing
                       from the file entirely; that direction is
                       catalog-id-drift's.
+  mc-count-unstated - a skill folder's references/completeness-audit.md
+                      exists and contains no line matching the frozen MC
+                      stated-count template ("This audit contains {N}
+                      checks across {M} dimensions."). Absence of the file
+                      is not a violation, matching mc-catalog-id-drift's
+                      and mc-rule-in-skill's own declared posture.
+                      Declared ceiling: the template is matched
+                      byte-exactly, so a reworded but equivalent sentence
+                      is reported as unstated rather than as a mismatch.
+  mc-count-mismatch - a skill folder's references/completeness-audit.md's
+                      stated check count or stated dimension count
+                      disagrees with the count of MC rows (or distinct MC
+                      dimension blocks among them) in NUMBERING.md's
+                      Allocated IDs table, naming both the stated and the
+                      registry figures. Declared ceiling: this check
+                      compares the two stated numbers against the registry
+                      only — it does not detect a stated total that is
+                      right while a check body is missing from the file
+                      entirely; that direction is mc-catalog-id-drift's.
   skill-too-long    - a skills/*/SKILL.md exceeds 500 lines, naming the
                       measured count and the ceiling. Silent at exactly
                       500. Declared ceiling: line count is a proxy for
@@ -1065,6 +1084,7 @@ def check_mc_rule_in_skill(repo_root):
 # ---------------------------------------------------------------------------
 
 COUNT_SENTENCE_RE = re.compile(r'^This catalog contains (\d+) rules in (\d+) numbered sections\.$')
+MC_COUNT_SENTENCE_RE = re.compile(r'^This audit contains (\d+) checks across (\d+) dimensions\.$')
 
 
 def check_catalog_count(allocated, repo_root):
@@ -1094,6 +1114,55 @@ def check_catalog_count(allocated, repo_root):
             violations.append((str(rel), (
                 f"catalog-count-mismatch {rel} states {stated_rules} rules in {stated_sections} numbered sections, "
                 f"but the registry has {registry_rule_count} rules in {registry_section_count} numbered sections"
+            )))
+    return violations
+
+
+def check_mc_count(allocated, repo_root, mc_ranges):
+    """For each skill folder found through SKILL_GLOB, locate
+    references/completeness-audit.md and, when it exists, require the
+    frozen MC stated-count template and require its two numbers to match
+    the registry: the count of MC rows in NUMBERING.md's Allocated IDs
+    table, and the count of distinct MC dimension blocks (from
+    parse_numbering's mc_ranges) those rows fall into.
+
+    Absence of completeness-audit.md is not a violation, checked before any
+    set is computed for that folder -- the same declared ceiling
+    mc-catalog-id-drift and mc-rule-in-skill both carry, and required for
+    the same reason: no existing self-test fixture root that reaches this
+    function ships that file, so an unguarded implementation would report
+    every one of those roots as unstated and break --self-test."""
+    violations = []
+    mc_ids = {row['id'] for row in allocated if MC_ID_RE.match(row['id'])}
+    registry_check_count = len(mc_ids)
+    dims_hit = set()
+    for id_ in mc_ids:
+        n = int(MC_ID_RE.match(id_).group(1))
+        for dimension, (low, high) in mc_ranges.items():
+            if low <= n <= high:
+                dims_hit.add(dimension)
+    registry_dimension_count = len(dims_hit)
+
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        audit_path = skill_path.parent / 'references' / 'completeness-audit.md'
+        if not audit_path.exists():
+            continue
+        rel = audit_path.relative_to(repo_root)
+        text = audit_path.read_text(encoding='utf-8')
+        stated = None
+        for line in text.splitlines():
+            m = MC_COUNT_SENTENCE_RE.match(line.strip())
+            if m:
+                stated = (int(m.group(1)), int(m.group(2)))
+                break
+        if stated is None:
+            violations.append((str(rel), f"mc-count-unstated {rel} contains no line matching the frozen MC stated-count template"))
+            continue
+        stated_checks, stated_dimensions = stated
+        if stated_checks != registry_check_count or stated_dimensions != registry_dimension_count:
+            violations.append((str(rel), (
+                f"mc-count-mismatch {rel} states {stated_checks} checks across {stated_dimensions} dimensions, "
+                f"but the registry has {registry_check_count} checks across {registry_dimension_count} dimensions"
             )))
     return violations
 
@@ -1177,7 +1246,7 @@ def check_skill_token_budget(repo_root):
 CATALOG_CHECK_CODES = [
     'catalog-id-drift', 'catalog-count-unstated', 'catalog-count-mismatch',
     'catalog-opening-rule-count', 'skill-too-long', 'skill-token-budget-exceeded',
-    'mc-catalog-id-drift', 'mc-rule-in-skill',
+    'mc-catalog-id-drift', 'mc-rule-in-skill', 'mc-count-unstated', 'mc-count-mismatch',
 ]
 
 
@@ -1194,6 +1263,7 @@ def run_catalog_checks(repo_root):
     violations += check_skill_token_budget(repo_root)
     violations += check_mc_catalog_id_drift(data['allocated'], repo_root)
     violations += check_mc_rule_in_skill(repo_root)
+    violations += check_mc_count(data['allocated'], repo_root, data['mc_ranges'])
     return violations
 
 
@@ -1515,6 +1585,27 @@ def _mutate_catalog_count_mismatch(root):
     path.write_text(text, encoding='utf-8')
 
 
+def _mutate_mc_count_unstated(root):
+    """Delete the stated-count line from the real completeness-audit.md."""
+    path = root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if not MC_COUNT_SENTENCE_RE.match(l.strip())]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_mc_count_mismatch(root):
+    """Change the checks number in the real completeness-audit.md's
+    stated-count line so it disagrees with the registry."""
+    path = root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md'
+    text = path.read_text(encoding='utf-8')
+    text = text.replace(
+        'This audit contains 8 checks across 8 dimensions.',
+        'This audit contains 7 checks across 8 dimensions.',
+        1,
+    )
+    path.write_text(text, encoding='utf-8')
+
+
 def _mutate_skill_too_long(root):
     """Append filler lines to the real SKILL.md past its 500-line ceiling."""
     path = root / 'skills' / 'proof-first' / 'SKILL.md'
@@ -1584,6 +1675,8 @@ MUTATIONS = [
     ('skill-token-budget-exceeded', "append filler words to the real skills/proof-first/SKILL.md, an under-ceiling control, pushing its estimated token count over the ceiling", _mutate_skill_token_budget_exceeded),
     ('mc-catalog-id-drift', "delete the single MC data row from references/checklist.md's MC rules table", _mutate_mc_catalog_id_drift),
     ('mc-rule-in-skill', "insert an MC-shaped rule heading into the real skills/proof-first/SKILL.md", _mutate_mc_rule_in_skill),
+    ('mc-count-unstated', "delete the stated-count line from the real skills/proof-first/references/completeness-audit.md", _mutate_mc_count_unstated),
+    ('mc-count-mismatch', "change the checks number in the real skills/proof-first/references/completeness-audit.md's stated-count line", _mutate_mc_count_mismatch),
 ]
 
 
@@ -2287,6 +2380,61 @@ def _mc_rule_in_skill_bad_skill():
     return "### MC-1 — Rule blended directly into SKILL.md\n\nBody text.\n"
 
 
+def _mc_numbering_for_count():
+    """A self-contained MC registry spread across two dimension blocks,
+    3 rows total -- deliberately different from the real repository's
+    8-checks-across-8-dimensions, so a fixture can never pass by
+    coincidence."""
+    return """## MC reserved blocks
+| Dimension | Range |
+|---|---|
+| Metric | MC-1-MC-5 |
+| Economic Buyer | MC-6-MC-10 |
+
+## Allocated IDs
+| ID | Title | Defined in | Added in |
+|---|---|---|---|
+| MC-1 | Fixture metric rule one | completeness-audit.md | v1.0.0 |
+| MC-2 | Fixture metric rule two | completeness-audit.md | v1.0.0 |
+| MC-6 | Fixture economic buyer rule | completeness-audit.md | v1.0.0 |
+
+## Deprecated IDs
+| ID | Deprecated in | Absorbed by |
+|---|---|---|
+"""
+
+
+def _mc_checklist_for_count():
+    return """## MC rules
+
+| ID | Rule |
+|---|---|
+| MC-1 | Fixture metric rule one |
+| MC-2 | Fixture metric rule two |
+| MC-6 | Fixture economic buyer rule |
+"""
+
+
+def _mc_count_audit_headings():
+    return (
+        "### MC-1 — Fixture metric rule one\n\nBody text.\n\n"
+        "### MC-2 — Fixture metric rule two\n\nBody text.\n\n"
+        "### MC-6 — Fixture economic buyer rule\n\nBody text.\n"
+    )
+
+
+def _good_mc_count_completeness_audit():
+    return _mc_count_audit_headings() + "\nThis audit contains 3 checks across 2 dimensions.\n"
+
+
+def _unstated_mc_count_completeness_audit():
+    return _mc_count_audit_headings()
+
+
+def _mismatched_mc_count_completeness_audit():
+    return _mc_count_audit_headings() + "\nThis audit contains 4 checks across 2 dimensions.\n"
+
+
 def _token_budget_good_skill():
     return _skill_body_at_line_count(
         10, ['### PF-0.1 — Opening rule', '', 'Short body text, well under the token budget.'])
@@ -2334,6 +2482,10 @@ def self_test():
 
         mc_good_root = tmp_root / 'mc_good'
         mc_bad_root = tmp_root / 'mc_bad'
+
+        mc_count_good_root = tmp_root / 'mc_count_good'
+        mc_count_unstated_root = tmp_root / 'mc_count_unstated'
+        mc_count_mismatch_root = tmp_root / 'mc_count_mismatch'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -2463,6 +2615,26 @@ def self_test():
         _write(mc_bad_root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md', _bad_completeness_audit())
         _write(mc_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _mc_checklist())
 
+        # MC stated-count fixtures (D-32's MC counterpart): a self-contained
+        # 3-check/2-dimension registry, isolated from the real 8-check
+        # namespace, with a matching checklist and completeness-audit
+        # headings across all three roots so mc-catalog-id-drift stays
+        # silent and only the count codes are exercised.
+        _write(mc_count_good_root / 'NUMBERING.md', _mc_numbering_for_count())
+        _write(mc_count_good_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(mc_count_good_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _mc_checklist_for_count())
+        _write(mc_count_good_root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md', _good_mc_count_completeness_audit())
+
+        _write(mc_count_unstated_root / 'NUMBERING.md', _mc_numbering_for_count())
+        _write(mc_count_unstated_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(mc_count_unstated_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _mc_checklist_for_count())
+        _write(mc_count_unstated_root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md', _unstated_mc_count_completeness_audit())
+
+        _write(mc_count_mismatch_root / 'NUMBERING.md', _mc_numbering_for_count())
+        _write(mc_count_mismatch_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(mc_count_mismatch_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _mc_checklist_for_count())
+        _write(mc_count_mismatch_root / 'skills' / 'proof-first' / 'references' / 'completeness-audit.md', _mismatched_mc_count_completeness_audit())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -2496,6 +2668,10 @@ def self_test():
         mc_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_good_root)}
         mc_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_bad_root)}
 
+        mc_count_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_count_good_root)}
+        mc_count_unstated_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_count_unstated_root)}
+        mc_count_mismatch_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(mc_count_mismatch_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -2504,6 +2680,7 @@ def self_test():
             | bad_catalog_codes | fm_bad_codes | fm_dupkey_codes | fm_overmax_codes
             | line501_codes | count_unstated_codes | count_mismatch_codes | subblock_codes
             | token_bad_codes | opening_bad_codes | mc_bad_codes
+            | mc_count_unstated_codes | mc_count_mismatch_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -2581,6 +2758,17 @@ def self_test():
             all_ok = False
         if 'mc-rule-in-skill' not in mc_bad_codes:
             print("FAIL: mc-rule-in-skill did not fire when SKILL.md defines an MC-shaped rule heading")
+            all_ok = False
+
+        # MC stated-count assertions.
+        if 'mc-count-unstated' in mc_count_good_codes or 'mc-count-mismatch' in mc_count_good_codes:
+            print("FAIL: an mc-count code fired on the known-good MC stated-count fixture")
+            all_ok = False
+        if 'mc-count-unstated' not in mc_count_unstated_codes:
+            print("FAIL: mc-count-unstated did not fire when the stated-count line is absent")
+            all_ok = False
+        if 'mc-count-mismatch' not in mc_count_mismatch_codes:
+            print("FAIL: mc-count-mismatch did not fire when the stated numbers disagree with the registry")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
