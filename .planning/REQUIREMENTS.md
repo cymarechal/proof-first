@@ -31,9 +31,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Completeness Audit
 
-- [ ] **AUD-01**: Writer gets a document-level completeness checklist derived from MEDDICC, covering metric, economic buyer, decision criteria, decision process, paper process, pain, champion, and competition as questions asked of a document — *implementation shipped; content-quality reliability UNVERIFIED. All eight MC dimensions are authored, registered, and structurally enforced, but whether each MC body reads as a genuine completeness finding grounded in the deal brief, rather than a restatement of the framework's own definition, is prose-authoring correctness no checker in this repository's stack can evaluate. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition: the Phase 3 UAT pass.*
+- [ ] **AUD-01**: Writer gets a document-level completeness checklist derived from MEDDICC, covering metric, economic buyer, decision criteria, decision process, paper process, pain, champion, and competition as questions asked of a document — *implementation shipped; content-quality reliability UNVERIFIED. All eight MC dimensions are authored, registered, and structurally enforced. An independent paraphrase-boundary read against `SOURCES.md` was performed by two subagents (opus and sonnet), not a human, and found six of eight MC bodies carrying the source's own dimension label into running prose as this repository's own unattributed noun (03-UAT.md test 5, gap G-03-5); plan 03-05 replaced those six labels with the document-facing phrase each block's own heading already uses. Phase 6 LEG-04 remains the owner of the formal reproduction-boundary / provenance gate this independent read does not substitute for. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition: the Phase 3 UAT pass.*
 - [x] **AUD-02**: The checklist lives in its own reference file and its own `MC-` namespace, never blended into the prose rules
-- [ ] **AUD-03**: Writer can run the completeness audit independently of the prose rules and get a separate verdict — *implementation shipped; live-session reliability UNVERIFIED. The standalone-run instruction (`## Running the audit on its own` in `references/completeness-audit.md`, plus Check mode's own sentence in `SKILL.md`) is grep-verified, but whether a live session actually runs the audit alone and returns a separate `## Completeness gaps` verdict, with no prose findings, is model behaviour no file-reading checker can observe. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition: a live harness session recorded at the Phase 3 UAT pass.*
+- [x] **AUD-03**: Writer can run the completeness audit independently of the prose rules and get a separate verdict — *Verified: 6 live harness sessions (4 sonnet-5, 2 opus-5) across 3 documents at the Phase 3 UAT pass (03-UAT.md test 1). Every run emitted `## Completeness gaps` as its only report heading, zero `PF-` citations, no rewritten document, and a verdict line naming how many of the eight dimensions were satisfied.*
 
 ### Artifact Patterns
 
@@ -46,9 +46,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **MOD-01**: Writer can ask the skill to draft a presales document and get output that follows the catalog
 - [ ] **MOD-02**: Writer can ask the skill to check existing text and get each violation as rule number, offending text, and a compliant rewrite
-- [ ] **MOD-03**: Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass — *implementation shipped; live-session reliability UNVERIFIED. The instruction text naming four sections — `## Integrity flags`, `## Prose violations`, `## Completeness gaps`, `## Structural ordering` — in a fixed order is grep-verified, but whether a live check-mode session actually prints all four, in that order, with a no-findings line in each empty one, is model behaviour no file-reading checker observes. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition: a live harness session recorded at the Phase 3 UAT pass.*
-- [ ] **MOD-04**: Skill classifies the artifact family before applying rules, and says which one it chose — *implementation shipped; live-session reliability UNVERIFIED. Check mode's classification sentence and its `references/artifact-patterns.md` pointer are grep-verified, but whether a live session actually classifies a real document and states the family before applying any rule is model behaviour no file-reading checker observes. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition: a live harness session recorded at the Phase 3 UAT pass.*
-- [ ] **MOD-05**: Check mode cites only rule numbers that exist in the shipped files, and never invents one — *implementation shipped; live-session reliability UNVERIFIED. `undefined-id`, `mc-catalog-id-drift`, and the two MC stated-count codes close the shipped-file half of this guarantee completely and mechanically; whether a live session in a fresh conversation never invents a rule number is permanently manual, unobservable by any file-reading checker. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition: shares MOD-03's live-harness closure condition, recorded at the Phase 3 UAT pass.*
+- [x] **MOD-03**: Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass — *Verified: 9 check-mode live harness sessions (7 sonnet-5, 2 opus-5) across 7 documents at the Phase 3 UAT pass (03-UAT.md test 3). All four section headings — `## Integrity flags`, `## Prose violations`, `## Completeness gaps`, `## Structural ordering` — printed in the fixed order in 9/9 runs, each empty section carrying an explicit no-findings line.*
+- [ ] **MOD-04**: Skill classifies the artifact family before applying rules, and says which one it chose — *implementation shipped; live-session reliability UNVERIFIED. The Phase 3 UAT ran 15 live sessions (9 check-mode, 6 write-mode); 14 conformed, but one write-mode session cited three rule findings (`PF-2.17`, `PF-2.15`, `PF-1.17`) before naming any artifact family, then stopped to await a "proceed" reply instead of drafting (03-UAT.md test 2, gap G-03-2). Plan 03-05 edited `SKILL.md`'s `## Write mode` and `## Your task` sections to make the source-material ask non-blocking and to forbid citing a rule ID before the family line, in either mode, then re-ran 5 write-mode sessions (one per fixture family plus one ambiguous) which all conformed — but that re-run was performed by the same plan that made the fix, not an independent UAT pass. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition: a re-run of the write-mode live-harness check after plan 03-05, recorded at a Phase 3 UAT pass.*
+- [x] **MOD-05**: Check mode cites only rule numbers that exist in the shipped files, and never invents one — *Verified: across all 18 Phase 3 UAT live sessions (03-UAT.md test 4), every `PF-#.#` and `MC-#` token cited (224 distinct citations) was differenced against the 39 allocated IDs (31 `PF-` + 8 `MC-`); zero unallocated IDs cited in zero files.*
 
 ### Examples
 
@@ -147,16 +147,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INT-06 | Phase 2 | Gaps Found |
 | AUD-01 | Phase 3 | Pending |
 | AUD-02 | Phase 3 | Complete |
-| AUD-03 | Phase 3 | Pending |
+| AUD-03 | Phase 3 | Complete |
 | ART-01 | Phase 3 | Pending |
 | ART-02 | Phase 3 | Pending |
 | ART-03 | Phase 3 | Pending |
 | ART-04 | Phase 3 | Pending |
 | MOD-01 | Phase 2 | Gaps Found |
 | MOD-02 | Phase 2 | Gaps Found |
-| MOD-03 | Phase 3 | Pending |
+| MOD-03 | Phase 3 | Complete |
 | MOD-04 | Phase 3 | Pending |
-| MOD-05 | Phase 3 | Pending |
+| MOD-05 | Phase 3 | Complete |
 | EX-01 | Phase 1 | Complete |
 | EX-02 | Phase 4 | Pending |
 | DIST-01 | Phase 4 | Pending |
