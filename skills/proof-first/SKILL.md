@@ -279,7 +279,7 @@ Output is a report, never a corrected document — every change stays a decision
 
 Each finding is a block: the rule ID, the offending text quoted exactly as it appears — including its whitespace, and never truncated or shortened with an ellipsis however long it runs — and a compliant rewrite. A rewrite that needs evidence the writer does not have is itself compliant prose carrying the marker in its place, so it is directly pasteable rather than a refusal.
 
-Findings are grouped under two labelled sections in this fixed order: `## Integrity flags` first — findings that can cost a deal or create legal exposure are read before anything else.
+Findings are grouped under four labelled sections in this fixed order: `## Integrity flags` first — findings that can cost a deal or create legal exposure are read before anything else.
 
 `## Prose violations` comes second. Within a group, findings run in document order, so the writer works top to bottom through their own document; two findings on the same line are ordered by ascending rule ID. Two findings raised on the same offending text are reported as two separate blocks, each carrying its own rule ID, never merged into one.
 
