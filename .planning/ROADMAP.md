@@ -118,7 +118,7 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 4 plans
+**Plans**: 4/4 plans executed
 
 Plans:
 **Wave 1**
@@ -135,7 +135,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 03-04-PLAN.md — SKILL.md's token budget bought back by trimming restatement, then spent on the check-mode classification line, the third and fourth report sections, the standalone-audit instruction and the second reference pointer; README, the WINDOWS ledger entry routing the MC ordering tension to LEG-04, and the provisional requirement marks
+- [x] 03-04-PLAN.md — SKILL.md's token budget bought back by trimming restatement, then spent on the check-mode classification line, the third and fourth report sections, the standalone-audit instruction and the second reference pointer; README, the WINDOWS ledger entry routing the MC ordering tension to LEG-04, and the provisional requirement marks
 
 ### Phase 4: Distribution & Worked Examples
 
@@ -188,7 +188,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
-| 3. Completeness Audit & Artifact Patterns | 0/TBD | Not started | - |
+| 3. Completeness Audit & Artifact Patterns | 4/4 | In Progress|  |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
