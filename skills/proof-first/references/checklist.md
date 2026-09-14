@@ -49,3 +49,9 @@ ship to an installed copy of this skill.
 |---|---|
 | MC-1 | Name the buyer's own measure and where its baseline came from |
 | MC-6 | Name the person who signs and the priority they stated in their own words |
+| MC-11 | Mirror the buyer's own stated evaluation criteria and their weights |
+| MC-16 | State the steps, dates, and people the buyer's evaluation runs through |
+| MC-21 | State the reviews the document must clear before a signature is possible |
+| MC-26 | Name the cost the buyer already states, in the buyer's own words |
+| MC-31 | Name the person inside the buyer who carries this internally |
+| MC-36 | State the alternatives the buyer is weighing, without asserting what a rival cannot do |

@@ -116,6 +116,12 @@ adds `MC-*` rows as the completeness audit is written.
 | PF-5.3 | Keep an evidenced claim unhedged | SKILL.md | v0.1.0 |
 | MC-1 | Name the buyer's own measure and where its baseline came from | completeness-audit.md | v0.1.0 |
 | MC-6 | Name the person who signs and the priority they stated in their own words | completeness-audit.md | v0.1.0 |
+| MC-11 | Mirror the buyer's own stated evaluation criteria and their weights | completeness-audit.md | v0.1.0 |
+| MC-16 | State the steps, dates, and people the buyer's evaluation runs through | completeness-audit.md | v0.1.0 |
+| MC-21 | State the reviews the document must clear before a signature is possible | completeness-audit.md | v0.1.0 |
+| MC-26 | Name the cost the buyer already states, in the buyer's own words | completeness-audit.md | v0.1.0 |
+| MC-31 | Name the person inside the buyer who carries this internally | completeness-audit.md | v0.1.0 |
+| MC-36 | State the alternatives the buyer is weighing, without asserting what a rival cannot do | completeness-audit.md | v0.1.0 |
 
 ## Deprecated IDs
 

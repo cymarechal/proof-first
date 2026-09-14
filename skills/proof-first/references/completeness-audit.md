@@ -40,6 +40,89 @@ vendor's language rather than hers, has not named its economic buyer.
 **Replace with:** the named economic buyer's role and one priority stated in their own words, or a
 `[MC-6 GAP: what is missing]` marker where neither was captured.
 
+### MC-11 — Mirror the buyer's own stated evaluation criteria and their weights
+
+A document missing this dimension substitutes the vendor's own preferred framing for the buyer's
+stated evaluation criteria, or blends separate weighting schemes the buyer keeps apart. Halverton
+Mutual scores bidders on three weighted criteria — technical approach, commercial model, and
+security posture — and separately scores five RFP questions against their own weights. A document
+that reorders those criteria into the vendor's preferred sequence, or that merges the two weighting
+schemes into one, has not mirrored the buyer's own evaluation.
+
+**Replace with:** the buyer's own criteria and weights, restated in the buyer's own structure, or a
+`[MC-11 GAP: what is missing]` marker where the buyer's own weighting was never captured.
+
+### MC-16 — State the steps, dates, and people the buyer's evaluation runs through
+
+A document missing this dimension never states when the buyer decides, who scores the response, or
+how many competitors are in the running. Halverton Mutual has shortlisted three bidders, requires
+proposals by a stated submission date, and scores every bidder against the same five questions
+inside a stated regulatory examination window. A document silent on any of those specifics has not
+stated the buyer's decision process.
+
+**Replace with:** the submission date, the bidder count, and the scoring process the buyer itself
+stated, or a `[MC-16 GAP: what is missing]` marker where one of those was never captured.
+
+### MC-21 — State the reviews the document must clear before a signature is possible
+
+A document missing this dimension treats the path to signature as a single step, when the buyer's
+own process is a sequence of named reviews with named owners. Halverton Mutual's proposal moves
+through a security review, a procurement review, and a legal review, each with its own named owner,
+and two of the three with a stated duration in business days — the third has no duration the buyer
+has stated. A document that omits a review, invents a duration the buyer never gave, or rounds a
+partially-stated review up to fully specified, has not stated the paper process honestly.
+
+**Replace with:** each review's named owner and its stated duration where the buyer has stated one,
+or a `[MC-21 GAP: what duration is missing]` marker beside the review whose duration the buyer
+never stated.
+
+### MC-26 — Name the cost the buyer already states, in the buyer's own words
+
+A document missing this dimension never names the cost the buyer itself points to, or invents a
+figure to fill a baseline the buyer has never measured. Halverton Mutual's own stated pain is a
+nightly settlement batch job that regularly overruns its required window, with no baseline the
+buyer has ever instrumented for how far it overruns; rising Oracle Database licensing, a vSphere
+estate at capacity, and a manual failover process are named pains too. Naming one of these pains
+without a fabricated number attached, or explicitly marking that no baseline exists, satisfies this
+dimension; inventing an overrun figure to replace a genuinely missing one does not.
+
+**Replace with:** the pain in the buyer's own words and its stated figure where one exists, or a
+`[MC-26 GAP: no baseline stated]` marker where the buyer has never measured it — an explicitly
+marked missing baseline satisfies this dimension.
+
+### MC-31 — Name the person inside the buyer who carries this internally
+
+A document missing this dimension never names who inside the buyer's organisation is advocating for
+the deal internally, once the vendor is no longer in the room. Halverton Mutual's champion is
+Marcus Feld, its Vice President of Infrastructure, who states his own reason for wanting change
+directly. A document that substitutes a generic reference to "the infrastructure team" for his
+name, or that never quotes his stated reason in his own words, has not named its champion.
+
+**Replace with:** the champion's name, role, and their own stated reason for wanting the change, or
+a `[MC-31 GAP: what is missing]` marker where neither was captured.
+
+### MC-36 — State the alternatives the buyer is weighing, without asserting what a rival cannot do
+
+A document missing this dimension never names who else the buyer is evaluating, or names a rival
+only to assert a capability that rival supposedly lacks. Halverton Mutual is weighing three
+bidders, including Ardent Digital, the incumbent managed-services provider already running a
+majority share of the estate, and Vantage Nine Consulting; the buyer's own technical evaluator has
+stated a preference for extending the incumbent's contract rather than migrating. Naming these
+alternatives without asserting what a named rival cannot do satisfies this dimension — a claim
+about a competitor's inability is a prose integrity hazard, not this dimension's job to make.
+
+**Replace with:** the named alternatives the buyer is weighing and any stated preference among
+them, or a `[MC-36 GAP: what is missing]` marker where the buyer's alternatives were never named.
+
+## Running the audit on its own
+
+A writer can ask for this audit on its own, separate from a full check-mode pass over prose and
+integrity. Run against a document, it returns the check-mode report's `## Completeness gaps`
+section by that exact heading, followed by one verdict line naming how many of the eight dimensions
+the document satisfies and naming each dimension it does not. It returns no prose findings and it
+never rewrites the document — a standalone run answers only the question this file asks, dimension
+by dimension, and nothing more.
+
 ## What this file does not do
 
 This file is not a scoring rubric, and it is not a pass/fail gate that substitutes for a human's

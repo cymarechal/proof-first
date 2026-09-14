@@ -106,7 +106,42 @@ to.
 ✗ "The proposal replaces ungoverned VM sprawl with a landing zone that will be fully governed from day one."
 ✓ "The proposal replaces ungoverned VM sprawl with a landing zone [PF-3.3: customer's term, retained — Marcus Feld, discovery] that will be fully governed from day one — [PF-2.14 REVIEW (commitment): confirm 'fully governed from day one' before this ships]."
 
+## MC-1
+
+✗ "The migration will reduce operating costs and improve settlement performance across the estate."
+✓ "Diane Osoria states the current annual run rate at $2,300,000. Halverton Mutual has never measured how far the settlement batch job overruns its required window — [MC-1 GAP: no measured baseline for the settlement batch overrun]."
+
 ## MC-6
 
 ✗ "This proposal addresses Halverton Mutual's leadership team, who value cost efficiency and operational excellence across the organization."
 ✓ "Diane Osoria, Halverton Mutual's Chief Financial Officer, states her own priority directly: 'the current annual run rate down from $2,300,000 — that is the number I answer for.'"
+
+## MC-11
+
+✗ "This proposal is evaluated on Kestrel Systems Group's overall value to Halverton Mutual."
+✓ "Halverton Mutual scores bidders 55% on technical approach, 25% on commercial model, and 20% on security posture, and separately weights its five RFP questions from 15% to 30% each."
+
+## MC-16
+
+✗ "This proposal will be reviewed alongside the leading alternatives before Halverton Mutual decides."
+✓ "Three bidders are shortlisted; proposals are due 2026-10-30, and every bidder is scored against the same five questions inside the 8-month window before Halverton Mutual's next regulatory examination."
+
+## MC-21
+
+✗ "The proposal moves quickly to signature once Halverton Mutual approves it."
+✓ "The proposal clears a security review (15 business days), a procurement review with no duration Halverton Mutual has stated, and a legal review (10 business days) before signature — [MC-21 GAP: no duration stated for the procurement review]."
+
+## MC-26
+
+✗ "The new platform will significantly reduce settlement batch overruns."
+✓ "The nightly settlement batch job regularly overruns its required 6-hour window; Halverton Mutual has never instrumented by how much — [MC-26 GAP: no measured baseline for the settlement batch overrun]."
+
+## MC-31
+
+✗ "Halverton Mutual's infrastructure team is supportive of this migration."
+✓ "Marcus Feld, Halverton Mutual's Vice President of Infrastructure, said in discovery: 'We need a landing zone we can actually govern — right now every VM is a snowflake.'"
+
+## MC-36
+
+✗ "Only Kestrel Systems Group can deliver a governance boundary that actually replaces Halverton Mutual's current estate."
+✓ "Halverton Mutual is weighing three bidders, including Ardent Digital, the incumbent managing 62% of the estate today, and Vantage Nine Consulting; Priya Raghunathan, the technical evaluator, has said she would rather extend the incumbent's contract than migrate."
