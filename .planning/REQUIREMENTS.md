@@ -32,7 +32,7 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Completeness Audit
 
 - [ ] **AUD-01**: Writer gets a document-level completeness checklist derived from MEDDICC, covering metric, economic buyer, decision criteria, decision process, paper process, pain, champion, and competition as questions asked of a document
-- [ ] **AUD-02**: The checklist lives in its own reference file and its own `MC-` namespace, never blended into the prose rules
+- [x] **AUD-02**: The checklist lives in its own reference file and its own `MC-` namespace, never blended into the prose rules
 - [ ] **AUD-03**: Writer can run the completeness audit independently of the prose rules and get a separate verdict
 
 ### Artifact Patterns
@@ -48,7 +48,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **MOD-02**: Writer can ask the skill to check existing text and get each violation as rule number, offending text, and a compliant rewrite
 - [ ] **MOD-03**: Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass
 - [ ] **MOD-04**: Skill classifies the artifact family before applying rules, and says which one it chose
-- [ ] **MOD-05**: Check mode cites only rule numbers that exist in the shipped files, and never invents one
+- [x] **MOD-05**: Check mode cites only rule numbers that exist in the shipped files, and never invents one
 
 ### Examples
 
@@ -146,7 +146,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INT-05 | Phase 2 | Gaps Found |
 | INT-06 | Phase 2 | Gaps Found |
 | AUD-01 | Phase 3 | Pending |
-| AUD-02 | Phase 3 | Pending |
+| AUD-02 | Phase 3 | Complete |
 | AUD-03 | Phase 3 | Pending |
 | ART-01 | Phase 3 | Pending |
 | ART-02 | Phase 3 | Pending |
@@ -156,7 +156,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOD-02 | Phase 2 | Gaps Found |
 | MOD-03 | Phase 3 | Pending |
 | MOD-04 | Phase 3 | Pending |
-| MOD-05 | Phase 3 | Pending |
+| MOD-05 | Phase 3 | Complete |
 | EX-01 | Phase 1 | Complete |
 | EX-02 | Phase 4 | Pending |
 | DIST-01 | Phase 4 | Pending |

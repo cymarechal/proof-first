@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
-current_phase: 02
-current_phase_name: Rule Catalog & Integrity — SKILL.md Core
+current_phase: 03
+current_phase_name: Completeness Audit & Artifact Patterns
 status: executing
-stopped_at: Completed 02-09-PLAN.md
-last_updated: "2026-09-11T04:49:08.209Z"
-last_activity: 2026-09-11
-last_activity_desc: Phase 02 execution started
-state_head: d5bfd575465f3a3035468dd0ad9383f67caa6236
+stopped_at: Completed 03-01-PLAN.md (MC-1 tracer + mc-catalog-id-drift/mc-rule-in-skill enforcement)
+last_updated: "2026-09-14T07:45:08.615Z"
+last_activity: 2026-09-14
+last_activity_desc: Phase 03 execution started
+state_head: 79e9613ab03829eb3949f458a4605e9c38909da3
 progress:
   total_phases: 6
   completed_phases: 1
-  total_plans: 16
-  completed_plans: 16
+  total_plans: 20
+  completed_plans: 17
   percent: 17
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** A technical evaluator finishes the document believing the author genuinely understands their problem — because complex things were made simple without being made wrong.
-**Current focus:** Phase 02 — Rule Catalog & Integrity — SKILL.md Core
+**Current focus:** Phase 03 — Completeness Audit & Artifact Patterns
 
 ## Current Position
 
-Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — PLANS COMPLETE
-Plan: 9 of 9
-Status: All plans executed; WINDOWS.md ids 3 and 4 open pending human verification (paraphrase-boundary judgment, live trigger-pressure-test run) before phase can be considered fully verified
-Last activity: 2026-09-11 — Completed 02-09-PLAN.md (README/pressure-test documentation gap closure)
+Phase: 03 (Completeness Audit & Artifact Patterns) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-09-14 — Phase 03 execution started
 
 Progress: [██░░░░░░░░] 17%
 
@@ -74,6 +74,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 02 P07 | 25min | 3 tasks | 3 files |
 | Phase 02 P08 | 20min | 2 tasks | 1 files |
 | Phase 02-rule-catalog-integrity-skill-md-core P09 | 15min | 2 tasks | 2 files |
+| Phase 03-completeness-audit-artifact-patterns P01 | 20min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -116,6 +117,8 @@ Recent decisions affecting current work:
 - [Phase 02]: 02-08: mutation_test() now asserts discrimination (silent-on-control, fires-on-mutated) instead of mere post-mutation firing; KNOWN_OPEN_VIOLATIONS emptied to frozenset() with a comment naming .planning/WINDOWS.md id 5 as closed; docstrings for _mutate_skill_token_budget_exceeded and frontmatter-description-invalid corrected to state what is now true, closing 02-REVIEW.md CR-01, CR-02, and WR-01.
 - [Phase 02]: [Phase 02]: 02-09: README.md Status prose reconciled with its own tree diagram and disk state (02-REVIEW.md CR-03 closed) — self-contradicting 'has not been written yet' assertion removed, worked-examples.md added to the tree untagged, no measured claim introduced.
 - [Phase 02]: [Phase 02]: 02-09: evals/pressure-tests.md gained a scope note binding its 14 pending observations to SKILL.md's frontmatter description state (first line, 439-char length, sha256 of first 14 lines) — no Observed/Date/Harness cell filled; WINDOWS.md ids 3 and 4 correctly left open, restated verbatim in the SUMMARY for /gsd-verify-work.
+- [Phase 03]: 03-01: Checkpoint resolved adopt-as-proposed by the orchestrator — eight-ID MC allocation map, check-mode section order (Integrity flags -> Prose violations -> Completeness gaps -> Structural ordering), ordering pass as its own section, four artifact-family headings frozen as one-way interfaces for 03-02/03-03/03-04.
+- [Phase 03]: 03-01: mc-catalog-id-drift returns no violations when references/completeness-audit.md does not exist, checked before computing any set — required because _good_numbering() already allocates MC-1/MC-5 with no completeness-audit.md in most self-test fixture roots; an unguarded implementation would have broken --self-test across the whole suite.
 
 ### Pending Todos
 
@@ -140,6 +143,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-11T04:49:08.131Z
-Stopped at: Completed 02-09-PLAN.md
+Last session: 2026-09-14T07:45:08.470Z
+Stopped at: Completed 03-01-PLAN.md (MC-1 tracer + mc-catalog-id-drift/mc-rule-in-skill enforcement)
 Resume file: None

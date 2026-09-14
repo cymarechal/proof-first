@@ -123,7 +123,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Tracer: MC-1 end-to-end in a new `references/completeness-audit.md`, registered in NUMBERING.md, indexed in a new `## MC rules` checklist section and pointed at from SKILL.md, with `mc-catalog-id-drift` and `mc-rule-in-skill` proven live; freezes the eight-ID MC map, the four check-mode report sections and their order, and the four artifact-family headings behind a blocking decision checkpoint
+- [x] 03-01-PLAN.md — Tracer: MC-1 end-to-end in a new `references/completeness-audit.md`, registered in NUMBERING.md, indexed in a new `## MC rules` checklist section and pointed at from SKILL.md, with `mc-catalog-id-drift` and `mc-rule-in-skill` proven live; freezes the eight-ID MC map, the four check-mode report sections and their order, and the four artifact-family headings behind a blocking decision checkpoint
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
