@@ -127,7 +127,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02-PLAN.md — The remaining seven MC dimensions, eight keyed worked pairs in `worked-examples.md`, the standalone-audit section answering AUD-03, and the MC stated-count guard proven live as two more codes
+- [x] 03-02-PLAN.md — The remaining seven MC dimensions, eight keyed worked pairs in `worked-examples.md`, the standalone-audit section answering AUD-03, and the MC stated-count guard proven live as two more codes
 
 **Wave 3** *(blocked on Wave 2 completion)*
 

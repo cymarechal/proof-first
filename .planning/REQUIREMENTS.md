@@ -31,7 +31,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Completeness Audit
 
-- [ ] **AUD-01**: Writer gets a document-level completeness checklist derived from MEDDICC, covering metric, economic buyer, decision criteria, decision process, paper process, pain, champion, and competition as questions asked of a document
+- [x] **AUD-01**: Writer gets a document-level completeness checklist derived from MEDDICC, covering metric, economic buyer, decision criteria, decision process, paper process, pain, champion, and competition as questions asked of a document
 - [x] **AUD-02**: The checklist lives in its own reference file and its own `MC-` namespace, never blended into the prose rules
 - [ ] **AUD-03**: Writer can run the completeness audit independently of the prose rules and get a separate verdict
 
@@ -145,7 +145,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INT-04 | Phase 2 | Gaps Found |
 | INT-05 | Phase 2 | Gaps Found |
 | INT-06 | Phase 2 | Gaps Found |
-| AUD-01 | Phase 3 | Pending |
+| AUD-01 | Phase 3 | Complete |
 | AUD-02 | Phase 3 | Complete |
 | AUD-03 | Phase 3 | Pending |
 | ART-01 | Phase 3 | Pending |
