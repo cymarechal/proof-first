@@ -208,8 +208,11 @@ def self_test():
     property is. A sixth case (03-08-PLAN.md) monkeypatches subprocess.run
     for one run_session() call to prove a nonzero-exit `claude -p`
     invocation raises SessionFailedError and is classified `unscoreable` by
-    the caller, never scored as `no-family` against its error-text stdout --
-    still no real subprocess call, no network call.
+    the caller, never scored as `no-family` against its error-text stdout.
+    A seventh case (03-08-PLAN.md) monkeypatches subprocess.run to prove
+    _git_blob_sha() hashes the SKILL.md under the given skill_src rather
+    than always the repo's HEAD version. Still no real subprocess call, no
+    network call.
     """
     all_ok = True
     verdicts_discriminated = set()
@@ -357,6 +360,42 @@ def self_test():
         if fake_out_dir is not None:
             shutil.rmtree(fake_out_dir, ignore_errors=True)
 
+    # Case 7: _git_blob_sha() must hash the SKILL.md under the given
+    # skill_src, not always the repo's HEAD version -- the defect that
+    # mislabeled 03-08-PLAN.md's Branch-3 paired-baseline run with the
+    # post-edit skill's SHA even though a materialised pre-edit skill was
+    # actually measured (the 2026-09-15T09:13:03 run block).
+    # subprocess.run is monkeypatched to capture argv; still offline, no
+    # real git or network call.
+    captured_argv = []
+    real_subprocess_run_2 = subprocess.run
+
+    def _fake_hash_object_run(argv, **kwargs):
+        captured_argv.append(list(argv))
+        return subprocess.CompletedProcess(argv, returncode=0, stdout='deadbeef\n', stderr='')
+
+    fake_skill_dir = pathlib.Path(tempfile.mkdtemp(prefix='proof-first-conformance-selftest-skillsrc-'))
+    try:
+        (fake_skill_dir / 'SKILL.md').write_text('placeholder')
+        subprocess.run = _fake_hash_object_run
+        try:
+            sha = _git_blob_sha(fake_skill_dir)
+        finally:
+            subprocess.run = real_subprocess_run_2
+
+        expected_path = str(fake_skill_dir / 'SKILL.md')
+        if sha != 'deadbeef':
+            print(f'FAIL: behavior case 7 (_git_blob_sha) expected deadbeef actual {sha!r}')
+            all_ok = False
+        elif not captured_argv or expected_path not in captured_argv[0]:
+            print(f'FAIL: behavior case 7 (_git_blob_sha) expected argv referencing {expected_path!r}, got {captured_argv}')
+            all_ok = False
+        elif any('HEAD:' in str(a) for a in captured_argv[0]):
+            print(f'FAIL: behavior case 7 (_git_blob_sha) still uses a HEAD: rev-parse form: {captured_argv}')
+            all_ok = False
+    finally:
+        shutil.rmtree(fake_skill_dir, ignore_errors=True)
+
     if not all_ok:
         return False
 
@@ -367,10 +406,26 @@ def self_test():
     return True
 
 
-def _git_blob_sha(relative_path):
+def _git_blob_sha(skill_src):
+    """Return the git blob SHA of skill_src/SKILL.md -- the actual file this
+    run copies into every session, not necessarily the repo's HEAD version.
+
+    03-08-PLAN.md's own paired-baseline branch (Branch 3) passes --skill-src
+    pointing at a materialised pre-edit skill directory outside the repo
+    entirely. The original implementation computed `git rev-parse
+    HEAD:skills/proof-first/SKILL.md`, which is silently wrong for any
+    --skill-src other than the repo's current working tree at HEAD -- it
+    would report the post-edit SHA even while measuring the pre-edit skill.
+    `git hash-object` is content-addressed and needs no repo relationship to
+    the target path, so it reports the correct SHA for a working-tree copy,
+    a materialised git-archive copy, or any other directory shape.
+    """
+    skill_md = pathlib.Path(skill_src) / 'SKILL.md'
+    if not skill_md.exists():
+        return None
     try:
         result = subprocess.run(
-            ['git', 'rev-parse', f'HEAD:{relative_path}'],
+            ['git', 'hash-object', str(skill_md)],
             cwd=str(REPO_ROOT),
             capture_output=True,
             text=True,
@@ -431,7 +486,7 @@ def main():
         transcript_dir = pathlib.Path(tempfile.mkdtemp(prefix='proof-first-conformance-transcripts-'))
     transcript_dir.mkdir(parents=True, exist_ok=True)
 
-    skill_sha = _git_blob_sha('skills/proof-first/SKILL.md')
+    skill_sha = _git_blob_sha(skill_src)
 
     out_path = pathlib.Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)

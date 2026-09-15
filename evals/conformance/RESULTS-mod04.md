@@ -238,3 +238,28 @@ Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
 
 conformant 1 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:13:03.455562+00:00Z -- CORRECTION: blob SHA below is wrong, see note
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+
+**Correction:** this was the first attempt at the Branch-3 paired baseline, run with
+`--skill-src` pointed at a materialised pre-03-07 `skills/proof-first` copy
+(git-archived from commit `6f62385`, the last commit before `03-07` Task 1). The
+SHA printed above is wrong -- `_git_blob_sha()` at the time this ran always computed
+`git rev-parse HEAD:skills/proof-first/SKILL.md` regardless of `--skill-src`, so it
+reported the repo's current (post-03-07) blob SHA even though the session actually
+exercised the pre-03-07 skill. Fixed in the same commit as this annotation:
+`_git_blob_sha()` now hashes the actual `SKILL.md` under `--skill-src` via
+`git hash-object`, content-addressed and independent of HEAD. The correct SHA for
+the skill this session actually used is `1fc1e1092941157191268a8294ab4e1edc65cdac`
+(verified: `git hash-object` on the materialised copy equals
+`git rev-parse 6f62385:skills/proof-first/SKILL.md`; also matches 03-06's own
+instrument-proving run above, which measured the same pre-03-07 skill state).
+The session itself timed out (unscoreable), so no scored verdict is affected by
+this correction -- only the recorded metadata.
+
+- 2026-09-15 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=unscoreable | reason=timeout
+
+conformant 0 of 0 scoreable sessions
+unscoreable 1 sessions
+  - excluded: model=claude-sonnet-5 fixture=A-rfp-answer repeat=0 reason=timeout
