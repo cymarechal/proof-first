@@ -99,8 +99,8 @@ own words, before naming any product, vendor, or capability — the same opening
 already states for the whole catalog, cited here rather than restated.
 
 **Business case:** the case is stated before any capability list, in the terms the person who
-signs is measured on, and it carries its evidence or a marker in place of it. Diane Osoria, the
-economic buyer, states she is measured on run-rate reduction and a clean regulatory
+signs is measured on, and it carries its evidence or a marker in place of it. Diane Osoria, the person who signs,
+states she is measured on run-rate reduction and a clean regulatory
 examination — the business case is built from those terms, never from architecture elegance she
 has said she does not weigh.
 

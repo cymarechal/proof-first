@@ -124,9 +124,10 @@ them, or a `[MC-36 GAP: what is missing]` marker where the buyer's alternatives 
 A writer can ask for this audit on its own, separate from a full check-mode pass over prose and
 integrity. Run against a document, it returns the check-mode report's `## Completeness gaps`
 section by that exact heading, followed by one verdict line naming how many of the eight dimensions
-the document satisfies and naming each dimension it does not. It returns no prose findings and it
-never rewrites the document — a standalone run answers only the question this file asks, dimension
-by dimension, and nothing more.
+the document satisfies and naming each dimension it does not. A standalone run returns no prose
+findings and never rewrites the document, and adds no `## Integrity flags` section, no
+`## Prose violations` section, and no `## Structural ordering` verdict; naming the artifact family
+it read the document as is permitted and is not a finding.
 
 ## What this file does not do
 
