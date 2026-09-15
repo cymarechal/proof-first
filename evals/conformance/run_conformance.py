@@ -73,6 +73,27 @@ TRANSCRIPTS_DIR = pathlib.Path(__file__).resolve().parent / 'transcripts'
 FIXTURES_DIR = pathlib.Path(__file__).resolve().parent / 'fixtures'
 
 
+class SessionFailedError(RuntimeError):
+    """Raised by run_session() when `claude -p` exits non-zero.
+
+    Carries the exit code and stderr so the caller can record a diagnosable
+    unscoreable reason instead of silently scoring stdout (which, on a
+    quota/auth/other non-timeout failure, is typically a short error string
+    rather than a real transcript) as if it were a normal session. Before
+    this class existed, run_session() returned that error text as its
+    "transcript" and the scorer legitimately found no family pattern and no
+    rule marker in it, producing a false `no-family` verdict indistinguishable
+    from a genuine session that omitted the family line -- see 03-08-PLAN.md's
+    2026-09-15T03:11:24 run block, where all ten claude-opus-5 sessions share
+    this exact signature after a usage-limit exhaustion mid-run.
+    """
+
+    def __init__(self, returncode, stderr):
+        self.returncode = returncode
+        self.stderr = stderr or ''
+        super().__init__(f'claude -p exited {returncode}')
+
+
 def score_transcript(text):
     """Return (verdict, evidence) for a live write-mode transcript's text.
 
@@ -153,11 +174,21 @@ def run_session(skill_src, fixture_path, model, out_path, timeout_s):
             timeout=timeout_s,
         )
         stdout = result.stdout or ''
+        stderr = result.stderr or ''
 
         out_path = pathlib.Path(out_path)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(stdout)
 
+        if result.returncode != 0:
+            # Write both streams for audit -- a failed invocation's stdout is
+            # not a transcript and must never reach score_transcript().
+            out_path.write_text(
+                f'[claude -p exited {result.returncode}]\n'
+                f'--- stdout ---\n{stdout}\n--- stderr ---\n{stderr}\n'
+            )
+            raise SessionFailedError(result.returncode, stderr)
+
+        out_path.write_text(stdout)
         return stdout
     finally:
         shutil.rmtree(tmp_dir, ignore_errors=True)
@@ -174,7 +205,11 @@ def self_test():
     nonconformant-no-family.txt, nonconformant-rule-before-family.txt) if
     present: an absent fixture is not a failure (fixtures are authored in a
     later task), but a present one that no longer exhibits its named
-    property is.
+    property is. A sixth case (03-08-PLAN.md) monkeypatches subprocess.run
+    for one run_session() call to prove a nonzero-exit `claude -p`
+    invocation raises SessionFailedError and is classified `unscoreable` by
+    the caller, never scored as `no-family` against its error-text stdout --
+    still no real subprocess call, no network call.
     """
     all_ok = True
     verdicts_discriminated = set()
@@ -261,6 +296,66 @@ def self_test():
             all_ok = False
         else:
             verdicts_discriminated.add(verdict)
+
+    # Case 6: a nonzero-exit `claude -p` invocation must raise
+    # SessionFailedError and never let its stdout reach score_transcript() --
+    # the exact defect that produced the invalidated 2026-09-15T03:11:24 run
+    # block (every claude-opus-5 session scored `no-family` instead of
+    # `unscoreable` after a mid-run usage-limit exhaustion). subprocess.run is
+    # monkeypatched for the duration of this one call, so this stays offline:
+    # no real `claude` invocation and no network call.
+    real_subprocess_run = subprocess.run
+
+    def _fake_failed_run(argv, **kwargs):
+        return subprocess.CompletedProcess(
+            argv, returncode=1,
+            stdout='Error: usage limit reached, resets 2:20pm',
+            stderr='usage limit reached, resets 2:20pm',
+        )
+
+    fake_fixture = None
+    fake_out_dir = None
+    subprocess.run = _fake_failed_run
+    try:
+        fake_fixture = pathlib.Path(tempfile.mkstemp(suffix='.md')[1])
+        fake_fixture.write_text('placeholder fixture text for self-test only')
+        fake_out_dir = pathlib.Path(tempfile.mkdtemp(prefix='proof-first-conformance-selftest-'))
+        fake_out_path = fake_out_dir / 'fake-session.txt'
+
+        raised = None
+        try:
+            run_session(
+                skill_src=REPO_ROOT / 'skills' / 'proof-first',
+                fixture_path=fake_fixture,
+                model='claude-sonnet-5',
+                out_path=fake_out_path,
+                timeout_s=5,
+            )
+        except SessionFailedError as exc:
+            raised = exc
+
+        if raised is None:
+            print('FAIL: behavior case 6 (nonzero-exit invocation) expected SessionFailedError, none raised')
+            all_ok = False
+        elif raised.returncode != 1 or 'usage limit' not in raised.stderr:
+            print(f'FAIL: behavior case 6 (nonzero-exit invocation) SessionFailedError fields wrong: returncode={raised.returncode!r} stderr={raised.stderr!r}')
+            all_ok = False
+        else:
+            # Prove *why* this matters: had the buggy stdout-only path scored
+            # this error text directly, it would have produced the false
+            # `no-family` verdict this fix eliminates.
+            would_be_verdict, _ = score_transcript(_fake_failed_run([]).stdout)
+            if would_be_verdict != 'no-family':
+                print(f'FAIL: behavior case 6 fixture assumption wrong: expected the pre-fix bug to produce no-family, got {would_be_verdict}')
+                all_ok = False
+            else:
+                verdicts_discriminated.add('unscoreable')
+    finally:
+        subprocess.run = real_subprocess_run
+        if fake_fixture is not None:
+            fake_fixture.unlink(missing_ok=True)
+        if fake_out_dir is not None:
+            shutil.rmtree(fake_out_dir, ignore_errors=True)
 
     if not all_ok:
         return False
@@ -372,6 +467,17 @@ def main():
                     transcript = ''
                     session_returncode_ok = False
                     reason = 'timeout'
+                except SessionFailedError as exc:
+                    transcript = ''
+                    session_returncode_ok = False
+                    stderr_excerpt = exc.stderr.strip()
+                    if len(stderr_excerpt) > 300:
+                        stderr_excerpt = stderr_excerpt[:300] + '...'
+                    reason = (
+                        f'nonzero exit {exc.returncode}: {stderr_excerpt!r}'
+                        if stderr_excerpt
+                        else f'nonzero exit {exc.returncode} (empty stderr)'
+                    )
                 except (subprocess.SubprocessError, OSError) as exc:
                     transcript = ''
                     session_returncode_ok = False
