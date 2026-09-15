@@ -48,6 +48,7 @@ expected: Submit one document per family (RFP answer, proposal section, executiv
 result: issue
 reported: "14 of 15 sessions conformed. One write-mode session on the solution-proposal fixture cited PF-2.17, PF-2.15 and PF-1.17 as findings without ever stating an artifact family, and stopped to await a 'proceed' reply instead of drafting."
 severity: major
+post_fix: "Partially closed by 03-05. The turn-ending behaviour is fixed; family-line omission persists in 2 of 16 post-fix write-mode sessions. See gap G-03-2 and WINDOWS.md entry 8."
 detail: |
   Check mode: 9/9 conformant. Every run named the family in its first line or first
   heading, before any finding. The ambiguous fixture was correctly reported as spanning
@@ -76,6 +77,7 @@ why_human: Plans 03-01, 03-02 and 03-03 each record this `<human-check>` as self
 result: issue
 reported: "Two independent readers, run blind to `.planning/` and to each other, both returned ISSUES FOUND. They converge on source dimension labels used as this repository's own working nouns inside six of the eight MC bodies."
 severity: major
+post_fix: "Closed by 03-05 for `completeness-audit.md`, verified mechanically. One residual occurrence remains in `artifact-patterns.md` line 103 — see gap G-03-5 and WINDOWS.md entry 9. The provenance half (an actual human read) is still open and owned by Phase 6 LEG-04."
 performed_by: two independent subagents (opus and sonnet), NOT a human. The provenance half of this test is still open; Phase 6 LEG-04 remains the owner per SOURCES.md.
 detail: |
   Verified directly against the file, not taken from the readers' report:
@@ -113,7 +115,24 @@ blocked: 0
 
 - gap_id: G-03-2
   truth: "The skill states the classified artifact family before applying any rule or reporting any finding, in both modes"
-  status: failed
+  status: partially_resolved
+  resolved_by: 03-05-PLAN.md
+  resolved_at: 2026-09-15
+  post_fix_evidence: |
+    Re-checked independently of the fixing agent: 16 scoreable live write-mode sessions
+    against the EDITED skill (sonnet-5 and opus-5, 5 fixtures, fresh isolated dirs,
+    skill auto-discovered). 14 named the artifact family before the first applied
+    marker; 2 named no family at all (A fixture on opus-5, E fixture on sonnet-5).
+    The targeted defect IS fixed: the B fixture, which pre-fix ended its turn on the
+    source-material ask without classifying, now names the family first and drafts in
+    the same response, on both models.
+    The residual is not fixed: roughly 1 in 8 write-mode sessions still omits the
+    family line. Pre-fix conformance was 5/6, post-fix 14/16 — the difference is not
+    a measurable improvement in the overall rate.
+    Ruled out as a cause: a control of 4 runs under the identical write-blocked
+    condition conformed 4/4, so the omission is sampling variance rather than an
+    artifact of the harness preamble both failures happened to open with.
+    Recorded as WINDOWS.md entry 8. MOD-04 stays `[ ]`.
   reason: "User reported: 14 of 15 live sessions conformed; one write-mode session cited PF-2.17, PF-2.15 and PF-1.17 before stating any family, and stopped to await a 'proceed' reply instead of drafting"
   severity: major
   test: 2
@@ -128,7 +147,21 @@ blocked: 0
 
 - gap_id: G-03-5
   truth: "No source-coined term is adopted as this repository's own label in the MC dimension bodies or the artifact-family sections"
-  status: failed
+  status: resolved
+  resolved_by: 03-05-PLAN.md
+  resolved_at: 2026-09-15
+  post_fix_evidence: |
+    Verified mechanically, not taken from the fixing agent's report: `grep -iE
+    'economic buyer|paper process|champion|decision process|pains?'` over
+    `references/completeness-audit.md` returns zero hits. All 8 MC headings, all 8 IDs,
+    the stated 8-check count and `NUMBERING.md` are unchanged; `check_repo.py`
+    self-test, mutation-test and bare run all pass.
+    Two further standalone-audit sessions (sonnet-5 and opus-5) confirmed the edited
+    MC bodies still cite correctly and the audit output shape is unchanged.
+    One residual outside this gap's stated scope: `references/artifact-patterns.md`
+    line 103 still reads "Diane Osoria, the economic buyer". The gap scoped the fix to
+    the six MC bodies, so this was not covered. Recorded as WINDOWS.md entry 9 rather
+    than fixed by widening a verified plan's scope.
   reason: "User reported: two independent readers both returned ISSUES FOUND; six of eight MC bodies use the source's own dimension label as this repository's unattributed working noun, while MC-11 and MC-36 demonstrate the file can avoid them"
   severity: major
   test: 5
