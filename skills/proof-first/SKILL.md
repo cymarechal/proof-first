@@ -258,7 +258,7 @@ A claim whose evidence sits adjacent to it is written flat and confident, with n
 
 ## Write mode
 
-Output is exactly three parts, in order: one line naming the artifact family this response assumes (an RFP answer, a proposal section, an executive summary, or demo or discovery material), the prose itself, then the trailing register. No list of applied rules follows the prose — write mode writes, check mode explains, and the register already carries everything the writer must act on.
+Output is exactly three parts, in order: the artifact-family line, the prose itself, then the trailing register. The family line always prints and carries one of five values: an RFP answer, a proposal section, an executive summary, demo or discovery material, or **No family fits:** followed by the family-independent rules only — a document this session cannot place takes that fifth value rather than taking silence. No list of applied rules follows the prose — write mode writes, check mode explains, and the register already carries everything the writer must act on.
 
 At the start of a drafting task, name what counts as customer source material — RFP question text, discovery notes, stated requirements — and ask for it once. The ask never ends the turn: the draft follows in the same response whether or not material is supplied. `PF-3.3` fires only against material actually supplied for this task; inferring provenance from whatever the writer pasted would let the vendor's own wording launder itself as the customer's own term. With nothing supplied, say once that the provenance override cannot fire and every term will be judged by the deletion test alone, so a writer whose own RFP vocabulary gets stripped knows supplying that text would have prevented it.
 
@@ -293,12 +293,13 @@ A marker still present when check mode runs means the rule was honoured — noth
 
 ## Self-check before delivering
 
-Run this mechanical check, in two named passes, before returning any output.
+Run this mechanical check, in three named passes, before returning any output.
 
-1. Subtractive pass: find the violations to remove.
-2. Additive sweep (mandatory): ask whether an explicit before/after contrast, a metric with a baseline, a differentiator, and the opening reframe are all present. A missing one is reported exactly as a removal is, through the same `GAP` marker mechanism `PF-2.13` defines, so a thin-input draft comes back heavily marked — the correct signal.
+1. Family-line pass (mandatory): confirm the response's first line names the artifact family or states **No family fits:** — a response failing this is not ready to return.
+2. Subtractive pass: find the violations to remove.
+3. Additive sweep (mandatory): ask whether an explicit before/after contrast, a metric with a baseline, a differentiator, and the opening reframe are all present. A missing one is reported exactly as a removal is, through the same `GAP` marker mechanism `PF-2.13` defines, so a thin-input draft comes back heavily marked — the correct signal.
 
-A self-check that only ever finds things to delete has skipped pass two.
+A self-check that only ever finds things to delete has skipped pass three.
 
 ## Limits
 
