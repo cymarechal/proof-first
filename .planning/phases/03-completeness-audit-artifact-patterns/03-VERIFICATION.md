@@ -1,55 +1,80 @@
 ---
 phase: 03-completeness-audit-artifact-patterns
-verified: 2026-09-14T00:00:00Z
-status: human_needed
-score: "4/8 truths verified, 4 present-behavior-unverified (17 requirement IDs mapped: 10 satisfied mechanically, 7 needing a live harness session)"
-behavior_unverified: 4
+verified: 2026-09-15T01:56:13Z
+status: gaps_found
+score: "8/9 truths verified, 1 failed, 0 present-behavior-unverified (all four previously-deferred live-behavior truths now have direct live-session evidence, one way or the other)"
+behavior_unverified: 0
 overrides_applied: 0
-behavior_unverified_items:
-  - truth: "AUD-03 — writer can run the completeness audit independently of the prose rules and get a separate verdict"
-    test: "In a live harness session with the skill installed, ask for the completeness audit on its own against a sample document (e.g. examples/deal-brief.md-derived text)."
-    expected: "The session returns `## Completeness gaps` and its one-line verdict alone — no `## Integrity flags`, no `## Prose violations`, no `## Structural ordering`, and no rewritten document."
-    why_human: "This is model runtime behaviour. `SKILL.md` and `references/completeness-audit.md` carry the instruction text (grep-verified), but no file-reading checker in this repository can observe whether a live session actually obeys it."
-  - truth: "MOD-04 — the skill classifies the artifact family before applying any rules, and says which one"
-    test: "In a live harness session, submit one document per artifact family (RFP answer, proposal section, executive summary, demo/discovery note) plus one genuinely ambiguous document, in both Write mode and Check mode."
-    expected: "Every response states the classified family (or the `**No family fits:**` fallback) before any rule is applied or any finding is reported."
-    why_human: "Model runtime behaviour. The classification sentence exists in both Write mode (pre-existing) and the new Check-mode sentence this phase added, and `references/artifact-patterns.md`'s classification procedure and fallback are grep-verified present — but whether a live session actually follows the stated order is unobservable by any check in this repository."
-  - truth: "MOD-03 — check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass"
-    test: "Run check mode in a live session against a document with findings in every category, and against a clean document."
-    expected: "All four sections (`## Integrity flags`, `## Prose violations`, `## Completeness gaps`, `## Structural ordering`) print in that fixed order every time, each carrying an explicit no-findings line when empty."
-    why_human: "Model runtime behaviour, permanently unobservable by a file-reading checker. Additionally flagged: `SKILL.md`'s Check-mode section contains a residual sentence reading \"Findings are grouped under two labelled sections in this fixed order\" immediately before describing all four sections by name — see Anti-Patterns Found. This is a concrete, human-fixable wording defect that a live session may or may not be robust against; a human should judge whether it needs fixing before this truth is trusted."
-  - truth: "MOD-05 (live-session half) — check mode never cites a rule number in a live conversation that isn't in the shipped catalog or checklist files"
-    test: "Run several live check-mode and completeness-audit sessions across varied documents and inspect every cited rule ID."
-    expected: "No cited ID falls outside the 31 allocated `PF-` IDs or the 8 allocated `MC-` IDs."
-    why_human: "The shipped-file half of this guarantee is fully and mechanically enforced today (`undefined-id`, `mc-catalog-id-drift`, `mc-count-unstated`/`mc-count-mismatch`, all mutation-proven). The live-session half — that a fresh conversation never fabricates a number — is permanently manual per `.planning/REQUIREMENTS.md`'s own annotation and cannot be closed by any check in this repository."
+re_verification:
+  previous_status: human_needed
+  previous_score: "4/8 truths verified, 4 present-behavior-unverified"
+  gaps_closed:
+    - "AUD-03 (SC1 live half) — 6 live standalone-audit sessions in 03-UAT.md test 1 confirm the standalone verdict, plus 2 more in 03-05's own re-check"
+    - "MOD-03 (SC4 live half) — 9/9 live check-mode sessions in 03-UAT.md test 3 print all four sections in fixed order; the 'two labelled sections' wording defect this report's predecessor found is now corrected to 'four' (SKILL.md:282, commit 8c41abe)"
+    - "MOD-05 (SC5 live-session half) — 18/18 live sessions in 03-UAT.md test 4, 224 distinct rule citations, zero unallocated IDs"
+    - "REQUIREMENTS.md checkbox-vs-annotation inconsistency the predecessor flagged (6 items marked [x] beside an UNVERIFIED annotation) — resolved by the orchestrator (commit a30dbd6) and further refined by 03-05 (commit b590abe): AUD-02/AUD-03/MOD-03/MOD-05 now [x] with measured evidence in the annotation itself; AUD-01/MOD-04/ART-01..04 correctly stayed [ ]"
+  gaps_remaining:
+    - "MOD-04 (SC3 live half) — classify-before-rules order still fails intermittently after 03-05's fix: 2 of 16 post-fix live write-mode sessions named no artifact family at all (WINDOWS.md entry 8, open, kind unmet-truth). This is a NEW finding at this re-verification: the truth is not merely unobserved, it is now directly evidenced to fail at a non-trivial rate and is not deferred to any later phase."
+    - "AUD-01 and ART-01..04 (content-quality / paraphrase-boundary reads) — still no independent human read has occurred (only two subagents); correctly still [ ] Pending, deferred to Phase 6 LEG-04 per WINDOWS.md entries 3, 6, 9"
+  regressions: []
+gaps:
+  - truth: "MOD-04 (SC3, live-session half) — skill states which artifact family it classified the document as before applying any rules or reporting any finding, in every live session"
+    status: failed
+    reason: "03-UAT.md's own post-fix reconciliation (commit 843367a, dated one day after 03-05 landed) ran 16 scoreable live write-mode sessions against the edited SKILL.md across two models and five fixtures: 14 conformed, 2 named no artifact family at all (opus-5 on fixture A, sonnet-5 on fixture E). A 4-run control under the identical write-blocked condition conformed 4/4, ruling out harness-preamble contamination as the cause — this is the skill's own instruction text failing to hold, not a test artifact. Pre-fix rate was 5/6 (83%); post-fix is 14/16 (87.5%) — not a measurable improvement, and nowhere near the 100% the truth requires ('before applying any rules', unconditionally). This is not deferred to a later phase: unlike WINDOWS entries 3, 6, and 9 (all explicitly routed to Phase 6 LEG-04), WINDOWS entry 8 has no later-phase owner and is recorded as `kind: unmet-truth`, i.e. an active, phase-3-owned defect, not merely an unrun check."
+    artifacts:
+      - path: "skills/proof-first/SKILL.md"
+        issue: "`## Write mode` and `## Your task` now state the ordering rule explicitly (confirmed present at SKILL.md:261 and SKILL.md:275), but the instruction is not sufficient on its own to make a live session obey it in every case — 2 of 16 post-fix sessions still violated it."
+    missing:
+      - "A further SKILL.md change that makes the family line unconditional (not merely stated as a rule to follow), or an accepted, disclosed residual failure rate if the team decides ~1-in-8 is tolerable — this is the decision WINDOWS.md entry 8 is waiting on."
+      - "REQUIREMENTS.md's MOD-04 annotation (line 50) is now stale relative to this finding: it still describes the pre-reconciliation state ('re-ran 5 write-mode sessions... which all conformed — but that re-run was performed by the same plan that made the fix'), written before the 16-session independent recheck found 2/16 residual failures. The checkbox itself is correctly [ ], but the annotation text should be updated to cite the 14/16 number and WINDOWS.md entry 8 so a reader doesn't need to cross-reference 03-UAT.md to learn the requirement is still failing, not merely 'not yet independently re-run'."
+deferred:
+  - truth: "AUD-01 — independent human (not subagent) paraphrase-boundary read of the MC dimension bodies against SOURCES.md"
+    addressed_in: "Phase 6"
+    evidence: "ROADMAP.md Phase 6 goal: 'The repo is legally cleared and honestly marketed before anyone outside the project sees it', Success Criterion 1: 'A legal review gate passes before public launch, with MEDDIC-family trademark status... reconfirmed against current sources'; WINDOWS.md entries 3 and 6 both explicitly state 'routed to Phase 6 LEG-04' for the same class of reproduction-boundary judgment"
+  - truth: "ART-01 through ART-04 — independent human paraphrase-boundary read of the four artifact-family sections, including the residual 'the economic buyer' label at artifact-patterns.md:103"
+    addressed_in: "Phase 6"
+    evidence: "WINDOWS.md entry 9: 'Closure: fold into the next content plan or into Phase 6 LEG-04 alongside entries 3 and 6'"
 human_verification:
-  - test: "Run the four live-session checks above (AUD-03 standalone run, MOD-04 classification-before-rules, MOD-03 four-section report, MOD-05 live no-invented-citation) in a real installed-skill harness session."
-    expected: "See each item's expected column above."
-    why_human: "Model runtime behaviour no file-reading checker can observe."
-  - test: "Read all eight MC dimension bodies in `skills/proof-first/references/completeness-audit.md` and all four artifact-family sections in `skills/proof-first/references/artifact-patterns.md` end to end against `SOURCES.md`'s reproduction boundary (lines 11-22)."
-    expected: "No contiguous run of any framework source's own wording, no source's ordered list reproduced in source order, and no source-coined term adopted as this repository's own label. Confirm each MC body and each family convention reads as a question/instruction about a document rather than a restatement of what the underlying methodology concept means."
-    why_human: "Every one of `03-01`, `03-02`, and `03-03`'s SUMMARY files record this exact `<human-check>` as self-performed by the executing agent, not an independent human, because no human was available to respond in the spawned session. The plans explicitly require this be treated as provisional pending end-of-phase UAT — it has not yet had an independent human read."
-  - test: "Decide whether `AUD-01`, `ART-01` through `ART-04`, and `MOD-05` should keep their `[x]` Complete checkbox in `.planning/REQUIREMENTS.md` given each carries an italic annotation stating its content-quality or live-session half is UNVERIFIED."
-    expected: "A deliberate human decision — either accept `[x]` as \"structurally complete, content/live half tracked separately in the annotation\" (consistent across all six), or revert to `[ ]` to match `AUD-03`/`MOD-04`'s treatment and this repo's own precedent of reverting premature Complete marks (commits `24e7d22`, `80cc1cb`)."
-    why_human: "See Gaps Summary and Anti-Patterns Found below — this is a policy call about the project's own completion-tracking discipline, not something this verifier should silently resolve either way."
+  - test: "Read all eight MC dimension bodies (post-03-05 edit) and all four artifact-family sections end to end against SOURCES.md's reproduction boundary, with a real human, not a subagent."
+    expected: "Confirm the six relabeled MC bodies (MC-1, MC-6, MC-16, MC-21, MC-26, MC-31) now read as document-facing questions, and make the final call on the residual 'economic buyer' label at artifact-patterns.md:103 and the MEDDICC letter-order tension (WINDOWS entries 6 and 9)."
+    why_human: "SOURCES.md itself states this paraphrase-boundary judgment is semantic, and no tool in this stack performs it; the two independent-subagent reads that surfaced G-03-5 are the closest proxy available, not a substitute. This item is explicitly deferred to Phase 6 LEG-04, not blocking this phase's status, but it has still never had an actual human reader."
+  - test: "Decide whether AUD-03's [x] Complete mark should be reconsidered given a later, single post-fix sample (03-05 Task 2's own standalone-audit re-check) printed an unrequested `## Artifact family` section before `## Completeness gaps`, contradicting the instruction text's own 'and nothing more' — versus MOD-04, which was held open in this same phase for a comparable single-digit residual failure rate."
+    expected: "Either accept 6/7 (the 03-UAT.md test-1 pass plus the one later divergent sample) as within acceptable variance and leave AUD-03 Complete, consistent with WINDOWS entry 7's own 'one-sample variance' framing — or apply the same bar used for MOD-04 and reopen it pending a wider re-check."
+    why_human: "This is a consistency-of-completion-bar policy question, not a mechanical check. WINDOWS.md entry 7 already discloses the underlying fact; this verifier is not resolving it either way."
 ---
 
 # Phase 3: Completeness Audit & Artifact Patterns Verification Report
 
 **Phase Goal:** A writer can classify a document by artifact family, apply that family's conventions, and get a document-level completeness verdict and trustworthy rule citations — independent of the prose rules.
-**Verified:** 2026-09-14
-**Status:** human_needed
-**Re-verification:** No — initial verification
+**Verified:** 2026-09-15T01:56:13Z
+**Status:** gaps_found
+**Re-verification:** Yes — after 03-UAT.md's 18 live harness sessions and plan 03-05's gap closure
 
 ## Project Gate (independently re-run, not taken on trust)
 
 ```
-python3 tools/check_repo.py --self-test      -> self-test PASS - 27 verified violation codes
-python3 tools/check_repo.py --mutation-test  -> mutation-test PASS: 27 codes discrimination-proven
-python3 tools/check_repo.py                  -> check_repo: 0 violations
+$ python3 tools/check_repo.py --self-test
+self-test PASS - verified violation codes: artifact-family-section-missing, catalog-count-mismatch,
+catalog-count-unstated, catalog-id-drift, catalog-opening-rule-count, dup-figure-key, dup-id,
+figure-order, framework-statement-missing, frontmatter-description-invalid, frontmatter-name-mismatch,
+frontmatter-unknown-key, frontmatter-unparseable, license-missing, mc-catalog-id-drift,
+mc-count-mismatch, mc-count-unstated, mc-rule-in-skill, pointer-duplicated, pointer-missing,
+pointer-unparseable, range-id, revived-id, skill-token-budget-exceeded, skill-too-long, undefined-id,
+unlisted-figure
+(exit 0)
+
+$ python3 tools/check_repo.py --mutation-test
+mutation-test CONTROL: 0 violations on the unmutated copy (0 known-open per KNOWN_OPEN_VIOLATIONS, 0 unexpected)
+... [27 individual codes, all OK] ...
+mutation-test PASS: 27 codes discrimination-proven
+(exit 0)
+
+$ python3 tools/check_repo.py
+check_repo: 0 violations
+(exit 0)
 ```
 
-All three confirmed independently in this session, matching the orchestrator's reported figures exactly (27 codes discrimination-proven, control copy clean, no code fire-only).
+All three commands re-run fresh in this session, matching every figure claimed in 03-05-SUMMARY.md exactly (27 codes, 0 violations, 236→190-token margin absorbed correctly — independently re-measured at 3700 words / 4810 estimated tokens against the file on disk).
 
 ## Goal Achievement
 
@@ -57,119 +82,120 @@ All three confirmed independently in this session, matching the orchestrator's r
 
 | # | Truth | Status | Evidence |
 |---|---|---|---|
-| 1 | **(SC1, structural half)** Document-level completeness audit derived from MEDDICC, covering all 8 dimensions (metric, economic buyer, decision criteria, decision process, paper process, pain, champion, competition), living in its own `MC-` namespace and reference file, never blended into the prose rules | ✓ VERIFIED | `MC-1, MC-6, MC-11, MC-16, MC-21, MC-26, MC-31, MC-36` present identically across `completeness-audit.md` rule headings, `NUMBERING.md`'s Allocated IDs table, and `checklist.md`'s `## MC rules` table (grep-confirmed, all three sets equal). `mc-rule-in-skill` fails the build if any `SKILL.md` defines an MC heading — confirmed present in `--self-test`'s verified-code list and in `--mutation-test`'s discrimination-proven set. |
-| 2 | **(SC1, live half / AUD-03)** Writer can run the completeness audit independently and get a separate verdict | ⚠️ PRESENT_BEHAVIOR_UNVERIFIED | `## Running the audit on its own` section exists in `completeness-audit.md` (grep `1`), and `SKILL.md`'s Check mode carries a parallel standalone-run sentence pointing at it. No live session was run in this verification to confirm the behaviour. Routed to human verification. |
-| 3 | **(SC2)** Each of the four artifact families (RFP/RFI response, solution proposal, executive summary, demo/discovery material) gets its own conventions and its own expected order | ✓ VERIFIED | All four frozen headings present exactly once in `artifact-patterns.md`; each carries a distinct `**Order:**` line (4 total, verified distinct by direct read — answer-first / architecture-then-capability-then-risk / reframe-then-case-then-list / discovery-then-script-then-criteria-then-follow-up); all 15 frozen element labels (one per ART-01..04 requirement clause) present exactly once. `artifact-family-section-missing` is CI-enforced and mutation-proven. Direct read of all four sections found no verbatim source reproduction in this spot check. |
-| 4 | **(SC3, structural half / MOD-04)** Skill states which artifact family it classified the document as before applying any rules | ✓ VERIFIED (text present) | Write mode's pre-existing assumed-family sentence and the new Check-mode classification sentence (`SKILL.md:276`) both exist and both point at `references/artifact-patterns.md`'s classification procedure, which itself carries a `**No family fits:**` fallback (grep-confirmed, present exactly once). |
-| 5 | **(SC3, live half / MOD-04)** A live session actually classifies a real document and states the family before applying any rule | ⚠️ PRESENT_BEHAVIOR_UNVERIFIED | No live session was run. Routed to human verification. |
-| 6 | **(SC4, structural half / MOD-03)** Check mode's report text names four labeled sections (Integrity flags, Prose violations, Completeness gaps, structural ordering pass) in a fixed order | ✓ VERIFIED (text present, with a caveat) | All four section names present in `SKILL.md` in the frozen order, each described distinctly; `## ` heading count unchanged at 13 (none written as a real heading — confirmed by direct grep, matching the plan's own invariant). **Caveat:** the paragraph introducing the sections still reads "Findings are grouped under **two** labelled sections in this fixed order" immediately before naming all four — see Anti-Patterns Found. This is a genuine, human-fixable wording defect this verification located that no acceptance criterion in any of the four plans caught. |
-| 7 | **(SC4, live half / MOD-03)** A live check-mode session actually prints all four labeled sections, in that order, each with a no-findings line when empty | ⚠️ PRESENT_BEHAVIOR_UNVERIFIED | No live session was run. Routed to human verification. |
-| 8 | **(SC5, shipped-file half / MOD-05)** Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files | ✓ VERIFIED | `undefined-id` scans all of `skills/`, `examples/`, and `README.md` for `PF-#.#`/`MC-#` tokens and fails the build on any unallocated one; `mc-catalog-id-drift` and the two `mc-count-*` codes independently guard the MC registry/definition/checklist three-way agreement. All mutation-proven (part of the 27 discrimination-proven codes), all confirmed live in this session's re-run of `--mutation-test`. |
-| 9 | **(SC5, live-session half / MOD-05)** A live check-mode conversation in a fresh session never fabricates a rule number | ⚠️ PRESENT_BEHAVIOR_UNVERIFIED | Permanently manual — no file-reading checker in this repository can observe this. `.planning/REQUIREMENTS.md`'s own MOD-05 annotation states the same. Routed to human verification (permanent closure condition: a live harness session recorded at UAT). |
+| 1 | (SC1, structural) MC namespace/registry never blended into prose rules | ✓ VERIFIED | Regression-confirmed: 8/8 MC IDs present and matching across `completeness-audit.md`, `NUMBERING.md`, `checklist.md`; `mc-rule-in-skill` still discrimination-proven in this session's mutation-test re-run. Unchanged since prior verification. |
+| 2 | (SC1, live half / AUD-03) Standalone audit returns a separate verdict, independent of prose rules | ✓ VERIFIED (with a disclosed caveat — see human_verification item 2) | 03-UAT.md test 1: 6/6 live sessions (4 sonnet-5, 2 opus-5) emitted `## Completeness gaps` alone with a verdict line, zero `PF-` citations, no rewrite. 03-05's own Task 2 re-check ran a 7th session that additionally printed an unrequested `## Artifact family` heading before the verdict (WINDOWS.md entry 7, open, not reproduced across multiple runs). Core capability (separate verdict delivered) held in all 7 samples; the deviation is over-inclusion, not a failure to deliver the verdict. |
+| 3 | (SC2, structural) Four artifact families each get distinct conventions and expected order | ✓ VERIFIED | Regression-confirmed: `artifact-family-section-missing` still discrimination-proven; all four `**Order:**` lines and 15 frozen element labels still present and distinct (grep re-confirmed at `artifact-patterns.md`). Content-quality half (ART-01..04) remains open — see Deferred. |
+| 4 | (SC3, structural / MOD-04) Classification instruction text exists in both modes, states the ordering explicitly | ✓ VERIFIED | `SKILL.md:261` ("The ask never ends the turn: the draft follows in the same response whether or not material is supplied") and `SKILL.md:275` ("In either mode, no rule ID is cited and no finding is reported before the artifact family is named") both directly read and confirmed present — these are the two sentences 03-05 added to close G-03-2 at the instruction-text level. |
+| 5 | (SC3, live half / MOD-04) A live session actually classifies before applying any rule, in every session | ✗ **FAILED** | 03-UAT.md's post-fix reconciliation (commit `843367a`): 16 scoreable live write-mode sessions post-03-05, 2 named no artifact family at all (14/16 = 87.5%, not a measurable improvement over the pre-fix 5/6 = 83%). A 4-run control under the identical write-blocked condition conformed 4/4, ruling out harness contamination. WINDOWS.md entry 8 records this as `kind: unmet-truth`, open, with no later-phase owner. This is a real, evidenced, unresolved gap — not merely unobserved behaviour. |
+| 6 | (SC4, structural / MOD-03) Four labeled sections in fixed order, correct lead-in wording | ✓ VERIFIED | The prior verification's located defect ("grouped under **two** labelled sections") is now fixed: `SKILL.md:282` directly reads "Findings are grouped under four labelled sections in this fixed order." Confirmed by direct read, not taken from SUMMARY. |
+| 7 | (SC4, live half / MOD-03) A live check-mode session prints all four sections, in order, with no-findings lines | ✓ VERIFIED | 03-UAT.md test 3: 9/9 live sessions (7 sonnet-5, 2 opus-5) across 7 documents. All four headings in fixed order in every run; the one empty section observed carried an explicit "No findings." line. |
+| 8 | (SC5, shipped-file half / MOD-05) Check mode never cites an unallocated rule number | ✓ VERIFIED | Regression-confirmed: `undefined-id`, `mc-catalog-id-drift`, `mc-count-unstated`/`mc-count-mismatch` all still discrimination-proven in this session's mutation-test re-run. |
+| 9 | (SC5, live-session half / MOD-05) A live conversation never fabricates a rule number | ✓ VERIFIED | 03-UAT.md test 4: all 18 session transcripts, 224 distinct `PF-`/`MC-` citations, differenced against the 39 allocated IDs. Zero unallocated IDs cited in zero files. |
 
-**Score:** 4/8 truths fully verified (5 VERIFIED counting truth 4's text-presence, but 4 of the 8 rows above are present-and-wired with behaviour not exercised). Restated for the frontmatter contract: **4 VERIFIED, 4 PRESENT_BEHAVIOR_UNVERIFIED**, 0 FAILED.
+**Score:** 8/9 truths verified, 1 FAILED, 0 present-behavior-unverified. Every truth the prior verification routed to "human_needed" as unobservable now has direct live-session evidence one way or the other — three graduated to VERIFIED, one is now a directly-evidenced FAILED.
 
-### Required Artifacts
+### Required Artifacts (regression check)
 
-| Artifact | Expected | Status | Details |
-|---|---|---|---|
-| `skills/proof-first/references/completeness-audit.md` | 8 MC checks, stated-count sentence, standalone-run section, attribution pointer | ✓ VERIFIED | All present; `grep -c '^### MC-'` → 8; `## Running the audit on its own` → 1; `Not affiliated...` pointer → 1 (all directly re-confirmed). |
-| `skills/proof-first/references/artifact-patterns.md` | Classification procedure, no-family fallback, 4 family sections with conventions and order | ✓ VERIFIED | All present and directly read; no numbered rule heading minted (`### PF-`/`### MC-` search returns none). |
-| `skills/proof-first/references/checklist.md` | `## MC rules` table with all 8 MC IDs | ✓ VERIFIED | All 8 rows present, ascending. |
-| `NUMBERING.md` | 8 MC Allocated IDs rows | ✓ VERIFIED | All 8 rows present, ascending, matching the reference file's headings. |
-| `tools/check_repo.py` | 5 new violation codes (mc-catalog-id-drift, mc-rule-in-skill, mc-count-unstated, mc-count-mismatch, artifact-family-section-missing) | ✓ VERIFIED | All 5 present in `--self-test`'s verified-code list and `--mutation-test`'s 27 discrimination-proven codes, re-run independently this session. |
-| `skills/proof-first/SKILL.md` | Check-mode classification line, 4-section report order, standalone-audit instruction, both new reference pointers, all 31 PF rules intact, token margin ≥150 | ✓ VERIFIED (with the "two labelled sections" wording caveat noted above) | 31/31 rule/`**Replace with:**` parity; 236-token margin (≥150 gate); both pointer bullets present; 13 real headings unchanged. |
-| `README.md` | Reflects the two new reference files as existing, correct worked-pair count | ✓ VERIFIED | 28 worked pairs stated and matches actual file section count; `(planned)` count is 4 (down from 6); no leftover "does not exist yet" claim for the Phase 3 files. |
-| `.planning/WINDOWS.md` | Open ledger entry routing the MC dimension-order tension to Phase 6 LEG-04 | ✓ VERIFIED | Entry id 6, phase 03, status `open`, present in both the table and the JSON block. |
-| `.planning/REQUIREMENTS.md` | Provisional annotations on every Phase 3 requirement whose closure needs a live session | ✓ VERIFIED (annotation text present) — ⚠️ WARNING (checkbox state) | All 9 requirements needing a live/content-quality half carry the "records implementation, not verification" annotation. **However**, 5 of those 9 (`AUD-01`, `ART-01`, `ART-02`, `ART-03`, `ART-04`) plus `MOD-05` are still checked `[x]` Complete in the same file despite the annotation on the same line stating the opposite ("UNVERIFIED"). See Anti-Patterns Found. |
+All artifacts confirmed present and unchanged in structure since the prior verification, re-confirmed by direct grep/read in this session:
 
-### Key Link Verification
-
-| From | To | Via | Status | Details |
-|---|---|---|---|---|
-| `completeness-audit.md` rule headings | `NUMBERING.md` Allocated IDs | `### MC-\d+ — ` | ✓ WIRED | 8/8 match, `mc-catalog-id-drift` build-enforced. |
-| `checklist.md` `## MC rules` | `NUMBERING.md` Allocated IDs | `\| MC-\d+ \|` | ✓ WIRED | 8/8 match. |
-| `tools/check_repo.py` | `completeness-audit.md` | `run_catalog_checks` reads MC headings | ✓ WIRED | Confirmed via `--self-test`/`--mutation-test` exercising `check_mc_catalog_id_drift`. |
-| `artifact-patterns.md` | `NOTICES.md` | attribution pointer carried once | ✓ WIRED | `grep -c` → 1. |
-| `tools/check_repo.py` | `artifact-patterns.md` | `check_artifact_family_sections` reads the 4 required headings | ✓ WIRED | Mutation deletes `## Solution proposal` from the real file and is discrimination-proven. |
-| `SKILL.md` | `completeness-audit.md` / `artifact-patterns.md` | reference pointers + inline Check-mode sentences | ✓ WIRED | Both files referenced ≥1 time each in the Reference files list, plus inline in the Check-mode section. |
+| Artifact | Status | Details |
+|---|---|---|
+| `skills/proof-first/references/completeness-audit.md` | ✓ VERIFIED | 8 MC headings; grep for `economic buyer\|the paper process\|champion\|buyer's decision process\|pains?` (the five G-03-5 labels) returns **zero hits** — confirms 03-05's Task 2 fix is actually in the file, not just claimed. |
+| `skills/proof-first/references/artifact-patterns.md` | ✓ VERIFIED (with residual) | Classification/fallback/four-family structure unchanged. Line 103 confirmed still reads "Diane Osoria, the economic buyer" — the residual WINDOWS.md entry 9 documents, correctly not silently fixed by widening 03-05's scope. |
+| `skills/proof-first/SKILL.md` | ✓ VERIFIED | 31/31 PF rules intact; "four labelled sections" wording fixed (line 282); Write-mode/Your-task ordering sentences present; 3700 words / 4810 estimated tokens / 190-token margin, independently re-measured, matches SUMMARY exactly. |
+| `.planning/REQUIREMENTS.md` | ⚠️ WARNING (stale annotation, not a false claim) | Checkbox states now correctly match evidence (AUD-02/AUD-03/MOD-03/MOD-05 `[x]`; AUD-01/ART-01..04/MOD-04 `[ ]`). However MOD-04's annotation text (line 50) predates the 16-session independent recheck that found the 2/16 residual — it describes only 03-05's own 5/5 self-check, not the more damning post-reconciliation number. No overclaim (checkbox is correctly open), but a reader relying on the annotation alone would underestimate how settled the residual failure is. |
+| `.planning/ROADMAP.md` | ℹ️ INFO | Phase 3's plan list still shows `03-05-PLAN.md` unchecked (`- [ ] 03-05-PLAN.md`) and "Plans: 4/5 plans executed" despite `03-05-SUMMARY.md` recording `status: complete` and all 3 of its task commits present in git log. Cosmetic — does not affect this verification's conclusions, but is a bookkeeping gap worth closing when this phase's status is next updated. |
+| `.planning/WINDOWS.md` | ✓ VERIFIED | Entries 3, 6, 8, 9 all confirmed `status: open` in both the table and the JSON block — none claimed closed by this phase, consistent with the explicit instruction not to treat them as such. Entry 7 (new, this re-verification's own concern) also open. |
 
 ### Requirements Coverage
 
-| Requirement | Source Plan | Description | Status | Evidence |
-|---|---|---|---|---|
-| AUD-01 | 03-01, 03-02 | 8-dimension MEDDICC completeness checklist | ✓ SATISFIED (structural) / ? NEEDS HUMAN (content-quality) | 8/8 IDs registered and enforced; content-quality read is self-performed by the executor, not an independent human — REQUIREMENTS.md's own annotation says so. |
-| AUD-02 | 03-01 | Own reference file, own `MC-` namespace, never blended | ✓ SATISFIED | `mc-rule-in-skill` + physically separate file; no caveat needed, mechanically closed. |
-| AUD-03 | 03-02, 03-04 | Standalone audit run with separate verdict | ? NEEDS HUMAN | Instruction text shipped; live behaviour unobserved. Correctly `[ ]` Pending in REQUIREMENTS.md. |
-| ART-01 | 03-03 | RFP/RFI response pattern | ✓ SATISFIED (structural) / ? NEEDS HUMAN (content-quality) | Section + `**Order:**` + all element labels present; content read directly in this session with no reproduction found in spot check, but no independent human paraphrase-boundary read has occurred. |
-| ART-02 | 03-03 | Solution proposal pattern | ✓ SATISFIED (structural) / ? NEEDS HUMAN (content-quality) | Same evidence class as ART-01. |
-| ART-03 | 03-03 | Executive summary pattern | ✓ SATISFIED (structural) / ? NEEDS HUMAN (content-quality) | Same evidence class as ART-01. |
-| ART-04 | 03-03 | Demo/discovery pattern | ✓ SATISFIED (structural) / ? NEEDS HUMAN (content-quality) | Same evidence class as ART-01. |
-| MOD-03 | 03-04 | 4-section check-mode report | ✓ SATISFIED (text present) / ? NEEDS HUMAN (live behaviour) | Text present with the "two labelled sections" wording caveat noted above. |
-| MOD-04 | 03-03, 03-04 | Classify family before applying rules | ✓ SATISFIED (text present) / ? NEEDS HUMAN (live behaviour) | Both modes' classification sentences and the fallback exist. |
-| MOD-05 | 03-01, 03-02, 03-04 | Never cite an undefined rule number | ✓ SATISFIED (shipped-file half) / ? NEEDS HUMAN (live-session half, permanent) | Fully mechanically enforced and mutation-proven for the shipped-file half; live-session half permanently manual. |
+| Requirement | Status | Evidence |
+|---|---|---|
+| AUD-01 | ? NEEDS HUMAN — correctly `[ ]` | Six MC-body labels fixed (verified: zero grep hits); artifact-patterns.md residual and the independent-human read both still open, correctly deferred to Phase 6 LEG-04. |
+| AUD-02 | ✓ SATISFIED — `[x]` | Mechanically enforced, no annotation needed, unchanged. |
+| AUD-03 | ✓ SATISFIED (with caveat) — `[x]` | 6/6 clean UAT sessions; one later divergent sample disclosed in WINDOWS entry 7, not yet reconciled against the completion bar applied to MOD-04 — see human_verification item 2. |
+| ART-01..04 | ? NEEDS HUMAN — correctly `[ ]` | Structural implementation verified; content-quality/paraphrase read still pending an actual human, deferred to Phase 6 LEG-04 (WINDOWS entries 3, 6, 9). |
+| MOD-03 | ✓ SATISFIED — `[x]` | 9/9 live sessions, wording defect fixed. Clean. |
+| MOD-04 | ✗ **BLOCKED** — correctly `[ ]` | Direct live evidence of failure at 2/16 post-fix (WINDOWS entry 8). This is the phase's one real, unresolved gap. |
+| MOD-05 | ✓ SATISFIED — `[x]` | Shipped-file half mechanically enforced; live half 18/18 sessions clean. |
 
-No requirement ID is ORPHANED — all 10 of this phase's requirement IDs (`AUD-01..03`, `ART-01..04`, `MOD-03..05`) appear in at least one plan's `requirements:` frontmatter and are cross-referenced in `.planning/REQUIREMENTS.md`.
+No requirement is ORPHANED.
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |---|---|---|---|---|
-| `skills/proof-first/SKILL.md` | 282 | Residual wording: "Findings are grouped under **two** labelled sections in this fixed order" — immediately followed by descriptions of all **four** sections (Integrity flags, Prose violations, Completeness gaps, Structural ordering), and by a later sentence correctly saying "All four section headings always print." | ⚠️ Warning | This is a genuine, objectively-verifiable self-contradiction in the primary instruction file a model reads at runtime, introduced when Phase 3 extended the report from 2 to 4 sections but missed updating this specific lead-in sentence (only the later "always print" sentence was updated, per `03-04-SUMMARY.md`'s own account of what it edited). Not caught by any of the four plans' acceptance criteria, none of which grepped for the literal word "two" in this context, nor by the code review (which reviewed `check_repo.py`'s mechanics, not this prose). Low risk of actually breaking live behaviour (the four names and their descriptions immediately follow and are reinforced later), but it is a one-line, unambiguous, trivially fixable defect that should be corrected — change "two" to "four" at `SKILL.md:282`. |
-| `.planning/REQUIREMENTS.md` | 34, 40-43, 51 | `AUD-01`, `ART-01` through `ART-04`, and `MOD-05` are checked `[x]` Complete while carrying an italic annotation on the same line stating "content-quality reliability UNVERIFIED" / "live-session reliability UNVERIFIED" | ⚠️ Warning | This is the exact "false Complete" pattern the project's own provisional-annotation mechanism exists to prevent (per every Phase 3 plan's `<output>` instructions, referencing a prior propagated false CAT-10 Complete). Git history confirms the mechanism: each checkbox was mechanically flipped `[ ]` → `[x]` in the same commit that landed the plan's `requirements-completed:` frontmatter field (`952c3c5` for `AUD-01`+`MOD-05`, `ef177fe` for `MOD-05`'s earlier flip, `bcac0c6`'s parent commit for `ART-01..04`), even though those very SUMMARY files explicitly instruct "this must be recorded as provisional pending end-of-phase UAT, not auto-passed off a self-check alone." This repository has reverted this exact mistake twice before (commits `24e7d22` and `80cc1cb`, both titled "revert premature Complete requirements after gaps found"), and `AUD-03`/`MOD-04` in this same phase correctly stayed `[ ]` Pending — showing the more careful treatment was available and applied inconsistently. This is a repo-hygiene defect, not a functional one: none of the underlying artifacts are broken, but the tracking file itself makes an unearned claim, which is squarely against this project's own "measured claims or no claims" constraint. Flagged for a human decision (see `human_verification` above) rather than silently resolved either way by this verifier. |
+| `.planning/REQUIREMENTS.md` | 50 | MOD-04's annotation predates the 16-session independent reconciliation (commit `843367a`) that found a 2/16 residual failure; it still frames the residual only as "not an independent UAT pass" rather than citing the measured 14/16 figure and WINDOWS entry 8. | ⚠️ Warning | Checkbox state is correct ([ ], not overclaimed), so this is a staleness/completeness issue in the annotation text, not a false-Complete pattern. Should be updated for traceability. |
+| `.planning/ROADMAP.md` | ~121-125 | `03-05-PLAN.md` still listed unchecked and "4/5 plans executed" despite `03-05-SUMMARY.md` recording completion and all 3 task commits present in git log. | ℹ️ Info | Cosmetic bookkeeping gap; does not affect any truth or artifact verified above. |
 
-No debt markers (`TBD`/`FIXME`/`XXX`) found in any file this phase touched. No stub patterns, empty implementations, or hardcoded-empty-data patterns found in the new reference files (`completeness-audit.md`, `artifact-patterns.md`) or in `tools/check_repo.py`'s new code.
+No debt markers (`TBD`/`FIXME`/`XXX`) found in any file this phase or plan 03-05 touched. No stub patterns or hardcoded-empty-data patterns found in the modified reference files.
 
-### Deferred Items
-
-None. No Phase 3 gap matches a later phase's stated goal or success criteria closely enough to defer (Phase 4 covers distribution/before-after examples, Phase 5 covers the eval harness, Phase 6 covers the LEG-04 legal gate that the MC dimension-order tension is *already* correctly routed to via the open `WINDOWS.md` entry — that routing is itself part of this phase's own completed work, not a deferred gap).
+**Carried forward from the prior VERIFICATION.md (now resolved, kept for history):**
+- The "grouped under two labelled sections" wording defect at `SKILL.md:282` — **fixed**, confirmed above.
+- The six-checkbox `[x]`-beside-UNVERIFIED-annotation inconsistency in `REQUIREMENTS.md` — **resolved** (orchestrator commit `a30dbd6`, refined by 03-05 commit `b590abe`); current state re-confirmed accurate in this session except for the MOD-04 staleness noted above.
 
 ## Human Verification Required
 
-See the `human_verification` list in the frontmatter above for the full, structured set. In summary, three classes of item need a person:
+See the `human_verification` list in the frontmatter. In summary:
 
-1. **Four live-session behaviour checks** (AUD-03 standalone run, MOD-04 classify-before-rules, MOD-03 four-section report, MOD-05 live no-invented-citation) — none of these can be observed by a file-reading checker, by design; this matches every one of the four plans' own "Honest verification statement" sections.
-2. **An independent human paraphrase-boundary read** of all 8 MC dimension bodies and all 4 artifact-family sections against `SOURCES.md`'s reproduction boundary — the plans' own `<human-check>` blocks were self-performed by the executing agent in each case (documented explicitly in every SUMMARY as "no human available to respond in this spawned session"), which is a reasonable stopgap but is not the independent human read the plans themselves call for.
-3. **A policy decision** on the six `.planning/REQUIREMENTS.md` checkboxes (`AUD-01`, `ART-01..04`, `MOD-05`) that are marked `[x]` Complete while their own annotation says UNVERIFIED — see Anti-Patterns Found.
+1. **An actual human** (not a subagent) still needs to perform the SOURCES.md paraphrase-boundary read for the MC bodies and the four artifact-family sections — explicitly deferred to Phase 6 LEG-04, not blocking this phase's status, but never yet performed by a person.
+2. **A policy call** on whether AUD-03's `[x]` should be reconsidered given a single later divergent sample (WINDOWS entry 7), given the phase applied a stricter bar to the comparable MOD-04 residual (WINDOWS entry 8) in the same UAT cycle.
 
 ## Gaps Summary
 
-No must-have truth FAILED and no required artifact is MISSING or STUB — every mechanical, CI-enforceable half of this phase's five roadmap success criteria is genuinely, independently re-verified in this session (self-test 27/27 codes, mutation-test 27 discrimination-proven with a clean control, bare run 0 violations, all re-run live rather than trusted from the SUMMARY). The phase's own honest-verification discipline (present in every plan's `<verification>` block) already correctly identifies which halves of AUD-03, MOD-03, MOD-04, and MOD-05 are permanently unobservable by any check in this repository, and those are the items routed to human verification here.
+One must-have truth is directly evidenced to fail: **MOD-04's live-session classify-before-rules ordering** still breaks in 2 of 16 post-fix write-mode sessions (WINDOWS.md entry 8), a rate statistically indistinguishable from the pre-fix 5/6 baseline despite plan 03-05's targeted fix genuinely repairing the specific failure mode it targeted (the turn-ending "proceed" stall). This is not a deferred item — no later roadmap phase is assigned ownership of it, unlike the three paraphrase-boundary items (WINDOWS entries 3, 6, 9) which are explicitly and consistently routed to Phase 6 LEG-04 throughout this project's own artifacts.
 
-Two things this verification located that the phase's own acceptance criteria and code review did not catch, both fixable and neither blocking the phase's structural achievement:
+Three of the four truths the prior verification routed to `human_needed` as permanently unobservable now have direct live-session evidence and have graduated cleanly to VERIFIED (AUD-03, MOD-03, MOD-05). The fourth (MOD-04) also now has direct live-session evidence — but that evidence shows the truth does not reliably hold, which is a stronger and more actionable finding than "unobserved." `REQUIREMENTS.md`'s own tracking already reflects this correctly (MOD-04 stays `[ ]`), so this verification's `gaps_found` status formalizes what the project's own ledger already honestly shows, rather than surfacing a hidden discrepancy.
 
-1. A one-line wording defect in `SKILL.md`'s Check-mode section ("two labelled sections" where it should read "four").
-2. A tracking-discipline inconsistency in `.planning/REQUIREMENTS.md` — six requirements marked Complete despite carrying UNVERIFIED annotations, reproducing (for the third time in this repository's history) the exact false-Complete pattern its own process exists to prevent.
-
-Neither of these breaks the shipped mechanism the phase built (the CI gate, the MC namespace, the artifact-family conventions are all genuinely present, wired, and mutation-proven), so this report does not mark any roadmap success criterion FAILED. It marks the phase `human_needed` because that is the honest status once the live-session halves and the two located defects are accounted for — a `passed` verdict here would overclaim in exactly the way this project's own "measured claims or no claims" standard forbids.
+The phase is **not** ready for `passed`: a concrete, quantified, unresolved behavioral defect exists in shipped skill content, with no later phase claiming ownership of its closure. The path to `passed` is either a further `SKILL.md` edit that makes the family line unconditional (not merely instructed) followed by a clean re-run, or an explicit, disclosed decision that the residual failure rate is acceptable — a decision this verifier is not making on the project's behalf.
 
 ---
 
-*Verified: 2026-09-14*
+*Verified: 2026-09-15T01:56:13Z*
 *Verifier: Claude (gsd-verifier)*
 
 ---
 
-## Post-Verification Resolutions (orchestrator, after this report was written)
+## Post-Verification Resolution (orchestrator, after this report was written)
 
-Both human-decision items this report raised were resolved by the execute-phase orchestrator
-immediately after verification returned. The findings above are left as written — this section
-records what changed, not a retraction of what was found.
+The report correctly declined to resolve item 2 of Human Verification Required on the
+project's behalf. The orchestrator resolved it, per this project's standing instruction to
+progress without a blocking user question. The findings above are left as written.
 
-| Finding | Resolution | Commit |
-|---|---|---|
-| `SKILL.md` Check-mode paragraph read "grouped under **two** labelled sections" immediately before naming all four | Corrected to "four". Word count unchanged at 3665; estimated tokens 4764; margin 236. No CI code guards this count (`catalog-count-mismatch` covers PF, `mc-count-mismatch` covers MC), which is why all 27 codes passed over it. | `8c41abe` |
-| `AUD-01`, `ART-01`-`ART-04`, `MOD-05` carried `[x]` Complete while their own annotations read UNVERIFIED | Reverted to `[ ]` and traceability-table status to `Pending`, matching `AUD-03`/`MOD-04`'s treatment and this repo's precedent (`24e7d22`, `80cc1cb`). `AUD-02` keeps `[x]`: it carries no UNVERIFIED annotation and is mechanically enforced by `mc-rule-in-skill`. | `a30dbd6` |
+**Decision: `AUD-03` keeps its `[x]`. The treatment is consistent with `MOD-04`, not
+stricter on one and looser on the other — because each requirement is held to its own
+stated criterion, and the two residuals fail different tests.**
 
-**Decision rationale for the checkbox call.** The report correctly declined to resolve this
-silently and routed it to a human. The orchestrator resolved it toward `[ ]` because the repo's
-stated constraint is *measured claims or no claims*: a `[x]` beside an annotation reading
-UNVERIFIED is an unmeasured claim in the project's own tracking file, and the two prior reverts
-establish the precedent. This was an orchestrator decision, not a human one — a human may
-reverse it.
+`AUD-03`'s criterion, as written in `.planning/REQUIREMENTS.md` and `03-UAT.md` test 1, is
+that a standalone run returns `## Completeness gaps` and its verdict with **no
+`## Integrity flags`, no `## Prose violations`, no `## Structural ordering`, and no
+rewritten document**. Across all nine standalone-audit sessions now on record — six in the
+UAT, one in plan 03-05's own re-check, two in the post-fix re-check — that criterion held
+9 times out of 9, on both models, across four documents. Zero `PF-` citations in any of
+them.
 
-**Gate state after both fixes**, re-run in full: `--self-test` PASS, `--mutation-test` PASS at
-27 codes discrimination-proven with control `0 violations`, bare run `0 violations`.
+`WINDOWS.md` entry 7 records that one of those nine additionally printed a
+`## Artifact family` section. That is an *extra* heading, not one of the four the criterion
+forbids, and it did not displace or contaminate the audit's output. It is a divergence from
+`completeness-audit.md`'s own "and nothing more" prose — which is a real, if minor,
+inconsistency worth the ledger entry it received — but it does not breach the requirement
+`AUD-03` actually states.
 
-The four PRESENT_BEHAVIOR_UNVERIFIED items are unaffected by these fixes and still require a
-live harness session. Phase status remains `human_needed`.
+`MOD-04`'s criterion is that the family is named before any rule is applied. In 2 of 16
+post-fix sessions no family was named at all. That is the requirement's own test, failed
+outright. Hence `[ ]`.
+
+So: one requirement met its stated bar every time and carries a logged cosmetic divergence;
+the other failed its stated bar at roughly a 1-in-8 rate. Marking the first Complete and the
+second Pending applies one rule consistently. Reopening `AUD-03` over entry 7 would mean
+holding it to a criterion nobody wrote down, which is the mirror image of the false-Complete
+error this repository has already reverted three times.
+
+This was an orchestrator decision, not a human one. A human may reverse it. Item 1 —
+an actual human performing the `SOURCES.md` paraphrase-boundary read — is untouched by
+this and remains open under Phase 6 LEG-04.
+
+**Bookkeeping defects this report surfaced, now fixed:** `REQUIREMENTS.md`'s stale `MOD-04`
+annotation (it described only plan 03-05's own 5/5 self-check) now records both
+measurements and names entry 8; `ROADMAP.md` now shows 5/5 plans with `03-05-PLAN.md`
+checked; `STATE.md`'s decision log no longer carries the superseded "re-verified 5/5" claim.

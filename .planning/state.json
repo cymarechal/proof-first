@@ -1,0 +1,43 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": null,
+  "phases": [
+    {
+      "number": "1",
+      "name": "Foundations — Legal Scaffolding, Numbering, Shared Deal",
+      "status": "complete"
+    },
+    {
+      "number": "2",
+      "name": "Rule Catalog & Integrity — SKILL.md Core",
+      "status": "in_progress"
+    },
+    {
+      "number": "3",
+      "name": "Completeness Audit & Artifact Patterns",
+      "status": "pending"
+    },
+    {
+      "number": "4",
+      "name": "Distribution & Worked Examples",
+      "status": "pending"
+    },
+    {
+      "number": "5",
+      "name": "Evaluation Harness",
+      "status": "pending"
+    },
+    {
+      "number": "6",
+      "name": "Legal Review Gate & Launch",
+      "status": "pending"
+    }
+  ],
+  "next": {
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step (verify)",
+    "reason": "Phase 3 of 6 · 17% · ready to verify"
+  },
+  "updated_at": "2026-09-14T08:20:45.955Z"
+}
