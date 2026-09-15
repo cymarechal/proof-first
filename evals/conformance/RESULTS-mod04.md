@@ -168,3 +168,45 @@ Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
 
 conformant 1 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:33:08.986933+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=A-rfp-answer | repeat=0 | verdict=conformant | evidence=family 'RFP answer' at offset 139, marker_at=408
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:36:53.202490+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=A-rfp-answer | repeat=0 | verdict=conformant | evidence=family 'RFP answer' at offset 22, marker_at=424
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:40:33.621118+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=B-proposal-section | repeat=0 | verdict=conformant | evidence=family 'Solution proposal' at offset 19, marker_at=491
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:44:27.370316+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=B-proposal-section | repeat=0 | verdict=conformant | evidence=family 'Solution proposal' at offset 19, marker_at=555
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:48:02.782509+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=C-exec-summary | repeat=0 | verdict=conformant | evidence=family 'Executive summary' at offset 19, marker_at=284
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:51:08.284268+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=C-exec-summary | repeat=0 | verdict=conformant | evidence=family 'executive summary' at offset 202, marker_at=368
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
