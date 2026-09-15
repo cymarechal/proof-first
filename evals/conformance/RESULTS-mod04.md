@@ -210,3 +210,31 @@ Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
 
 conformant 1 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:56:09.984530+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=D-demo-discovery | repeat=0 | verdict=conformant | evidence=family 'demo and discovery material' at offset 19, marker_at=451
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:00:47.552431+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=D-demo-discovery | repeat=0 | verdict=conformant | evidence=family 'demo and discovery material' at offset 19, marker_at=563
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:04:53.757591+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=E-ambiguous | repeat=0 | verdict=conformant | evidence=family 'No family fits' at offset 2, marker_at=867
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:07:44.370883+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-opus-5 | fixture=E-ambiguous | repeat=0 | verdict=conformant | evidence=family 'No family fits' at offset 2, marker_at=591
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
