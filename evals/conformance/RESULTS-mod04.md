@@ -263,3 +263,31 @@ this correction -- only the recorded metadata.
 conformant 0 of 0 scoreable sessions
 unscoreable 1 sessions
   - excluded: model=claude-sonnet-5 fixture=A-rfp-answer repeat=0 reason=timeout
+
+## Run recorded 2026-09-15T09:23:31.517609+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 191 precedes family 'RFP and RFI response' at offset 565
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:29:13.681376+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 835 precedes family 'RFP answer' at offset 1190
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:34:28.901660+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=B-proposal-section | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 325 precedes family 'Solution proposal' at offset 700
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:39:37.650966+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=B-proposal-section | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 293 precedes family 'proposal section' at offset 412
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
