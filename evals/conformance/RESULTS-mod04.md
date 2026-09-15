@@ -88,3 +88,83 @@ unscoreable 1 sessions
 written and is NOT the MOD-04 measurement. 11 of the 19 "scoreable" sessions it counted are
 the contaminated no-family signature described above. A new run against the fixed instrument
 follows below.
+
+## Run recorded 2026-09-15T06:48:35.153909+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=unscoreable | reason=timeout
+- 2026-09-15 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=1 | verdict=unscoreable | reason=timeout
+
+conformant 0 of 0 scoreable sessions
+unscoreable 2 sessions
+  - excluded: model=claude-sonnet-5 fixture=A-rfp-answer repeat=0 reason=timeout
+  - excluded: model=claude-sonnet-5 fixture=A-rfp-answer repeat=1 reason=timeout
+
+## Run recorded 2026-09-15T06:56:50.064544+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=conformant | evidence=family 'RFP and RFI response' at offset 147, marker_at=416
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T07:40:48.427443+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 242 precedes family 'RFP answer' at offset 519
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T07:47:20.177337+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=B-proposal-section | repeat=0 | verdict=conformant | evidence=family 'proposal section' at offset 19, marker_at=823
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T07:51:00.039326+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=B-proposal-section | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 252 precedes family 'Solution proposal' at offset 639
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T07:55:46.969991+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=C-exec-summary | repeat=0 | verdict=conformant | evidence=family 'Executive summary' at offset 150, marker_at=1065
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:03:42.283257+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=C-exec-summary | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 303 precedes family 'Executive summary' at offset 613
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:09:03.301640+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=D-demo-discovery | repeat=0 | verdict=conformant | evidence=family 'Demo or discovery material' at offset 181, marker_at=778
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:14:24.776424+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=D-demo-discovery | repeat=0 | verdict=conformant | evidence=family 'demo and discovery material' at offset 396, marker_at=689
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:21:29.775651+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=E-ambiguous | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 306 precedes family 'No family fits' at offset 651
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T08:27:17.899623+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=E-ambiguous | repeat=0 | verdict=conformant | evidence=family 'No family fits' at offset 21, marker_at=1716
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
