@@ -232,6 +232,45 @@ Violation codes implemented in this file:
                       contains: the classification section and the closing
                       refusal section are both legitimate and neither is a
                       family.
+  skill-family-line-gate-missing - a skills/*/SKILL.md's '## Self-check
+                      before delivering' section is present but its body
+                      does not name both anchors MOD-04's family-line gate
+                      requires: the phrase naming the artifact family, and
+                      the literal 'No family fits' value spelled exactly as
+                      references/artifact-patterns.md spells it. Fires once
+                      per missing anchor, naming the file and which anchor
+                      is missing. A SKILL.md with no self-check section at
+                      all yields no violations -- the declared ceiling,
+                      required so every pre-existing synthetic
+                      _good_skill() fixture (none of which defines this
+                      section) stays silent and the whole suite is not
+                      disabled. Declared ceiling: this check asserts the
+                      instruction text is present. It cannot assert a live
+                      session obeys it -- that is a model-behaviour
+                      property no file-reading checker observes;
+                      evals/conformance/run_conformance.py is the
+                      instrument for that. Its passing does not mean MOD-04
+                      is mechanically verified.
+  source-label-in-skill-content - a file matching SKILL_GLOB, or a
+                      references/*.md beside it, contains a frozen
+                      source-coined dimension label from
+                      SOURCE_COINED_LABELS used as this repository's own
+                      unattributed noun. Fires once per file-and-label
+                      pair, naming the file, the label, and the first line
+                      number it occurs on. Three declared ceilings: (1)
+                      this is a literal-string scan over a closed,
+                      enumerated list, not the semantic paraphrase
+                      judgement SOURCES.md states no tool in this stack
+                      performs -- it catches a known label returning, and a
+                      novel one has no string to match; (2) the
+                      ordinary-English word for a measurement is
+                      deliberately excluded from the list, because this
+                      repository's own MC-1 and integrity rules use it as
+                      ordinary business English, and including it would
+                      fire on legitimate content; (3) it scans shipped
+                      skill content only -- NUMBERING.md's frozen registry
+                      labels are out of scope, owned by .planning/
+                      WINDOWS.md entry 6 and routed to Phase 6 LEG-04.
   skill-too-long    - a skills/*/SKILL.md exceeds 500 lines, naming the
                       measured count and the ceiling. Silent at exactly
                       500. Declared ceiling: line count is a proxy for
@@ -1252,6 +1291,108 @@ def check_artifact_family_sections(repo_root):
     return violations
 
 
+def check_skill_family_line_gate(repo_root):
+    """For each installed skill folder (a path matching SKILL_GLOB) whose
+    '## Self-check before delivering' section is present, require that
+    section's body to name both anchors MOD-04's family-line gate depends
+    on: the phrase naming the artifact family, and the literal no-family
+    value 'No family fits', spelled exactly as
+    references/artifact-patterns.md spells it. Fires once per missing
+    anchor, naming the file and which anchor is missing.
+
+    Return no violations for a skill folder with no self-check section at
+    all -- the declared ceiling, required so every pre-existing synthetic
+    _good_skill() fixture (none of which defines this section) stays
+    silent and the whole suite is not disabled.
+
+    Declared ceiling: this check asserts the instruction text is present.
+    It cannot assert a live session obeys it -- that is a model-behaviour
+    property no file-reading checker observes;
+    evals/conformance/run_conformance.py is the instrument for that. Its
+    passing does not mean MOD-04 is mechanically verified."""
+    violations = []
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        rel = skill_path.relative_to(repo_root)
+        text = strip_fences(skill_path.read_text(encoding='utf-8'))
+        sections = split_sections(text)
+        body = sections.get('Self-check before delivering')
+        if body is None:
+            continue
+        missing = []
+        if 'artifact family' not in body:
+            missing.append('the phrase naming the artifact family')
+        if 'No family fits' not in body:
+            missing.append("the 'No family fits' value")
+        for item in missing:
+            violations.append((str(rel), (
+                f"skill-family-line-gate-missing {rel}'s self-check section is present but "
+                f"is missing {item}, an anchor MOD-04's family-line gate requires"
+            )))
+    return violations
+
+
+SOURCE_COINED_LABELS = (
+    # Frozen list (03-07 GAP B). Seven entries: four two-word labels, two
+    # single-word labels, and one single-word label ('pain') matched with
+    # an optional plural -- see _source_label_pattern. The ordinary-English
+    # word for a measurement ('metric') is deliberately excluded; see this
+    # module's docstring.
+    'economic buyer',
+    'paper process',
+    'decision criteria',
+    'decision process',
+    'champion',
+    'competition',
+    'pain',
+)
+
+_SOURCE_LABEL_PLURALIZABLE = frozenset({'pain'})
+
+
+def _source_label_pattern(label):
+    escaped = re.escape(label)
+    if label in _SOURCE_LABEL_PLURALIZABLE:
+        escaped += 's?'
+    return re.compile(r'\b' + escaped + r'\b', re.IGNORECASE)
+
+
+def check_source_label_in_skill_content(repo_root):
+    """For each file matching SKILL_GLOB, and each references/*.md beside
+    it, scan case-insensitively with word boundaries for every label in
+    SOURCE_COINED_LABELS. Fire once per file-and-label pair, naming the
+    relative path, the label, and the first line number where it occurs.
+
+    Declared ceilings -- see this module's docstring for the full
+    statement: (1) literal-string scan, not the semantic paraphrase
+    judgement SOURCES.md states no tool in this stack performs; (2) the
+    ordinary-English word for a measurement is deliberately excluded from
+    the list; (3) scans shipped skill content only -- NUMBERING.md's
+    frozen registry labels are out of scope (.planning/WINDOWS.md entry 6,
+    Phase 6 LEG-04)."""
+    violations = []
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        skill_dir = skill_path.parent
+        candidates = [skill_path]
+        refs_dir = skill_dir / 'references'
+        if refs_dir.exists():
+            candidates += sorted(refs_dir.glob('*.md'))
+        for path in candidates:
+            rel = path.relative_to(repo_root)
+            text = strip_fences(path.read_text(encoding='utf-8'))
+            lines = text.splitlines()
+            for label in SOURCE_COINED_LABELS:
+                pattern = _source_label_pattern(label)
+                for lineno, line in enumerate(lines, start=1):
+                    if pattern.search(line):
+                        violations.append((str(rel), (
+                            f"source-label-in-skill-content {rel}:{lineno} uses the frozen "
+                            f"source-coined label '{label}', adopted here as this repository's "
+                            f"own unattributed noun (see SOURCES.md's reproduction-boundary clause)"
+                        )))
+                        break
+    return violations
+
+
 def check_catalog_opening_rule_count(allocated, repo_root):
     """Enforce that PF-0 (Opening / Reframe section) has exactly one allocated
     ID, closing CAT-03. The Before-scenario / Identify-Pain / Reframe
@@ -1332,7 +1473,8 @@ CATALOG_CHECK_CODES = [
     'catalog-id-drift', 'catalog-count-unstated', 'catalog-count-mismatch',
     'catalog-opening-rule-count', 'skill-too-long', 'skill-token-budget-exceeded',
     'mc-catalog-id-drift', 'mc-rule-in-skill', 'mc-count-unstated', 'mc-count-mismatch',
-    'artifact-family-section-missing',
+    'artifact-family-section-missing', 'skill-family-line-gate-missing',
+    'source-label-in-skill-content',
 ]
 
 
@@ -1351,6 +1493,8 @@ def run_catalog_checks(repo_root):
     violations += check_mc_rule_in_skill(repo_root)
     violations += check_mc_count(data['allocated'], repo_root, data['mc_ranges'])
     violations += check_artifact_family_sections(repo_root)
+    violations += check_skill_family_line_gate(repo_root)
+    violations += check_source_label_in_skill_content(repo_root)
     return violations
 
 
@@ -1731,6 +1875,29 @@ def _mutate_artifact_family_section_missing(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_skill_family_line_gate_missing(root):
+    """Delete the family-line pass item from the copied real SKILL.md's
+    self-check section, leaving the section heading and the other two
+    passes in place -- the mutation targets exactly what the check
+    reads."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if not l.strip().startswith('1. Family-line pass')]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_source_label_in_skill_content(root):
+    """Insert one frozen source-coined label ('economic buyer') into the
+    copied real references/artifact-patterns.md -- a minimal mutation
+    targeting exactly what the check reads."""
+    path = root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md'
+    text = path.read_text(encoding='utf-8')
+    if not text.endswith('\n'):
+        text += '\n'
+    text += '\nMutation: reintroduces the economic buyer label here.\n'
+    path.write_text(text, encoding='utf-8')
+
+
 def _mutate_catalog_opening_rule_count(root):
     """Add a second PF-0 rule to both NUMBERING.md and the checklist, violating
     CAT-03 which requires exactly one opening rule resolving the Before-scenario /
@@ -1776,6 +1943,8 @@ MUTATIONS = [
     ('mc-count-unstated', "delete the stated-count line from the real skills/proof-first/references/completeness-audit.md", _mutate_mc_count_unstated),
     ('mc-count-mismatch', "change the checks number in the real skills/proof-first/references/completeness-audit.md's stated-count line", _mutate_mc_count_mismatch),
     ('artifact-family-section-missing', "delete the '## Solution proposal' heading from the real skills/proof-first/references/artifact-patterns.md, leaving its body in place", _mutate_artifact_family_section_missing),
+    ('skill-family-line-gate-missing', "delete the family-line pass item from the real skills/proof-first/SKILL.md's self-check section, leaving the heading and other two passes in place", _mutate_skill_family_line_gate_missing),
+    ('source-label-in-skill-content', "insert the frozen 'economic buyer' label into the real skills/proof-first/references/artifact-patterns.md", _mutate_source_label_in_skill_content),
 ]
 
 
@@ -2494,6 +2663,42 @@ def _bad_artifact_patterns():
     )
 
 
+def _good_skill_family_gate():
+    """A SKILL.md whose self-check section names both anchors the
+    family-line gate requires -- the silent case for
+    skill-family-line-gate-missing."""
+    return (
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "## Self-check before delivering\n\n"
+        "1. Family-line pass: confirm the first line names the artifact family "
+        "or states **No family fits:**.\n"
+    )
+
+
+def _bad_skill_family_gate():
+    """A SKILL.md whose self-check section is present but names neither
+    anchor -- the firing case for skill-family-line-gate-missing."""
+    return (
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "## Self-check before delivering\n\n"
+        "1. Subtractive pass: find the violations to remove.\n"
+    )
+
+
+def _artifact_patterns_with_source_label():
+    """_good_artifact_patterns()'s content, with one frozen source-coined
+    label ('economic buyer') inserted -- the firing case for
+    source-label-in-skill-content."""
+    return _good_artifact_patterns() + "\n\nDiane Osoria, the economic buyer, signs.\n"
+
+
+def _artifact_patterns_with_metric_word():
+    """_good_artifact_patterns()'s content, with the ordinary-English word
+    'metric' inserted -- deliberately excluded from SOURCE_COINED_LABELS,
+    so this must stay silent for source-label-in-skill-content."""
+    return _good_artifact_patterns() + "\n\nName the metric and its baseline.\n"
+
+
 def _mc_rule_in_skill_bad_skill():
     """An MC-shaped rule heading defined directly inside a SKILL.md -- the
     structural violation mc-rule-in-skill exists to catch."""
@@ -2609,6 +2814,12 @@ def self_test():
 
         artifact_good_root = tmp_root / 'artifact_good'
         artifact_bad_root = tmp_root / 'artifact_bad'
+
+        family_good_root = tmp_root / 'family_good'
+        family_bad_root = tmp_root / 'family_bad'
+
+        source_label_bad_root = tmp_root / 'source_label_bad'
+        source_label_metric_root = tmp_root / 'source_label_metric'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -2774,6 +2985,34 @@ def self_test():
         _write(artifact_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
         _write(artifact_bad_root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md', _bad_artifact_patterns())
 
+        # Family-line gate fixtures (skill-family-line-gate-missing,
+        # 03-07 GAP A): family_good_root's self-check section names both
+        # anchors, family_bad_root's names neither. NUMBERING.md/
+        # checklist.md are the same known-consistent pair every other
+        # catalog fixture uses, isolating the one new code under test.
+        _write(family_good_root / 'NUMBERING.md', _good_numbering())
+        _write(family_good_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill_family_gate())
+        _write(family_good_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+
+        _write(family_bad_root / 'NUMBERING.md', _good_numbering())
+        _write(family_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _bad_skill_family_gate())
+        _write(family_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+
+        # Source-label fixtures (source-label-in-skill-content, 03-07
+        # GAP B): the silent case reuses artifact_good_root's clean
+        # artifact-patterns.md (asserted below); source_label_bad_root
+        # inserts one frozen label, source_label_metric_root inserts the
+        # deliberately-excluded ordinary-English word.
+        _write(source_label_bad_root / 'NUMBERING.md', _good_numbering())
+        _write(source_label_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(source_label_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+        _write(source_label_bad_root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md', _artifact_patterns_with_source_label())
+
+        _write(source_label_metric_root / 'NUMBERING.md', _good_numbering())
+        _write(source_label_metric_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill())
+        _write(source_label_metric_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+        _write(source_label_metric_root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md', _artifact_patterns_with_metric_word())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -2814,6 +3053,12 @@ def self_test():
         artifact_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(artifact_good_root)}
         artifact_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(artifact_bad_root)}
 
+        family_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_good_root)}
+        family_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_bad_root)}
+
+        source_label_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(source_label_bad_root)}
+        source_label_metric_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(source_label_metric_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -2823,6 +3068,7 @@ def self_test():
             | line501_codes | count_unstated_codes | count_mismatch_codes | subblock_codes
             | token_bad_codes | opening_bad_codes | mc_bad_codes
             | mc_count_unstated_codes | mc_count_mismatch_codes | artifact_bad_codes
+            | family_bad_codes | source_label_bad_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -2919,6 +3165,28 @@ def self_test():
             all_ok = False
         if 'artifact-family-section-missing' not in artifact_bad_codes:
             print("FAIL: artifact-family-section-missing did not fire when a required heading is missing")
+            all_ok = False
+
+        # Family-line gate assertions.
+        if 'skill-family-line-gate-missing' in family_good_codes:
+            print("FAIL: skill-family-line-gate-missing fired on a self-check section naming both anchors")
+            all_ok = False
+        if 'skill-family-line-gate-missing' not in family_bad_codes:
+            print("FAIL: skill-family-line-gate-missing did not fire on a self-check section naming neither anchor")
+            all_ok = False
+        if 'skill-family-line-gate-missing' in good_catalog_codes:
+            print("FAIL: skill-family-line-gate-missing fired on a SKILL.md with no self-check section at all")
+            all_ok = False
+
+        # Source-label assertions.
+        if 'source-label-in-skill-content' in artifact_good_codes:
+            print("FAIL: source-label-in-skill-content fired on shipped-clean artifact-patterns.md content")
+            all_ok = False
+        if 'source-label-in-skill-content' not in source_label_bad_codes:
+            print("FAIL: source-label-in-skill-content did not fire when a frozen label was inserted")
+            all_ok = False
+        if 'source-label-in-skill-content' in source_label_metric_codes:
+            print("FAIL: source-label-in-skill-content fired on the ordinary-English word for a measurement")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
