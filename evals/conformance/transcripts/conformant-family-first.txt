@@ -1,0 +1,15 @@
+# Synthetic fixture -- this is a hand-written scorer input, not real session
+# output. It is engineered to exhibit exactly one property: the family line
+# precedes every rule marker. Do not mistake this file for evidence of a live
+# session's behavior.
+
+**Artifact family:** RFP and RFI response
+
+Halverton Mutual's estate migration answer follows below. The proposed cut-over
+approach keeps the settlement batch window intact throughout the program, and
+every capability claim below is paired with a comparable-programme figure or is
+marked as unproven.
+
+This draft cites PF-2.4 for its proof-point discipline and MC-6 for the
+completeness check against the buyer's stated priorities, both well after the
+family line above.

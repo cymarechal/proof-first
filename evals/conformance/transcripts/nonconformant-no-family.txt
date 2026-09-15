@@ -1,0 +1,12 @@
+# Synthetic fixture -- this is a hand-written scorer input, not real session
+# output. It is engineered to exhibit exactly one property: no artifact
+# family, and no no-family value, is ever named. This is the exact shape
+# WINDOWS.md entry 8 records for the two residual post-fix failures.
+
+Findings open directly with the rule citations below, with no artifact-family
+line and no no-family-fits statement anywhere in this response.
+
+PF-2.17 flags an unproven capability claim in the second paragraph of the
+draft, and PF-1.17 flags a missing quantified proof point in the closing
+paragraph. Both findings stand on their own with no family context stated
+before or after them.

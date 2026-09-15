@@ -1,0 +1,11 @@
+# Synthetic fixture -- this is a hand-written scorer input, not real session
+# output. It is engineered to exhibit exactly one property: a rule marker
+# precedes the family line.
+
+PF-1.17 requires a quantified proof point in the opening sentence below, before
+anything else in this response is stated.
+
+The draft continues with the proposed migration approach, working through the
+cut-over sequence and the settlement batch window protection plan in detail.
+
+Several paragraphs later, this response states that it assumes the Executive summary family for the remainder of its findings.

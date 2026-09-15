@@ -17,3 +17,4 @@ jobs:
           python3 tools/check_repo.py --self-test
           python3 tools/check_repo.py --mutation-test
           python3 tools/check_repo.py
+          python3 evals/conformance/run_conformance.py --self-test
