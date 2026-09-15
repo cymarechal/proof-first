@@ -118,7 +118,7 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 5/5 plans executed (4 original, 1 gap-closure plan added after UAT found gaps)
+**Plans**: 5/8 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`)
 
 Plans:
 
@@ -139,6 +139,18 @@ Plans:
 **Wave 4** *(blocked on Wave 3 completion)*
 
 - [x] 03-04-PLAN.md — SKILL.md's token budget bought back by trimming restatement, then spent on the check-mode classification line, the third and fourth report sections, the standalone-audit instruction and the second reference pointer; README, the WINDOWS ledger entry routing the MC ordering tension to LEG-04, and the provisional requirement marks
+
+**Wave 5** *(gap closure after `03-VERIFICATION.md` returned `gaps_found`; run with `/gsd-execute-phase 03 --gaps-only`)*
+
+- [ ] 03-06-PLAN.md — Tracer: `evals/conformance/` — a stdlib runner that turns `03-UAT.md`'s ad-hoc live-harness recipe into one committed command, five committed fixtures, an offline scorer self-test wired into CI, and one real `claude -p` session driven end to end to prove the instrument before anything is measured with it
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 03-07-PLAN.md — The three content levers: SKILL.md's artifact-family line promoted to an always-printed five-value element with a delivery gate in the self-check (GAP A / WINDOWS 8), the last source-coined dimension label removed from `artifact-patterns.md` (GAP B / WINDOWS 9), `completeness-audit.md`'s standalone-audit shape statement aligned with the AUD-03 criterion (GAP C / WINDOWS 7), and two new violation codes raising the discrimination-proven count from 27 to 29
+
+**Wave 7** *(blocked on Wave 6 completion)*
+
+- [ ] 03-08-PLAN.md — The measurement that decides MOD-04: at least 16 scoreable live write-mode sessions across two models and five fixtures against the edited skill, then a disposition applied to WINDOWS entry 8, REQUIREMENTS.md and 03-UAT.md under a decision rule committed before the number is known
 
 ### Phase 4: Distribution & Worked Examples
 
