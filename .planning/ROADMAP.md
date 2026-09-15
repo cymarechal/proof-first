@@ -118,7 +118,7 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 5/8 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`)
+**Plans**: 7/8 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`)
 
 Plans:
 
@@ -146,7 +146,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 03-07-PLAN.md — The three content levers: SKILL.md's artifact-family line promoted to an always-printed five-value element with a delivery gate in the self-check (GAP A / WINDOWS 8), the last source-coined dimension label removed from `artifact-patterns.md` (GAP B / WINDOWS 9), `completeness-audit.md`'s standalone-audit shape statement aligned with the AUD-03 criterion (GAP C / WINDOWS 7), and two new violation codes raising the discrimination-proven count from 27 to 29
+- [x] 03-07-PLAN.md — The three content levers: SKILL.md's artifact-family line promoted to an always-printed five-value element with a delivery gate in the self-check (GAP A / WINDOWS 8), the last source-coined dimension label removed from `artifact-patterns.md` (GAP B / WINDOWS 9), `completeness-audit.md`'s standalone-audit shape statement aligned with the AUD-03 criterion (GAP C / WINDOWS 7), and two new violation codes raising the discrimination-proven count from 27 to 29
 
 **Wave 7** *(blocked on Wave 6 completion)*
 
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
-| 3. Completeness Audit & Artifact Patterns | 5/5 | In Progress|  |
+| 3. Completeness Audit & Artifact Patterns | 7/8 | In Progress|  |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
