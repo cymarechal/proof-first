@@ -142,7 +142,7 @@ Plans:
 
 **Wave 5** *(gap closure after `03-VERIFICATION.md` returned `gaps_found`; run with `/gsd-execute-phase 03 --gaps-only`)*
 
-- [ ] 03-06-PLAN.md — Tracer: `evals/conformance/` — a stdlib runner that turns `03-UAT.md`'s ad-hoc live-harness recipe into one committed command, five committed fixtures, an offline scorer self-test wired into CI, and one real `claude -p` session driven end to end to prove the instrument before anything is measured with it
+- [x] 03-06-PLAN.md — Tracer: `evals/conformance/` — a stdlib runner that turns `03-UAT.md`'s ad-hoc live-harness recipe into one committed command, five committed fixtures, an offline scorer self-test wired into CI, and one real `claude -p` session driven end to end to prove the instrument before anything is measured with it
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
