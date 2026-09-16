@@ -174,6 +174,18 @@ blocked: 0
     entry 8 is waived (accepted and disclosed, not fixed); MOD-04 stays `[ ]`.
     Full run-by-run evidence and reproduction command: evals/conformance/RESULTS-mod04.md,
     section '## Anchored remeasurement result (03-12)'.
+
+    03-15-PLAN.md v1 disposition decision (2026-09-16): Option A -- accept the
+    measured residual for v1 and harden its disclosure, rather than schedule a
+    fifth measurement round (Option B) or re-scope the project to permit a
+    harness-specific runtime component (Option C). Decided by the project owner,
+    a human, in an interactive /gsd-execute-phase 03 --gaps-only session -- not
+    by the executing agent on the project's behalf. This is an accepted,
+    disclosed residual, explicitly not a satisfied requirement: MOD-04 stays
+    `[ ]` and WINDOWS.md entry 8 stays waived, never fixed. Full decision
+    record, its evidence, the rejected alternatives, and its reopening
+    condition: evals/conformance/RESULTS-mod04.md, section
+    '## v1 disposition decision (03-15)'.
   reason: "User reported: 14 of 15 live sessions conformed; one write-mode session cited PF-2.17, PF-2.15 and PF-1.17 before stating any family, and stopped to await a 'proceed' reply instead of drafting"
   severity: major
   test: 2
