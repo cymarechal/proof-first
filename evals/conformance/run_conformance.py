@@ -28,7 +28,16 @@ Usage:
       [--transcript-dir PATH] [--out PATH] [--timeout SECONDS]
       Live mode: drives one or more real `claude -p` write-mode sessions
       against the given skill source and fixtures, scores each resulting
-      transcript, and appends a run block to the results file.
+      transcript, and appends a run block to the results file. Durability
+      guarantee: each session's result line is written and flushed to the
+      results file at the moment that session is scored, so an interruption
+      at session N of M loses at most the in-flight session, not the N-1
+      sessions already scored in this invocation (03-REVIEW.md CR-01;
+      proved offline by `--self-test` behavior case 11). What is still NOT
+      guaranteed: two invocations appending to the same results file at the
+      same time may interleave their lines -- this tool makes no
+      parallel-safety claim, and the project's operating pattern is one
+      foreground invocation at a time.
 """
 
 import argparse
@@ -589,6 +598,75 @@ def self_test():
         if fake_out_dir_10 is not None:
             shutil.rmtree(fake_out_dir_10, ignore_errors=True)
 
+    # Case 11 (03-REVIEW.md CR-01, 03-13-PLAN.md): an interruption between
+    # sessions of a `run_matrix()` invocation must lose at most the
+    # in-flight session -- every session already scored in that invocation
+    # must already be durable on disk (written and flushed) before the
+    # interrupting exception propagates. A stub matching run_session's
+    # keyword signature returns a family-first (conformant) transcript for
+    # its first two calls and raises KeyboardInterrupt on its third -- an
+    # exception type deliberately outside every handler run_matrix catches,
+    # exactly the "process interrupted between sessions" condition
+    # CR-01 describes. Still offline: no real `claude` invocation, no
+    # network call.
+    fake_out_dir_11 = None
+    try:
+        fake_out_dir_11 = pathlib.Path(tempfile.mkdtemp(prefix='proof-first-conformance-selftest-durability-'))
+        fake_results_path_11 = fake_out_dir_11 / 'results.md'
+
+        call_count_11 = {'n': 0}
+        conformant_transcript_11 = (
+            'Artifact family: RFP and RFI response\n\n'
+            'We can meet your migration timeline with confidence.\n\n'
+            "This approach follows PF-2.4's proof-point discipline throughout.\n"
+        )
+
+        def _stub_session_fn(skill_src, fixture_path, model, out_path, timeout_s):
+            call_count_11['n'] += 1
+            if call_count_11['n'] >= 3:
+                raise KeyboardInterrupt('simulated interruption between sessions')
+            return conformant_transcript_11
+
+        interrupted_11 = False
+        with open(fake_results_path_11, 'a') as fake_handle_11:
+            try:
+                run_matrix(
+                    models=['claude-sonnet-5'],
+                    fixture_stems=['stub-fixture'],
+                    repeats=3,
+                    skill_src=REPO_ROOT / 'skills' / 'proof-first',
+                    transcript_dir=fake_out_dir_11,
+                    timeout_s=600,
+                    handle=fake_handle_11,
+                    session_fn=_stub_session_fn,
+                )
+            except KeyboardInterrupt:
+                interrupted_11 = True
+
+        if not interrupted_11:
+            print('FAIL: behavior case 11 (durability on interruption) expected KeyboardInterrupt, none raised')
+            all_ok = False
+        else:
+            on_disk_text_11 = fake_results_path_11.read_text()
+            verdict_lines_11 = [line for line in on_disk_text_11.splitlines() if '| verdict=' in line]
+            if len(verdict_lines_11) != 2:
+                print(
+                    'FAIL: behavior case 11 (durability on interruption) expected exactly 2 '
+                    f'"| verdict=" lines already on disk, found {len(verdict_lines_11)}: {on_disk_text_11!r}'
+                )
+                all_ok = False
+            elif not all('verdict=conformant' in line for line in verdict_lines_11):
+                print(
+                    'FAIL: behavior case 11 (durability on interruption) expected both on-disk lines '
+                    f'to be verdict=conformant: {verdict_lines_11!r}'
+                )
+                all_ok = False
+            else:
+                verdicts_discriminated.add('conformant')
+    finally:
+        if fake_out_dir_11 is not None:
+            shutil.rmtree(fake_out_dir_11, ignore_errors=True)
+
     if not all_ok:
         return False
 
@@ -638,6 +716,106 @@ def _default_fixtures():
     return sorted(p.stem for p in FIXTURES_DIR.glob('*.md'))
 
 
+def _write_result_line(handle, text):
+    """Write `text` to `handle` and flush it immediately.
+
+    This is the single place durability is established for the results
+    file: every header line, per-session result line, aggregate line, and
+    exclusion line in `run_matrix` and `main` goes through this helper, so a
+    future edit that drops the flush is a one-line diff rather than a
+    scattered one (03-REVIEW.md CR-01).
+    """
+    handle.write(text)
+    handle.flush()
+
+
+def run_matrix(models, fixture_stems, repeats, skill_src, transcript_dir, timeout_s, handle,
+               session_fn=run_session):
+    """Run the model x fixture x repeat matrix, writing each session's
+    result line to `handle` (an already-open append-mode file handle) the
+    moment that session is scored -- never accumulated in memory.
+
+    `session_fn` defaults to `run_session`; self-test injects a stub with
+    the identical keyword signature so the durability property is checkable
+    offline, with no `claude` binary and no network call.
+
+    An interruption between iterations (SIGTERM, SIGKILL, an uncaught
+    exception type outside the four handlers below, or external process
+    teardown) loses at most the in-flight session -- every session already
+    scored in this invocation is already flushed to disk before the next
+    one starts.
+
+    Returns (scoreable_count, conformant_count, unscoreable_sessions) -- the
+    same three aggregates `main()` prints and appends after the loop.
+    """
+    scoreable_count = 0
+    conformant_count = 0
+    unscoreable_sessions = []
+
+    for model in models:
+        for fixture_stem in fixture_stems:
+            fixture_path = FIXTURES_DIR / f'{fixture_stem}.md'
+            for repeat in range(repeats):
+                date_str = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+                out_name = f'{model}__{fixture_stem}__r{repeat}.txt'
+                session_out_path = transcript_dir / out_name
+
+                try:
+                    transcript = session_fn(
+                        skill_src=skill_src,
+                        fixture_path=fixture_path,
+                        model=model,
+                        out_path=session_out_path,
+                        timeout_s=timeout_s,
+                    )
+                    session_returncode_ok = True
+                except subprocess.TimeoutExpired:
+                    transcript = ''
+                    session_returncode_ok = False
+                    reason = 'timeout'
+                except SessionFailedError as exc:
+                    transcript = ''
+                    session_returncode_ok = False
+                    stderr_excerpt = exc.stderr.strip()
+                    if len(stderr_excerpt) > 300:
+                        stderr_excerpt = stderr_excerpt[:300] + '...'
+                    reason = (
+                        f'nonzero exit {exc.returncode}: {stderr_excerpt!r}'
+                        if stderr_excerpt
+                        else f'nonzero exit {exc.returncode} (empty stderr)'
+                    )
+                except (subprocess.SubprocessError, OSError) as exc:
+                    transcript = ''
+                    session_returncode_ok = False
+                    reason = f'subprocess error: {exc}'
+
+                if not session_returncode_ok:
+                    unscoreable_sessions.append((model, fixture_stem, repeat, reason))
+                    _write_result_line(
+                        handle,
+                        f'- {date_str} | model={model} | fixture={fixture_stem} | repeat={repeat} '
+                        f'| verdict=unscoreable | reason={reason}\n'
+                    )
+                    continue
+
+                verdict, evidence = score_transcript(transcript)
+
+                if verdict == 'unscoreable':
+                    unscoreable_sessions.append((model, fixture_stem, repeat, 'empty transcript'))
+                else:
+                    scoreable_count += 1
+                    if verdict == 'conformant':
+                        conformant_count += 1
+
+                _write_result_line(
+                    handle,
+                    f'- {date_str} | model={model} | fixture={fixture_stem} | repeat={repeat} '
+                    f'| verdict={verdict} | evidence={evidence}\n'
+                )
+
+    return scoreable_count, conformant_count, unscoreable_sessions
+
+
 def main():
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -684,82 +862,26 @@ def main():
     out_path = pathlib.Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    lines = []
-    lines.append(f'\n## Run recorded {datetime.datetime.now(datetime.timezone.utc).isoformat()}Z\n')
-    lines.append(f'Measured SKILL.md blob SHA: `{skill_sha}`\n')
-
-    scoreable_count = 0
-    conformant_count = 0
-    unscoreable_sessions = []
-
-    run_index = 0
-    for model in models:
-        for fixture_stem in fixture_stems:
-            fixture_path = FIXTURES_DIR / f'{fixture_stem}.md'
-            for repeat in range(args.repeats):
-                run_index += 1
-                date_str = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
-                out_name = f'{model}__{fixture_stem}__r{repeat}.txt'
-                session_out_path = transcript_dir / out_name
-
-                try:
-                    transcript = run_session(
-                        skill_src=skill_src,
-                        fixture_path=fixture_path,
-                        model=model,
-                        out_path=session_out_path,
-                        timeout_s=args.timeout,
-                    )
-                    session_returncode_ok = True
-                except subprocess.TimeoutExpired:
-                    transcript = ''
-                    session_returncode_ok = False
-                    reason = 'timeout'
-                except SessionFailedError as exc:
-                    transcript = ''
-                    session_returncode_ok = False
-                    stderr_excerpt = exc.stderr.strip()
-                    if len(stderr_excerpt) > 300:
-                        stderr_excerpt = stderr_excerpt[:300] + '...'
-                    reason = (
-                        f'nonzero exit {exc.returncode}: {stderr_excerpt!r}'
-                        if stderr_excerpt
-                        else f'nonzero exit {exc.returncode} (empty stderr)'
-                    )
-                except (subprocess.SubprocessError, OSError) as exc:
-                    transcript = ''
-                    session_returncode_ok = False
-                    reason = f'subprocess error: {exc}'
-
-                if not session_returncode_ok:
-                    unscoreable_sessions.append((model, fixture_stem, repeat, reason))
-                    lines.append(
-                        f'- {date_str} | model={model} | fixture={fixture_stem} | repeat={repeat} '
-                        f'| verdict=unscoreable | reason={reason}\n'
-                    )
-                    continue
-
-                verdict, evidence = score_transcript(transcript)
-
-                if verdict == 'unscoreable':
-                    unscoreable_sessions.append((model, fixture_stem, repeat, 'empty transcript'))
-                else:
-                    scoreable_count += 1
-                    if verdict == 'conformant':
-                        conformant_count += 1
-
-                lines.append(
-                    f'- {date_str} | model={model} | fixture={fixture_stem} | repeat={repeat} '
-                    f'| verdict={verdict} | evidence={evidence}\n'
-                )
-
-    lines.append(f'\nconformant {conformant_count} of {scoreable_count} scoreable sessions\n')
-    lines.append(f'unscoreable {len(unscoreable_sessions)} sessions\n')
-    for model, fixture_stem, repeat, reason in unscoreable_sessions:
-        lines.append(f'  - excluded: model={model} fixture={fixture_stem} repeat={repeat} reason={reason}\n')
-
+    # Held open for the whole run and written through _write_result_line, so
+    # every session's result line reaches disk (write + flush) the moment
+    # it is scored rather than being batched in memory until the loop
+    # finishes (03-REVIEW.md CR-01). An interruption at session N of M
+    # loses at most the in-flight session, never the N-1 already recorded.
     with open(out_path, 'a') as f:
-        f.writelines(lines)
+        _write_result_line(
+            f, f'\n## Run recorded {datetime.datetime.now(datetime.timezone.utc).isoformat()}Z\n')
+        _write_result_line(f, f'Measured SKILL.md blob SHA: `{skill_sha}`\n')
+
+        scoreable_count, conformant_count, unscoreable_sessions = run_matrix(
+            models, fixture_stems, args.repeats, skill_src, transcript_dir, args.timeout, f,
+        )
+
+        _write_result_line(
+            f, f'\nconformant {conformant_count} of {scoreable_count} scoreable sessions\n')
+        _write_result_line(f, f'unscoreable {len(unscoreable_sessions)} sessions\n')
+        for model, fixture_stem, repeat, reason in unscoreable_sessions:
+            _write_result_line(
+                f, f'  - excluded: model={model} fixture={fixture_stem} repeat={repeat} reason={reason}\n')
 
     print(f'conformant {conformant_count} of {scoreable_count} scoreable sessions')
     print(f'unscoreable {len(unscoreable_sessions)} sessions')
