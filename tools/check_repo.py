@@ -321,11 +321,11 @@ Violation codes implemented in this file:
                       estimator (for example characters / 4) gives a
                       materially different figure for the same file —
                       this check uses one stated estimator consistently,
-                      never the more favourable of several. As of this
-                      writing this code fires against this repository's
-                      own skills/proof-first/SKILL.md — a known, tracked,
-                      open finding against CAT-08 (see
-                      .planning/WINDOWS.md), not a defect in this check.
+                      never the more favourable of several. This check
+                      previously fired against this repository's own
+                      skills/proof-first/SKILL.md before the 02-07/02-08
+                      trim (see .planning/WINDOWS.md entry 5, status:
+                      fixed); it is silent against the current tree.
   readme-results-pointer-missing - README.md does not contain the literal
                       path 'evals/conformance/RESULTS-mod04.md'. This is a
                       repository-level documentation check, not a catalog
@@ -1550,8 +1550,13 @@ def check_skill_family_line_gate(repo_root):
     section's body to name both anchors MOD-04's family-line gate depends
     on: the phrase naming the artifact family, and the literal no-family
     value 'No family fits', spelled exactly as
-    references/artifact-patterns.md spells it. Fires once per missing
-    anchor, naming the file and which anchor is missing.
+    references/artifact-patterns.md spells it. Both anchors are matched
+    case-insensitively (03-REVIEW.md WR-02): its sibling
+    check_skill_family_order_gate() already matches its own two anchors
+    case-insensitively, and two checks asserting the same class of
+    instruction is still present must not disagree about whether a
+    capitalization-only rewording breaks one of them. Fires once per
+    missing anchor, naming the file and which anchor is missing.
 
     Return no violations for a skill folder with no self-check section at
     all -- the declared ceiling, required so every pre-existing synthetic
@@ -1571,10 +1576,11 @@ def check_skill_family_line_gate(repo_root):
         body = sections.get('Self-check before delivering')
         if body is None:
             continue
+        body_lower = body.lower()
         missing = []
-        if 'artifact family' not in body:
+        if 'artifact family' not in body_lower:
             missing.append('the phrase naming the artifact family')
-        if 'No family fits' not in body:
+        if 'no family fits' not in body_lower:
             missing.append("the 'No family fits' value")
         for item in missing:
             violations.append((str(rel), (
@@ -3114,6 +3120,20 @@ def _bad_results_breakdown():
     )
 
 
+def _capitalized_skill_family_gate():
+    """A SKILL.md whose self-check section names both family-line anchors
+    with initial capitals -- proving check_skill_family_line_gate()'s
+    WR-02 case-insensitivity fix: this must stay silent for
+    skill-family-line-gate-missing, exactly as it already does for its
+    case-insensitive sibling check_skill_family_order_gate()."""
+    return (
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "## Self-check before delivering\n\n"
+        "1. Family-line pass: confirm the first line names the Artifact Family "
+        "or states **No Family Fits:**.\n"
+    )
+
+
 def _artifact_patterns_with_source_label():
     """_good_artifact_patterns()'s content, with one frozen source-coined
     label ('economic buyer') inserted -- the firing case for
@@ -3257,6 +3277,8 @@ def self_test():
 
         results_good_root = tmp_root / 'results_good'
         results_bad_root = tmp_root / 'results_bad'
+
+        family_capitalized_root = tmp_root / 'family_capitalized'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -3483,6 +3505,16 @@ def self_test():
         _write(results_good_root / RESULTS_BREAKDOWN_PATH, _good_results_breakdown())
         _write(results_bad_root / RESULTS_BREAKDOWN_PATH, _bad_results_breakdown())
 
+        # Case-insensitivity fixture (skill-family-line-gate-missing,
+        # 03-REVIEW.md WR-02 gap closure): family_capitalized_root's
+        # self-check section names both family-line anchors with initial
+        # capitals. Must stay silent after the fix, proving the direction
+        # family_bad_root (which names neither anchor in any case) cannot
+        # demonstrate on its own.
+        _write(family_capitalized_root / 'NUMBERING.md', _good_numbering())
+        _write(family_capitalized_root / 'skills' / 'proof-first' / 'SKILL.md', _capitalized_skill_family_gate())
+        _write(family_capitalized_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -3536,6 +3568,8 @@ def self_test():
 
         results_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(results_good_root)}
         results_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(results_bad_root)}
+
+        family_capitalized_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_capitalized_root)}
 
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
@@ -3656,6 +3690,9 @@ def self_test():
             all_ok = False
         if 'skill-family-line-gate-missing' in good_catalog_codes:
             print("FAIL: skill-family-line-gate-missing fired on a SKILL.md with no self-check section at all")
+            all_ok = False
+        if 'skill-family-line-gate-missing' in family_capitalized_codes:
+            print("FAIL: skill-family-line-gate-missing fired on a self-check section naming both anchors with initial capitals (WR-02 case-insensitivity fix)")
             all_ok = False
 
         # Family-order gate assertions.
