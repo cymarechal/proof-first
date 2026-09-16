@@ -669,3 +669,10 @@ Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
 
 conformant 1 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-16T07:58:45.274766+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=B-proposal-section | repeat=0 | verdict=no-family | evidence=no family match found within the first 400 chars (marker_at=493, marker='PF-3.3')
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
