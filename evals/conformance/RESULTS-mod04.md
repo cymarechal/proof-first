@@ -569,3 +569,10 @@ Measured SKILL.md blob SHA: `fadc48613f71fb29d55b42f70805225f9087a2b9`
 conformant 0 of 0 scoreable sessions
 unscoreable 1 sessions
   - excluded: model=claude-sonnet-5 fixture=A-rfp-answer repeat=0 reason=timeout
+
+## Run recorded 2026-09-16T06:31:45.559491+00:00Z
+Measured SKILL.md blob SHA: `fadc48613f71fb29d55b42f70805225f9087a2b9`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=no-family | evidence=no family match found within the first 400 chars (marker_at=73, marker='PF-3.3')
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
