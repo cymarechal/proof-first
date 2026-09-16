@@ -155,7 +155,7 @@ Plans:
 **Wave 8** *(gap closure after the third `03-VERIFICATION.md` returned `gaps_found`; run with `/gsd-execute-phase 03 --gaps-only`)*
 
 - [x] 03-09-PLAN.md — Tracer: CR-01, anchor `score_transcript()`'s family search to the prefix window where SKILL.md's write-mode contract places the family line, proven in both directions by two new committed transcript fixtures, plus a standing disclosure that every pre-fix figure is an unrecoverable optimistic ceiling — the hard upstream gate on any MOD-04 remeasurement
-- [ ] 03-10-PLAN.md — Tracer: CR-02, `readme-results-pointer-missing` (29 → 30 codes) so a README that stops pointing at the committed measurement fails the repo's own gate, then the Status section, layout tree and inventory made true about `evals/conformance/`
+- [x] 03-10-PLAN.md — Tracer: CR-02, `readme-results-pointer-missing` (29 → 30 codes) so a README that stops pointing at the committed measurement fails the repo's own gate, then the Status section, layout tree and inventory made true about `evals/conformance/`
 
 **Wave 9** *(blocked on Wave 8 completion)*
 

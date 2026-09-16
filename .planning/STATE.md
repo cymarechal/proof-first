@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: Completeness Audit & Artifact Patterns
 status: executing
-stopped_at: Completed 03-09-PLAN.md (CR-01/WR-01 instrument fixes; RESULTS-mod04.md disclosure; MOD-04 stays open)
-last_updated: "2026-09-16T05:51:16.165Z"
+stopped_at: "Completed 03-10-PLAN.md (CR-02 closed: readme-results-pointer-missing check + true README Status section)"
+last_updated: "2026-09-16T06:00:28.714Z"
 last_activity: 2026-09-16
 last_activity_desc: Phase 03 execution resumed (wave continue)
-state_head: bb862ead31599b1a089522d74d8bba510051edf5
+state_head: cd9c56ffccefcb66f44da5fec034ecb8a4b71316
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 28
-  completed_plans: 25
+  completed_plans: 26
   percent: 17
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03 (Completeness Audit & Artifact Patterns) — EXECUTING
-Plan: 2 of 12
+Plan: 3 of 12
 Status: Ready to execute
 Last activity: 2026-09-16 — Phase 03 execution resumed (wave continue)
 
@@ -83,6 +83,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 03 P07 | 25min | 3 tasks | 5 files |
 | Phase 03 P08 | ~22h wall-clock (interrupted) | 2 tasks | 5 files |
 | Phase 03 P09 | 18min | 2 tasks | 5 files |
+| Phase 03-completeness-audit-artifact-patterns P10 | 8min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -140,6 +141,7 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-08: MOD-04 measured post-03-07 at 16/20 (80.0%, both models); a same-instrument sonnet-5-only paired baseline against pre-03-07 measured 5/11 (45.5%). Same-model comparison shows a real improvement (45.5%->60.0%) still short of the 87.5% closure bar. Branch 3 selected per the pre-committed rule; MOD-04 stays [ ], disposition applied consistently across WINDOWS.md entry 8, REQUIREMENTS.md, and 03-UAT.md.
 - [Phase 03]: 03-08: two real bugs found and fixed in evals/conformance/run_conformance.py -- a nonzero-exit claude -p session was scored no-family instead of unscoreable (root cause of a fully contaminated 20-session run, kept invalidated not deleted), and the measured SKILL.md blob SHA ignored --skill-src. Both fixed and self-test-covered before the disposition-determining data was collected.
 - [Phase 03]: [Phase 03]: 03-09: Closed CR-01 (unbounded family-phrase search in score_transcript() silently inflating measured MOD-04 conformance) by bounding the family search to a 400-char prefix window derived from SKILL.md's write-mode contract, with both offsets computed against the same stripped string. Closed WR-01 in the same pass: run_session() now catches subprocess.TimeoutExpired, normalises bytes/str/None streams, and writes a decoded partial transcript before re-raising unchanged, so a timed-out session no longer loses all diagnostic evidence. RESULTS-mod04.md now discloses that every figure recorded before this fix is an unanchored, unrecoverable, optimistic ceiling. This plan closes no requirement -- MOD-04 stays [ ], WINDOWS.md entry 8 stays open.
+- [Phase 03-completeness-audit-artifact-patterns]: 03-10: Closed CR-02 (README claimed "no measured claim is published" while evals/conformance/RESULTS-mod04.md carried two committed measurement arms). Added readme-results-pointer-missing, a discrimination-proven check_repo.py code (29 -> 30) that fails the build if README.md ever again stops pointing at the committed MOD-04 measurement; rewrote README's Status section, layout tree, and inventory to be true as of this phase's commits, with no percentage figure reproduced and the still-unrun Phase 5 persuasion benchmark named distinctly from the MOD-04 conformance measurement. This plan closes no requirement -- MOD-04 stays [ ], WINDOWS.md entry 8 stays open.
 
 ### Pending Todos
 
@@ -164,6 +166,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-16T05:51:16.016Z
-Stopped at: Completed 03-09-PLAN.md (CR-01/WR-01 instrument fixes; RESULTS-mod04.md disclosure; MOD-04 stays open)
+Last session: 2026-09-16T06:00:20.917Z
+Stopped at: Completed 03-10-PLAN.md (CR-02 closed: readme-results-pointer-missing check + true README Status section)
 Resume file: None
