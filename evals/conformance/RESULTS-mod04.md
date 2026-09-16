@@ -654,3 +654,11 @@ Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
 
 conformant 0 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-16T07:45:44.241555+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=unscoreable | reason=timeout
+
+conformant 0 of 0 scoreable sessions
+unscoreable 1 sessions
+  - excluded: model=claude-sonnet-5 fixture=A-rfp-answer repeat=0 reason=timeout
