@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: Completeness Audit & Artifact Patterns
 status: executing
-stopped_at: "Completed 03-10-PLAN.md (CR-02 closed: readme-results-pointer-missing check + true README Status section)"
-last_updated: "2026-09-16T06:00:28.714Z"
+stopped_at: "Completed 03-11-PLAN.md (self-check ordering gate: rewrote presence gate to ordering gate, added skill-family-order-gate-missing, 30->31 discrimination-proven)"
+last_updated: "2026-09-16T06:18:10.839Z"
 last_activity: 2026-09-16
 last_activity_desc: Phase 03 execution resumed (wave continue)
-state_head: cd9c56ffccefcb66f44da5fec034ecb8a4b71316
+state_head: 06548e252c25accae87716d2651b1ec4e1ebc58b
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 28
-  completed_plans: 26
+  completed_plans: 27
   percent: 17
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03 (Completeness Audit & Artifact Patterns) — EXECUTING
-Plan: 3 of 12
+Plan: 4 of 12
 Status: Ready to execute
 Last activity: 2026-09-16 — Phase 03 execution resumed (wave continue)
 
@@ -84,6 +84,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 03 P08 | ~22h wall-clock (interrupted) | 2 tasks | 5 files |
 | Phase 03 P09 | 18min | 2 tasks | 5 files |
 | Phase 03-completeness-audit-artifact-patterns P10 | 8min | 2 tasks | 2 files |
+| Phase 03 P11 | 20 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -142,6 +143,7 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-08: two real bugs found and fixed in evals/conformance/run_conformance.py -- a nonzero-exit claude -p session was scored no-family instead of unscoreable (root cause of a fully contaminated 20-session run, kept invalidated not deleted), and the measured SKILL.md blob SHA ignored --skill-src. Both fixed and self-test-covered before the disposition-determining data was collected.
 - [Phase 03]: [Phase 03]: 03-09: Closed CR-01 (unbounded family-phrase search in score_transcript() silently inflating measured MOD-04 conformance) by bounding the family search to a 400-char prefix window derived from SKILL.md's write-mode contract, with both offsets computed against the same stripped string. Closed WR-01 in the same pass: run_session() now catches subprocess.TimeoutExpired, normalises bytes/str/None streams, and writes a decoded partial transcript before re-raising unchanged, so a timed-out session no longer loses all diagnostic evidence. RESULTS-mod04.md now discloses that every figure recorded before this fix is an unanchored, unrecoverable, optimistic ceiling. This plan closes no requirement -- MOD-04 stays [ ], WINDOWS.md entry 8 stays open.
 - [Phase 03-completeness-audit-artifact-patterns]: 03-10: Closed CR-02 (README claimed "no measured claim is published" while evals/conformance/RESULTS-mod04.md carried two committed measurement arms). Added readme-results-pointer-missing, a discrimination-proven check_repo.py code (29 -> 30) that fails the build if README.md ever again stops pointing at the committed MOD-04 measurement; rewrote README's Status section, layout tree, and inventory to be true as of this phase's commits, with no percentage figure reproduced and the still-unrun Phase 5 persuasion benchmark named distinctly from the MOD-04 conformance measurement. This plan closes no requirement -- MOD-04 stays [ ], WINDOWS.md entry 8 stays open.
+- [Phase 03]: 03-11: Extended SKILL.md's self-check first pass from a presence gate to an ordering gate (re-scan the drafted response, confirm no PF-/MC- marker precedes the artifact-family line, repair before returning), paid for by deleting four named rationale clauses, holding 177 tokens of headroom. Added skill-family-order-gate-missing (31st discrimination-proven check_repo.py code). MOD-04 stays [ ] -- this plan implements a lever; 03-12 measures it.
 
 ### Pending Todos
 
@@ -166,6 +168,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-16T06:00:20.917Z
-Stopped at: Completed 03-10-PLAN.md (CR-02 closed: readme-results-pointer-missing check + true README Status section)
+Last session: 2026-09-16T06:18:10.601Z
+Stopped at: Completed 03-11-PLAN.md (self-check ordering gate: rewrote presence gate to ordering gate, added skill-family-order-gate-missing, 30->31 discrimination-proven)
 Resume file: None
