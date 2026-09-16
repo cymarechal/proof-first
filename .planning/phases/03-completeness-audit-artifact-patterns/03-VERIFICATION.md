@@ -1,65 +1,46 @@
 ---
 phase: 03-completeness-audit-artifact-patterns
-verified: 2026-09-16T09:37:32Z
+verified: 2026-09-16T20:15:00Z
 status: gaps_found
-score: "8/10 truths verified, 2 failed, 0 present-behavior-unverified"
+score: "9/10 truths verified, 1 failed, 0 present-behavior-unverified"
 behavior_unverified: 0
-overrides_applied: 0
+overrides_applied: 1
+overrides:
+  - must_have: "(SC3, live half) A live write-mode session actually classifies the artifact family before applying any rule, in every session"
+    reason: "Four measurement rounds across three structurally distinct levers (03-05 instruction restatement, 03-07 unconditional family line + presence gate, 03-11 self-check ordering re-scan) all landed under the pre-committed 87.5% closure bar. The only anchored (non-inflated) measurement is the lowest recorded (30.0%, 3/10) and a 10-point decline against its own paired same-instrument baseline (40.0%, 4/10). The project owner — a human, not the executing agent — was shown all three disposition options with full pros/cons in an interactive /gsd-execute-phase 03 --gaps-only session and explicitly chose Option A: accept the measured residual for v1 and publish it rather than pursue a fourth lever or re-scope the project to permit a harness-specific runtime component (architecturally foreclosed for an Agent Skill under the zero-dependency and cross-harness-portability constraints). The decision is dated, attributed, evidenced, and reversible (recorded in evals/conformance/RESULTS-mod04.md '## v1 disposition decision (03-15)', WINDOWS.md entry 8 (waived, not fixed), REQUIREMENTS.md's MOD-04 annotation, and 03-UAT.md gap G-03-2 — all five records agree). MOD-04's requirement checkbox correctly stays unchecked and README publishes the unfavorable number in its own prose, not merely a pointer, satisfying this project's own 'measured claims or no claims' standard applied honestly to an unflattering result. This is publication of a disclosed limitation, not a claim of satisfaction."
+    accepted_by: "project owner (human), in an interactive /gsd-execute-phase 03 --gaps-only session — per the documented provenance in evals/conformance/RESULTS-mod04.md section '## v1 disposition decision (03-15)'"
+    accepted_at: "2026-09-16"
 re_verification:
   previous_status: gaps_found
-  previous_score: "8/9 truths verified, 1 failed, 0 present-behavior-unverified"
+  previous_score: "8/10 truths verified, 2 failed, 0 present-behavior-unverified"
   gaps_closed:
-    - "CR-01 (unanchored scorer): score_transcript()'s family search is now bounded to the transcript's opening 400 characters (FAMILY_LINE_WINDOW_CHARS), both offsets computed against the same `stripped` string. Independently confirmed by direct source read and by re-running the two discrimination probes (no-family / conformant) in this session — both match the fix's intended direction."
-    - "WR-01 (old, timeout data loss on a single transcript): run_session() now catches TimeoutExpired, normalises bytes/str/None streams, writes a decoded partial transcript, and re-raises unchanged. Confirmed present in source."
-    - "CR-02 (README false claim): README.md's Status section no longer states 'no measured claim is published.' It names evals/conformance/RESULTS-mod04.md, carries four caveats, states no percentage, and correctly attributes the still-unrun persuasion benchmark to Phase 5. A new discrimination-proven check (`readme-results-pointer-missing`, 30th->31st-adjacent code) guards this from silently regressing. Confirmed by direct read and independent check_repo.py --mutation-test re-run in this session."
-    - "MOD-04 was remeasured a fourth time (03-12), this time entirely under the anchored (CR-01-fixed) scorer, with a mechanically pre-committed disposition rule committed to git before any session ran. Independently re-derived: Arm A (post-03-11 ordering-gate lever) 3/10 = 30.0%; Arm B (paired pre-03-11 baseline) 4/10 = 40.0%; delta -10.0pp, correctly selecting Branch 4. All four MOD-04 trackers (RESULTS-mod04.md, WINDOWS.md entry 8, REQUIREMENTS.md, 03-UAT.md G-03-2) carry identical figures. WINDOWS.md entry 8 correctly moved from `open` to `waived` (accepted, disclosed residual, explicitly not `fixed`), and MOD-04's checkbox correctly stays `[ ]`."
-  gaps_remaining:
-    - "MOD-04 (SC3, live-session half) — still FAILED, and by the honest anchored measurement, WORSE than the prior optimistic-ceiling figures suggested: 30.0% (3/10) for the post-03-11 skill, actually below the 40.0% (4/10) pre-03-11 paired baseline. Three levers (03-05 restatement, 03-07 five-value family line + presence gate, 03-11 mechanical self-check ordering re-scan) have now each been measured and none reached the 87.5% bar; the anchored figures are markedly lower than every unanchored figure for this residual, consistent with CR-01's documented optimistic-ceiling bias. The project's own disposition (WINDOWS.md entry 8 `waived`) is an honest acceptance of an unresolved residual, not a claim of satisfaction — this verification agrees with that self-assessment and does not soften it further in either direction."
+    - "Gap 1 (MOD-04 live-session residual) — disposed, not fixed, via an explicit human decision (03-15). The prior verification's second `missing` item ('an explicit, human-made decision... that the write-mode classify-before-rules ordering is acceptable at a ~30-40% observed rate for v1') is exactly what 03-15's checkpoint:decision task produced: dated, attributed to the actual project owner (not the executing agent), evidenced against the four-round measurement history, with named rejected alternatives and a stated reopening condition. Verified present and consistent across all five tracking records (RESULTS-mod04.md, WINDOWS.md entry 8, README.md, REQUIREMENTS.md, 03-UAT.md G-03-2) by direct read in this session. Recorded as an accepted override rather than a satisfied requirement — MOD-04 stays unchecked."
+    - "Gap 2, first half (whole-run in-memory batching / data-loss-on-interruption) — genuinely closed. Direct read of evals/conformance/run_conformance.py confirms `run_matrix()`/`_write_result_line()` write and flush every session's result line to disk the moment it is scored; no in-memory `lines` accumulator remains in `main()` or `run_matrix()`. `git diff 5346c19..HEAD -- evals/conformance/run_conformance.py` (re-run in this session) confirms the refactor is scoped exactly as claimed, touching neither `score_transcript()` nor `run_session()`'s TimeoutExpired handling."
+    - "Gap 2, second half (Arm A no-family enumeration naming 6 sessions against a stated count of 7) — genuinely closed. RESULTS-mod04.md's Arm A no-family bullet now enumerates all 7 sessions including the previously-omitted B-proposal-section first attempt; independently summed against the parenthetical in this session, matches. A new discrimination-proven check_repo.py code (`results-breakdown-count-mismatch`, the 32nd code) now holds this defect class mechanically."
+    - "Two lower-severity findings from the fresh 03-REVIEW.md (WR-02: case-sensitivity asymmetry between the two family-gate checks; IN-01: stale skill-token-budget-exceeded docstring) — both genuinely closed by 03-14, confirmed by direct read and by the mutation-test's new `family_capitalized_root` fixture."
+  gaps_remaining: []
   regressions: []
 gaps:
-  - truth: "The skill states which artifact family it classified the document as before applying any rules, in every live write-mode session (SC3, live half / MOD-04)"
+  - truth: "The project's own 'measured claims or no claims' reproducibility constraint holds for the instrument that produced this phase's headline MOD-04 measurement — including the instrument's own regression guard against the exact data-loss defect this phase already found and fixed once"
     status: failed
-    reason: "03-12's anchored remeasurement — the first MOD-04 figure produced under a scorer proven not to inflate the rate (03-09's FAMILY_LINE_WINDOW_CHARS=400 fix) — measured the current shipped skill (post-03-11, blob fadc48613f71fb29d55b42f70805225f9087a2b9) at 3/10 = 30.0% scoreable claude-sonnet-5 sessions conformant. A same-instrument, same-model paired baseline of the pre-03-11 skill (blob 9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a) measured 4/10 = 40.0% — i.e. the newest, most targeted lever measured WORSE than its own immediate predecessor once the scorer's optimistic bias was removed, a 10.0-percentage-point decline (disclosed by the project itself as within plausible sampling noise at n=10 per arm, not proof the lever actively hurts). Independently re-derived in this session directly from the 23 committed run blocks (12 Arm A lines including 2 retried timeouts, 11 Arm B lines including 1 retried timeout): counts match exactly (N_A=3/M_A=10, N_B=4/M_B=10). This is the same truth that failed in the prior verification round; four measurement rounds across four different levers and two scorer generations have now all landed under the 87.5% closure bar, three of them clustered well below it and none close."
-    artifacts:
-      - path: "skills/proof-first/SKILL.md"
-        issue: "The self-check's first pass (`## Self-check before delivering`) now gates on ordering, not merely presence — 're-scan the drafted response... confirm no PF-/MC- marker stands before the artifact-family line... move the family line to the top' — and is mechanically anchored by `skill-family-order-gate-missing` (discrimination-proven). The instruction is present, worded correctly, and cannot be silently deleted. It still does not reliably change model behavior: every non-conformant session this round scored `no-family` (the family phrase never appeared at all within the first 400 characters), not `rule-before-family` (the failure mode 03-11 specifically targeted) — meaning the ordering re-scan lever addressed a residual that, under the anchored scorer, was apparently much smaller or differently shaped than 03-08's unanchored measurement suggested."
-    missing:
-      - "A lever that does not depend on the model correctly following either a restated instruction or a self-check it performs on its own output — 03-12's own Next Phase Readiness section names the candidate direction: a post-generation mechanical repair (not just detection) applied by the skill or a wrapping tool before the response reaches the user, rather than trusting the model's own re-scan."
-      - "Alternatively, an explicit, human-made decision (this verifier is not making it) that the write-mode classify-before-rules ordering is acceptable at a ~30-40% observed rate for v1, given three distinct lever types have now been tried and measured without reaching the bar."
-  - truth: "The project's own 'measured claims or no claims' reproducibility constraint holds for the instrument that produced this phase's headline MOD-04 measurement (CLAUDE.md's evidence constraint, applied to the phase's own committed script)"
-    status: failed
-    reason: "03-REVIEW.md's fresh code review (completed 2026-09-16, after 03-12 landed) found a new, currently unresolved Critical finding (CR-01 in that review — a different CR-01 from the one 03-09 fixed): `run_conformance.py`'s live-mode `main()` loop accumulates every session's result line into an in-memory `lines` list and writes it to `RESULTS-mod04.md` in a single deferred `f.writelines(lines)` call only after the ENTIRE model x fixture x repeat loop finishes. Confirmed by direct source read in this session: `lines = []` still exists at line 687, and the single deferred `with open(out_path, 'a') as f: f.writelines(lines)` still exists at lines 761-762 — the review's exact fix (write-and-flush per session) has not been applied. `RESULTS-mod04.md` itself documents this exact failure mode having already destroyed two entire prior measurement attempts (a Claude Code session-usage-limit interruption, then a session teardown) — the project's response was operational (drive the matrix as many single-invocation-per-session calls) rather than a code fix, and the tool's own documented default usage in its module docstring (`python3 evals/conformance/run_conformance.py [--fixtures A,B,C] [--models M,...] [--repeats N]`) is still the vulnerable multi-session single-invocation pattern. This is a genuine, reproducible data-loss defect in a script this project holds up as the reproducible backing for its one committed measurement, discovered by this phase's own review and not yet addressed by any commit."
+    reason: "03-REVIEW.md's fresh review (completed after 03-15 landed, the newest commit at HEAD) found a new, previously-undiscovered Critical defect in this round's own added code, and I independently reproduced it in this session rather than taking the review's word for it. Self-test behavior case 11 (evals/conformance/run_conformance.py:612-668) is supposed to prove offline that `_write_result_line()`'s `handle.flush()` call makes each scored session durable against a process interruption between sessions. It does not: the test's `try/except KeyboardInterrupt` sits INSIDE the `with open(fake_results_path_11, 'a') as fake_handle_11:` block, so the KeyboardInterrupt is fully handled before the `with` block exits, and the `with` block's own normal-exit `close()` flushes the file regardless of whether `_write_result_line()` ever calls `.flush()` itself. I verified this empirically in this session: copying `run_conformance.py` to a sibling path inside `evals/conformance/` (to preserve `REPO_ROOT` resolution), removing the `handle.flush()` line from `_write_result_line()`, and re-running `--self-test` still printed `self-test PASS - verdicts discriminated: conformant, no-family, rule-before-family, unscoreable` with no FAIL line — reproducing the review's exact finding independently. The production code is correct today (`.flush()` is present at evals/conformance/run_conformance.py:729), and the underlying data-loss defect this phase already suffered twice is genuinely fixed in the shipped script. What is false is the verification-integrity claim: the module docstring (line 36) states the durability guarantee is 'proved offline by `--self-test` behavior case 11', and evals/conformance/RESULTS-mod04.md's own '## Instrument durability fix (03-13)' section repeats the same claim ('A new offline self-test behavior case (case 11) proves this'). Neither statement is true — case 11 would pass identically with the flush call deleted, meaning a future silent regression of the exact bug that has already destroyed two real measurement runs would ship with a green self-test and a green CI. This is precisely the failure mode this project's own mutation-testing preamble in tools/check_repo.py names as the thing it exists to prevent ('a dead check ship[ping] named as covered'), reproduced here in the sibling instrument's self-test rather than in check_repo.py itself. No commit at HEAD (d144f91) addresses this — 03-REVIEW.md discovered it after 03-13/03-14 landed, and 03-15 was scoped only to MOD-04's disposition decision, not to this finding."
     artifacts:
       - path: "evals/conformance/run_conformance.py"
-        issue: "Lines ~687 (`lines = []` in-memory accumulator) through ~761-762 (single deferred `f.writelines(lines)` after the full loop) — confirmed present at HEAD by direct read in this session. An ordinary interruption between sessions (not just mid-session, which WR-01/old-CR-01 already cover) silently discards every already-scored session in that invocation."
+        issue: "Lines 612-668 (self-test case 11) do not discriminate the presence of `_write_result_line()`'s `.flush()` call from its absence, because the interrupting `KeyboardInterrupt` is caught inside the `with open(...) as fake_handle_11:` block rather than propagating past it. Lines 34-37 (module docstring) assert the durability guarantee is 'proved offline by --self-test behavior case 11', which is not true of the current test."
       - path: "evals/conformance/RESULTS-mod04.md"
-        issue: "03-REVIEW.md's WR-01 (this round's — a different WR-01 from 03-09's fixed one): the Arm A `no-family` breakdown at lines ~756-757 states 'no-family: 7 (...)' but its own parenthetical names only 6 sessions (2+2+1+1), omitting the `B-proposal-section` first-attempt no-family verdict recorded at line ~596 of the same file. Confirmed present by direct read in this session — the aggregate N_A/M_A figures are unaffected (correctly 3/10), but the file explicitly claims to be 're-derivable by anyone... without re-running anything' and a manual check of this specific enumeration does not add up."
+        issue: "Lines ~840-861 ('## Instrument durability fix (03-13)') repeat the same overclaim — 'A new offline self-test behavior case (case 11) proves this' — about a test that does not prove it."
     missing:
-      - "The review's suggested fix: write each session's result line to `out_path` immediately after it is scored (with `f.flush()`), rather than batching into an in-memory list, so an interruption between sessions loses at most the in-flight one."
-      - "Correct the Arm A no-family enumeration in RESULTS-mod04.md to name all 7 sessions, including the omitted `B-proposal-section` first attempt."
-      - "Two lower-severity, also-unresolved review findings, not rising to gap level but worth folding into the same fix pass: WR-02 (`check_skill_family_line_gate()` matches its two anchors case-sensitively while its 03-11 sibling `check_skill_family_order_gate()` matches case-insensitively — a real, disclosed-as-deliberate inconsistency per 03-11's own SUMMARY, but the review correctly notes it leaves the older check needlessly brittle against an unremarkable future capitalization edit) and IN-01 (`tools/check_repo.py`'s module docstring still describes `skill-token-budget-exceeded` as an open, currently-firing finding against the real SKILL.md; it has been silent since Phase 2 per WINDOWS.md entry 5, `status: fixed`, and the docstring is stale)."
-deferred:
-  - truth: "AUD-01 — independent human (not subagent) paraphrase-boundary read of the MC dimension bodies against SOURCES.md"
-    addressed_in: "Phase 6"
-    evidence: "ROADMAP.md Phase 6 goal: 'The repo is legally cleared and honestly marketed before anyone outside the project sees it', Success Criterion 1 names MEDDIC-family trademark status reconfirmation against current sources; WINDOWS.md entries 3 and 6 both state the same class of reproduction-boundary judgment is routed to Phase 6 LEG-04. Re-confirmed untouched this round: 03-12 Task 3 explicitly re-asserted AUD-01 stays `[ ]` with its Phase-6 annotation intact, verified by direct read in this session."
-  - truth: "ART-01 through ART-04 — independent human paraphrase-boundary read of the four artifact-family sections"
-    addressed_in: "Phase 6"
-    evidence: "WINDOWS.md entry 9 (mechanically fixed in 03-07): 'Closure: fold into the next content plan or into Phase 6 LEG-04 alongside entries 3 and 6' — the human-provenance judgment itself remains Phase 6 LEG-04's to close. Re-confirmed untouched this round: all four checkboxes still `[ ]`, verified by direct grep in this session (`grep -cE '^\\- \\[ \\] \\*\\*(AUD-01|ART-01|ART-02|ART-03|ART-04)\\*\\*'` returns 5)."
-human_verification:
-  - test: "Read all eight MC dimension bodies and all four artifact-family sections end to end against SOURCES.md's reproduction boundary, with a real human, not a subagent."
-    expected: "Confirm the six relabeled MC bodies and the one relabeled artifact-patterns.md appositive read as document-facing prose, not source restatement, and make the final call on the MEDDICC letter-order tension (WINDOWS entries 3, 6, 9)."
-    why_human: "SOURCES.md itself states this paraphrase-boundary judgment is semantic; no tool in this stack performs it. Explicitly deferred to Phase 6 LEG-04, unchanged this round."
-  - test: "Decide whether the project should invest a further, structurally-different lever at MOD-04 (a post-generation mechanical repair applied outside the model's own self-check, per 03-12's own Next Phase Readiness note) or formally accept the ~30-40% observed anchored rate as a disclosed v1 limitation and move on."
-    expected: "A team decision on MOD-04's disposition beyond 'WINDOWS.md entry 8 stays waived, no further lever scheduled.' Three structurally distinct levers (restatement, presence gate, self-check ordering re-scan) have now been tried and none reached the bar; the anchored figures are markedly lower than every earlier unanchored figure for this exact residual, so continuing to iterate on prompt/self-check wording specifically has a weakening evidence base for success."
-    why_human: "This is a project-prioritization and risk-acceptance decision, not a mechanical check. The measurement is now honest and reproducible (once CR-01/new is fixed); what to do about the residual is a judgment call this verifier is not making on the project's behalf."
+      - "Rewrite case 11 to assert the actual write/flush discipline against a call-recording stub (e.g. a thin handle proxy that records write()/flush() call order), independent of whatever the `with` block's own close()-on-exit does — so the test fails the moment `.flush()` is removed from `_write_result_line()`, regardless of which exception type interrupts the run. 03-REVIEW.md's Fix section gives a concrete `_FlushTrackingHandle` implementation."
+      - "Correct the two overclaiming statements (run_conformance.py's module docstring line 36, and RESULTS-mod04.md's '## Instrument durability fix (03-13)' section) once the test genuinely discriminates the property, or soften them in the interim to state what case 11 actually proves (that the interrupted portion of a matrix is not silently lost when the interrupting exception unwinds through the open file's own context manager) rather than what it does not (that the explicit .flush() call itself is load-bearing)."
+human_verification: []
 ---
 
 # Phase 3: Completeness Audit & Artifact Patterns Verification Report
 
 **Phase Goal:** A writer can classify a document by artifact family, apply that family's conventions, and get a document-level completeness verdict and trustworthy rule citations — independent of the prose rules.
-**Verified:** 2026-09-16T09:37:32Z
+**Verified:** 2026-09-16T20:15:00Z
 **Status:** gaps_found
-**Re-verification:** Yes — fourth round. Plans 03-09 through 03-12 (a gap-closure wave targeting the prior round's two open gaps — MOD-04/WINDOWS entry 8, and the CR-01/CR-02 code-review findings from the prior round) plus a fresh code review (03-REVIEW.md) that verified all three prior findings genuinely fixed and surfaced one new Critical and two new Warnings, none yet addressed by any commit.
+**Re-verification:** Yes — fifth round. Plans 03-13, 03-14, 03-15 closed the prior round's two gaps: the instrument's whole-run data-loss defect and enumeration error (03-13/03-14), and MOD-04's disposition, elevated from a branch-table default to an explicit, dated, human-attributed decision (03-15). A fresh code review (03-REVIEW.md, the latest commit at HEAD) confirmed all four prior review findings genuinely closed but surfaced one new, previously-undiscovered Critical in this round's own added code — independently reproduced in this session, not taken on the review's word.
 
 ## Project Gate (independently re-run, not taken on trust)
 
@@ -70,13 +51,14 @@ catalog-count-unstated, catalog-id-drift, catalog-opening-rule-count, dup-figure
 figure-order, framework-statement-missing, frontmatter-description-invalid, frontmatter-name-mismatch,
 frontmatter-unknown-key, frontmatter-unparseable, license-missing, mc-catalog-id-drift,
 mc-count-mismatch, mc-count-unstated, mc-rule-in-skill, pointer-duplicated, pointer-missing,
-pointer-unparseable, range-id, readme-results-pointer-missing, revived-id,
-skill-family-line-gate-missing, skill-family-order-gate-missing, skill-token-budget-exceeded,
-skill-too-long, source-label-in-skill-content, undefined-id, unlisted-figure
-(31 codes)
+pointer-unparseable, range-id, readme-results-pointer-missing, results-breakdown-count-mismatch,
+revived-id, skill-family-line-gate-missing, skill-family-order-gate-missing,
+skill-token-budget-exceeded, skill-too-long, source-label-in-skill-content, undefined-id,
+unlisted-figure
+(32 codes)
 
 $ python3 tools/check_repo.py --mutation-test
-mutation-test PASS: 31 codes discrimination-proven
+mutation-test PASS: 32 codes discrimination-proven
 (exit 0)
 
 $ python3 tools/check_repo.py
@@ -88,9 +70,22 @@ self-test PASS - verdicts discriminated: conformant, no-family, rule-before-fami
 (exit 0)
 ```
 
-All four commands re-run fresh in this session. All exit 0, and the code count (31, up from 29 in the
-prior verification round: `readme-results-pointer-missing` from 03-10, `skill-family-order-gate-missing`
-from 03-11) matches every claim in 03-09/03-10/03-11/03-12's SUMMARYs exactly.
+All four commands re-run fresh in this session. All exit 0, and the code count (32, unchanged from
+the prior round, which already reflected `results-breakdown-count-mismatch` added by 03-14) matches
+every claim in 03-13/03-14/03-15's SUMMARYs exactly.
+
+**Independent reproduction of 03-REVIEW.md's new Critical.** Copied `run_conformance.py` to a sibling
+path inside `evals/conformance/` (preserving `REPO_ROOT = Path(__file__).resolve().parents[2]`
+resolution), removed the `handle.flush()` line from `_write_result_line()`, and re-ran `--self-test`:
+
+```
+$ python3 evals/conformance/_noflush_test.py --self-test
+self-test PASS - verdicts discriminated: conformant, no-family, rule-before-family, unscoreable
+```
+
+No FAIL line, including for case 11 — confirming the review's finding that case 11 does not
+discriminate the presence of `.flush()` from its absence. Test file deleted after the probe (never
+committed).
 
 ## Goal Achievement
 
@@ -98,95 +93,143 @@ from 03-11) matches every claim in 03-09/03-10/03-11/03-12's SUMMARYs exactly.
 
 | # | Truth | Status | Evidence |
 |---|---|---|---|
-| 1 | (SC1, structural) MC namespace/registry never blended into prose rules | ✓ VERIFIED | Regression-confirmed: 8 `### MC-` headings in `completeness-audit.md`; `mc-rule-in-skill` still discrimination-proven in this session's mutation-test re-run. Unchanged this round. |
-| 2 | (SC1, live half / AUD-03) Standalone audit returns a separate verdict, independent of prose rules | ✓ VERIFIED (with a disclosed caveat, carried forward) | Unchanged this round: 6/6 clean UAT sessions, `[x]` checkbox re-confirmed untouched by 03-12 Task 3's own drift check and by direct read in this session. |
+| 1 | (SC1, structural) MC namespace/registry never blended into prose rules | ✓ VERIFIED | Regression-confirmed: 8 `### MC-` headings in `completeness-audit.md`; `mc-rule-in-skill` still discrimination-proven in this session's mutation-test re-run. Unchanged this round — no plan in this round touched `completeness-audit.md`. |
+| 2 | (SC1, live half / AUD-03) Standalone audit returns a separate verdict, independent of prose rules | ✓ VERIFIED (with a disclosed caveat, carried forward) | Unchanged this round: 6/6 clean UAT sessions (03-UAT.md test 1), untouched by 03-13/14/15. |
 | 3 | (SC2, structural) Four artifact families each get distinct conventions and expected order | ✓ VERIFIED | Regression-confirmed: 4 family `## ` headings, distinct `**Order:**` lines, `artifact-family-section-missing` still discrimination-proven. Content-quality half (ART-01..04) remains open — see Deferred. |
-| 4 | (SC3, structural / MOD-04) Classification instruction exists in both modes, states the ordering explicitly, and is mechanically gated on BOTH presence and ordering | ✓ VERIFIED (strengthened this round) | `SKILL.md`'s self-check first pass (confirmed by direct read) now reads: re-scan the drafted response, confirm no `PF-`/`MC-` marker stands before the artifact-family line, move the line to the top and re-check if one does. Two sibling checks, `skill-family-line-gate-missing` (presence) and `skill-family-order-gate-missing` (ordering, new in 03-11), are both discrimination-proven in this session's mutation-test re-run (31/31). Token budget confirmed at 4,823 estimated tokens, 177 headroom (>= 100 floor). |
-| 5 | (SC3, live half) A live session actually classifies before applying any rule, in every session | ✗ **FAILED** | 03-12's anchored remeasurement (the first MOD-04 figure produced under a scorer proven not to inflate the rate): Arm A (current shipped skill) 3/10 = 30.0% conformant; Arm B (immediately prior skill, paired baseline) 4/10 = 40.0%. Independently re-derived from the 23 committed run blocks in this session — arithmetic matches exactly. The newest, most targeted lever (03-11's mechanical self-check ordering re-scan) measured WORSE than its own predecessor once the scorer's optimistic bias was removed. WINDOWS.md entry 8 correctly moved to `waived` (accepted, disclosed residual — explicitly not a satisfied requirement), and `MOD-04` correctly stays `[ ]`. |
-| 6 | (SC4, structural / MOD-03) Four labeled sections in fixed order, correct lead-in wording | ✓ VERIFIED | Unchanged this round: `SKILL.md`'s four-section wording directly re-confirmed present by read in this session. |
-| 7 | (SC4, live half / MOD-03) A live check-mode session prints all four sections, in order, with no-findings lines | ✓ VERIFIED | Unchanged this round: 03-UAT.md test 3, 9/9 live sessions. No new session run against this truth this round (03-09..12 targeted MOD-04's instrument and measurement, not MOD-03); no regression evidence found. |
-| 8 | (SC5, shipped-file half / MOD-05) Check mode never cites an unallocated rule number | ✓ VERIFIED | Regression-confirmed: `undefined-id`, `mc-catalog-id-drift`, `mc-count-unstated`/`mc-count-mismatch` all still discrimination-proven in this session's mutation-test re-run (31/31). |
+| 4 | (SC3, structural / MOD-04) Classification instruction exists in both modes, states the ordering explicitly, and is mechanically gated on BOTH presence and ordering | ✓ VERIFIED | Unchanged this round: `SKILL.md`'s self-check first pass, `skill-family-line-gate-missing` and `skill-family-order-gate-missing` both discrimination-proven in this session's mutation-test re-run (32/32). No plan this round touched `SKILL.md`. |
+| 5 | (SC3, live half) A live session actually classifies before applying any rule, in every session | **PASSED (override)** | See `overrides` in frontmatter. Measured four times across three structurally distinct levers; the only anchored measurement is 3/10 (30.0%), a decline against its paired 4/10 (40.0%) baseline. 03-15 elevated this from an unowned branch-table default to an explicit, dated (2026-09-16), human-attributed (the project owner, not the executing agent) accept-and-disclose decision, evidenced against the full measurement history and propagated identically across five tracking records — independently confirmed consistent in this session by direct read of all five. `MOD-04` correctly stays `[ ]`; `README.md` publishes 30.0%/40.0% in its own prose, not merely a pointer. |
+| 6 | (SC4, structural / MOD-03) Four labeled sections in fixed order, correct lead-in wording | ✓ VERIFIED | Unchanged this round: `SKILL.md`'s four-section wording untouched by any plan this round. |
+| 7 | (SC4, live half / MOD-03) A live check-mode session prints all four sections, in order, with no-findings lines | ✓ VERIFIED | Unchanged this round: 03-UAT.md test 3, 9/9 live sessions. No regression evidence found. |
+| 8 | (SC5, shipped-file half / MOD-05) Check mode never cites an unallocated rule number | ✓ VERIFIED | Regression-confirmed: `undefined-id`, `mc-catalog-id-drift`, `mc-count-unstated`/`mc-count-mismatch` all still discrimination-proven (32/32). |
 | 9 | (SC5, live-session half / MOD-05) A live conversation never fabricates a rule number | ✓ VERIFIED | Unchanged this round: 03-UAT.md test 4, 18/18 sessions, 224 distinct citations, zero unallocated IDs. |
-| 10 | (New this round) The project's own "measured claims or no claims" reproducibility constraint holds for the instrument backing this phase's one committed measurement | ✗ **FAILED** | 03-REVIEW.md's fresh review (2026-09-16) found a new, unresolved Critical (CR-01 in that review): `run_conformance.py`'s live-mode loop batches every session result into an in-memory list and writes it in one deferred call after the full loop finishes — confirmed present at HEAD by direct source read in this session (`lines = []` at line 687, single deferred `f.writelines(lines)` at lines 761-762). `RESULTS-mod04.md` itself documents this exact failure mode having already destroyed two prior measurement attempts, worked around operationally (one invocation per session) rather than fixed in code. This did not corrupt 03-12's own measurement (which used the one-invocation-per-session workaround throughout, independently confirmed via the 23 individually-committed run-block commits), but the shipped script remains genuinely vulnerable under its own documented default usage. A related itemization error (this round's WR-01: Arm A's `no-family` breakdown names 6 sessions where it states 7) is also unresolved, confirmed present by direct read. |
+| 10 | The project's own "measured claims or no claims" reproducibility constraint holds for the instrument backing this phase's headline measurement, including its own regression guard against the data-loss defect this same instrument already suffered twice | ✗ **FAILED** | The prior round's specific failure (whole-run in-memory batching) is genuinely fixed and verified by direct code read — `run_matrix()`/`_write_result_line()` write-and-flush per session, no accumulator remains. But 03-REVIEW.md's fresh review found, and I independently reproduced in this session, that the offline self-test case (case 11) written specifically to prove this durability property does not actually discriminate it: removing the `.flush()` call from a copy of `_write_result_line()` still produces a clean `--self-test PASS`, because the test's `KeyboardInterrupt` is caught inside the same `with` block whose own close()-on-exit would flush the file regardless. The module docstring's claim ("proved offline by `--self-test` behavior case 11") and `RESULTS-mod04.md`'s identical claim in its `## Instrument durability fix (03-13)` section are both currently false. Not addressed by any commit at HEAD. |
 
-**Score:** 8/10 truths verified, 2 FAILED, 0 present-behavior-unverified. Truth 5 is the same truth that
-failed in every prior verification round of this phase; this round adds the first anchored (non-inflated)
-measurement of it, and the honest reading is that the residual is not shrinking with more instruction-wording
-and self-check levers — it may be worse than the unanchored measurements suggested. Truth 10 is new this
-round: this phase's own code review found a genuine, currently-unfixed defect in the very instrument this
-phase committed as its evidentiary backing, which is exactly the class of gap this project's "measured
-claims or no claims" standard exists to catch.
+**Score:** 9/10 truths verified (including 1 accepted override), 1 FAILED, 0 present-behavior-unverified.
+Truth 5, which failed in the prior three verification rounds, is now disposed via an explicit,
+evidenced, reversible human decision rather than left as an open branch-table consequence — this
+verifier treats that disposition as satisfying the phase's evidentiary bar for this truth, without
+treating it as a satisfied requirement (`MOD-04` stays unchecked; see the override entry for the full
+reasoning). Truth 10 is a narrower but genuine reopening of the same class of concern the prior round's
+Truth 10 raised: the specific data-loss defect is fixed, but the new regression guard built to prove it
+does not prove it, and two shipped documents currently overclaim that it does. This is a new,
+previously-undiscovered defect in this round's own added code (case 11 did not exist before 03-13),
+not a recurrence of the closed CR-01.
 
 ### Deferred Items
 
 | # | Item | Addressed In | Evidence |
 |---|------|-------------|----------|
-| 1 | AUD-01 — independent human paraphrase-boundary read of the MC dimension bodies | Phase 6 | ROADMAP.md Phase 6 Success Criterion 1 (MEDDIC-family trademark reconfirmation); WINDOWS.md entries 3, 6 |
-| 2 | ART-01..04 — independent human paraphrase-boundary read of the four artifact-family sections | Phase 6 | WINDOWS.md entry 9's closure note routes the human-provenance judgment to Phase 6 LEG-04 |
+| 1 | AUD-01 — independent human paraphrase-boundary read of the MC dimension bodies | Phase 6 | ROADMAP.md Phase 6 Success Criterion 1 (MEDDIC-family trademark reconfirmation); WINDOWS.md entries 3, 6. Untouched this round (confirmed by direct grep: still `[ ]`, unchanged since prior round). |
+| 2 | ART-01..04 — independent human paraphrase-boundary read of the four artifact-family sections | Phase 6 | WINDOWS.md entry 9's closure note routes the human-provenance judgment to Phase 6 LEG-04. Untouched this round. |
 
 ### Required Artifacts (regression + new-this-round check)
 
 | Artifact | Status | Details |
 |---|---|---|
-| `skills/proof-first/references/completeness-audit.md` | ✓ VERIFIED | Unchanged this round; 8 MC headings confirmed. |
+| `skills/proof-first/references/completeness-audit.md` | ✓ VERIFIED | Unchanged this round; 8 MC headings confirmed, untouched by any of 03-13/14/15. |
 | `skills/proof-first/references/artifact-patterns.md` | ✓ VERIFIED | Unchanged this round; 4 family headings confirmed, no frozen source label. |
-| `skills/proof-first/SKILL.md` | ✓ VERIFIED | 31/31 PF rules intact; self-check now carries both the presence pass and the new ordering pass (`re-scan`, `before any rule marker`, confirmed by direct read); token budget 4,823/5,000 (177 headroom). |
-| `tools/check_repo.py` | ✓ VERIFIED | 31/31 codes discrimination-proven (up from 29), confirmed by independent `--mutation-test` re-run in this session. `readme-results-pointer-missing` and `skill-family-order-gate-missing` both confirmed newly present and firing correctly on their registered mutations. |
-| `evals/conformance/run_conformance.py` | ⚠️ VERIFIED-WITH-DEFECT | `--self-test` passes (10 inline cases + 5 fixture cross-checks, confirmed by independent re-run). The prior round's CR-01 (unbounded family search) and WR-01 (single-transcript timeout data loss) are both genuinely fixed, confirmed by direct source read. A NEW, currently-unresolved defect (this round's review CR-01: whole-run in-memory batching, data loss on inter-session interruption) was found by 03-REVIEW.md and confirmed still present in this session — not yet fixed by any commit. |
-| `evals/conformance/RESULTS-mod04.md` | ⚠️ VERIFIED-WITH-DEFECT | `## Scorer anchoring correction (CR-01)`, `## Pre-committed disposition rule (03-12)`, and `## Anchored remeasurement result (03-12)` all present in the correct order (confirmed by grep offsets); the 03-12 arithmetic (N_A=3/M_A=10, N_B=4/M_B=10) independently re-derived from the raw run blocks in this session and correct. One itemization defect (this round's review WR-01, distinct from a same-named finding fixed earlier) remains unresolved: the Arm A `no-family` parenthetical names 6 sessions where the line states 7 — confirmed by direct read; does not affect the correct aggregate figures. |
-| `.planning/REQUIREMENTS.md` | ✓ VERIFIED | Checkbox states correct: AUD-02/AUD-03/MOD-03/MOD-05 `[x]`; AUD-01/ART-01..04/MOD-04 `[ ]`. `grep -c "^- \[x\].*UNVERIFIED"` returns 0, independently re-run in this session. MOD-04's annotation now carries all four measurement rounds (5/6, 14/16, 16/20+5/11, 3/10+4/10 anchored) with model ids, blob SHAs, and reproduction commands. |
-| `.planning/WINDOWS.md` | ✓ VERIFIED | Entries 3, 6 remain `open` (correctly, Phase 6-owned). Entries 5, 7, 9 remain `fixed`. Entry 8 now `waived` (was `open`), description and reason replaced with the anchored figures — confirmed by direct JSON parse in this session, parses cleanly. |
-| `README.md` | ✓ VERIFIED (CR-02 closed) | Status section confirmed by direct read: no longer states "no measured claim is published"; names `evals/conformance/RESULTS-mod04.md`, four caveats, no percentage, correctly attributes the still-unrun persuasion benchmark to Phase 5. Repository-layout tree and what-exists-today list both now list `evals/conformance/`. `readme-results-pointer-missing` guards this from silently regressing. |
+| `skills/proof-first/SKILL.md` | ✓ VERIFIED | Unchanged this round; 32/32 checks intact, self-check carries both presence and ordering passes. |
+| `tools/check_repo.py` | ✓ VERIFIED | 32/32 codes discrimination-proven, confirmed by independent `--mutation-test` re-run. `results-breakdown-count-mismatch` (new in 03-14) confirmed firing correctly on its registered mutation. |
+| `evals/conformance/run_conformance.py` | ⚠️ VERIFIED-WITH-DEFECT | `--self-test` passes; the prior round's whole-run batching defect (CR-01, from the fresh review) is genuinely fixed, confirmed by direct source read. A NEW, currently-unresolved defect found by this round's own 03-REVIEW.md and independently reproduced in this session: self-test case 11, added specifically to prove the durability fix, does not discriminate `.flush()`'s presence from its absence, and the module docstring overclaims that it does. |
+| `evals/conformance/RESULTS-mod04.md` | ⚠️ VERIFIED-WITH-DEFECT | `## Instrument durability fix (03-13)` and `## v1 disposition decision (03-15)` both present and correctly ordered after `## Anchored remeasurement result (03-12)`. Arm A `no-family` enumeration now correctly names all 7 sessions (confirmed by direct read). The durability-fix section repeats the same "proves this" overclaim found in the source file's docstring. |
+| `.planning/REQUIREMENTS.md` | ✓ VERIFIED | Checkbox states correct: `AUD-01`, `ART-01..04`, `MOD-03..05`, `AUD-02`, `AUD-03` all `[ ]` — unchanged by this round's plans by design (03-15's own prohibitions forbid touching them; re-marking clean-verified requirements is this verifier's task only when the whole phase verifies clean, which it does not this round because of Truth 10). `grep -c "^- \[x\].*UNVERIFIED"` returns 0. `MOD-04`'s annotation now carries the 03-15 decision, its provenance, and a pointer to the new results-file section. |
+| `.planning/WINDOWS.md` | ✓ VERIFIED | Entries 3, 6 remain `open` (correctly, Phase 6-owned). Entries 5, 7, 9 remain `fixed`. Entry 8 remains `waived`, its `reason` field extended with the 03-15 decision and its provenance — confirmed by direct JSON parse in this session, parses cleanly. No WINDOWS.md entry exists yet for the new self-test non-discrimination defect (Truth 10) — it is untracked in the ledger and unaddressed by any commit. |
+| `README.md` | ✓ VERIFIED | Status section confirmed by direct read: publishes `3 of 10 scoreable claude-sonnet-5 sessions (30.0%)` against the paired `4 of 10 (40.0%)` baseline in its own prose, dated, framed as a disclosed v1 limitation, keeps the literal `evals/conformance/RESULTS-mod04.md` pointer and all three prescribed caveats. |
 
 ### Requirements Coverage
 
 | Requirement | Status | Evidence |
 |---|---|---|
-| AUD-01 | ? NEEDS HUMAN — correctly `[ ]` | Unchanged this round; deferred to Phase 6 LEG-04; 03-12 explicitly re-verified untouched. |
-| AUD-02 | ✓ SATISFIED — `[x]` | Mechanically enforced, unchanged. |
-| AUD-03 | ✓ SATISFIED (with caveat) — `[x]` | Unchanged this round. |
+| AUD-01 | ? NEEDS HUMAN — correctly `[ ]` | Unchanged this round; deferred to Phase 6 LEG-04. |
+| AUD-02 | ✓ SATISFIED — `[ ]` (checkbox re-marking withheld this round; see below) | Mechanically enforced, unchanged. |
+| AUD-03 | ✓ SATISFIED (with caveat) — `[ ]` (checkbox re-marking withheld this round; see below) | Unchanged this round. |
 | ART-01..04 | ? NEEDS HUMAN — correctly `[ ]` | Structurally implemented and mechanically enforced; content-quality/paraphrase read still deferred to Phase 6 LEG-04. |
-| MOD-03 | ✓ SATISFIED — `[x]` | Unchanged this round. |
-| MOD-04 | ✗ **BLOCKED** — correctly `[ ]` | Now measured four times under three recipes and two scorer generations (5/6, 14/16, 16/20+5/11, and this round's anchored 3/10 vs 4/10), all below the closure bar. The anchored figure is the most trustworthy one produced so far and shows no improvement — arguably a decline — versus the immediately prior skill version. `WINDOWS.md` entry 8 is `waived`: an honest, disclosed acceptance of the residual, not a claim that the requirement is satisfied. |
-| MOD-05 | ✓ SATISFIED — `[x]` | Unchanged this round. |
+| MOD-03 | ✓ SATISFIED — `[ ]` (checkbox re-marking withheld this round; see below) | Unchanged this round. |
+| MOD-04 | ✗ **BLOCKED (accepted v1 residual, override applied to phase Truth 5)** — correctly `[ ]` | Now explicitly disposed as of 2026-09-16: an evidenced, attributed, reversible human decision to accept the measured residual and disclose it. Not a satisfied requirement — the checkbox correctly stays unchecked and the unfavorable figure is published in README. |
+| MOD-05 | ✓ SATISFIED — `[ ]` (checkbox re-marking withheld this round; see below) | Unchanged this round. |
 
-No requirement is ORPHANED. All ten requirement IDs (AUD-01..03, ART-01..04, MOD-03..05) declared across
-the phase's 12 plans' frontmatter are accounted for above.
+No requirement is ORPHANED. All ten requirement IDs (AUD-01..03, ART-01..04, MOD-03..05) declared
+across the phase's 15 plans' frontmatter are accounted for above.
+
+**On checkbox re-marking:** 03-15-PLAN.md's own must-haves state that AUD-02, AUD-03, MOD-03 and
+MOD-05's re-marking to `[x]` "is the verifier's to do when the phase verifies clean." This phase does
+not verify clean this round — Truth 10 is FAILED — so per that plan's own design, this verifier is
+not re-marking any checkbox in this round. They remain individually SATISFIED in substance (see the
+table above) but unchecked in `.planning/REQUIREMENTS.md` pending a round with no gaps.
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |---|---|---|---|---|
-| `evals/conformance/run_conformance.py` | ~687, ~761-762 | Whole-run in-memory result batching (this round's review CR-01, unresolved, confirmed present in this session) — an interruption between sessions (process kill, uncaught exception type, external termination) silently discards every already-scored session in that invocation. | 🛑 Blocker (data-integrity defect in the instrument backing this phase's one committed, "reproducible from a committed script" measurement) | `RESULTS-mod04.md` itself documents two prior total losses from this exact class of failure, worked around operationally rather than fixed. Does not invalidate 03-12's own 30.0%/40.0% figures (which used the one-invocation-per-session workaround throughout, independently confirmed via 23 individually committed run blocks), but the shipped tool's documented default usage remains vulnerable to a class of loss this project's own WR-01 fix already solved for the single-transcript case. |
-| `evals/conformance/RESULTS-mod04.md` | ~756-757 | Arm A `no-family` breakdown states "7" but its own parenthetical enumerates only 6 sessions, omitting the `B-proposal-section` first-attempt no-family verdict (this round's review WR-01, unresolved, confirmed present). | ⚠️ Warning | Aggregate N_A/M_A figures (3/10, 30.0%) are correct and unaffected — this is an itemization gap in a file that explicitly claims full manual re-derivability. |
-| `tools/check_repo.py` | ~1413-1466 | `check_skill_family_line_gate()` matches its two anchors case-sensitively while its 03-11 sibling `check_skill_family_order_gate()` matches case-insensitively (this round's review WR-02, unresolved, confirmed present; a deliberate, disclosed asymmetry per 03-11's own SUMMARY, but the review's point about differential brittleness against a plausible future capitalization edit stands). | ⚠️ Warning | Leaves the older presence-gate check needlessly brittle relative to its newer sibling; not a correctness defect against the current tree (`check_repo.py` reports 0 violations). |
-| `tools/check_repo.py` | ~322-328 | Module docstring still describes `skill-token-budget-exceeded` as an open, currently-firing finding against the real `SKILL.md`; it has been silent since Phase 2 (WINDOWS.md entry 5, `status: fixed`). Stale prose, confirmed present. | ℹ️ Info | Prose-only, no CI/behavior impact; flagged by 03-REVIEW.md as IN-01, unresolved. |
+| `evals/conformance/run_conformance.py` | 612-668, 34-37 | Self-test case 11 does not discriminate `_write_result_line()`'s `.flush()` call from its absence (confirmed by independent reproduction in this session); the module docstring overclaims that it does. | 🛑 Blocker (verification-integrity defect: a future silent regression of the exact data-loss bug that has already destroyed two real measurement runs would ship with a green self-test and green CI) | Does not affect the correctness of the currently-shipped `.flush()` call or any published figure (all of which used the durable, one-invocation-per-session workaround). Affects only the trustworthiness of the regression guard going forward. |
+| `evals/conformance/RESULTS-mod04.md` | ~849-851 | `## Instrument durability fix (03-13)` repeats the same "case 11 proves this" overclaim found in the source docstring. | ⚠️ Warning | A committed, reader-facing measurement file stating an unproven verification claim as proven — the exact class of overclaim this project's "measured claims or no claims" standard exists to prevent, though narrower in stakes than a false headline number. |
+| `README.md` | 53-56 | (Carried forward from 03-REVIEW.md IN-02, still present, not blocking) The 10-point decline is stated in full numeric form but the word "decline" itself never appears in this file's prose, unlike `RESULTS-mod04.md` and `WINDOWS.md` entry 8, which both use it. | ℹ️ Info | Both numbers (30.0%, 40.0%) are present and correctly attributed; a reader who does the arithmetic reaches the same conclusion. Purely a clarity nit, not a false or omitted claim. |
 
-No debt markers (`TBD`/`FIXME`/`XXX`) found in any file this round's plans touched. Beyond the four
-review-sourced findings above (all independently confirmed still present in this session), no new stub
-patterns or hardcoded-empty-data patterns found in the modified reference/skill files.
+No debt markers (`TBD`/`FIXME`/`XXX`) found in any file this round's plans touched (checked directly
+in this session: `run_conformance.py`, `RESULTS-mod04.md`, `WINDOWS.md`, `README.md`,
+`REQUIREMENTS.md`, `check_repo.py`, `03-UAT.md`). Beyond the two findings above (independently
+confirmed present in this session), no new stub patterns or hardcoded-empty-data patterns found.
 
 **Carried forward from the prior VERIFICATION.md (now resolved, kept for history):**
-- CR-01 (unanchored `score_transcript()` family search) — fixed in 03-09, confirmed by direct read and re-run of both discrimination probes in this session.
-- CR-02 (README's false "no measured claim" statement) — fixed in 03-10, confirmed by direct read in this session; guarded by the new `readme-results-pointer-missing` check.
-- WR-01/old (a single timed-out session losing its own transcript) — fixed in 03-09, confirmed by direct read in this session (folded into the same commit that fixed CR-01/old).
+- Whole-run in-memory batching (03-REVIEW.md's round-4 CR-01) — fixed in 03-13, confirmed by direct
+  source read in this session (`run_matrix()`/`_write_result_line()` write-and-flush per session, no
+  accumulator remains).
+- Arm A `no-family` enumeration naming 6 sessions against a stated count of 7 (round-4 WR-01) — fixed
+  in 03-13, confirmed by direct read; now mechanically held by `results-breakdown-count-mismatch`
+  (03-14).
+- Case-sensitivity asymmetry between the two family-gate checks (round-4 WR-02) — fixed in 03-14,
+  confirmed by the new `family_capitalized_root` self-test fixture.
+- Stale `skill-token-budget-exceeded` docstring (round-4 IN-01) — fixed in 03-14, confirmed by direct
+  read (`grep -c 'silent against the current tree'` returns 1).
+- MOD-04's disposition as an unowned branch-table consequence (round-4's second gap's `missing` item)
+  — resolved in 03-15 via an explicit, dated, human-attributed decision; recorded above as an accepted
+  override on phase Truth 5.
 
 ## Human Verification Required
 
-See the `human_verification` list in the frontmatter. In summary:
-
-1. **An actual human** (not a subagent) still needs to perform the `SOURCES.md` paraphrase-boundary read for the MC bodies and the four artifact-family sections — explicitly deferred to Phase 6 LEG-04, not blocking this phase's status, unchanged this round.
-2. **A policy call** on MOD-04's disposition beyond "waived, no further lever scheduled": three structurally distinct levers have now been tried and none reached the bar, and the anchored figures are markedly lower than every earlier unanchored figure for the same residual — meaning the earlier apparent progress (45.5% -> 60.0%) may have been largely or entirely a measurement artifact rather than real behavior change.
+None new this round. The two Phase-6-deferred items (AUD-01, ART-01..04's paraphrase-boundary reads)
+remain open and unchanged; see Deferred Items above. Truth 10's gap is a mechanically confirmed code
+defect (independently reproduced in this session), not a judgment call requiring a human — it routes
+to `gaps_found`, not `human_needed`.
 
 ## Gaps Summary
 
-**Gap 1 (carried forward, re-measured under an honest scorer for the first time, still open): MOD-04's live-session classify-before-rules ordering.** This round's four plans did real, disciplined work: 03-09 fixed the scorer bias that made every prior figure an optimistic ceiling; 03-10 fixed a false claim in README that this phase's own work had introduced; 03-11 built a genuinely different-in-kind lever (a mechanical self-check ordering re-scan, not another instruction restatement); 03-12 measured that lever under the fixed scorer with a disposition rule committed to git before any session ran, and applied it mechanically and honestly (naming a decline as a decline, not softening it to match the branch template's "did not move" label). The honest result is that the residual has not closed and shows no clear improvement — the anchored figures are the lowest and most trustworthy this phase has produced. This is not a deferred item: WINDOWS.md entry 8 has no later-phase owner, and it is now `waived` rather than `open`, which correctly documents that the project has looked at the number and chosen to stop spending live-session budget on this specific class of lever, not that the requirement is met.
+**The prior round's two gaps are both genuinely closed, in different ways.** Gap 1 (MOD-04's
+unowned disposition) is now an explicit, dated, evidenced, reversible human decision — this verifier
+records it as an accepted override on phase Truth 5 rather than as an unresolved failure, because the
+project's own escalation path (a `checkpoint:decision` task, not the executing agent) was followed
+correctly and the outcome is honestly disclosed rather than hidden or softened. Gap 2's headline defect
+(whole-run in-memory batching, silently losing every already-scored session on an inter-session
+interruption) is genuinely fixed, verified by direct code read: `run_matrix()`/`_write_result_line()`
+write and flush every session's result line the instant it is scored.
 
-**Gap 2 (new this round): this phase's own code review found a genuine, currently-unresolved Critical defect in the measurement instrument that backs this phase's headline claim** — `run_conformance.py` can silently lose an entire batch of already-scored sessions on an ordinary interruption between sessions, a failure mode the project's own file already documents having happened twice and worked around operationally rather than in code. Two lower-severity, also-unresolved findings (an itemization arithmetic mismatch in `RESULTS-mod04.md`'s own prose, and a case-sensitivity inconsistency between two sibling checker functions) round out the review. None of these three findings invalidate the specific 30.0%/40.0% figures 03-12 produced (which used the durable one-invocation-per-session workaround throughout, verified via 23 individually committed run blocks), but they are real, disclosed-by-review, currently-unaddressed defects in artifacts this phase committed, and the project's own "measured claims or no claims" standard applies to its own instruments, not only to its headline prose.
+**A new gap opened by this round's own added code.** 03-REVIEW.md's fresh review — the newest commit
+at HEAD, run after 03-13/03-14/03-15 all landed — found, and I independently reproduced in this
+session (removing the `.flush()` call from a copy of `_write_result_line()` and confirming
+`--self-test` still passes cleanly), that self-test behavior case 11 does not actually discriminate
+the durability property it was written to prove: the interrupting `KeyboardInterrupt` is caught inside
+the same `with` block whose own close()-on-exit flushes the file regardless of whether
+`_write_result_line()`'s explicit `.flush()` call exists at all. Two committed documents
+(`run_conformance.py`'s module docstring and `RESULTS-mod04.md`'s `## Instrument durability fix
+(03-13)` section) currently state, incorrectly, that case 11 proves this. The production code is not
+defective — the `.flush()` call is present and does genuine work against a real process kill, which I
+did not need to re-verify given 03-REVIEW.md's own direct SIGKILL test — but the regression guard
+protecting it is not real, meaning a future silent deletion of that one line would ship with a green
+CI, reproducing the exact class of loss this project has already suffered twice. This is a
+verification-integrity defect of the kind this project's own mutation-testing preamble names as the
+thing it exists to prevent, found here in a sibling instrument's self-test rather than in
+`check_repo.py` itself.
 
-The phase is **not** ready for `passed`. Requirement MOD-04's one remaining truth (live-session classify-before-rules ordering) has now been measured honestly and clearly fails the bar, with no evidence the residual is shrinking — if anything the most trustworthy measurement to date is the lowest one recorded. Separately, this phase's own most recent code review surfaced one Critical and two Warning findings against artifacts this phase committed, none yet fixed. The path forward is either: (a) a genuinely different class of lever for MOD-04 (03-12's own SUMMARY names a post-generation mechanical repair as the next candidate, distinct from both instruction restatement and a model-performed self-check) plus a small gap-closure plan fixing the review's three new findings, or (b) an explicit, disclosed human decision that both residuals (the MOD-04 rate, and the instrument's inter-session data-loss exposure) are acceptable for v1 as currently documented.
+**This gap is narrow in scope and does not touch the writer-facing artifacts this phase's goal is
+about** (`SKILL.md`, `completeness-audit.md`, `artifact-patterns.md` are all untouched this round and
+remain fully verified). It is, however, a live, currently-shipped false claim in a committed file this
+project holds up as the reproducible evidentiary backing for its one measured MOD-04 figure, and this
+project's own governing constraint treats an overstated claim as a first-class defect regardless of
+where it appears. The path forward is narrow: rewrite case 11 against a call-recording stub (a concrete
+implementation is already given in `03-REVIEW.md`'s own Fix section) so it fails the moment `.flush()`
+is removed, and correct or soften the two overclaiming sentences once it does.
 
 ---
 
-*Verified: 2026-09-16T09:37:32Z*
+*Verified: 2026-09-16T20:15:00Z*
 *Verifier: Claude (gsd-verifier)*
