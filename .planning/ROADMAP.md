@@ -118,7 +118,7 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 14/15 plans executed, 12 executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`, 4 gap-closure plans added after the third re-verification returned `gaps_found` with two Critical code-review findings, 3 gap-closure plans added after the fourth re-verification returned `gaps_found` with one Critical and two Warning code-review findings)
+**Plans**: 15/15 plans executed, 12 executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`, 4 gap-closure plans added after the third re-verification returned `gaps_found` with two Critical code-review findings, 3 gap-closure plans added after the fourth re-verification returned `gaps_found` with one Critical and two Warning code-review findings)
 
 Plans:
 
@@ -175,7 +175,7 @@ Plans:
 
 **Wave 13** *(blocked on Wave 12 completion)*
 
-- [ ] 03-15-PLAN.md — MOD-04's v1 disposition made an explicit, dated, attributed decision rather than a branch table's arithmetic: route (b) recommended (accept the measured residual, route (a)'s post-generation-repair candidate being architecturally unavailable to an Agent Skill), then the decision and the measured 30.0%/40.0% figures published through RESULTS-mod04.md, WINDOWS entry 8, README, REQUIREMENTS.md and 03-UAT.md
+- [x] 03-15-PLAN.md — MOD-04's v1 disposition made an explicit, dated, attributed decision rather than a branch table's arithmetic: route (b) recommended (accept the measured residual, route (a)'s post-generation-repair candidate being architecturally unavailable to an Agent Skill), then the decision and the measured 30.0%/40.0% figures published through RESULTS-mod04.md, WINDOWS entry 8, README, REQUIREMENTS.md and 03-UAT.md
 
 ### Phase 4: Distribution & Worked Examples
 
@@ -228,7 +228,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
-| 3. Completeness Audit & Artifact Patterns | 14/15 | In Progress|  |
+| 3. Completeness Audit & Artifact Patterns | 15/15 | In Progress|  |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
