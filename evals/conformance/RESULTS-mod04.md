@@ -753,8 +753,8 @@ repeats planned per fixture = 10 planned sessions.
 retried successfully and the retries are counted below), 10 scoreable:
 - conformant: 3 (`B-proposal-section` retry, `D-demo-discovery` first attempt,
   `E-ambiguous` first attempt)
-- no-family: 7 (`A-rfp-answer` x2, `C-exec-summary` x2, `D-demo-discovery` second attempt,
-  `E-ambiguous` second attempt)
+- no-family: 7 (`A-rfp-answer` x2, `B-proposal-section` first attempt, `C-exec-summary` x2,
+  `D-demo-discovery` second attempt, `E-ambiguous` second attempt)
 - rule-before-family: 0
 
 **N_A = 3, M_A = 10. N_A/M_A = 30.0%.**
@@ -836,3 +836,45 @@ finding needing its own disposition.
   attempted (16.7%); Arm B's was 1 of 11 attempted (9.1%).
 - `run_conformance.py` was not modified during this measurement (verified: byte-identical to
   its state at the end of `03-09`, commit `7cde49a`, via `git diff 5ce0ebb..HEAD -- evals/conformance/run_conformance.py` producing no output).
+
+## Instrument durability fix (03-13)
+
+**The defect.** `main()`'s live-mode loop held every session's result in memory (an
+in-memory `lines` list) and wrote the entire batch to this file only after the whole
+`model x fixture x repeat` matrix finished. An interruption of the Python process between
+sessions — the process killed, an uncaught exception outside the four per-session handlers,
+or external teardown — silently discarded every session already scored in that same
+invocation, because none of them had reached disk yet. This is the identical failure mode
+the `## Combined result (03-08-PLAN.md ...)` section above already records destroying two
+entire earlier measurement attempts ("a Claude Code session-usage limit, then a Claude Code
+session teardown"), answered at the time by an operational workaround — driving the matrix
+as many small single-session invocations rather than one large one — rather than by a fix
+in the instrument itself.
+
+**The fix.** Commit `c99a848` (2026-09-16) extracts the matrix loop into `run_matrix()`,
+which writes and flushes each session's result line to the open results-file handle,
+through a new `_write_result_line()` helper, at the moment that session is scored. No
+result text is accumulated in memory anywhere in `main()` or `run_matrix()` any more. A new
+offline self-test behavior case (case 11) proves this: it interrupts a matrix mid-run with
+`KeyboardInterrupt` — an exception type outside every handler `run_matrix()` catches — and
+asserts the sessions scored before the interruption are already durable on disk. The one
+residual this fix does not close, and does not claim to: two `run_conformance.py`
+invocations appending to this file at the same time are not guaranteed to produce
+non-interleaved output. The tool makes no parallel-safety claim, and the project's
+operating pattern is one foreground invocation at a time; the module docstring now states
+this explicitly rather than leaving it undisclosed.
+
+**What does not change.** Every figure recorded in this file — including the anchored
+`N_A = 3, M_A = 10` (30.0%) and `N_B = 4, M_B = 10` (40.0%) figures above — was produced
+under the one-invocation-per-session operating workaround, before this fix landed, and none
+of them moves. This fix removes a future exposure to the failure mode that has already
+struck this project twice; it does not correct, re-derive, or re-score any past number.
+
+**The corrected enumeration.** The Arm A `no-family` breakdown above previously named six
+sessions (`A-rfp-answer` x2, `C-exec-summary` x2, `D-demo-discovery` second attempt,
+`E-ambiguous` second attempt) beside its own stated count of seven. The omitted session was
+the `B-proposal-section` first attempt at `2026-09-16T06:42:11.983431+00:00Z`
+(`verdict=no-family | evidence=no family match found within the first 400 chars
+(marker_at=1013, marker='PF-2.13')`), now added to the enumeration above. The aggregate Arm
+A figures (`N_A = 3, M_A = 10`, 30.0%) were correct throughout this omission and are
+unaffected by this correction.
