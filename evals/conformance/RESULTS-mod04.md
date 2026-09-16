@@ -878,3 +878,84 @@ the `B-proposal-section` first attempt at `2026-09-16T06:42:11.983431+00:00Z`
 (marker_at=1013, marker='PF-2.13')`), now added to the enumeration above. The aggregate Arm
 A figures (`N_A = 3, M_A = 10`, 30.0%) were correct throughout this omission and are
 unaffected by this correction.
+
+## v1 disposition decision (03-15)
+
+**Decision.** MOD-04's v1 disposition is Option A — accept the measured residual for v1 and
+harden its disclosure, rather than schedule a fifth measurement round (Option B) or re-scope the
+project to permit a harness-specific runtime component (Option C). `WINDOWS.md` entry 8 stays
+`waived`, never `fixed`. `MOD-04` stays unchecked in `.planning/REQUIREMENTS.md`. This is an
+accepted, disclosed residual, not a satisfied requirement, in every one of the five records that
+track it.
+
+**Date.** 2026-09-16.
+
+**Provenance.** Decided by the project owner — a human — in an interactive
+`/gsd-execute-phase 03 --gaps-only` session. Not decided by the executing agent on the project's
+behalf. The human was shown all three options in `03-15-PLAN.md`'s `<options>` block verbatim,
+with their full pros and cons, including the ~30% figure that would be published in `README.md`
+and the fact that `MOD-04` would ship unsatisfied, and selected Option A
+(`accept-and-disclose`). Evidence presented at decision time: the four-round measurement history
+below; the anchored 03-12 figures (Arm A 3/10 = 30.0%, Arm B paired baseline 4/10 = 40.0%, delta
+-10.0pp); the fact that every non-conformant session that round scored `no-family` rather than
+the `rule-before-family` mode 03-11 targeted; and the architectural argument that route (a)'s
+named candidate (post-generation mechanical repair) is unavailable to an Agent Skill within the
+zero-dependency and cross-harness-portability constraints.
+
+**Evidence the decision was made on — four measurement rounds, three structurally distinct
+levers.**
+
+| Round | Lever | Recipe | Scorer | Figure |
+|---|---|---|---|---|
+| 03-05 | Instruction restatement — Write mode's source-material ask reworded so it never ends the turn; no-rule-before-family stated explicitly | `03-UAT.md`'s ad-hoc recipe | unanchored | 5/6, independently rechecked at 14/16 |
+| 03-07 | Five-value family line made unconditional, plus a self-check presence gate | `evals/conformance/run_conformance.py`, five fixtures, two models | unanchored | 16/20 both models; sonnet-5-only paired baseline 5/11 (45.5% -> 60.0% same-model) |
+| 03-11 (measured in 03-12) | Self-check ordering re-scan — re-scan the drafted response, confirm no `PF-`/`MC-` marker precedes the family line, repair before returning if one does | `evals/conformance/run_conformance.py`, five fixtures, `claude-sonnet-5` only | anchored (`FAMILY_LINE_WINDOW_CHARS=400`, post-CR-01) | Arm A 3/10 (30.0%) vs. paired Arm B baseline 4/10 (40.0%), a -10.0pp delta |
+
+The 03-05 rows and the unanchored half of the 03-07 row are optimistic ceilings, not precise
+measurements — every figure recorded before commit `7cde49a`'s `FAMILY_LINE_WINDOW_CHARS` fix
+shares CR-01's documented bias, always toward looking more conformant, never less (see "Scorer
+anchoring correction (CR-01)" above). They are not directly comparable to the fourth row, the
+only anchored measurement this project has produced, which is also the lowest figure recorded
+and a decline against its own paired same-instrument baseline. The decision above weighs the
+anchored row most heavily for exactly that reason.
+
+**Alternatives rejected.**
+
+- **Option B — schedule a fifth measurement round with a named different-in-kind lever.**
+  Rejected: no lever different in kind from the three already tried (restatement, presence gate,
+  self-check ordering re-scan) has been identified, and this project's own pre-committed
+  disposition rule already bars another rewording. A fifth round without a genuinely new lever
+  would spend live-session budget — already interrupted by usage limits twice in this phase —
+  re-measuring a family of intervention the evidence above says has plateaued under the bar.
+- **Option C — re-scope the project to permit a harness-specific runtime component.** Rejected
+  as a phase-level decision. Route (a)'s named candidate — a post-generation mechanical repair
+  applied before the response reaches the user, rather than trusting the model's own re-scan — is
+  out of scope for v1: a skill in the Agent Skills format is Markdown loaded into a model's
+  context, with no execution point after generation, and cannot intercept or rewrite the model's
+  own output. Any component that could (a Claude Code hook, a wrapper CLI, an output-style
+  post-processor) is a harness-specific runtime component, and would break two constraints this
+  project holds as load-bearing: zero dependencies with one folder and no install step, and
+  cross-harness portability including the claude.ai upload and paste-able system prompt channels,
+  neither of which can run a hook at all. This is recorded as a stated scope boundary the
+  project's own architecture forecloses, not as a lever that was tried and failed. Re-scoping to
+  permit it is a `ROADMAP.md`/`PROJECT.md` milestone decision, not something this plan
+  implements.
+
+**Not a satisfied requirement.** Accepting this residual for v1 does not close `MOD-04`.
+`.planning/REQUIREMENTS.md`'s `MOD-04` checkbox stays `[ ]`. `WINDOWS.md` entry 8 stays `waived`,
+never `fixed`. The structural half of `MOD-04` — the classification instruction, gated on both
+presence and ordering by two discrimination-proven `check_repo.py` codes
+(`skill-family-line-gate-missing`, `skill-family-order-gate-missing`) — is verified and
+mechanically held; what remains open is a model-behavior property no file-reading checker can
+hold, and this decision accepts it as a disclosed limitation rather than a defect still being
+actively chased.
+
+**Reopening condition.** This decision is reversible. It would be revisited if either: (a) the
+project's `ROADMAP.md`/`PROJECT.md` scope changes to permit a harness-specific distribution
+channel capable of running code after generation, making route (a)'s post-generation repair
+candidate buildable; or (b) a genuinely new lever — one that does not depend on the model
+correctly following a restated instruction or a self-check it performs on its own output — is
+identified and named before any further live-session budget is spent on it, per this plan's own
+prohibition against another instruction-wording round. Reopening `WINDOWS.md` entry 8 itself is a
+one-line ledger operation — editing its `status` field back to `open` with a reason naming the
+new evidence or scope change; nothing about this disposition is a permanent close.

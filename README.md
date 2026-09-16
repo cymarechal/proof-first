@@ -48,15 +48,22 @@ What does not exist yet:
 - Phase 5's skill-on/skill-off, multi-model, judge-scored persuasion benchmark (the pressure-test
   method exists; no observations are recorded yet).
 
-One measurement exists in this repository: a write-mode conformance measurement of whether a live
-session names its artifact family before drafting, reproducible from the committed, stdlib-only
-`evals/conformance/run_conformance.py` script. Its figures, exclusions, and caveats live in
-`evals/conformance/RESULTS-mod04.md` — read that file before trusting anything downstream of it.
-At minimum: both measured models are Anthropic-hosted, the harness gives no determinism guarantee
-(no temperature or seed flag), the two measurement arms have unequal sample sizes and are not
-directly comparable to each other or to earlier ad-hoc figures, and every figure recorded before
-this project's own scorer-anchoring fix (see that file's "Scorer anchoring correction (CR-01)"
-section) is an optimistic, unrecoverable ceiling.
+This repository discloses one measured v1 limitation: whether a live write-mode session names its
+artifact family before its first rule citation, reproducible from the committed, stdlib-only
+`evals/conformance/run_conformance.py` script. Measured 2026-09-16, under the anchored scorer,
+across five committed fixtures: `claude-sonnet-5` conformed in 3 of 10 scoreable sessions
+(30.0%), against a paired same-instrument baseline of the immediately prior skill version at 4 of
+10 (40.0%). This is a known, accepted, disclosed v1 limitation of live model behavior, not a
+quality or persuasion claim — the shipped classification instruction and its two mechanical gates
+(family-line presence, family-line ordering) are present and enforced in `SKILL.md` regardless of
+what any individual live session does. Full run-by-run figures, exclusions, and caveats live in
+`evals/conformance/RESULTS-mod04.md` — read that file before trusting anything downstream of it,
+including its "v1 disposition decision (03-15)" section recording why this residual is accepted
+for v1 rather than pursued further. At minimum: both measured models are Anthropic-hosted, the
+harness gives no determinism guarantee (no temperature or seed flag), and every figure recorded
+before this project's own scorer-anchoring fix (see that file's "Scorer anchoring correction
+(CR-01)" section) is an optimistic, unrecoverable ceiling, not comparable to the anchored figures
+above.
 
 This is not the persuasion benchmark. The skill-on/skill-off, multi-model, judge-scored benchmark
 that will eventually let this README state a headline persuasion or quality number is Phase 5's
