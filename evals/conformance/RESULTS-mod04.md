@@ -55,6 +55,71 @@ recorded above this section, including the two dated 2026-09-16 immediately belo
 predates this fix. Any run recorded after commit `7cde49a` is anchored; anything
 above it is not.
 
+## Pre-committed disposition rule (03-12)
+
+Committed 2026-09-16, before any session in this round has run. This section states the
+rule that decides what this round's anchored measurement means, fixed in advance so the
+disposition cannot be chosen after the number is known. Task 3 applies it mechanically to
+`WINDOWS.md` entry 8, `REQUIREMENTS.md` `MOD-04`, and `03-UAT.md` gap G-03-2.
+
+**Purpose.** `03-11` added a third, different-in-kind lever (an ordering gate the skill's
+self-check runs against its own drafted response) after two instruction-wording-only levers
+(`03-05`, `03-07`) each measured below the closure bar. Whether it worked is a fact to be
+discovered, not a conclusion to be arranged.
+
+**Arms.** Both arms are `claude-sonnet-5` only, five fixtures, two repeats each — ten
+planned sessions per arm (20 planned total). Opus-5 is deliberately not run: `03-08`
+measured it at 10/10 under the unanchored scorer, the entire measured residual lives in
+sonnet-5, and a second ten-session arm doubles the quota exposure that interrupted `03-08`
+twice. This is a disclosed scoping choice, not a silent omission, and it means neither arm
+speaks to opus-5's behaviour under the anchored scorer.
+
+- **Arm A** — the post-`03-11` skill, i.e. the repository working tree at HEAD.
+  Measured `SKILL.md` blob SHA (derived now, before any session runs):
+  `fadc48613f71fb29d55b42f70805225f9087a2b9`.
+- **Arm B** — the pre-`03-11` skill, materialised from git into a directory outside the
+  repository and passed as `--skill-src`. This is the paired baseline that makes any delta
+  attributable to `03-11`'s lever rather than to the anchoring change, the fixtures, or the
+  harness. Source commit: `c7c1df45e5042636565747f31d4eb5c38513dbac` (the last commit before
+  `03-11` Task 1 touched `skills/proof-first/SKILL.md` — confirmed via
+  `git log --oneline -- skills/proof-first/SKILL.md`, where `5ce0ebb` is `03-11`'s own Task 1
+  commit and `c7c1df4` is the commit immediately before it, `03-07`'s). Expected `SKILL.md`
+  blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a` (this is the same blob SHA
+  `03-08-PLAN.md`'s Arm 1 — post-03-07 skill — recorded above, since `03-11` is the only
+  plan between `03-07` and now that has touched `SKILL.md`).
+
+Let `N_A` / `M_A` be Arm A's conformant count over its scoreable count, and `N_B` / `M_B`
+Arm B's. `0.875` is the closure bar this project has used since `03-08`, carried forward
+unchanged.
+
+| Branch | Condition | `WINDOWS` entry 8 | `REQUIREMENTS` `MOD-04` | `03-UAT` G-03-2 |
+|---|---|---|---|---|
+| **1 — closed** | `M_A >= 8` and `N_A == M_A` | `fixed` | `[x]`, annotation states `N_A`/`M_A`, `N_B`/`M_B`, the model id, the five fixtures, both blob SHAs, and the reproduction command | `status: resolved`, evidence block gains the anchored measurement, prior figures retained |
+| **2 — improved, not closed** | `M_A >= 8`, `N_A < M_A`, `N_A/M_A >= 0.875` | stays `open`; description replaced with both anchored arms, the date, and the statement that a rate below 1.0 does not satisfy a truth that says "in every session" | stays `[ ]`, annotation states `N_A`/`M_A` and `N_B`/`M_B` alongside the prior figures | stays `partially_resolved`, evidence block gains the anchored measurement |
+| **3 — moved, under the bar** | `M_A >= 8`, `M_B >= 8`, `N_A/M_A < 0.875`, and `(N_A/M_A) - (N_B/M_B) >= 0.10` | stays `open`; description replaced with both arms and the measured delta, stating that a third lever produced real movement that still did not reach the bar | stays `[ ]`, annotation states both arms and the delta | stays `partially_resolved`, evidence block records all measurements in sequence |
+| **4 — did not move** | `M_A >= 8`, `M_B >= 8`, `N_A/M_A < 0.875`, and `(N_A/M_A) - (N_B/M_B) < 0.10` | `waived` via `gsd-tools windows waive 8 "<reason>"`, the reason stating the anchored rate, that three levers have now each been measured (`03-05` restatement, `03-07` family line plus presence gate, `03-11` ordering re-scan) and none reached the bar, and that the residual is accepted and disclosed rather than hidden | stays `[ ]`, annotation states both arms and records the residual as accepted-and-disclosed, explicitly NOT as satisfied | stays `partially_resolved`, evidence block records all measurements plus the acceptance |
+| **5 — under-sampled** | `M_A < 8` or `M_B < 8` after the attempt cap | stays `open`; description states the achieved `M_A` and `M_B`, why the cap was hit, and that no rate is claimed at this sample size | stays `[ ]`, annotation states the attempt and the shortfall with the achieved counts | stays `partially_resolved`, evidence block records the attempt and the shortfall |
+| **6 — harness unavailable** | Task 2's `<precondition>` fails | stays `open`; description gains one line naming the blocker and the date | stays `[ ]`, annotation gains one line naming the blocker | unchanged apart from a blocker line |
+
+**Branch 4 is an acceptance of a residual, not a satisfaction of the requirement.** `MOD-04`
+stays `[ ]` in every branch except 1. Waiving `WINDOWS.md` entry 8 records that the project
+has looked at the number, named it, and chosen to stop spending live-session budget on it —
+a decision that stays reversible by re-opening the entry.
+
+**Attempt cap:** 30 live invocations total across both arms (20 planned plus up to 10
+retries). On reaching the cap, stop and take Branch 5 with whatever `M_A` and `M_B` were
+achieved.
+
+**The rule is not revisable after the number is known.** If the measured figures land in a
+way this table did not anticipate, that fact is recorded and the nearest branch is applied
+as written — the branch table itself is never rewritten, no branch is added, and no
+threshold is reinterpreted after seeing the data.
+
+In every branch, `AUD-01` and `ART-01` through `ART-04` stay `[ ]` and their annotations are
+touched only to keep them accurate. This plan performs no human paraphrase read.
+
+No session in this round has yet run.
+
 ## Instrument-proving run (03-06-PLAN.md Task 1)
 
 One real `claude -p` write-mode session, driven by this committed script against the
