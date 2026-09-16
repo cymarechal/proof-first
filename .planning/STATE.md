@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: Completeness Audit & Artifact Patterns
 status: executing
-stopped_at: "Completed 03-12-PLAN.md (anchored MOD-04 remeasurement: Branch 4, WINDOWS entry 8 waived)"
-last_updated: "2026-09-16T10:34:16.266Z"
+stopped_at: Completed 03-13-PLAN.md (instrument durability fix CR-01, Arm A enumeration correction WR-01)
+last_updated: "2026-09-16T10:42:39.756Z"
 last_activity: 2026-09-16
 last_activity_desc: Phase 03 execution started
-state_head: 8b51de8e6b34001a71e3102b9908a4661f780092
+state_head: dc8f899c23bbe0d4abb2e10c3f15543680ef5244
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 31
-  completed_plans: 28
+  completed_plans: 29
   percent: 17
 ---
 
@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03 (Completeness Audit & Artifact Patterns) — EXECUTING
-Plan: 1 of 15
-Status: Executing Phase 03
+Plan: 2 of 15
+Status: Ready to execute
 Last activity: 2026-09-16 — Phase 03 execution started
 
 Progress: [██░░░░░░░░] 17%
@@ -86,6 +86,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 03-completeness-audit-artifact-patterns P10 | 8min | 2 tasks | 2 files |
 | Phase 03 P11 | 20 min | 2 tasks | 2 files |
 | Phase 03 P12 | ~3h (interrupted/resumed) | 3 tasks | 4 files |
+| Phase 03-completeness-audit-artifact-patterns P13 | 10min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -146,6 +147,7 @@ Recent decisions affecting current work:
 - [Phase 03-completeness-audit-artifact-patterns]: 03-10: Closed CR-02 (README claimed "no measured claim is published" while evals/conformance/RESULTS-mod04.md carried two committed measurement arms). Added readme-results-pointer-missing, a discrimination-proven check_repo.py code (29 -> 30) that fails the build if README.md ever again stops pointing at the committed MOD-04 measurement; rewrote README's Status section, layout tree, and inventory to be true as of this phase's commits, with no percentage figure reproduced and the still-unrun Phase 5 persuasion benchmark named distinctly from the MOD-04 conformance measurement. This plan closes no requirement -- MOD-04 stays [ ], WINDOWS.md entry 8 stays open.
 - [Phase 03]: 03-11: Extended SKILL.md's self-check first pass from a presence gate to an ordering gate (re-scan the drafted response, confirm no PF-/MC- marker precedes the artifact-family line, repair before returning), paid for by deleting four named rationale clauses, holding 177 tokens of headroom. Added skill-family-order-gate-missing (31st discrimination-proven check_repo.py code). MOD-04 stays [ ] -- this plan implements a lever; 03-12 measures it.
 - [Phase 03]: 03-12: Anchored MOD-04 remeasurement selected Branch 4 by arithmetic -- Arm A (post-03-11 ordering-gate lever) 3/10 (30.0%) vs Arm B (paired pre-03-11 baseline) 4/10 (40.0%), a -10.0pp delta. WINDOWS.md entry 8 waived as an accepted, disclosed residual (not fixed); MOD-04 stays [ ]. Written disposition states the true finding (a decline, not flat movement) rather than reproducing the branch template's "did not move" phrase, per 03-08's precedent, while disclosing the delta is within plausible sampling noise at n=10 per arm.
+- [Phase 03]: 03-13: run_conformance.py made per-session durable (run_matrix()/_write_result_line(), closing 03-REVIEW.md CR-01); RESULTS-mod04.md's Arm A no-family enumeration corrected to name all 7 sessions (WR-01) and a dated durability-fix section added. No figure changes, MOD-04 stays unchecked.
 
 ### Pending Todos
 
@@ -170,6 +172,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-16T09:21:50.279Z
-Stopped at: Completed 03-12-PLAN.md (anchored MOD-04 remeasurement: Branch 4, WINDOWS entry 8 waived)
+Last session: 2026-09-16T10:42:30.340Z
+Stopped at: Completed 03-13-PLAN.md (instrument durability fix CR-01, Arm A enumeration correction WR-01)
 Resume file: None

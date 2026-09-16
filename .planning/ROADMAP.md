@@ -167,7 +167,7 @@ Plans:
 
 **Wave 11** *(gap closure after the fourth `03-VERIFICATION.md` returned `gaps_found`; run with `/gsd-execute-phase 03 --gaps-only`)*
 
-- [ ] 03-13-PLAN.md — Tracer: the Critical instrument defect, `run_conformance.py`'s whole-run in-memory batching replaced by a per-session write-and-flush through an extracted `run_matrix()`, proven offline by a self-test case that interrupts a matrix part-way through and finds the earlier lines already on disk, plus the Arm A no-family enumeration corrected against the run blocks it claims to be re-derivable from
+- [x] 03-13-PLAN.md — Tracer: the Critical instrument defect, `run_conformance.py`'s whole-run in-memory batching replaced by a per-session write-and-flush through an extracted `run_matrix()`, proven offline by a self-test case that interrupts a matrix part-way through and finds the earlier lines already on disk, plus the Arm A no-family enumeration corrected against the run blocks it claims to be re-derivable from
 
 **Wave 12** *(blocked on Wave 11 completion)*
 
