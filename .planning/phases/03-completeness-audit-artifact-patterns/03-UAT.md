@@ -152,6 +152,28 @@ blocked: 0
     (03-05, 03-07) have now been tried and measured twice under two different recipes;
     both times the rate stayed under the closure bar this rule uses. MOD-04 stays `[ ]`.
     Full run-by-run evidence: evals/conformance/RESULTS-mod04.md.
+
+    03-12-PLAN.md anchored remeasurement (2026-09-16), the first MOD-04 measurement
+    produced entirely under 03-09's anchoring fix (FAMILY_LINE_WINDOW_CHARS=400) --
+    every figure here is a precise measurement, not an optimistic ceiling like the
+    03-06/03-08 figures immediately above. Arm A -- post-03-11 skill (the ordering-gate
+    lever under test, blob fadc48613f71fb29d55b42f70805225f9087a2b9): 3 of 10 scoreable
+    claude-sonnet-5 sessions conformant (30.0%). Arm B -- paired same-instrument
+    baseline, pre-03-11 skill materialised from commit
+    c7c1df45e5042636565747f31d4eb5c38513dbac (blob
+    9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a): 4 of 10 (40.0%). Delta =
+    (N_A/M_A) - (N_B/M_B) = -10.0 percentage points, below the pre-committed rule's
+    0.10 improvement threshold, selecting Branch 4 ("did not move"): the honest
+    finding is a decline, not flat movement, though at n=10 per arm this sits within
+    plausible sampling noise for a true rate difference of zero. Every non-conformant
+    session this round scored no-family (no family phrase within the anchored
+    400-character window at all); zero scored rule-before-family, a different residual
+    shape from every earlier, unanchored measurement of this gap. Three levers have
+    now each been measured (03-05 restatement, 03-07 family line plus presence gate,
+    03-11 ordering re-scan) and none reached the 87.5% bar. Per Branch 4, WINDOWS.md
+    entry 8 is waived (accepted and disclosed, not fixed); MOD-04 stays `[ ]`.
+    Full run-by-run evidence and reproduction command: evals/conformance/RESULTS-mod04.md,
+    section '## Anchored remeasurement result (03-12)'.
   reason: "User reported: 14 of 15 live sessions conformed; one write-mode session cited PF-2.17, PF-2.15 and PF-1.17 before stating any family, and stopped to await a 'proceed' reply instead of drafting"
   severity: major
   test: 2

@@ -725,3 +725,114 @@ Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
 
 conformant 0 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Anchored remeasurement result (03-12)
+
+Computed by hand from the 23 run blocks appended above between the pre-committed-rule commit
+`0f47e8b` and this section's own commit — re-derivable by anyone via
+`git diff 0f47e8b..<this-commit> -- evals/conformance/RESULTS-mod04.md` without re-running
+anything. This is the first MOD-04 measurement produced entirely under `03-09`'s anchored
+scorer (`FAMILY_LINE_WINDOW_CHARS=400`, both offsets computed against the same stripped
+string) — every figure below is a precise measurement, not an optimistic ceiling, unlike
+every number recorded above the CR-01 banner at the top of this file.
+
+Reproduction command (Arm A):
+`python3 evals/conformance/run_conformance.py --fixtures <fixture> --models claude-sonnet-5 --repeats 1 --timeout 480 --transcript-dir <dir>`
+Reproduction command (Arm B): the same command plus
+`--skill-src <materialised-pre-03-11-skill-dir>`, where that directory is produced by
+`git archive c7c1df45e5042636565747f31d4eb5c38513dbac skills/proof-first | tar -x -C <dir>`.
+
+### Arm A -- post-03-11 skill (the repository working tree at HEAD when this round ran)
+
+Blob SHA `fadc48613f71fb29d55b42f70805225f9087a2b9`, model `claude-sonnet-5`, five fixtures
+(A-rfp-answer, B-proposal-section, C-exec-summary, D-demo-discovery, E-ambiguous), two
+repeats planned per fixture = 10 planned sessions.
+
+12 attempted (10 planned + 2 retries after timeout exclusions), 2 unscoreable (both
+`reason=timeout`: `A-rfp-answer` first attempt, `B-proposal-section` first attempt; both
+retried successfully and the retries are counted below), 10 scoreable:
+- conformant: 3 (`B-proposal-section` retry, `D-demo-discovery` first attempt,
+  `E-ambiguous` first attempt)
+- no-family: 7 (`A-rfp-answer` x2, `C-exec-summary` x2, `D-demo-discovery` second attempt,
+  `E-ambiguous` second attempt)
+- rule-before-family: 0
+
+**N_A = 3, M_A = 10. N_A/M_A = 30.0%.**
+
+### Arm B -- pre-03-11 skill (materialised from commit `c7c1df45e5042636565747f31d4eb5c38513dbac`, the last commit before `03-11` Task 1)
+
+Blob SHA `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a` (the same blob `03-08-PLAN.md`'s Arm 1
+already recorded as the post-03-07 skill — `03-11` is the only plan that touched
+`skills/proof-first/SKILL.md` between then and this round). Same model, fixtures, and
+recipe as Arm A.
+
+11 attempted (10 planned + 1 retry after a timeout exclusion), 1 unscoreable
+(`reason=timeout`, `A-rfp-answer` first attempt, retried successfully), 10 scoreable:
+- conformant: 4 (`A-rfp-answer` retry, `C-exec-summary` x2, `E-ambiguous` first attempt)
+- no-family: 6 (`A-rfp-answer` first attempt, `B-proposal-section` x2, `D-demo-discovery`
+  x2, `E-ambiguous` second attempt)
+- rule-before-family: 0
+
+**N_B = 4, M_B = 10. N_B/M_B = 40.0%.**
+
+### Branch selection
+
+`M_A = 10 >= 8` and `M_B = 10 >= 8`, so neither arm is under-sampled (Branch 5 does not
+fire) and the precondition passed (Branch 6 does not fire).
+
+- Branch 1 (`M_A >= 8` and `N_A == M_A`): `3 != 10`. Does not fire.
+- Branch 2 (`N_A/M_A >= 0.875`): `0.30 < 0.875`. Does not fire.
+- Branch 3 (`N_A/M_A < 0.875` and `(N_A/M_A) - (N_B/M_B) >= 0.10`): `0.30 < 0.875` holds, but
+  `(0.30 - 0.40) = -0.10`, which is **not** `>= 0.10`. Does not fire.
+- Branch 4 (`N_A/M_A < 0.875` and `(N_A/M_A) - (N_B/M_B) < 0.10`): `0.30 < 0.875` holds, and
+  `-0.10 < 0.10` holds. **Fires.**
+
+**Branch 4 selected the disposition, by the condition `(N_A/M_A) - (N_B/M_B) < 0.10` with the
+computed delta of -0.10.**
+
+### The finding this round's evidence actually shows
+
+Branch 4's table label is "did not move." The measured delta is not zero movement — it is a
+10.0-percentage-point *decline*: Arm A (post-`03-11`, with the ordering-gate lever) scored
+30.0% (3/10), ten points below Arm B (pre-`03-11`, the paired same-instrument baseline) at
+40.0% (4/10). Per `03-08-PLAN.md`'s precedent (honour the branch's mechanical selection,
+write the true finding where the evidence contradicts the template phrase), this section
+states that plainly: this round's own paired evidence does not show the ordering lever
+improving conformance under the anchored scorer, and the point estimate moved in the
+opposite direction from what `03-11` intended. At `n=10` per arm, a single-session swing is
+roughly a 10-point shift, so this delta is well within what sampling noise alone could
+produce — it is not read as proof the lever made things worse, only as proof it did not
+demonstrably make things better, which is exactly what Branch 4 (not Branch 2 or 3) is for.
+
+Zero sessions in either arm scored `rule-before-family` — every non-conformant session this
+round scored `no-family` (no family phrase found anywhere in the first 400 characters at
+all, not merely after a rule marker). This is a different residual shape from the
+unanchored-scorer measurements above the CR-01 banner, where `rule-before-family` was the
+dominant non-conformant verdict and genuine `no-family` was rare or absent. The anchored
+window is doing exactly the job `03-09` built it to do: several of these `no-family`
+verdicts have a `marker_at` deep in the transcript (up to offset 1176), meaning the model
+did cite a rule and, in at least some of these transcripts, may have named a family
+somewhere past the 400-char window — the unbounded pre-CR-01 scorer would very likely have
+scored several of these `conformant` or `rule-before-family` instead. That upstream/downstream
+shift in verdict composition is itself evidence of the bias CR-01 fixed, not a separate
+finding needing its own disposition.
+
+### Caveats (carried forward, plus this round's own)
+
+- Both arms are `claude-sonnet-5` only; opus-5 was deliberately not run this round (see the
+  arm definitions in `## Pre-committed disposition rule (03-12)` above) — this section says
+  nothing about opus-5's behaviour under the anchored scorer.
+- `claude -p` exposes no temperature or seed flag; a repeat can differ, and at `n=10` per arm
+  the 10-point delta between arms is within plausible sampling noise for a true rate
+  difference of zero.
+- These figures are NOT directly comparable to 5/6 or 14/16 (`03-05`'s UAT recipe) or to
+  16/20 and 5/11 (this same instrument, `03-08`'s measurement, BEFORE the CR-01 anchoring
+  fix). All four earlier figures are optimistic ceilings from an unbounded family search;
+  this round's 30.0%/40.0% are the first MOD-04 figures produced end-to-end under the
+  anchored scorer and are markedly lower, consistent with CR-01's documented bias direction
+  (toward looking MORE conformant, never less).
+- Every exclusion in both arms was a `claude -p` timeout (`reason=timeout`); no exclusion
+  this round was a nonzero exit or a network failure. Arm A's exclusion rate was 2 of 12
+  attempted (16.7%); Arm B's was 1 of 11 attempted (9.1%).
+- `run_conformance.py` was not modified during this measurement (verified: byte-identical to
+  its state at the end of `03-09`, commit `7cde49a`, via `git diff 5ce0ebb..HEAD -- evals/conformance/run_conformance.py` producing no output).
