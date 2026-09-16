@@ -118,7 +118,7 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 8/12 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`, 4 gap-closure plans added after the third re-verification returned `gaps_found` with two Critical code-review findings)
+**Plans**: 9/12 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`, 4 gap-closure plans added after the third re-verification returned `gaps_found` with two Critical code-review findings)
 
 Plans:
 
@@ -154,7 +154,7 @@ Plans:
 
 **Wave 8** *(gap closure after the third `03-VERIFICATION.md` returned `gaps_found`; run with `/gsd-execute-phase 03 --gaps-only`)*
 
-- [ ] 03-09-PLAN.md — Tracer: CR-01, anchor `score_transcript()`'s family search to the prefix window where SKILL.md's write-mode contract places the family line, proven in both directions by two new committed transcript fixtures, plus a standing disclosure that every pre-fix figure is an unrecoverable optimistic ceiling — the hard upstream gate on any MOD-04 remeasurement
+- [x] 03-09-PLAN.md — Tracer: CR-01, anchor `score_transcript()`'s family search to the prefix window where SKILL.md's write-mode contract places the family line, proven in both directions by two new committed transcript fixtures, plus a standing disclosure that every pre-fix figure is an unrecoverable optimistic ceiling — the hard upstream gate on any MOD-04 remeasurement
 - [ ] 03-10-PLAN.md — Tracer: CR-02, `readme-results-pointer-missing` (29 → 30 codes) so a README that stops pointing at the committed measurement fails the repo's own gate, then the Status section, layout tree and inventory made true about `evals/conformance/`
 
 **Wave 9** *(blocked on Wave 8 completion)*
@@ -216,7 +216,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
-| 3. Completeness Audit & Artifact Patterns | 8/8 | In Progress|  |
+| 3. Completeness Audit & Artifact Patterns | 9/12 | In Progress|  |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
