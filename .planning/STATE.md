@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: Completeness Audit & Artifact Patterns
 status: executing
-stopped_at: "Completed 03-07-PLAN.md (gap closure: family-line levers, last source label, 29 discrimination-proven codes)"
-last_updated: "2026-09-15T03:08:56.592Z"
+stopped_at: "Completed 03-08-PLAN.md (MOD-04 conformance measurement: 16/20 post-03-07, 5/11 paired baseline, Branch 3, stays open)"
+last_updated: "2026-09-16T04:42:27.787Z"
 last_activity: 2026-09-15
 last_activity_desc: Phase 03 execution started
-state_head: 904b5e724c14e13719a3fd744ae805be352d4e67
+state_head: 20ebefbe2415f3c216819d1d4d05b86b4ac39373
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 24
-  completed_plans: 23
+  completed_plans: 24
   percent: 17
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03 (Completeness Audit & Artifact Patterns) — EXECUTING
-Plan: 3 of 8
+Plan: 4 of 8
 Status: Ready to execute
 Last activity: 2026-09-15 — Phase 03 execution started
 
@@ -81,6 +81,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 03 P05 | ~35m | 3 tasks | 3 files |
 | Phase 03-completeness-audit-artifact-patterns P06 | 38min | 2 tasks | 11 files |
 | Phase 03 P07 | 25min | 3 tasks | 5 files |
+| Phase 03 P08 | ~22h wall-clock (interrupted) | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,8 @@ Recent decisions affecting current work:
 - [Phase 03]: G-03-5 closed: six MC bodies (MC-1, MC-6, MC-16, MC-21, MC-26, MC-31) replaced source dimension labels (economic buyer, buyer's decision process, the paper process, pain, champion) with each block's own document-facing heading phrase
 - [Phase 03]: [Phase 03]: 03-06: Built evals/conformance/run_conformance.py -- a stdlib-only, self-testing scorer that turns 03-UAT.md's ad-hoc MOD-04 recipe into one committed command, plus five weak-draft fixtures and three transcript fixtures proving discrimination from committed files. One real live claude -p session was driven end-to-end against the shipped skill, scoring rule-before-family -- a genuine live data point consistent with WINDOWS.md entry 8's existing residual, not a new finding. 03-08-PLAN.md owns the actual MOD-04 measurement and closure decision.
 - [Phase 03]: 03-07: family-line made unconditional in SKILL.md via two levers (five-value promotion, self-check gate) and two new discrimination-proven check_repo.py codes (27->29); MOD-04 stays [ ], WINDOWS.md entries 7/9 fixed, entry 8 left open for 03-08's measurement.
+- [Phase 03]: 03-08: MOD-04 measured post-03-07 at 16/20 (80.0%, both models); a same-instrument sonnet-5-only paired baseline against pre-03-07 measured 5/11 (45.5%). Same-model comparison shows a real improvement (45.5%->60.0%) still short of the 87.5% closure bar. Branch 3 selected per the pre-committed rule; MOD-04 stays [ ], disposition applied consistently across WINDOWS.md entry 8, REQUIREMENTS.md, and 03-UAT.md.
+- [Phase 03]: 03-08: two real bugs found and fixed in evals/conformance/run_conformance.py -- a nonzero-exit claude -p session was scored no-family instead of unscoreable (root cause of a fully contaminated 20-session run, kept invalidated not deleted), and the measured SKILL.md blob SHA ignored --skill-src. Both fixed and self-test-covered before the disposition-determining data was collected.
 
 ### Pending Todos
 
@@ -159,6 +162,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-15T03:08:56.443Z
-Stopped at: Completed 03-07-PLAN.md (gap closure: family-line levers, last source label, 29 discrimination-proven codes)
+Last session: 2026-09-16T04:42:27.643Z
+Stopped at: Completed 03-08-PLAN.md (MOD-04 conformance measurement: 16/20 post-03-07, 5/11 paired baseline, Branch 3, stays open)
 Resume file: None

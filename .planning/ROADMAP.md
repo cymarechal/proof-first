@@ -118,7 +118,7 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 7/8 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`)
+**Plans**: 8/8 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`)
 
 Plans:
 
@@ -150,7 +150,7 @@ Plans:
 
 **Wave 7** *(blocked on Wave 6 completion)*
 
-- [ ] 03-08-PLAN.md — The measurement that decides MOD-04: at least 16 scoreable live write-mode sessions across two models and five fixtures against the edited skill, then a disposition applied to WINDOWS entry 8, REQUIREMENTS.md and 03-UAT.md under a decision rule committed before the number is known
+- [x] 03-08-PLAN.md — The measurement that decides MOD-04: at least 16 scoreable live write-mode sessions across two models and five fixtures against the edited skill, then a disposition applied to WINDOWS entry 8, REQUIREMENTS.md and 03-UAT.md under a decision rule committed before the number is known
 
 ### Phase 4: Distribution & Worked Examples
 
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
-| 3. Completeness Audit & Artifact Patterns | 7/8 | In Progress|  |
+| 3. Completeness Audit & Artifact Patterns | 8/8 | In Progress|  |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
