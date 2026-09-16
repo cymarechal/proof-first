@@ -619,3 +619,10 @@ Measured SKILL.md blob SHA: `fadc48613f71fb29d55b42f70805225f9087a2b9`
 
 conformant 0 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-16T07:14:12.088281+00:00Z
+Measured SKILL.md blob SHA: `fadc48613f71fb29d55b42f70805225f9087a2b9`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=D-demo-discovery | repeat=0 | verdict=conformant | evidence=family 'Demo and discovery material' at offset 0 (window=400), marker_at=1059
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
