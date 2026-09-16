@@ -690,3 +690,10 @@ Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
 
 conformant 1 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-16T08:13:31.662960+00:00Z
+Measured SKILL.md blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=C-exec-summary | repeat=0 | verdict=conformant | evidence=family 'executive summary' at offset 73 (window=400), marker_at=234
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
