@@ -291,3 +291,39 @@ Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
 
 conformant 0 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:43:12.859666+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=C-exec-summary | repeat=0 | verdict=conformant | evidence=family 'executive summary' at offset 465, marker_at=840
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:46:26.690851+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=C-exec-summary | repeat=0 | verdict=rule-before-family | evidence=marker 'PF-3.3' at offset 189 precedes family 'executive summary' at offset 398
+
+conformant 0 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:49:25.740184+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=D-demo-discovery | repeat=0 | verdict=conformant | evidence=family 'demo or discovery material' at offset 471, marker_at=723
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:53:18.150768+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=D-demo-discovery | repeat=0 | verdict=conformant | evidence=family 'Demo and discovery material' at offset 762, marker_at=1025
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-15T09:59:01.374030+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-15 | model=claude-sonnet-5 | fixture=E-ambiguous | repeat=0 | verdict=unscoreable | reason=nonzero exit 1 (empty stderr)
+
+conformant 0 of 0 scoreable sessions
+unscoreable 1 sessions
+  - excluded: model=claude-sonnet-5 fixture=E-ambiguous repeat=0 reason=nonzero exit 1 (empty stderr)
