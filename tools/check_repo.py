@@ -251,6 +251,28 @@ Violation codes implemented in this file:
                       evals/conformance/run_conformance.py is the
                       instrument for that. Its passing does not mean MOD-04
                       is mechanically verified.
+  skill-family-order-gate-missing - a skills/*/SKILL.md's '## Self-check
+                      before delivering' section is present but its body
+                      does not name both anchors the ordering gate
+                      requires: the literal 're-scan' and the literal
+                      'before any rule marker', matched
+                      case-insensitively. This is the sibling of
+                      skill-family-line-gate-missing, extended from
+                      presence of the family line to its position ahead
+                      of any rule marker -- the residual failure mode
+                      03-08 measured (rule-before-family). Fires once per
+                      missing anchor, naming the file and which anchor is
+                      missing. A SKILL.md with no self-check section at
+                      all yields no violations -- the same declared
+                      ceiling its sibling uses, required so every
+                      pre-existing synthetic _good_skill() fixture stays
+                      silent. Declared ceiling: this check asserts the
+                      instruction text is present. It cannot assert a
+                      live session obeys it -- that is a model-behaviour
+                      property no file-reading checker observes;
+                      evals/conformance/run_conformance.py is the
+                      instrument for that. Its passing does not mean
+                      MOD-04 is mechanically verified.
   source-label-in-skill-content - a file matching SKILL_GLOB, or a
                       references/*.md beside it, contains a frozen
                       source-coined dimension label from
@@ -1400,6 +1422,50 @@ def check_skill_family_line_gate(repo_root):
     return violations
 
 
+def check_skill_family_order_gate(repo_root):
+    """For each installed skill folder (a path matching SKILL_GLOB) whose
+    '## Self-check before delivering' section is present, require that
+    section's body to name both anchors the ordering gate depends on: the
+    literal 're-scan' and the literal 'before any rule marker', matched
+    case-insensitively. This is the sibling of
+    check_skill_family_line_gate(), extended from presence of the family
+    line to its position ahead of any rule marker -- the residual failure
+    mode (rule-before-family) 03-08 measured after the presence-only gate
+    was already satisfied. Fires once per missing anchor, naming the file
+    and which anchor is missing.
+
+    Return no violations for a skill folder with no self-check section at
+    all -- the same declared ceiling its sibling uses, required so every
+    pre-existing synthetic _good_skill() fixture (none of which defines
+    this section) stays silent and the whole suite is not disabled.
+
+    Declared ceiling: this check asserts the instruction text is present.
+    It cannot assert a live session obeys it -- that is a model-behaviour
+    property no file-reading checker observes;
+    evals/conformance/run_conformance.py is the instrument for that. Its
+    passing does not mean MOD-04 is mechanically verified."""
+    violations = []
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        rel = skill_path.relative_to(repo_root)
+        text = strip_fences(skill_path.read_text(encoding='utf-8'))
+        sections = split_sections(text)
+        body = sections.get('Self-check before delivering')
+        if body is None:
+            continue
+        body_lower = body.lower()
+        missing = []
+        if 're-scan' not in body_lower:
+            missing.append("the 're-scan' instruction")
+        if 'before any rule marker' not in body_lower:
+            missing.append("the 'before any rule marker' ordering phrase")
+        for item in missing:
+            violations.append((str(rel), (
+                f"skill-family-order-gate-missing {rel}'s self-check section is present but "
+                f"is missing {item}, an anchor the ordering gate requires"
+            )))
+    return violations
+
+
 SOURCE_COINED_LABELS = (
     # Frozen list (03-07 GAP B). Seven entries: four two-word labels, two
     # single-word labels, and one single-word label ('pain') matched with
@@ -1543,7 +1609,7 @@ CATALOG_CHECK_CODES = [
     'catalog-opening-rule-count', 'skill-too-long', 'skill-token-budget-exceeded',
     'mc-catalog-id-drift', 'mc-rule-in-skill', 'mc-count-unstated', 'mc-count-mismatch',
     'artifact-family-section-missing', 'skill-family-line-gate-missing',
-    'source-label-in-skill-content',
+    'skill-family-order-gate-missing', 'source-label-in-skill-content',
 ]
 
 
@@ -1563,6 +1629,7 @@ def run_catalog_checks(repo_root):
     violations += check_mc_count(data['allocated'], repo_root, data['mc_ranges'])
     violations += check_artifact_family_sections(repo_root)
     violations += check_skill_family_line_gate(repo_root)
+    violations += check_skill_family_order_gate(repo_root)
     violations += check_source_label_in_skill_content(repo_root)
     return violations
 
@@ -1956,14 +2023,48 @@ def _mutate_artifact_family_section_missing(root):
 
 
 def _mutate_skill_family_line_gate_missing(root):
-    """Delete the family-line pass item from the copied real SKILL.md's
-    self-check section, leaving the section heading and the other two
-    passes in place -- the mutation targets exactly what the check
-    reads."""
+    """Delete the self-check section's first numbered pass item from the
+    copied real SKILL.md -- the pass carrying the two anchors this check
+    reads (the artifact-family phrase, the No family fits value) --
+    leaving the section heading and the other two passes in place. Matched
+    by its '1. ' list position rather than its pass name, so a 03-11-style
+    rename of that pass (Family-line -> Family-order) does not silently
+    stop this mutation from targeting it; the check itself reads anchors
+    in the section body, not the pass's name."""
     path = root / 'skills' / 'proof-first' / 'SKILL.md'
     lines = path.read_text(encoding='utf-8').splitlines()
-    lines = [l for l in lines if not l.strip().startswith('1. Family-line pass')]
+    lines = [l for l in lines if not l.strip().startswith('1. ')]
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_skill_family_order_gate_missing(root):
+    """Replace the copied real SKILL.md's ordering-pass wording with the
+    pre-03-11 presence-only wording -- deleting the 're-scan' /
+    'before any rule marker' anchors this check reads while leaving the
+    artifact-family phrase and the No family fits value (the sibling
+    check's own anchors) and the other two passes untouched. Isolates
+    exactly the ordering gate this mutation targets."""
+    path = root / 'skills' / 'proof-first' / 'SKILL.md'
+    text = path.read_text(encoding='utf-8')
+    ordered_pass = (
+        "1. Family-order pass (mandatory): re-scan the response you just drafted, "
+        "from its first character, before returning it, and confirm the line "
+        "naming the artifact family — or stating **No family fits:** — stands "
+        "before any rule marker, meaning no `PF-` or `MC-` citation appears "
+        "earlier in the response. When one does, move the family line to the "
+        "top and re-check before returning."
+    )
+    presence_only_pass = (
+        "1. Family-line pass (mandatory): confirm the response's first line "
+        "names the artifact family or states **No family fits:** — a response "
+        "failing this is not ready to return."
+    )
+    assert ordered_pass in text, (
+        "skill-family-order-gate-missing mutation: ordering pass text not found "
+        "in the real SKILL.md -- has the self-check section wording changed?"
+    )
+    text = text.replace(ordered_pass, presence_only_pass)
+    path.write_text(text, encoding='utf-8')
 
 
 def _mutate_source_label_in_skill_content(root):
@@ -2025,6 +2126,7 @@ MUTATIONS = [
     ('mc-count-mismatch', "change the checks number in the real skills/proof-first/references/completeness-audit.md's stated-count line", _mutate_mc_count_mismatch),
     ('artifact-family-section-missing', "delete the '## Solution proposal' heading from the real skills/proof-first/references/artifact-patterns.md, leaving its body in place", _mutate_artifact_family_section_missing),
     ('skill-family-line-gate-missing', "delete the family-line pass item from the real skills/proof-first/SKILL.md's self-check section, leaving the heading and other two passes in place", _mutate_skill_family_line_gate_missing),
+    ('skill-family-order-gate-missing', "replace the ordering pass wording with pre-03-11 presence-only wording in the real skills/proof-first/SKILL.md's self-check section, leaving the family-line presence anchors and other two passes in place", _mutate_skill_family_order_gate_missing),
     ('source-label-in-skill-content', "insert the frozen 'economic buyer' label into the real skills/proof-first/references/artifact-patterns.md", _mutate_source_label_in_skill_content),
 ]
 
@@ -2766,6 +2868,33 @@ def _bad_skill_family_gate():
     )
 
 
+def _good_skill_family_order_gate():
+    """A SKILL.md whose self-check section names both anchors the
+    ordering gate requires -- the silent case for
+    skill-family-order-gate-missing."""
+    return (
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "## Self-check before delivering\n\n"
+        "1. Family-order pass: re-scan the drafted response and confirm the "
+        "artifact family line stands before any rule marker; states "
+        "**No family fits:** otherwise.\n"
+    )
+
+
+def _bad_skill_family_order_gate():
+    """A SKILL.md whose self-check section is present, and even names
+    both of skill-family-line-gate-missing's own anchors, but names
+    neither ordering anchor -- the firing case for
+    skill-family-order-gate-missing, isolating the ordering check from
+    its presence-only sibling."""
+    return (
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "## Self-check before delivering\n\n"
+        "1. Family-line pass: confirm the first line names the artifact family "
+        "or states **No family fits:**.\n"
+    )
+
+
 def _artifact_patterns_with_source_label():
     """_good_artifact_patterns()'s content, with one frozen source-coined
     label ('economic buyer') inserted -- the firing case for
@@ -2900,6 +3029,9 @@ def self_test():
 
         family_good_root = tmp_root / 'family_good'
         family_bad_root = tmp_root / 'family_bad'
+
+        family_order_good_root = tmp_root / 'family_order_good'
+        family_order_bad_root = tmp_root / 'family_order_bad'
 
         source_label_bad_root = tmp_root / 'source_label_bad'
         source_label_metric_root = tmp_root / 'source_label_metric'
@@ -3088,6 +3220,22 @@ def self_test():
         _write(family_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _bad_skill_family_gate())
         _write(family_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
 
+        # Family-order gate fixtures (skill-family-order-gate-missing,
+        # 03-11): family_order_good_root's self-check section names both
+        # ordering anchors ('re-scan', 'before any rule marker');
+        # family_order_bad_root names neither ordering anchor even
+        # though it names both of the sibling presence-only gate's
+        # anchors, isolating this new code from
+        # skill-family-line-gate-missing (which must stay silent on
+        # family_order_bad_root).
+        _write(family_order_good_root / 'NUMBERING.md', _good_numbering())
+        _write(family_order_good_root / 'skills' / 'proof-first' / 'SKILL.md', _good_skill_family_order_gate())
+        _write(family_order_good_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+
+        _write(family_order_bad_root / 'NUMBERING.md', _good_numbering())
+        _write(family_order_bad_root / 'skills' / 'proof-first' / 'SKILL.md', _bad_skill_family_order_gate())
+        _write(family_order_bad_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
+
         # Source-label fixtures (source-label-in-skill-content, 03-07
         # GAP B): the silent case reuses artifact_good_root's clean
         # artifact-patterns.md (asserted below); source_label_bad_root
@@ -3148,6 +3296,9 @@ def self_test():
         family_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_good_root)}
         family_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_bad_root)}
 
+        family_order_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_order_good_root)}
+        family_order_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_order_bad_root)}
+
         source_label_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(source_label_bad_root)}
         source_label_metric_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(source_label_metric_root)}
 
@@ -3161,7 +3312,7 @@ def self_test():
             | line501_codes | count_unstated_codes | count_mismatch_codes | subblock_codes
             | token_bad_codes | opening_bad_codes | mc_bad_codes
             | mc_count_unstated_codes | mc_count_mismatch_codes | artifact_bad_codes
-            | family_bad_codes | source_label_bad_codes
+            | family_bad_codes | family_order_bad_codes | source_label_bad_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -3269,6 +3420,20 @@ def self_test():
             all_ok = False
         if 'skill-family-line-gate-missing' in good_catalog_codes:
             print("FAIL: skill-family-line-gate-missing fired on a SKILL.md with no self-check section at all")
+            all_ok = False
+
+        # Family-order gate assertions.
+        if 'skill-family-order-gate-missing' in family_order_good_codes:
+            print("FAIL: skill-family-order-gate-missing fired on a self-check section naming both ordering anchors")
+            all_ok = False
+        if 'skill-family-order-gate-missing' not in family_order_bad_codes:
+            print("FAIL: skill-family-order-gate-missing did not fire on a self-check section naming neither ordering anchor")
+            all_ok = False
+        if 'skill-family-line-gate-missing' in family_order_bad_codes:
+            print("FAIL: skill-family-line-gate-missing fired on the family-order-bad fixture, which names both of its own anchors")
+            all_ok = False
+        if 'skill-family-order-gate-missing' in good_catalog_codes:
+            print("FAIL: skill-family-order-gate-missing fired on a SKILL.md with no self-check section at all")
             all_ok = False
 
         # README results-pointer assertions.
