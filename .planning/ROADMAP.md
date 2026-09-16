@@ -118,7 +118,7 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 12/12 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`, 4 gap-closure plans added after the third re-verification returned `gaps_found` with two Critical code-review findings)
+**Plans**: 15 plans, 12 executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`, 4 gap-closure plans added after the third re-verification returned `gaps_found` with two Critical code-review findings, 3 gap-closure plans added after the fourth re-verification returned `gaps_found` with one Critical and two Warning code-review findings)
 
 Plans:
 
@@ -164,6 +164,18 @@ Plans:
 **Wave 10** *(blocked on Wave 9 completion)*
 
 - [x] 03-12-PLAN.md — The anchored remeasurement that decides MOD-04: a disposition rule committed to git before any session runs, then two paired sonnet-5 arms (post-`03-11` and a git-materialised pre-`03-11` baseline) at one durable invocation per session, then the branch applied mechanically to WINDOWS entry 8, REQUIREMENTS.md and 03-UAT.md
+
+**Wave 11** *(gap closure after the fourth `03-VERIFICATION.md` returned `gaps_found`; run with `/gsd-execute-phase 03 --gaps-only`)*
+
+- [ ] 03-13-PLAN.md — Tracer: the Critical instrument defect, `run_conformance.py`'s whole-run in-memory batching replaced by a per-session write-and-flush through an extracted `run_matrix()`, proven offline by a self-test case that interrupts a matrix part-way through and finds the earlier lines already on disk, plus the Arm A no-family enumeration corrected against the run blocks it claims to be re-derivable from
+
+**Wave 12** *(blocked on Wave 11 completion)*
+
+- [ ] 03-14-PLAN.md — Tracer: `results-breakdown-count-mismatch` (31 → 32 codes), the guard that fails the build when a verdict breakdown's stated count disagrees with its own enumeration, discrimination-proven against the real results file by adding `evals` to `MUTATION_SOURCES`; plus the two review consistency findings — the family-line gate made case-insensitive like its sibling, and the stale `skill-token-budget-exceeded` docstring claim corrected
+
+**Wave 13** *(blocked on Wave 12 completion)*
+
+- [ ] 03-15-PLAN.md — MOD-04's v1 disposition made an explicit, dated, attributed decision rather than a branch table's arithmetic: route (b) recommended (accept the measured residual, route (a)'s post-generation-repair candidate being architecturally unavailable to an Agent Skill), then the decision and the measured 30.0%/40.0% figures published through RESULTS-mod04.md, WINDOWS entry 8, README, REQUIREMENTS.md and 03-UAT.md
 
 ### Phase 4: Distribution & Worked Examples
 
