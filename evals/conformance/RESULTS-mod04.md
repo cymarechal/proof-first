@@ -327,3 +327,17 @@ Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
 conformant 0 of 0 scoreable sessions
 unscoreable 1 sessions
   - excluded: model=claude-sonnet-5 fixture=E-ambiguous repeat=0 reason=nonzero exit 1 (empty stderr)
+
+## Run recorded 2026-09-16T04:16:05.262362+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=E-ambiguous | repeat=0 | verdict=conformant | evidence=family 'Solution proposal' at offset 196, marker_at=1666
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
+
+## Run recorded 2026-09-16T04:22:16.993293+00:00Z
+Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=E-ambiguous | repeat=0 | verdict=conformant | evidence=family 'Solution proposal' at offset 553, marker_at=952
+
+conformant 1 of 1 scoreable sessions
+unscoreable 0 sessions
