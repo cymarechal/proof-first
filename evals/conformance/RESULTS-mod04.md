@@ -8,6 +8,53 @@ that measurement either — it is the instrument's own proving run, recorded her
 MOD-04 measurement against a candidate fixed `SKILL.md` and reporting the numerator and
 denominator that decide whether MOD-04 closes.
 
+## Scorer anchoring correction (CR-01)
+
+Every run block recorded in this file was produced by an unanchored scorer, and every
+figure computed from those run blocks is an optimistic ceiling, not a precise
+measurement. Read this before any figure below.
+
+**The defect.** `score_transcript()`'s family search ran over the entire transcript
+with no bound. `SKILL.md`'s write-mode contract requires the artifact-family line to
+be the first of "exactly three parts, in order" the session outputs. Several
+`FAMILY_PATTERNS` entries are ordinary English phrases — "executive summary",
+"solution proposal" — that a real presales document is likely to use again later, as
+an unrelated section heading or descriptive sentence, independent of whether the
+mandatory opening declaration was ever written. An unbounded search cannot tell that
+later, incidental occurrence apart from the required opening one.
+
+**The direction of the bias.** Toward looking more conformant, never less. A session
+that genuinely violated the rule — never declaring a family up front — could still be
+scored `conformant` (or `rule-before-family`) if its drafted body happened to reuse the
+same phrase anywhere downstream. The unbounded search never produces the opposite
+error: it cannot turn a real declaration into a false `no-family`.
+
+**The consequence for every figure above this section.** Both published arms —
+`16/20` (80.0%) in "Arm 1 — post-03-07 skill" and `5/11` (45.5%) in "Arm 2 — paired
+baseline, pre-03-07 skill" — were computed entirely from run blocks produced by this
+unanchored scorer. Both rates are optimistic ceilings on the true conformance rate,
+not precise measurements of it. The comparison between the two arms (45.5% → 60.0%
+same-model, discussed below) is internally consistent — both sides share the same
+unanchored bias — but neither individual number should be read as an exact rate.
+
+**These figures cannot be re-scored.** `run_conformance.py`'s `--transcript-dir`
+defaults to a fresh temporary directory, and no run in this file passed an explicit
+`--transcript-dir` pointing into the repository — so every raw transcript that
+produced every run block above was written outside the repository, to a temp
+directory that no longer exists. There is no artifact left to re-run the fixed scorer
+against. The figures stand as recorded, annotated as optimistic, and are not
+recoverable.
+
+**The fix.** Commit `7cde49a` (2026-09-16) bounds the family search to the transcript's
+opening `FAMILY_LINE_WINDOW_CHARS` (400 characters) — the generous prefix window
+where the write-mode contract actually places the family line — and computes both the
+family offset and the marker offset against the same string, closing the same-defect
+class this scorer had already been fixed for twice before (a nonzero-exit session
+scored `no-family`; `_git_blob_sha()` reporting the wrong revision). Every run block
+recorded above this section, including the two dated 2026-09-16 immediately below,
+predates this fix. Any run recorded after commit `7cde49a` is anchored; anything
+above it is not.
+
 ## Instrument-proving run (03-06-PLAN.md Task 1)
 
 One real `claude -p` write-mode session, driven by this committed script against the
@@ -443,3 +490,9 @@ defensible same-instrument finding is the sonnet-only one: 45.5% -> 60.0%, not 4
   Arm 2 excluded 2 of 13 attempted (15.4%). Every exclusion is a timeout or a transient network
   failure, none is a `claude -p` session that ran to completion and produced ambiguous output --
   see each run block's `reason=` field above for the individual cause.
+- A third instrument defect was found and fixed after this data was collected (03-09-PLAN.md,
+  CR-01): the family search had no bound and could mistake an incidental later phrase in
+  drafted prose for the required opening declaration, biasing every figure above toward
+  looking more conformant than it was. See "## Scorer anchoring correction (CR-01)" at the top
+  of this file. Both figures in this section are optimistic ceilings and cannot be re-scored --
+  their raw transcripts were never written into the repository and no longer exist.
