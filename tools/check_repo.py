@@ -339,6 +339,32 @@ Violation codes implemented in this file:
                       last of those; this check only makes the measurement
                       discoverable and makes its silent disappearance from
                       README a gate failure, nothing more.
+  results-breakdown-count-mismatch - a verdict-breakdown bullet in
+                      evals/conformance/RESULTS-mod04.md
+                      (RESULTS_BREAKDOWN_PATH) states a count that
+                      disagrees with its own parenthetical enumeration, or
+                      states a count above zero with no enumeration at
+                      all. One code covers both triggers, rather than the
+                      unstated/mismatch code pair the PF and MC catalog
+                      counts use (catalog-count-unstated/-mismatch,
+                      mc-count-unstated/-mismatch), because both triggers
+                      here are the same defect -- an itemization a reader
+                      cannot re-derive -- against a free-prose file, not
+                      two distinct authoring errors against a frozen
+                      sentence template. Counts a parenthetical item
+                      carrying a standalone 'xN' multiplier as N and any
+                      other comma-separated item as one; two items naming
+                      the same fixture are never merged, and the sum does
+                      not depend on item order. Silent when the file does
+                      not exist. Declared ceiling: this check asserts
+                      internal consistency between a stated count and its
+                      own enumeration. It asserts nothing about whether
+                      the measurement is correct, current, or
+                      well-designed; an enumeration written in a different
+                      grammar (a range, a prose 'and two more') will not
+                      be counted the way its author intended; and it reads
+                      one named path, not every results file that might
+                      ever exist.
 """
 import argparse
 import re
@@ -773,10 +799,8 @@ def run_license_checks(repo_root):
 # README.md — results pointer integrity (CR-02)
 #
 # This is a repository-level documentation check, not a catalog check: it
-# does not depend on NUMBERING.md, on any skills/*/SKILL.md path, or on
-# evals/ existing in the mutation-test control copy (MUTATION_SOURCES
-# deliberately omits evals/ -- see that constant's own comment). It asserts
-# only that the literal results-pointer path string is present in
+# does not depend on NUMBERING.md or on any skills/*/SKILL.md path. It
+# asserts only that the literal results-pointer path string is present in
 # README.md, unconditionally -- it is not gated on the file the path names
 # actually existing on disk.
 # ---------------------------------------------------------------------------
@@ -822,6 +846,144 @@ README_CHECK_CODES = ['readme-results-pointer-missing']
 def run_readme_checks(repo_root):
     violations = []
     violations += check_readme_results_pointer(repo_root)
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# evals/conformance/RESULTS-mod04.md — verdict-breakdown enumeration
+# integrity (03-REVIEW.md WR-01 gap closure)
+#
+# This is a repository-level documentation check, not a catalog check: it
+# does not depend on NUMBERING.md or on any skills/*/SKILL.md path. It
+# reads exactly RESULTS_BREAKDOWN_PATH, the one file holding this
+# project's only committed measurement, and requires that any
+# verdict-breakdown bullet's stated count agree with its own parenthetical
+# enumeration -- the exact defect class 03-REVIEW.md WR-01 found and
+# 03-13 hand-corrected. This check makes the class mechanically guarded
+# rather than protecting only today's instance.
+# ---------------------------------------------------------------------------
+
+RESULTS_BREAKDOWN_PATH = 'evals/conformance/RESULTS-mod04.md'
+
+# Frozen against run_conformance.py's own verdict vocabulary -- a
+# reworded copy here would silently stop matching the lines it exists to
+# guard.
+RESULTS_VERDICT_LABELS = ('conformant', 'no-family', 'rule-before-family', 'unscoreable')
+
+_RESULTS_BULLET_RE = re.compile(
+    r'^- (' + '|'.join(re.escape(label) for label in RESULTS_VERDICT_LABELS) +
+    r'): (\d+)(?:\s*\((.*)\))?\s*$'
+)
+_RESULTS_XN_RE = re.compile(r'(?<![\w-])x(\d+)(?![\w-])')
+
+
+def check_results_breakdown_count(repo_root):
+    """Check that every verdict-breakdown bullet in
+    evals/conformance/RESULTS-mod04.md (RESULTS_BREAKDOWN_PATH) states a
+    count that agrees with its own parenthetical enumeration, so a reader
+    can re-derive the number without opening the raw run blocks (WR-01).
+
+    Walks the file (after strip_fences()) line by line, joining each
+    bullet matching '- {verdict-label}: {count}' with its continuation
+    lines -- a following line that is non-blank, begins with whitespace,
+    and does not itself start a new bullet or heading -- and collapsing
+    the joined line's whitespace to single spaces. A line whose label is
+    not one of RESULTS_VERDICT_LABELS is not a verdict-breakdown bullet at
+    all (e.g. the 03-08 section's '- claude-sonnet-5: 12 attempted ...'
+    model tallies) and is skipped entirely.
+
+    For the parenthetical that follows the count, if any, splits its
+    contents on commas and sums one per item, except an item carrying a
+    standalone 'xN' multiplier token contributes N -- so two items naming
+    the same fixture (e.g. 'A-rfp-answer x2') are never merged, and the
+    sum does not depend on item order. An empty parenthetical sums to
+    zero.
+
+    Fires results-breakdown-count-mismatch in either of two cases: the
+    parenthetical is absent and the stated count is greater than zero, or
+    the parenthetical is present and its sum disagrees with the stated
+    count. One code covers both triggers rather than the unstated/
+    mismatch code pair the PF and MC catalog counts use
+    (catalog-count-unstated/-mismatch, mc-count-unstated/-mismatch) --
+    both triggers here are the same defect (an itemization a reader
+    cannot re-derive) against a free-prose measurement file, not two
+    distinct authoring errors against a frozen sentence template.
+
+    Returns no violations when RESULTS_BREAKDOWN_PATH does not exist,
+    checked before any read -- the same declared ceiling every other
+    optional-file check in this module uses, so a fixture root shipping
+    no results file stays silent and the suite is not disabled.
+
+    Declared ceiling: this check asserts an enumeration is internally
+    consistent with the count beside it. It makes no claim about whether
+    the measurement itself is correct, current, or well-designed. It
+    counts an 'xN' token as N and any other comma-separated item as one,
+    so an enumeration written in a different grammar (a range, a prose
+    'and two more') will not be counted the way its author intended. It
+    reads one named path, not every results file that might ever exist."""
+    violations = []
+    path = repo_root / RESULTS_BREAKDOWN_PATH
+    if not path.exists():
+        return violations
+    text = strip_fences(path.read_text(encoding='utf-8'))
+    lines = text.splitlines()
+
+    joined_lines = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if line.startswith('- '):
+            parts = [line.strip()]
+            j = i + 1
+            while j < len(lines):
+                nxt = lines[j]
+                if nxt.strip() == '':
+                    break
+                if not nxt[:1].isspace():
+                    break
+                stripped_nxt = nxt.lstrip()
+                if stripped_nxt.startswith('- ') or stripped_nxt.startswith('#'):
+                    break
+                parts.append(stripped_nxt)
+                j += 1
+            joined_lines.append(' '.join(parts))
+            i = j
+        else:
+            i += 1
+
+    for joined in joined_lines:
+        collapsed = re.sub(r'\s+', ' ', joined).strip()
+        m = _RESULTS_BULLET_RE.match(collapsed)
+        if not m:
+            continue
+        label, stated_str, parenthetical = m.groups()
+        stated = int(stated_str)
+        if parenthetical is None:
+            if stated > 0:
+                violations.append((str(path.relative_to(repo_root)), (
+                    f"results-breakdown-count-mismatch {RESULTS_BREAKDOWN_PATH} states "
+                    f"'{label}: {stated}' with no enumeration to re-derive it from"
+                )))
+            continue
+        items = [item.strip() for item in parenthetical.split(',') if item.strip()]
+        total = 0
+        for item in items:
+            xm = _RESULTS_XN_RE.search(item)
+            total += int(xm.group(1)) if xm else 1
+        if total != stated:
+            violations.append((str(path.relative_to(repo_root)), (
+                f"results-breakdown-count-mismatch {RESULTS_BREAKDOWN_PATH} states "
+                f"'{label}: {stated}' but its enumeration sums to {total}"
+            )))
+    return violations
+
+
+RESULTS_CHECK_CODES = ['results-breakdown-count-mismatch']
+
+
+def run_results_checks(repo_root):
+    violations = []
+    violations += check_results_breakdown_count(repo_root)
     return violations
 
 
@@ -1636,8 +1798,8 @@ def run_catalog_checks(repo_root):
 
 ALL_CHECK_CODES = (
     ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
-    + LICENSE_CHECK_CODES + README_CHECK_CODES + FRAMEWORK_CHECK_CODES
-    + FRONTMATTER_CHECK_CODES + CATALOG_CHECK_CODES
+    + LICENSE_CHECK_CODES + README_CHECK_CODES + RESULTS_CHECK_CODES
+    + FRAMEWORK_CHECK_CODES + FRONTMATTER_CHECK_CODES + CATALOG_CHECK_CODES
 )
 
 
@@ -1652,6 +1814,7 @@ def run_all_checks(repo_root):
     violations += run_notices_checks(repo_root)
     violations += run_license_checks(repo_root)
     violations += run_readme_checks(repo_root)
+    violations += run_results_checks(repo_root)
     violations += run_framework_checks(repo_root)
     violations += run_frontmatter_checks(repo_root)
     violations += run_catalog_checks(repo_root)
@@ -1694,12 +1857,19 @@ KNOWN_OPEN_VIOLATIONS = frozenset()
 # instances of it.
 # ---------------------------------------------------------------------------
 
-MUTATION_SOURCES = ('LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools', 'skills')
+MUTATION_SOURCES = ('LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools', 'skills', 'evals')
 
 
 def _copy_repo_subset(repo_root, dest):
     """Copy exactly MUTATION_SOURCES into dest. Never copies .git or
-    .planning -- only the repository-relative paths the checker reads."""
+    .planning -- only the repository-relative paths the checker reads.
+    'evals' was added by 03-14 so the real evals/conformance/RESULTS-mod04.md
+    is reachable from the mutation harness, making
+    results-breakdown-count-mismatch discrimination-proven rather than
+    merely registered. No existing check reads anything under evals/ --
+    every glob and named-path scan in this module targets NUMBERING.md,
+    examples/, tools/, or skills/*/SKILL.md paths -- so widening this copy
+    does not change what any other code fires against."""
     for name in MUTATION_SOURCES:
         src = repo_root / name
         if not src.exists():
@@ -1844,6 +2014,26 @@ def _mutate_readme_results_pointer_missing(root):
     lines = path.read_text(encoding='utf-8').splitlines()
     lines = [l for l in lines if README_RESULTS_POINTER not in l]
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_results_breakdown_count_mismatch(root):
+    """Raise the copied real results file's Arm A no-family bullet's
+    stated count above its own enumeration sum (7 -> 99), leaving the
+    parenthetical enumeration itself untouched -- isolates exactly the
+    count/enumeration disagreement this check reads. Asserts the target
+    text is found before substituting, following the existing mutators'
+    precedent, so a future rewording of that bullet turns into a loud
+    mutation failure rather than a silent no-op."""
+    path = root / RESULTS_BREAKDOWN_PATH
+    text = path.read_text(encoding='utf-8')
+    target = '- no-family: 7 ('
+    replacement = '- no-family: 99 ('
+    assert target in text, (
+        "results-breakdown-count-mismatch mutation: Arm A no-family bullet "
+        "text not found in the real results file -- has its wording changed?"
+    )
+    text = text.replace(target, replacement, 1)
+    path.write_text(text, encoding='utf-8')
 
 
 def _mutate_framework_statement_missing(root):
@@ -2109,6 +2299,7 @@ MUTATIONS = [
     ('pointer-unparseable', "remove the Attribution pointer heading from NOTICES.md", _mutate_pointer_unparseable),
     ('license-missing', "delete the LICENSE file from the repository root", _mutate_license_missing),
     ('readme-results-pointer-missing', "delete every line of README.md containing the results-pointer path", _mutate_readme_results_pointer_missing),
+    ('results-breakdown-count-mismatch', "raise the real results file's Arm A no-family bullet's stated count above its own enumeration sum", _mutate_results_breakdown_count_mismatch),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
     ('catalog-id-drift', "delete one PF data row from references/checklist.md's PF rules table", _mutate_catalog_id_drift),
     ('catalog-opening-rule-count', "add a second PF-0 rule to NUMBERING.md and checklist.md, violating CAT-03's exactly-one requirement", _mutate_catalog_opening_rule_count),
@@ -2895,6 +3086,34 @@ def _bad_skill_family_order_gate():
     )
 
 
+def _good_results_breakdown():
+    """A minimal results file whose verdict-breakdown bullets all agree
+    with their own enumerations: one 'xN' multiplier item, one
+    single-item enumeration, and one zero count with no parenthetical at
+    all -- the silent case for results-breakdown-count-mismatch."""
+    return (
+        "# Fixture results\n\n"
+        "### Arm A\n\n"
+        "- conformant: 3 (`A-rfp-answer` x2, `B-proposal-section`)\n"
+        "- no-family: 1 (`C-exec-summary`)\n"
+        "- rule-before-family: 0\n"
+    )
+
+
+def _bad_results_breakdown():
+    """_good_results_breakdown()'s content with the 'conformant' bullet's
+    stated count raised from 3 to 4 while its enumeration (still summing
+    to 3) is left untouched -- the firing case for
+    results-breakdown-count-mismatch."""
+    return (
+        "# Fixture results\n\n"
+        "### Arm A\n\n"
+        "- conformant: 4 (`A-rfp-answer` x2, `B-proposal-section`)\n"
+        "- no-family: 1 (`C-exec-summary`)\n"
+        "- rule-before-family: 0\n"
+    )
+
+
 def _artifact_patterns_with_source_label():
     """_good_artifact_patterns()'s content, with one frozen source-coined
     label ('economic buyer') inserted -- the firing case for
@@ -3035,6 +3254,9 @@ def self_test():
 
         source_label_bad_root = tmp_root / 'source_label_bad'
         source_label_metric_root = tmp_root / 'source_label_metric'
+
+        results_good_root = tmp_root / 'results_good'
+        results_bad_root = tmp_root / 'results_bad'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -3251,6 +3473,16 @@ def self_test():
         _write(source_label_metric_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
         _write(source_label_metric_root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md', _artifact_patterns_with_metric_word())
 
+        # Results-breakdown fixtures (results-breakdown-count-mismatch,
+        # 03-14 WR-01 gap closure): results_good_root's bullets all agree
+        # with their own enumerations; results_bad_root's 'conformant'
+        # bullet states one more than its enumeration sums to. Neither
+        # root ships NUMBERING.md/skills/, so every other check stays
+        # silent (or fires codes already proven elsewhere) and this pair
+        # isolates the one new code under test.
+        _write(results_good_root / RESULTS_BREAKDOWN_PATH, _good_results_breakdown())
+        _write(results_bad_root / RESULTS_BREAKDOWN_PATH, _bad_results_breakdown())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -3302,6 +3534,9 @@ def self_test():
         source_label_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(source_label_bad_root)}
         source_label_metric_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(source_label_metric_root)}
 
+        results_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(results_good_root)}
+        results_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(results_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -3313,6 +3548,7 @@ def self_test():
             | token_bad_codes | opening_bad_codes | mc_bad_codes
             | mc_count_unstated_codes | mc_count_mismatch_codes | artifact_bad_codes
             | family_bad_codes | family_order_bad_codes | source_label_bad_codes
+            | results_bad_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -3453,6 +3689,17 @@ def self_test():
             all_ok = False
         if 'source-label-in-skill-content' in source_label_metric_codes:
             print("FAIL: source-label-in-skill-content fired on the ordinary-English word for a measurement")
+            all_ok = False
+
+        # Results-breakdown assertions.
+        if 'results-breakdown-count-mismatch' in results_good_codes:
+            print("FAIL: results-breakdown-count-mismatch fired on bullets whose counts agree with their enumerations")
+            all_ok = False
+        if 'results-breakdown-count-mismatch' not in results_bad_codes:
+            print("FAIL: results-breakdown-count-mismatch did not fire when a stated count disagreed with its enumeration")
+            all_ok = False
+        if 'results-breakdown-count-mismatch' in good_codes:
+            print("FAIL: results-breakdown-count-mismatch fired on a fixture root shipping no results file")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
