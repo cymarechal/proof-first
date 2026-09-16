@@ -1,0 +1,14 @@
+**Artifact family:** Solution proposal
+
+Halverton Mutual needs a migration partner who has done this exact class of
+cutover before, not a generic cloud rollout pitch. The settlement batch
+window is the constraint that matters most here, and the proposed approach
+protects it end to end. Every capability claim below is paired with a
+comparable-programme figure, or marked as unproven where no figure exists
+yet for that specific claim, following PF-2.4's proof-point discipline and
+MC-6 throughout this response.
+
+## Solution proposal summary
+
+The rollout completes in two phases, with the settlement batch window
+protected throughout and no downtime during business hours.

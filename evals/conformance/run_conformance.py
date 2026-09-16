@@ -4,11 +4,14 @@
 This script measures exactly one thing: whether a live write-mode session
 names the artifact-family line before its first rule marker (a `PF-#.#` or
 `MC-#` citation). It is a regex scorer over transcript text, not a semantic
-judge — it cannot tell a family named in a heading from one named in a
-sentence, and it does not read the drafted prose for quality. Phase 5's
-evaluation harness (EVAL-01..12) owns prose-quality linting, the
-skill-on/skill-off benchmark, and the blind pairwise judge; this runner is
-deliberately narrower and does not overlap with it.
+judge — the family search asserts only that a family phrase appears within
+the contract's opening window (see `FAMILY_LINE_WINDOW_CHARS`); it still
+cannot tell a family named in a heading from one named in a sentence, and it
+still cannot tell a deliberate declaration from an incidental phrase that
+happens to fall inside that window. It does not read the drafted prose for
+quality. Phase 5's evaluation harness (EVAL-01..12) owns prose-quality
+linting, the skill-on/skill-off benchmark, and the blind pairwise judge;
+this runner is deliberately narrower and does not overlap with it.
 
 It imports only the Python standard library: argparse, datetime, json,
 pathlib, re, shutil, subprocess, sys, tempfile. No package-manager
@@ -61,6 +64,13 @@ FAMILY_PATTERNS = (
 # The two allocated rule namespaces.
 MARKER_PATTERN = re.compile(r'\bPF-\d+\.\d+\b|\bMC-\d+\b')
 
+# SKILL.md's write-mode contract (`## Write mode`) states the output is
+# exactly three parts, in order, with the family line first. This bound is a
+# generous prefix window derived from that ordering, not a proof that the
+# matched phrase IS the contract's family line -- a declared ceiling, in the
+# same voice tools/check_repo.py's own checks state theirs.
+FAMILY_LINE_WINDOW_CHARS = 400
+
 # Byte-identical to the prompt 03-05-SUMMARY.md's Live Verification section
 # records, so this run and the prior one measure the same thing.
 PROMPT_TEMPLATE = 'Using proof-first, revise this draft into stronger presales prose: docs/{fixture}'
@@ -99,43 +109,63 @@ def score_transcript(text):
 
     Verdicts:
       unscoreable         - text is empty (or whitespace-only).
-      no-family           - no FAMILY_PATTERNS match found anywhere.
-      rule-before-family  - the lowest-offset MARKER_PATTERN match starts
-                             strictly before the lowest-offset family match.
-      conformant          - a family match exists and no marker precedes it
-                             (including the case where no marker appears at
-                             all).
+      no-family           - no FAMILY_PATTERNS match found within the
+                             opening FAMILY_LINE_WINDOW_CHARS of the
+                             (stripped) transcript. A family phrase
+                             appearing only later, in ordinary drafted
+                             prose, does not count -- that is exactly the
+                             CR-01 false-pass this bound exists to close.
+      rule-before-family  - the lowest-offset MARKER_PATTERN match (over
+                             the whole transcript) starts strictly before
+                             the lowest-offset in-window family match.
+      conformant          - an in-window family match exists and no marker
+                             precedes it (including the case where no
+                             marker appears at all).
+
+    Both searches run against the SAME string (`stripped`), so their
+    offsets are directly comparable -- computing one against `stripped` and
+    the other against the original `text` would silently shift every
+    comparison by the length of any stripped leading whitespace.
     """
     stripped = text.strip()
     if not stripped:
         return 'unscoreable', 'empty transcript'
 
+    window = stripped[:FAMILY_LINE_WINDOW_CHARS]
     family_match = None
     family_at = None
     for pattern in FAMILY_PATTERNS:
-        m = pattern.search(text)
+        m = pattern.search(window)
         if m and (family_at is None or m.start() < family_at):
             family_at = m.start()
             family_match = m.group(0)
 
     marker_match = None
     marker_at = None
-    m = MARKER_PATTERN.search(text)
+    m = MARKER_PATTERN.search(stripped)
     if m:
         marker_at = m.start()
         marker_match = m.group(0)
 
     if family_at is None:
-        return 'no-family', f'no family match found (marker_at={marker_at}, marker={marker_match!r})'
+        return (
+            'no-family',
+            f'no family match found within the first {FAMILY_LINE_WINDOW_CHARS} chars '
+            f'(marker_at={marker_at}, marker={marker_match!r})'
+        )
 
     if marker_at is not None and marker_at < family_at:
         evidence = (
             f'marker {marker_match!r} at offset {marker_at} precedes '
-            f'family {family_match!r} at offset {family_at}'
+            f'family {family_match!r} at offset {family_at} '
+            f'(window={FAMILY_LINE_WINDOW_CHARS})'
         )
         return 'rule-before-family', evidence
 
-    evidence = f'family {family_match!r} at offset {family_at}, marker_at={marker_at}'
+    evidence = (
+        f'family {family_match!r} at offset {family_at} '
+        f'(window={FAMILY_LINE_WINDOW_CHARS}), marker_at={marker_at}'
+    )
     return 'conformant', evidence
 
 
@@ -166,18 +196,35 @@ def run_session(skill_src, fixture_path, model, out_path, timeout_s):
 
         argv = ['claude', '-p', prompt, '--model', model, '--disallowedTools'] + DISALLOWED_TOOLS
 
-        result = subprocess.run(
-            argv,
-            cwd=str(tmp_dir),
-            capture_output=True,
-            text=True,
-            timeout=timeout_s,
-        )
-        stdout = result.stdout or ''
-        stderr = result.stderr or ''
-
         out_path = pathlib.Path(out_path)
         out_path.parent.mkdir(parents=True, exist_ok=True)
+
+        try:
+            result = subprocess.run(
+                argv,
+                cwd=str(tmp_dir),
+                capture_output=True,
+                text=True,
+                timeout=timeout_s,
+            )
+        except subprocess.TimeoutExpired as exc:
+            # `subprocess.run` populates exc.stdout/exc.stderr with whatever
+            # the child had produced before the kill -- but as bytes, not
+            # str, even though this call passes text=True (CPython builds
+            # TimeoutExpired from the raw accumulated chunks before
+            # decoding). Normalise each stream (bytes / str / None) before
+            # writing, so a partial transcript is preserved and readable
+            # instead of lost entirely (WR-01) or written as a literal
+            # `b'...'` repr.
+            out_path.write_text(
+                f'[claude -p timed out after {timeout_s}s]\n'
+                f'--- stdout ---\n{_decode_stream(exc.stdout)}\n'
+                f'--- stderr ---\n{_decode_stream(exc.stderr)}\n'
+            )
+            raise
+
+        stdout = result.stdout or ''
+        stderr = result.stderr or ''
 
         if result.returncode != 0:
             # Write both streams for audit -- a failed invocation's stdout is
@@ -192,6 +239,23 @@ def run_session(skill_src, fixture_path, model, out_path, timeout_s):
         return stdout
     finally:
         shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
+def _decode_stream(value):
+    """Normalise a subprocess stream that may be bytes, str, or None.
+
+    `TimeoutExpired.stdout`/`.stderr` come back as bytes even when the
+    original `subprocess.run` call passed `text=True` -- CPython builds the
+    exception from the raw accumulated chunks before the text-mode decoding
+    step ever runs. A stream can also be None (nothing was captured before
+    the kill). Callers must not assume either shape.
+    """
+    if value is None:
+        return '(empty -- no output captured before timeout)'
+    if isinstance(value, bytes):
+        decoded = value.decode('utf-8', errors='replace')
+        return decoded if decoded else '(empty -- no output captured before timeout)'
+    return value if value else '(empty -- no output captured before timeout)'
 
 
 def self_test():
@@ -213,6 +277,17 @@ def self_test():
     _git_blob_sha() hashes the SKILL.md under the given skill_src rather
     than always the repo's HEAD version. Still no real subprocess call, no
     network call.
+
+    Cases 8 and 9 (03-09-PLAN.md, CR-01) prove the family search is bounded
+    to the transcript's opening window in both directions: a transcript
+    that never declares the family up front but contains the same phrase
+    later, as ordinary drafted prose, still scores `no-family`; a
+    transcript that declares the family up front stays `conformant` even
+    when the same phrase recurs later in its body. Case 10 (03-09-PLAN.md,
+    WR-01) monkeypatches subprocess.run to prove a timed-out session still
+    writes a readable, decoded partial transcript to out_path and still
+    re-raises TimeoutExpired unchanged. All three stay offline: no real
+    subprocess call, no network call.
     """
     all_ok = True
     verdicts_discriminated = set()
@@ -281,12 +356,66 @@ def self_test():
     else:
         verdicts_discriminated.add(verdict)
 
-    # Fixture-file cross-check: validate the three committed transcript
-    # fixtures if they exist. Not present yet is not a failure.
+    # Case 8 (CR-01): a transcript that never declares a family up front,
+    # but whose drafted body contains a family phrase well past the
+    # anchoring window (as an ordinary section heading), must still score
+    # `no-family` -- not `conformant` and not `rule-before-family`. This is
+    # the exact false-pass CR-01 found: a common English phrase recurring
+    # naturally in drafted prose standing in for an omitted opening
+    # declaration.
+    case8 = (
+        "Halverton Mutual needs a migration partner who has done this exact "
+        "class of cutover before, not a generic cloud rollout pitch. "
+        "The settlement batch window is the constraint that matters most here, "
+        "and the proposed approach protects it end to end. Every capability "
+        "claim below is paired with a comparable-programme figure, or marked "
+        "as unproven where no figure exists yet for that specific claim, "
+        "following PF-2.4's proof-point discipline throughout this response.\n\n"
+        "## Executive summary\n\n"
+        "The rollout completes in two phases, with the settlement batch window "
+        "protected throughout.\n"
+    )
+    verdict, evidence = score_transcript(case8)
+    if verdict != 'no-family':
+        print(f'FAIL: behavior case 8 (CR-01 no-family, late phrase) expected no-family actual {verdict} ({evidence})')
+        all_ok = False
+    else:
+        verdicts_discriminated.add(verdict)
+
+    # Case 9 (CR-01 over-anchoring control): a transcript that DOES declare
+    # the family up front stays `conformant` even when the same family
+    # phrase recurs again later in its body, well past the window. This
+    # proves the bound is not so tight, and the two offsets not so
+    # miscomputed, that a legitimate declaration gets undermined by its own
+    # later repetition.
+    case9 = (
+        "**Artifact family:** Solution proposal\n\n"
+        "Halverton Mutual needs a migration partner who has done this exact "
+        "class of cutover before, not a generic cloud rollout pitch. "
+        "The settlement batch window is the constraint that matters most here, "
+        "and the proposed approach protects it end to end. Every capability "
+        "claim below is paired with a comparable-programme figure, or marked "
+        "as unproven where no figure exists yet for that specific claim, "
+        "following PF-2.4's proof-point discipline throughout this response.\n\n"
+        "## Solution proposal summary\n\n"
+        "The rollout completes in two phases, with the settlement batch window "
+        "protected throughout.\n"
+    )
+    verdict, evidence = score_transcript(case9)
+    if verdict != 'conformant':
+        print(f'FAIL: behavior case 9 (CR-01 over-anchoring control) expected conformant actual {verdict} ({evidence})')
+        all_ok = False
+    else:
+        verdicts_discriminated.add(verdict)
+
+    # Fixture-file cross-check: validate the committed transcript fixtures
+    # if they exist. Not present yet is not a failure.
     fixture_expectations = {
         'conformant-family-first.txt': 'conformant',
         'nonconformant-no-family.txt': 'no-family',
         'nonconformant-rule-before-family.txt': 'rule-before-family',
+        'nonconformant-no-family-late-phrase.txt': 'no-family',
+        'conformant-family-first-late-phrase.txt': 'conformant',
     }
     for filename, expected in fixture_expectations.items():
         path = TRANSCRIPTS_DIR / filename
@@ -395,6 +524,70 @@ def self_test():
             all_ok = False
     finally:
         shutil.rmtree(fake_skill_dir, ignore_errors=True)
+
+    # Case 10 (03-09-PLAN.md, WR-01): a `claude -p` invocation that times out
+    # must still leave a readable, decoded partial transcript at out_path
+    # (not nothing, and not a literal `b'...'` bytes repr), and
+    # subprocess.TimeoutExpired must still propagate to the caller so
+    # main()'s existing `except subprocess.TimeoutExpired` clause keeps
+    # recording the session as `unscoreable` with `reason=timeout` exactly
+    # as before. subprocess.run is monkeypatched to raise TimeoutExpired
+    # carrying **bytes** payloads (matching what CPython actually produces
+    # for TimeoutExpired.stdout/.stderr even when text=True is passed to the
+    # original call -- measured directly on this platform). Still offline:
+    # no real `claude` invocation and no network call.
+    real_subprocess_run_3 = subprocess.run
+
+    def _fake_timeout_run(argv, **kwargs):
+        raise subprocess.TimeoutExpired(
+            argv, kwargs.get('timeout'),
+            output=b'PARTIAL-TRANSCRIPT-LINE\n',
+            stderr=b'PARTIAL-STDERR-LINE\n',
+        )
+
+    fake_fixture_10 = None
+    fake_out_dir_10 = None
+    subprocess.run = _fake_timeout_run
+    try:
+        fake_fixture_10 = pathlib.Path(tempfile.mkstemp(suffix='.md')[1])
+        fake_fixture_10.write_text('placeholder fixture text for self-test only')
+        fake_out_dir_10 = pathlib.Path(tempfile.mkdtemp(prefix='proof-first-conformance-selftest-timeout-'))
+        fake_out_path_10 = fake_out_dir_10 / 'timed-out-session.txt'
+
+        raised_timeout = None
+        try:
+            run_session(
+                skill_src=REPO_ROOT / 'skills' / 'proof-first',
+                fixture_path=fake_fixture_10,
+                model='claude-sonnet-5',
+                out_path=fake_out_path_10,
+                timeout_s=1,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raised_timeout = exc
+
+        if raised_timeout is None:
+            print('FAIL: behavior case 10 (timeout artifact preservation) expected TimeoutExpired, none raised')
+            all_ok = False
+        elif not fake_out_path_10.exists():
+            print('FAIL: behavior case 10 (timeout artifact preservation) expected out_path to exist, it does not')
+            all_ok = False
+        else:
+            artifact_text = fake_out_path_10.read_text()
+            if 'PARTIAL-TRANSCRIPT-LINE' not in artifact_text:
+                print(f'FAIL: behavior case 10 (timeout artifact preservation) partial stdout not found in artifact: {artifact_text!r}')
+                all_ok = False
+            elif "b'" in artifact_text:
+                print(f'FAIL: behavior case 10 (timeout artifact preservation) artifact contains a raw bytes repr: {artifact_text!r}')
+                all_ok = False
+            else:
+                verdicts_discriminated.add('unscoreable')
+    finally:
+        subprocess.run = real_subprocess_run_3
+        if fake_fixture_10 is not None:
+            fake_fixture_10.unlink(missing_ok=True)
+        if fake_out_dir_10 is not None:
+            shutil.rmtree(fake_out_dir_10, ignore_errors=True)
 
     if not all_ok:
         return False
