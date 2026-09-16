@@ -590,3 +590,11 @@ Measured SKILL.md blob SHA: `fadc48613f71fb29d55b42f70805225f9087a2b9`
 
 conformant 0 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Run recorded 2026-09-16T06:48:34.377750+00:00Z
+Measured SKILL.md blob SHA: `fadc48613f71fb29d55b42f70805225f9087a2b9`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=B-proposal-section | repeat=0 | verdict=unscoreable | reason=timeout
+
+conformant 0 of 0 scoreable sessions
+unscoreable 1 sessions
+  - excluded: model=claude-sonnet-5 fixture=B-proposal-section repeat=0 reason=timeout
