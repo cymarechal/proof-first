@@ -561,3 +561,11 @@ defensible same-instrument finding is the sonnet-only one: 45.5% -> 60.0%, not 4
   looking more conformant than it was. See "## Scorer anchoring correction (CR-01)" at the top
   of this file. Both figures in this section are optimistic ceilings and cannot be re-scored --
   their raw transcripts were never written into the repository and no longer exist.
+
+## Run recorded 2026-09-16T06:23:26.865109+00:00Z
+Measured SKILL.md blob SHA: `fadc48613f71fb29d55b42f70805225f9087a2b9`
+- 2026-09-16 | model=claude-sonnet-5 | fixture=A-rfp-answer | repeat=0 | verdict=unscoreable | reason=timeout
+
+conformant 0 of 0 scoreable sessions
+unscoreable 1 sessions
+  - excluded: model=claude-sonnet-5 fixture=A-rfp-answer repeat=0 reason=timeout
