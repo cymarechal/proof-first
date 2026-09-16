@@ -304,6 +304,19 @@ Violation codes implemented in this file:
                       own skills/proof-first/SKILL.md — a known, tracked,
                       open finding against CAT-08 (see
                       .planning/WINDOWS.md), not a defect in this check.
+  readme-results-pointer-missing - README.md does not contain the literal
+                      path 'evals/conformance/RESULTS-mod04.md'. This is a
+                      repository-level documentation check, not a catalog
+                      check -- it does not depend on NUMBERING.md or on any
+                      skills/*/SKILL.md path. Declared ceiling: this check
+                      asserts one literal path string is present in
+                      README.md. It does not assert that the file at that
+                      path exists, that the figures in it are current, or
+                      that the prose around the pointer is accurate -- a
+                      human read is the only thing that establishes the
+                      last of those; this check only makes the measurement
+                      discoverable and makes its silent disappearance from
+                      README a gate failure, nothing more.
 """
 import argparse
 import re
@@ -731,6 +744,62 @@ LICENSE_CHECK_CODES = ['license-missing']
 def run_license_checks(repo_root):
     violations = []
     violations += check_license_missing(repo_root)
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# README.md — results pointer integrity (CR-02)
+#
+# This is a repository-level documentation check, not a catalog check: it
+# does not depend on NUMBERING.md, on any skills/*/SKILL.md path, or on
+# evals/ existing in the mutation-test control copy (MUTATION_SOURCES
+# deliberately omits evals/ -- see that constant's own comment). It asserts
+# only that the literal results-pointer path string is present in
+# README.md, unconditionally -- it is not gated on the file the path names
+# actually existing on disk.
+# ---------------------------------------------------------------------------
+
+README_RESULTS_POINTER = 'evals/conformance/RESULTS-mod04.md'
+
+
+def check_readme_results_pointer(repo_root):
+    """Check that README.md contains the literal path
+    'evals/conformance/RESULTS-mod04.md' at least once, so a reader can
+    discover this repository's one committed measurement from the same
+    README that would otherwise claim no measurement exists (CR-02).
+
+    Returns no violation when README.md itself does not exist -- no
+    fixture root in this suite ships a bare repo with no README.md at all,
+    and a missing README.md is a different, unrelated failure mode this
+    check does not own.
+
+    Declared ceiling: this check asserts one literal path string is present
+    in README.md. It does not assert that the file at that path exists,
+    that the figures in it are current, or that the prose around the
+    pointer is accurate. A human read is the only thing that establishes
+    the last of those -- this check only makes the measurement discoverable
+    and makes its silent disappearance from README a gate failure, nothing
+    more."""
+    violations = []
+    readme_path = repo_root / 'README.md'
+    if not readme_path.exists():
+        return violations
+    text = readme_path.read_text(encoding='utf-8')
+    if README_RESULTS_POINTER not in text:
+        violations.append(('README.md', (
+            f"readme-results-pointer-missing README.md does not contain the literal path "
+            f"'{README_RESULTS_POINTER}', so a reader has no pointer to this repository's "
+            f"committed measurement"
+        )))
+    return violations
+
+
+README_CHECK_CODES = ['readme-results-pointer-missing']
+
+
+def run_readme_checks(repo_root):
+    violations = []
+    violations += check_readme_results_pointer(repo_root)
     return violations
 
 
@@ -1500,8 +1569,8 @@ def run_catalog_checks(repo_root):
 
 ALL_CHECK_CODES = (
     ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
-    + LICENSE_CHECK_CODES + FRAMEWORK_CHECK_CODES + FRONTMATTER_CHECK_CODES
-    + CATALOG_CHECK_CODES
+    + LICENSE_CHECK_CODES + README_CHECK_CODES + FRAMEWORK_CHECK_CODES
+    + FRONTMATTER_CHECK_CODES + CATALOG_CHECK_CODES
 )
 
 
@@ -1515,6 +1584,7 @@ def run_all_checks(repo_root):
     violations += run_figure_checks(repo_root)
     violations += run_notices_checks(repo_root)
     violations += run_license_checks(repo_root)
+    violations += run_readme_checks(repo_root)
     violations += run_framework_checks(repo_root)
     violations += run_frontmatter_checks(repo_root)
     violations += run_catalog_checks(repo_root)
@@ -1697,6 +1767,16 @@ def _mutate_license_missing(root):
     path = root / 'LICENSE'
     if path.exists():
         path.unlink()
+
+
+def _mutate_readme_results_pointer_missing(root):
+    """Delete every line of the copied real README.md that contains the
+    results-pointer path, leaving everything else in place -- the mutation
+    targets exactly what the check reads."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if README_RESULTS_POINTER not in l]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
 def _mutate_framework_statement_missing(root):
@@ -1927,6 +2007,7 @@ MUTATIONS = [
     ('pointer-duplicated', "append a second copy of the canonical pointer line to README.md", _mutate_pointer_duplicated),
     ('pointer-unparseable', "remove the Attribution pointer heading from NOTICES.md", _mutate_pointer_unparseable),
     ('license-missing', "delete the LICENSE file from the repository root", _mutate_license_missing),
+    ('readme-results-pointer-missing', "delete every line of README.md containing the results-pointer path", _mutate_readme_results_pointer_missing),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
     ('catalog-id-drift', "delete one PF data row from references/checklist.md's PF rules table", _mutate_catalog_id_drift),
     ('catalog-opening-rule-count', "add a second PF-0 rule to NUMBERING.md and checklist.md, violating CAT-03's exactly-one requirement", _mutate_catalog_opening_rule_count),
@@ -2780,6 +2861,8 @@ def self_test():
         unparseable_root = tmp_root / 'unparseable'
         escaping_root = tmp_root / 'escaping'
         bad_license_root = tmp_root / 'bad_license'
+        readme_good_root = tmp_root / 'readme_good'
+        readme_bad_root = tmp_root / 'readme_bad'
         bad_frameworks_root = tmp_root / 'bad_frameworks'
         bad_catalog_root = tmp_root / 'bad_catalog'
         good_catalog_root = tmp_root / 'good_catalog'
@@ -2853,6 +2936,13 @@ def self_test():
         _write(bad_license_root / 'NOTICES.md', _good_notices())
         _write(bad_license_root / 'carrier-ok.md', "Test pointer string.\n")
         # Deliberately omit LICENSE file
+
+        # README results-pointer fixtures (CR-02): readme_good_root's
+        # README.md carries the literal results-pointer path, so the check
+        # stays silent; readme_bad_root's omits it, so the check fires
+        # exactly once naming README.md.
+        _write(readme_good_root / 'README.md', "See evals/conformance/RESULTS-mod04.md for the committed measurement.\n")
+        _write(readme_bad_root / 'README.md', "This README does not point at any results file.\n")
 
         # Sixth root tests framework-statement-missing
         _write(bad_frameworks_root / 'NUMBERING.md', _good_numbering())
@@ -3018,6 +3108,8 @@ def self_test():
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
         escaping_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(escaping_root)}
         bad_license_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_license_root)}
+        readme_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_good_root)}
+        readme_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_bad_root)}
         bad_frameworks_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_frameworks_root)}
         bad_catalog_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_catalog_root)}
         good_catalog_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_catalog_root)}
@@ -3063,7 +3155,8 @@ def self_test():
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
         bad_codes |= (
-            unparseable_codes | escaping_codes | bad_license_codes | bad_frameworks_codes
+            unparseable_codes | escaping_codes | bad_license_codes | readme_bad_codes
+            | bad_frameworks_codes
             | bad_catalog_codes | fm_bad_codes | fm_dupkey_codes | fm_overmax_codes
             | line501_codes | count_unstated_codes | count_mismatch_codes | subblock_codes
             | token_bad_codes | opening_bad_codes | mc_bad_codes
@@ -3176,6 +3269,14 @@ def self_test():
             all_ok = False
         if 'skill-family-line-gate-missing' in good_catalog_codes:
             print("FAIL: skill-family-line-gate-missing fired on a SKILL.md with no self-check section at all")
+            all_ok = False
+
+        # README results-pointer assertions.
+        if 'readme-results-pointer-missing' in readme_good_codes:
+            print("FAIL: readme-results-pointer-missing fired on a README containing the results pointer")
+            all_ok = False
+        if 'readme-results-pointer-missing' not in readme_bad_codes:
+            print("FAIL: readme-results-pointer-missing did not fire on a README missing the results pointer")
             all_ok = False
 
         # Source-label assertions.

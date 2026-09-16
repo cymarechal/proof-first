@@ -42,6 +42,9 @@ What does not exist yet:
 - The worked before-and-after examples.
 - A run evaluation benchmark (the pressure-test method exists; no observations are recorded yet).
 
+This repository's one committed measurement, and its caveats, live in
+`evals/conformance/RESULTS-mod04.md`.
+
 No measured claim is published in this repository yet. The benchmark has not run. Any number
 this README ever carries in the future will be sourced from committed benchmark results, and it
 will state the model versions and the date it was produced.
