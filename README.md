@@ -29,6 +29,11 @@ What exists today:
 - `examples/deal-brief.md` — the one canonical fictional deal every worked example cites.
 - `evals/pressure-tests.md` — the trigger-pressure-test method; no observation has been recorded
   yet, see the file itself.
+- `evals/conformance/run_conformance.py` — a stdlib-only, self-testing scorer that drives live
+  sessions against the shipped skill and checks whether each one names its artifact family before
+  drafting, the write-mode conformance contract this repository calls MOD-04.
+- `evals/conformance/RESULTS-mod04.md` — this repository's one committed measurement, a MOD-04
+  write-mode conformance run, with its own caveats stated in the file.
 - `LICENSE` — the MIT grant.
 - `NOTICES.md` — the trademark and attribution posture.
 - `SOURCES.md` — the approved-source list and the paraphrase boundary.
@@ -40,12 +45,22 @@ What does not exist yet:
 - The output style.
 - The paste-able system prompt.
 - The worked before-and-after examples.
-- A run evaluation benchmark (the pressure-test method exists; no observations are recorded yet).
+- Phase 5's skill-on/skill-off, multi-model, judge-scored persuasion benchmark (the pressure-test
+  method exists; no observations are recorded yet).
 
-This repository's one committed measurement, and its caveats, live in
-`evals/conformance/RESULTS-mod04.md`.
+One measurement exists in this repository: a write-mode conformance measurement of whether a live
+session names its artifact family before drafting, reproducible from the committed, stdlib-only
+`evals/conformance/run_conformance.py` script. Its figures, exclusions, and caveats live in
+`evals/conformance/RESULTS-mod04.md` — read that file before trusting anything downstream of it.
+At minimum: both measured models are Anthropic-hosted, the harness gives no determinism guarantee
+(no temperature or seed flag), the two measurement arms have unequal sample sizes and are not
+directly comparable to each other or to earlier ad-hoc figures, and every figure recorded before
+this project's own scorer-anchoring fix (see that file's "Scorer anchoring correction (CR-01)"
+section) is an optimistic, unrecoverable ceiling.
 
-No measured claim is published in this repository yet. The benchmark has not run. Any number
+This is not the persuasion benchmark. The skill-on/skill-off, multi-model, judge-scored benchmark
+that will eventually let this README state a headline persuasion or quality number is Phase 5's
+and has not run. No persuasion or quality claim is made anywhere in this repository. Any number
 this README ever carries in the future will be sourced from committed benchmark results, and it
 will state the model versions and the date it was produced.
 
@@ -73,7 +88,12 @@ proof-first/
 │   ├── deal-brief.md                   (exists)
 │   └── before-after.md                 (planned)
 ├── evals/
-│   └── pressure-tests.md
+│   ├── pressure-tests.md
+│   └── conformance/                     (exists)
+│       ├── run_conformance.py          (exists)
+│       ├── fixtures/                   (exists)
+│       ├── transcripts/                (exists)
+│       └── RESULTS-mod04.md            (exists)
 ├── .claude-plugin/                     (planned)
 ├── tools/
 │   └── check_repo.py                   (exists)
