@@ -133,6 +133,25 @@ blocked: 0
     condition conformed 4/4, so the omission is sampling variance rather than an
     artifact of the harness preamble both failures happened to open with.
     Recorded as WINDOWS.md entry 8. MOD-04 stays `[ ]`.
+
+    03-08-PLAN.md measurement (2026-09-15/16), a DIFFERENT recipe from the two figures
+    above -- 03-06's committed instrument (evals/conformance/run_conformance.py), its
+    own fixture set and prompt, not directly comparable to the 5/6 or 14/16 figures.
+    Post-03-07 (family line made unconditional, self-check gate added): 16 of 20
+    scoreable write-mode sessions conformant across claude-sonnet-5 and claude-opus-5,
+    five fixtures, two repeats (measured SKILL.md blob
+    9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a). A same-instrument, same-model paired
+    baseline against the pre-03-07 skill (blob 1fc1e1092941157191268a8294ab4e1edc65cdac,
+    commit 6f62385) measured 5 of 11 scoreable sonnet-5-only sessions conformant.
+    Restricted to sonnet-5 on both sides for a like-for-like comparison: 6 of 10 (60.0%)
+    post-03-07 versus 5 of 11 (45.5%) pre-03-07 -- a real, measured improvement from
+    03-07's levers, still short of the 87.5% bar the pre-committed decision rule uses.
+    Zero sessions in either arm omitted the family line entirely (no genuine no-family
+    verdict); every non-conformant session cited a rule marker before naming the family
+    (rule-before-family), the actual residual failure mode. Instruction-text changes
+    (03-05, 03-07) have now been tried and measured twice under two different recipes;
+    both times the rate stayed under the closure bar this rule uses. MOD-04 stays `[ ]`.
+    Full run-by-run evidence: evals/conformance/RESULTS-mod04.md.
   reason: "User reported: 14 of 15 live sessions conformed; one write-mode session cited PF-2.17, PF-2.15 and PF-1.17 before stating any family, and stopped to await a 'proceed' reply instead of drafting"
   severity: major
   test: 2

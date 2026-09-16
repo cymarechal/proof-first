@@ -341,3 +341,105 @@ Measured SKILL.md blob SHA: `1fc1e1092941157191268a8294ab4e1edc65cdac`
 
 conformant 1 of 1 scoreable sessions
 unscoreable 0 sessions
+
+## Combined result (03-08-PLAN.md, computed by hand from the run blocks above)
+
+This measurement was driven as many small single-session invocations rather than one large
+matrix invocation, because two earlier attempts at a single large invocation each lost their
+entire result when the invoking process was interrupted mid-run (a Claude Code session-usage
+limit, then a Claude Code session teardown) -- `run_conformance.py` only appends its run block
+when a whole invocation finishes, so one long invocation risks losing everything it ran. Each
+block above is genuine, durable (committed the moment it landed), and traceable to its own
+timestamp. This section aggregates them by hand; the arithmetic below is checkable against the
+run blocks above by anyone, without re-running anything.
+
+### Arm 1 -- post-03-07 skill (both models, the plan's required measurement)
+
+Blob SHA `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a` (commit `4715d43`, the last commit before
+this plan's own two instrument-fix commits). Aggregated from every non-invalidated run block
+above whose blob SHA is `9612649e...`, EXCLUDING the block timestamped
+`2026-09-15T09:13:03.455562+00:00Z` -- that block's SHA field was itself the manifestation of
+the blob-SHA bug fixed in this plan (it actually exercised the pre-03-07 skill via
+`--skill-src` and belongs to Arm 2 below; see the CORRECTION note on that block).
+
+- claude-sonnet-5: 12 attempted (5 fixtures x 2 repeats = 10 planned, plus 2 extra
+  `A-rfp-answer` retries after the first repeats=2 invocation timed out on both repeats), 2
+  unscoreable (both `A-rfp-answer`, both `reason=timeout`, from that first invocation), 10
+  scoreable: 6 conformant, 4 rule-before-family, 0 no-family.
+- claude-opus-5: 5 fixtures x 2 repeats attempted = 10 attempted, 0 unscoreable, 10 scoreable:
+  10 conformant, 0 rule-before-family, 0 no-family.
+
+**conformant 16 of 20 scoreable sessions** (both models, 2 excluded as unscoreable: timeout x2)
+Rate: 16/20 = 80.0%.
+
+### Arm 2 -- paired baseline, pre-03-07 skill (claude-sonnet-5 only)
+
+Blob SHA `1fc1e1092941157191268a8294ab4e1edc65cdac` (commit `6f62385`, the last commit before
+`03-07` Task 1 -- materialised via `git archive 6f62385 skills/proof-first` into a directory
+outside the repository, passed as `--skill-src`). Same fixtures, same prompt template, same
+fixed instrument as Arm 1. Includes `03-06-PLAN.md`'s own instrument-proving run
+(`2026-09-15T02:47:51.963922Z`) as one extra genuine `A-rfp-answer` sample -- it measured the
+same skill state via the same recipe, before the returncode bug existed, and scored a normal
+verdict (not the bug's failure signature), so excluding it would discard real data for no
+reason.
+
+- claude-sonnet-5 only: 13 attempted (1 extra `A-rfp-answer` sample from 03-06, plus 2 planned
+  repeats each of 5 fixtures = 10, plus one retried session after the corrected-SHA timeout and
+  one retried after a transient network failure -- 13 total distinct invocations), 2
+  unscoreable (`A-rfp-answer repeat=0` timeout at `09:13:03`, `E-ambiguous repeat=0` nonzero
+  exit at `09:59:01`, both retried successfully), 11 scoreable: 5 conformant, 6
+  rule-before-family, 0 no-family.
+- claude-opus-5: NOT RUN. Per coordinator direction, given real quota/interruption risk already
+  encountered twice in this plan, a sonnet-5-only paired baseline was accepted as a defensible
+  same-instrument comparison rather than attempting a second 10-session opus arm. This means
+  Arm 1 (n=20, both models) and Arm 2 (n=11, one model) have unequal sample sizes, and Arm 2
+  cannot speak to whether claude-opus-5's pre-03-07 behaviour differed from claude-sonnet-5's --
+  only Arm 1 covers opus-5, and only against the post-fix skill.
+
+**conformant 5 of 11 scoreable sessions** (claude-sonnet-5 only, 2 excluded as unscoreable:
+1 timeout, 1 transient network failure)
+Rate: 5/11 = 45.5%.
+
+### What this comparison shows and does not show
+
+Restricting Arm 1 to sonnet-5 only, for a like-for-like same-model comparison against Arm 2
+(which is sonnet-5 only): 6 conformant of 10 scoreable = 60.0%. Paired against Arm 2's 5 of 11
+= 45.5%, that is a same-instrument, same-model, same-fixture-set improvement of roughly 14.5
+percentage points (45.5% -> 60.0%) attributable to 03-07's two levers. It is a real,
+measured, non-trivial improvement -- and it still falls short of the 87.5% bar the
+pre-committed decision rule uses as its closure threshold.
+
+Comparing the FULL Arm 1 (both models, 16/20 = 80.0%) against the sonnet-only Arm 2 (5/11 =
+45.5%) instead mixes a model-count difference into the comparison and must not be read as "the
+fix improved things from 45.5% to 80.0%" -- that apparent 34.5-point jump is inflated by
+opus-5's 10/10 perfect score, which has no pre-03-07 opus-5 baseline to compare against (opus-5
+was never measured pre-03-07 in this plan; see the NOT RUN note under Arm 2 above). The
+defensible same-instrument finding is the sonnet-only one: 45.5% -> 60.0%, not 45.5% -> 80.0%.
+
+### Caveats (permanent part of this file, not trimmed once numbers looked favourable)
+
+- Both models are Anthropic-hosted (`claude-sonnet-5`, `claude-opus-5`); this says nothing
+  about a non-Anthropic harness.
+- `claude -p` exposes no temperature or seed flag; this run is not deterministic and a repeat
+  can differ, as several of the paired same-fixture repeats above already show (both
+  conformant and non-conformant verdicts on the identical fixture and model).
+- The user-level configuration under the home directory still loads, because `--bare` is
+  deliberately off, matching the condition the prior 5/6 and 14/16 measurements ran under.
+- This fixture set, prompt template, and scoring recipe (`evals/conformance/run_conformance.py`,
+  built in `03-06-PLAN.md`) are DIFFERENT from `03-05-PLAN.md`'s UAT recipe that produced the
+  5/6 and 14/16 figures cited elsewhere in this project (`WINDOWS.md` entry 8,
+  `REQUIREMENTS.md` MOD-04, `03-UAT.md` gap G-03-2). The 16/20 and 5/11 figures here are NOT
+  directly comparable to 5/6 or 14/16 -- different fixtures, different prompt, different
+  scoring implementation. They are compared only to the pre-committed rule's 0.875 threshold
+  (itself carried over from the 14/16 figure) and to each other (same-instrument paired
+  design), never conflated with the older numbers as if measuring the same thing.
+- Two real instrument defects were found and fixed while producing this data (both documented
+  above and in `run_conformance.py`'s own commit history): a nonzero-exit `claude -p` session
+  being scored as `no-family` instead of `unscoreable`, and `_git_blob_sha()` reporting the
+  wrong SKILL.md revision for any `--skill-src` other than the repo's own HEAD. Both are fixed
+  and self-test-covered before any of the data in this Combined Result section was collected
+  under the fixed code.
+- The exclusion rate itself is a caveat: Arm 1 excluded 2 of 22 attempted sessions (9.1%),
+  Arm 2 excluded 2 of 13 attempted (15.4%). Every exclusion is a timeout or a transient network
+  failure, none is a `claude -p` session that ran to completion and produced ambiguous output --
+  see each run block's `reason=` field above for the individual cause.
