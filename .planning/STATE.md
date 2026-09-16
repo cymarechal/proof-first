@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: Completeness Audit & Artifact Patterns
 status: executing
-stopped_at: Completed 03-13-PLAN.md (instrument durability fix CR-01, Arm A enumeration correction WR-01)
-last_updated: "2026-09-16T10:42:39.756Z"
+stopped_at: Completed 03-14-PLAN.md (results-breakdown-count-mismatch WR-01 gap closure, WR-02 case-parity fix, IN-01 docstring fix)
+last_updated: "2026-09-16T10:58:48.835Z"
 last_activity: 2026-09-16
 last_activity_desc: Phase 03 execution started
-state_head: dc8f899c23bbe0d4abb2e10c3f15543680ef5244
+state_head: 78132e979873e2bd1295c8b5784e6e5641a48e60
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 31
-  completed_plans: 29
+  completed_plans: 30
   percent: 17
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03 (Completeness Audit & Artifact Patterns) — EXECUTING
-Plan: 2 of 15
+Plan: 3 of 15
 Status: Ready to execute
 Last activity: 2026-09-16 — Phase 03 execution started
 
@@ -87,6 +87,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 03 P11 | 20 min | 2 tasks | 2 files |
 | Phase 03 P12 | ~3h (interrupted/resumed) | 3 tasks | 4 files |
 | Phase 03-completeness-audit-artifact-patterns P13 | 10min | 2 tasks | 2 files |
+| Phase 03 P14 | 25min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -148,6 +149,7 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-11: Extended SKILL.md's self-check first pass from a presence gate to an ordering gate (re-scan the drafted response, confirm no PF-/MC- marker precedes the artifact-family line, repair before returning), paid for by deleting four named rationale clauses, holding 177 tokens of headroom. Added skill-family-order-gate-missing (31st discrimination-proven check_repo.py code). MOD-04 stays [ ] -- this plan implements a lever; 03-12 measures it.
 - [Phase 03]: 03-12: Anchored MOD-04 remeasurement selected Branch 4 by arithmetic -- Arm A (post-03-11 ordering-gate lever) 3/10 (30.0%) vs Arm B (paired pre-03-11 baseline) 4/10 (40.0%), a -10.0pp delta. WINDOWS.md entry 8 waived as an accepted, disclosed residual (not fixed); MOD-04 stays [ ]. Written disposition states the true finding (a decline, not flat movement) rather than reproducing the branch template's "did not move" phrase, per 03-08's precedent, while disclosing the delta is within plausible sampling noise at n=10 per arm.
 - [Phase 03]: 03-13: run_conformance.py made per-session durable (run_matrix()/_write_result_line(), closing 03-REVIEW.md CR-01); RESULTS-mod04.md's Arm A no-family enumeration corrected to name all 7 sessions (WR-01) and a dated durability-fix section added. No figure changes, MOD-04 stays unchecked.
+- [Phase 03]: 03-14: results-breakdown-count-mismatch added (32nd discrimination-proven check_repo.py code), guarding RESULTS-mod04.md's verdict-breakdown bullets against stated-count/enumeration disagreement (WR-01 gap closure); WR-02 (family-gate case-sensitivity asymmetry) and IN-01 (stale token-budget docstring claim) both closed. MOD-04/AUD-02/MOD-05 all stay unchecked -- this plan closes no requirement.
 
 ### Pending Todos
 
@@ -172,6 +174,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-16T10:42:30.340Z
-Stopped at: Completed 03-13-PLAN.md (instrument durability fix CR-01, Arm A enumeration correction WR-01)
+Last session: 2026-09-16T10:58:48.689Z
+Stopped at: Completed 03-14-PLAN.md (results-breakdown-count-mismatch WR-01 gap closure, WR-02 case-parity fix, IN-01 docstring fix)
 Resume file: None
