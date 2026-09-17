@@ -417,6 +417,31 @@ Violation codes implemented in this file:
                       cited rule is the correct one for that rewrite.
                       Validity of the token itself is undefined-id's job;
                       this check asserts presence only.
+  example-sentence-length - a ✓ column line in either file named by
+                      EXAMPLE_PROSE_PATHS (examples/before-after.md or
+                      skills/proof-first/references/worked-examples.md)
+                      carries a sentence over PF41_WORD_CEILING (25)
+                      words, PF-4.1's own stated ceiling, counted as
+                      words delimited by whitespace after bracketed
+                      marker spans are removed -- one stated definition,
+                      not an implied one. Fires once per over-ceiling
+                      sentence, naming the file, the measured word
+                      count, the ceiling, and the sentence's opening
+                      words. Absence of a path is not a violation,
+                      checked before any read. Declared ceiling: only
+                      lines beginning with the check character are
+                      inspected -- a ✗ column is the deliberately
+                      non-compliant exhibit its pair exists to contrast
+                      against, and holding it to the rule would delete
+                      the contrast; bracketed marker spans are removed
+                      before counting, so a long marker never forces a
+                      split; sentence boundaries are a period, question
+                      mark, or exclamation mark followed by whitespace,
+                      so an abbreviation carrying an internal period
+                      splits a sentence early and undercounts; and this
+                      check enforces PF-4.1 alone, saying nothing about
+                      PF-4.2's active voice, PF-4.3's modal discipline,
+                      or any other prose-mechanics rule.
   publish-location-drift - the GitHub owner segment stated by this
                       repository's own carriers of its publish location
                       (plugin.json's and marketplace.json's `homepage`,
@@ -545,6 +570,22 @@ PLUGIN_MANIFEST_PATH = '.claude-plugin/plugin.json'
 MARKETPLACE_MANIFEST_PATH = '.claude-plugin/marketplace.json'
 
 BEFORE_AFTER_PATH = 'examples/before-after.md'
+
+# The repository's two example-prose files, both of which carry ✗/✓ quoted
+# columns (Phase 4, 04-07). The first element is composed from
+# BEFORE_AFTER_PATH rather than a second copy of the same literal.
+EXAMPLE_PROSE_PATHS = (
+    BEFORE_AFTER_PATH,
+    'skills/proof-first/references/worked-examples.md',
+)
+
+# PF-4.1's own stated ceiling ("No sentence runs longer than 25 words").
+# This value must track that rule's own text -- changing it here without
+# changing the rule would put the checker and the catalog into disagreement.
+PF41_WORD_CEILING = 25
+
+MARKER_SPAN_RE = re.compile(r'\[[^\]]*\]')
+SENTENCE_SPLIT_RE = re.compile(r'(?<=[.?!])\s+')
 
 
 def strip_fences(text):
@@ -2112,13 +2153,59 @@ def check_before_after_citations(repo_root):
     return violations
 
 
-EXAMPLE_CHECK_CODES = ['before-after-family-missing', 'before-after-citation-missing']
+def check_example_sentence_length(repo_root):
+    """For each path in EXAMPLE_PROSE_PATHS that exists, require every ✓
+    column sentence to obey PF-4.1's 25-word ceiling (PF41_WORD_CEILING).
+    Returns an empty list before any read for a path that does not exist.
+
+    Declared ceiling: only lines beginning with the check character are
+    inspected -- a ✗ column is the deliberately non-compliant exhibit its
+    pair exists to contrast against, and holding it to the rule would
+    delete the contrast; bracketed marker spans are removed before
+    counting, so a long marker never forces a split, a stated definition
+    rather than an implied one; sentence boundaries are a period,
+    question mark, or exclamation mark followed by whitespace, so an
+    abbreviation carrying an internal period splits a sentence early and
+    undercounts; and this check enforces PF-4.1 alone, saying nothing
+    about PF-4.2's active voice, PF-4.3's modal discipline, or any other
+    prose-mechanics rule."""
+    violations = []
+    for rel_path in EXAMPLE_PROSE_PATHS:
+        path = repo_root / rel_path
+        if not path.exists():
+            continue
+        rel = path.relative_to(repo_root)
+        text = strip_fences(path.read_text(encoding='utf-8'))
+        for line in text.splitlines():
+            if not line.startswith('✓'):
+                continue
+            body = line[1:].strip()
+            if body.startswith('"') and body.endswith('"') and len(body) >= 2:
+                body = body[1:-1]
+            body = MARKER_SPAN_RE.sub('', body)
+            for sentence in SENTENCE_SPLIT_RE.split(body):
+                words = sentence.split()
+                if len(words) > PF41_WORD_CEILING:
+                    prefix = ' '.join(words[:8])
+                    violations.append((str(rel), (
+                        f"example-sentence-length {rel} carries a {len(words)}-word "
+                        f"sentence over PF-4.1's {PF41_WORD_CEILING}-word ceiling: "
+                        f"\"{prefix} ...\""
+                    )))
+    return violations
+
+
+EXAMPLE_CHECK_CODES = [
+    'before-after-family-missing', 'before-after-citation-missing',
+    'example-sentence-length',
+]
 
 
 def run_example_checks(repo_root):
     violations = []
     violations += check_before_after_families(repo_root)
     violations += check_before_after_citations(repo_root)
+    violations += check_example_sentence_length(repo_root)
     return violations
 
 
@@ -3288,6 +3375,29 @@ def _mutate_readme_before_after_order(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_example_sentence_length(root):
+    """Insert one additional sentence of 30 repeated filler words
+    immediately before the closing quotation mark of the ✓ line under
+    '## Executive summary' in the copied real examples/before-after.md,
+    mutating only the copy. Does not touch worked-examples.md: one file
+    is enough to demonstrate discrimination, and the self-test already
+    proves the second path is read."""
+    path = root / BEFORE_AFTER_PATH
+    lines = path.read_text(encoding='utf-8').splitlines()
+    heading = '## Executive summary'
+    start = next(i for i, l in enumerate(lines) if l.strip() == heading)
+    end = len(lines)
+    for j in range(start + 1, len(lines)):
+        if lines[j].startswith('## '):
+            end = j
+            break
+    check_idx = next(j for j in range(start, end) if lines[j].startswith('✓'))
+    filler_sentence = ' '.join(['filler'] * 30) + '.'
+    line = lines[check_idx].rstrip()
+    lines[check_idx] = line[:-1] + ' ' + filler_sentence + '"'
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -3330,6 +3440,7 @@ MUTATIONS = [
     ('derivative-rule-coverage-incomplete', "delete one '### PF-' rule heading line from the real prompts/system-prompt.md, leaving its body in place", _mutate_derivative_rule_coverage),
     ('readme-install-path-missing', "delete every line of the real README.md containing the skills-CLI install command prefix", _mutate_readme_install_path_missing),
     ('readme-before-after-order', "move the real README.md's '## Before and after' heading line to immediately after its '## Status' heading line", _mutate_readme_before_after_order),
+    ('example-sentence-length', "insert one 30-word filler sentence into the real examples/before-after.md's Executive summary ✓ line, past PF-4.1's 25-word ceiling", _mutate_example_sentence_length),
 ]
 
 
@@ -4155,16 +4266,19 @@ def _bad_artifact_patterns():
     )
 
 
-def _before_after_section(heading, cross_line=True, check_line=True, citation=None):
+def _before_after_section(heading, cross_line=True, check_line=True, citation=None, check_text=None):
     """Build one '## {heading}' section body for an examples/before-after.md
     fixture. cross_line/check_line control whether the ✗/✓ lines are
     present at all; citation, when given, is appended as its own short
-    line naming a bare PF-/MC- token."""
+    line naming a bare PF-/MC- token; check_text, when given, replaces
+    the default ✓ line's quoted text (existing call sites omitting it
+    keep the original five-word default, unchanged)."""
     lines = [f"## {heading}", ""]
     if cross_line:
         lines.append(f"✗ \"Fixture non-compliant passage for {heading}.\"")
     if check_line:
-        lines.append(f"✓ \"Fixture compliant rewrite for {heading}.\"")
+        text = check_text if check_text is not None else f"Fixture compliant rewrite for {heading}."
+        lines.append(f"✓ \"{text}\"")
     if citation:
         lines.append("")
         lines.append(f"Rules applied: {citation}.")
@@ -4218,6 +4332,34 @@ def _order_bad_before_after():
         _before_after_section('Solution proposal', citation='PF-1.9'),
         _before_after_section('Demo and discovery material', citation='MC-31'),
     ])
+
+
+def _long_sentence_before_after():
+    """All four frozen family headings, each complete and cited, except
+    'Executive summary' carries a ✓ line whose single sentence is built
+    from 30 repeated filler words -- self-evidently over PF41_WORD_CEILING
+    without writing prose whose length has to be counted by eye."""
+    filler_sentence = ' '.join(['filler'] * 30) + '.'
+    return "\n".join([
+        _before_after_section('RFP and RFI response', citation='PF-2.1'),
+        _before_after_section('Solution proposal', citation='PF-1.9'),
+        _before_after_section('Executive summary', citation='PF-1.25', check_text=filler_sentence),
+        _before_after_section('Demo and discovery material', citation='MC-31'),
+    ])
+
+
+def _long_sentence_worked_examples():
+    """A minimal skills/proof-first/references/worked-examples.md-shaped
+    fixture: one '## PF-4.1' heading, one ✗ line, and one ✓ line whose
+    sentence exceeds PF41_WORD_CEILING the same way
+    _long_sentence_before_after's does -- proves the second scan path is
+    genuinely read, not merely listed in EXAMPLE_PROSE_PATHS."""
+    filler_sentence = ' '.join(['filler'] * 30) + '.'
+    return (
+        "## PF-4.1\n\n"
+        "✗ \"Fixture non-compliant exhibit.\"\n"
+        f"✓ \"{filler_sentence}\"\n"
+    )
 
 
 def _good_readme_install():
@@ -4578,6 +4720,9 @@ def self_test():
         beforeafter_bad_root = tmp_root / 'beforeafter_bad'
         beforeafter_order_bad_root = tmp_root / 'beforeafter_order_bad'
 
+        sentence_bad_root = tmp_root / 'sentence_bad'
+        sentence_skill_bad_root = tmp_root / 'sentence_skill_bad'
+
         derivative_good_root = tmp_root / 'derivative_good'
         derivative_bad_root = tmp_root / 'derivative_bad'
 
@@ -4842,6 +4987,20 @@ def self_test():
         _write(beforeafter_bad_root / BEFORE_AFTER_PATH, _bad_before_after())
         _write(beforeafter_order_bad_root / BEFORE_AFTER_PATH, _order_bad_before_after())
 
+        # example-sentence-length fixtures (Phase 4, 04-07 Task 1):
+        # sentence_bad_root carries an over-ceiling ✓ sentence in
+        # examples/before-after.md; sentence_skill_bad_root carries one in
+        # skills/proof-first/references/worked-examples.md, proving the
+        # second scan path is genuinely read and not merely listed in
+        # EXAMPLE_PROSE_PATHS. Neither root ships NUMBERING.md,
+        # examples/deal-brief.md, or a SKILL.md, isolating this code from
+        # every other check the same way the other beforeafter_* roots do.
+        _write(sentence_bad_root / BEFORE_AFTER_PATH, _long_sentence_before_after())
+        _write(
+            sentence_skill_bad_root / 'skills' / 'proof-first' / 'references' / 'worked-examples.md',
+            _long_sentence_worked_examples(),
+        )
+
         # derivative_good_root / derivative_bad_root (skill-derivative-stale,
         # derivative-rule-coverage-incomplete, Phase 4 04-03): each root
         # carries its own NUMBERING.md and its own copy of the five
@@ -4944,6 +5103,9 @@ def self_test():
         beforeafter_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_bad_root)}
         beforeafter_order_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_order_bad_root)}
 
+        sentence_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(sentence_bad_root)}
+        sentence_skill_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(sentence_skill_bad_root)}
+
         derivative_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(derivative_good_root)}
         derivative_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(derivative_bad_root)}
 
@@ -4965,6 +5127,7 @@ def self_test():
             | plugin_marketplace_shape_codes | plugin_publish_drift_codes
             | beforeafter_bad_codes | beforeafter_order_bad_codes
             | derivative_bad_codes | readme_install_bad_codes
+            | sentence_bad_codes | sentence_skill_bad_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -5035,6 +5198,26 @@ def self_test():
             all_ok = False
         if 'before-after-citation-missing' in beforeafter_order_bad_codes:
             print("FAIL: before-after-citation-missing fired on the swapped-heading-order fixture, which cites a token in every section")
+            all_ok = False
+
+        # example-sentence-length assertions (Phase 4, 04-07 Task 1).
+        if 'example-sentence-length' in beforeafter_good_codes:
+            print("FAIL: example-sentence-length fired on the known-good before-after fixture")
+            all_ok = False
+        if 'example-sentence-length' not in sentence_bad_codes:
+            print("FAIL: example-sentence-length did not fire on the over-ceiling examples/before-after.md fixture")
+            all_ok = False
+        if 'example-sentence-length' not in sentence_skill_bad_codes:
+            print("FAIL: example-sentence-length did not fire on the over-ceiling worked-examples.md fixture -- the second scan path is not being read")
+            all_ok = False
+        if 'example-sentence-length' in good_codes:
+            print("FAIL: example-sentence-length fired on a fixture root shipping neither example file")
+            all_ok = False
+        if 'example-sentence-length' in beforeafter_bad_codes:
+            print("FAIL: example-sentence-length fired on beforeafter_bad_root, whose short fixture lines are within the ceiling")
+            all_ok = False
+        if 'example-sentence-length' in beforeafter_order_bad_codes:
+            print("FAIL: example-sentence-length fired on beforeafter_order_bad_root, whose short fixture lines are within the ceiling")
             all_ok = False
 
         if 'catalog-id-drift' in good_catalog_codes:
