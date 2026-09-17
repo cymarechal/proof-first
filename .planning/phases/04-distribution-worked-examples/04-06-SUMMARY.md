@@ -144,7 +144,7 @@ Per this plan's `must_haves.truths`, one truth is explicitly `verification: back
 
 ## Self-Check: PASSED
 
-- `skills/proof-first/references/worked-examples.md` exists on disk and contains `## MC-36` (>= 140 lines: confirmed 148 lines).
+- `skills/proof-first/references/worked-examples.md` exists on disk and contains `## MC-36` (>= 140 lines: confirmed 147 lines).
 - Commits `23f8c7a` and `badfea5` both found in `git log --oneline --all`.
 - All `<acceptance_criteria>` re-run per task (Tasks 1-2) and the plan-level `<verification>` block (6 checks) re-confirmed passing before this SUMMARY was written: self-test PASS, mutation-test PASS (41 codes, 0 unexpected CONTROL, no FIRE-ONLY), check_repo 0 violations, generate_derivatives --check exit 0, whole-file probe `28 39 25 0`, git diff --stat showing 8 changed lines total.
 
