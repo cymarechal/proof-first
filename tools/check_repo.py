@@ -478,6 +478,40 @@ Violation codes implemented in this file:
                       therefore also exempt a cardinal that happens to
                       end a sentence immediately before a capitalised
                       sentence start.
+  example-rule-narration - a ✓ column line in either file named by
+                      EXAMPLE_PROSE_PATHS pairs a listed contrastive
+                      connective (NARRATION_CONNECTIVE_RE: "rather
+                      than", ", not", or "instead of") with one of ten
+                      listed meta terms (NARRATION_META_TERMS) naming
+                      the catalog's own vocabulary for a rule's
+                      rejected alternative, within
+                      NARRATION_WINDOW_CHARS (60) characters of the
+                      connective. Fires at most once per line, naming
+                      the connective and the meta term matched.
+                      Absence of a path is not a violation, checked
+                      before any read. This is an explicitly disclosed
+                      proxy for SKILL.md line 261's "No list of applied
+                      rules follows the prose", never a verdict on it
+                      -- the verdict stays with end-of-phase UAT.
+                      Declared ceiling: it catches one narration shape
+                      only. It does not detect narration phrased as
+                      self-reference to the document's own ordering --
+                      a sentence announcing that the answer stands
+                      first rather than simply placing it first carries
+                      no listed connective and is invisible here; that
+                      instance was found by an adversarial
+                      human-substitute read, was repaired by hand, and
+                      remains a semantic judgement no code in this
+                      repository performs. It does not detect novel
+                      narration built from words absent from the
+                      frozen term list. It will report a legitimate
+                      technical contrast that happens to pair a listed
+                      connective with a listed term, and the repair in
+                      that case is to reword the example rather than to
+                      widen the list. Measured 2026-09-17: 4 of 4 ✓
+                      columns in examples/before-after.md matched
+                      before the 04-05 repair, and 0 of 28 in
+                      worked-examples.md.
   publish-location-drift - the GitHub owner segment stated by this
                       repository's own carriers of its publish location
                       (plugin.json's and marketplace.json's `homepage`,
@@ -629,6 +663,26 @@ SENTENCE_SPLIT_RE = re.compile(r'(?<=[.?!])\s+')
 # "one folder" or "one shared brief".
 SPELLED_CARDINAL_RE = re.compile(
     r'\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b', re.I)
+
+# Three contrastive connectives naming a rejected alternative: the two-word
+# form meaning "in preference to", the comma-plus-negation form, and the
+# two-word form meaning "in place of".
+NARRATION_CONNECTIVE_RE = re.compile(r'rather than|,\s*not\b|instead of', re.I)
+
+# An explicitly-labelled proxy list belonging to this checker only, never
+# to the rule catalog itself -- the catalog's own vocabulary for the
+# alternative a rule rejects. The deletion test remains the standard;
+# this list is a regex proxy for one narrow narration shape, not a
+# restatement of it.
+NARRATION_META_TERMS = (
+    'asserted', 'a claim', 'a capability list', 'a generic strength',
+    'a standard product tour', 'a feature list', 'a paraphrase',
+    'an assertion', 'boilerplate', 'marketing',
+)
+
+# Window width, in characters, within which a meta term must follow a
+# connective for the pair to count as narration.
+NARRATION_WINDOW_CHARS = 60
 
 
 def strip_fences(text):
@@ -2285,9 +2339,63 @@ def check_before_after_spelled_count(repo_root):
     return violations
 
 
+def check_example_rule_narration(repo_root):
+    """For each path in EXAMPLE_PROSE_PATHS that exists, fire on a ✓
+    column line pairing a listed contrastive connective
+    (NARRATION_CONNECTIVE_RE) with one of NARRATION_META_TERMS within
+    NARRATION_WINDOW_CHARS characters of the connective -- one narration
+    shape only, an explicitly disclosed proxy for SKILL.md line 261's
+    "No list of applied rules follows the prose", never a verdict on it.
+    Returns an empty list before any read for a path that does not
+    exist. Fires at most once per line.
+
+    Declared ceiling: it catches one narration shape only. It does not
+    detect narration phrased as self-reference to the document's own
+    ordering -- a sentence announcing that the answer stands first
+    rather than simply placing it first carries no listed connective
+    and is invisible here; that instance was found by an adversarial
+    human-substitute read, was repaired by hand in 04-05, and remains a
+    semantic judgement no code in this repository performs. It does not
+    detect novel narration built from words absent from the frozen term
+    list, the structural limit of any list-based proxy. It will report
+    a legitimate technical contrast that happens to pair a listed
+    connective with a listed term, and the repair in that case is to
+    reword the example rather than to widen the list. It is a proxy for
+    SKILL.md line 261, not a verdict on it; the verdict stays with
+    end-of-phase UAT. Measured 2026-09-17: 4 of 4 ✓ columns in
+    examples/before-after.md matched before the 04-05 repair, and 0 of
+    28 in worked-examples.md."""
+    violations = []
+    for rel_path in EXAMPLE_PROSE_PATHS:
+        path = repo_root / rel_path
+        if not path.exists():
+            continue
+        rel = path.relative_to(repo_root)
+        text = strip_fences(path.read_text(encoding='utf-8'))
+        for line in text.splitlines():
+            if not line.startswith('✓'):
+                continue
+            fired = False
+            for m in NARRATION_CONNECTIVE_RE.finditer(line):
+                window = line[m.end():m.end() + NARRATION_WINDOW_CHARS]
+                for term in NARRATION_META_TERMS:
+                    if term in window.lower():
+                        prefix = ' '.join(line[1:].strip().split()[:8])
+                        violations.append((str(rel), (
+                            f"example-rule-narration {rel} pairs connective "
+                            f"'{m.group(0)}' with meta term '{term}': \"{prefix} ...\""
+                        )))
+                        fired = True
+                        break
+                if fired:
+                    break
+    return violations
+
+
 EXAMPLE_CHECK_CODES = [
     'before-after-family-missing', 'before-after-citation-missing',
     'example-sentence-length', 'before-after-spelled-count',
+    'example-rule-narration',
 ]
 
 
@@ -2297,6 +2405,7 @@ def run_example_checks(repo_root):
     violations += check_before_after_citations(repo_root)
     violations += check_example_sentence_length(repo_root)
     violations += check_before_after_spelled_count(repo_root)
+    violations += check_example_rule_narration(repo_root)
     return violations
 
 
@@ -3510,6 +3619,28 @@ def _mutate_before_after_spelled_count(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_example_rule_narration(root):
+    """Insert one short sentence pairing the 'rather than' connective
+    with the 'a generic strength' meta term immediately before the
+    closing quotation mark of the ✓ line under '## Solution proposal'
+    in the copied real examples/before-after.md, mutating only the
+    copy."""
+    path = root / BEFORE_AFTER_PATH
+    lines = path.read_text(encoding='utf-8').splitlines()
+    heading = '## Solution proposal'
+    start = next(i for i, l in enumerate(lines) if l.strip() == heading)
+    end = len(lines)
+    for j in range(start + 1, len(lines)):
+        if lines[j].startswith('## '):
+            end = j
+            break
+    check_idx = next(j for j in range(start, end) if lines[j].startswith('✓'))
+    narration_sentence = 'This capability is demonstrated rather than a generic strength.'
+    line = lines[check_idx].rstrip()
+    lines[check_idx] = line[:-1] + ' ' + narration_sentence + '"'
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -3554,6 +3685,7 @@ MUTATIONS = [
     ('readme-before-after-order', "move the real README.md's '## Before and after' heading line to immediately after its '## Status' heading line", _mutate_readme_before_after_order),
     ('example-sentence-length', "insert one 30-word filler sentence into the real examples/before-after.md's Executive summary ✓ line, past PF-4.1's 25-word ceiling", _mutate_example_sentence_length),
     ('before-after-spelled-count', "insert 'seven bidders' into the real examples/before-after.md's RFP and RFI response ✓ line, a word-spelled cardinal that routes around unlisted-figure's digit-shaped interface", _mutate_before_after_spelled_count),
+    ('example-rule-narration', "insert a 'rather than a generic strength' narration sentence into the real examples/before-after.md's Solution proposal ✓ line", _mutate_example_rule_narration),
 ]
 
 
@@ -4497,6 +4629,30 @@ def _spelled_count_before_after():
     ])
 
 
+def _rule_narration_before_after():
+    """All four frozen family headings, each complete and cited, except
+    'Solution proposal' carries a ✓ line pairing a listed connective
+    with a listed meta term inside NARRATION_WINDOW_CHARS (the firing
+    path) and 'Demo and discovery material' carries a ✓ line pairing a
+    listed connective with a word absent from NARRATION_META_TERMS (the
+    deliberate silence that keeps the signature composite rather than a
+    bare connective ban) -- exercising both conditions in the same
+    fixture the way _bad_before_after already does for the other
+    example codes."""
+    return "\n".join([
+        _before_after_section('RFP and RFI response', citation='PF-2.1'),
+        _before_after_section(
+            'Solution proposal', citation='PF-1.9',
+            check_text='This capability is demonstrated rather than a generic strength.',
+        ),
+        _before_after_section('Executive summary', citation='PF-1.25'),
+        _before_after_section(
+            'Demo and discovery material', citation='MC-31',
+            check_text='This capability is demonstrated rather than the alternative approach.',
+        ),
+    ])
+
+
 def _good_readme_install():
     """All three ordering headings present in the required order, and all
     four install anchors present -- silent on both
@@ -4861,6 +5017,8 @@ def self_test():
         spelled_bad_root = tmp_root / 'spelled_bad'
         spelled_brief_root = tmp_root / 'spelled_brief'
 
+        narration_bad_root = tmp_root / 'narration_bad'
+
         derivative_good_root = tmp_root / 'derivative_good'
         derivative_bad_root = tmp_root / 'derivative_bad'
 
@@ -5154,6 +5312,14 @@ def self_test():
             (REPO_ROOT / 'examples' / 'deal-brief.md').read_text(encoding='utf-8'),
         )
 
+        # example-rule-narration fixtures (Phase 4, 04-07 Task 3):
+        # narration_bad_root exercises both the firing path (a listed
+        # connective paired with a listed meta term) and the deliberate
+        # silence on a listed connective paired with a non-listed word,
+        # in one fixture. Ships no NUMBERING.md or skills/, isolating
+        # this code the same way the other beforeafter_* roots do.
+        _write(narration_bad_root / BEFORE_AFTER_PATH, _rule_narration_before_after())
+
         # derivative_good_root / derivative_bad_root (skill-derivative-stale,
         # derivative-rule-coverage-incomplete, Phase 4 04-03): each root
         # carries its own NUMBERING.md and its own copy of the five
@@ -5262,6 +5428,8 @@ def self_test():
         spelled_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(spelled_bad_root)}
         spelled_brief_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(spelled_brief_root)}
 
+        narration_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(narration_bad_root)}
+
         derivative_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(derivative_good_root)}
         derivative_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(derivative_bad_root)}
 
@@ -5284,7 +5452,7 @@ def self_test():
             | beforeafter_bad_codes | beforeafter_order_bad_codes
             | derivative_bad_codes | readme_install_bad_codes
             | sentence_bad_codes | sentence_skill_bad_codes
-            | spelled_bad_codes
+            | spelled_bad_codes | narration_bad_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -5389,6 +5557,23 @@ def self_test():
             all_ok = False
         if 'before-after-spelled-count' in spelled_brief_codes:
             print("FAIL: before-after-spelled-count fired on a root shipping only the real examples/deal-brief.md, which is deliberately out of scope")
+            all_ok = False
+
+        # example-rule-narration assertions (Phase 4, 04-07 Task 3).
+        if 'example-rule-narration' not in narration_bad_codes:
+            print("FAIL: example-rule-narration did not fire on the connective-plus-meta-term fixture")
+            all_ok = False
+        if 'example-rule-narration' in beforeafter_good_codes:
+            print("FAIL: example-rule-narration fired on the known-good before-after fixture")
+            all_ok = False
+        if 'example-rule-narration' in good_codes:
+            print("FAIL: example-rule-narration fired on a fixture root shipping no examples/before-after.md")
+            all_ok = False
+        if 'example-rule-narration' in sentence_bad_codes:
+            print("FAIL: example-rule-narration fired on sentence_bad_root, whose fixture carries no connective")
+            all_ok = False
+        if 'example-rule-narration' in spelled_bad_codes:
+            print("FAIL: example-rule-narration fired on spelled_bad_root, whose fixture carries no connective")
             all_ok = False
 
         if 'catalog-id-drift' in good_catalog_codes:
