@@ -1,18 +1,18 @@
 ---
-gsd_state_version: "1.0"
+gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Distribution & Worked Examples
 status: executing
-stopped_at: Completed 04-07-PLAN.md
-last_updated: "2026-09-17T10:00:54.659Z"
+stopped_at: Completed 04-08-PLAN.md
+last_updated: "2026-09-17T10:11:08.146Z"
 last_activity: 2026-09-17
 last_activity_desc: Phase 04 execution started
-state_head: 28a45acdbb3ceef01abed18242e933e560bb7482
+state_head: 67687f28437ca1e8908dd8b6ce7fe8e1ff6e42c5
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 42
-  completed_plans: 39
+  completed_plans: 40
   percent: 33
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 04 (Distribution & Worked Examples) — EXECUTING
-Plan: 4 of 10
+Plan: 5 of 10
 Status: Ready to execute
 Last activity: 2026-09-17 — Phase 04 execution started
 
@@ -98,6 +98,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P05 | 8min | 3 tasks | 2 files |
 | Phase 04 P06 | 12min | 2 tasks | 1 files |
 | Phase 04 P07 | 55min | 3 tasks | 1 files |
+| Phase 04-distribution-worked-examples P08 | 35min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -170,6 +171,7 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-06: worked-examples.md's 8 over-ceiling PF-1.25/PF-2.17/MC-6/MC-11/MC-16/MC-21/MC-31/MC-36 sentences split under PF-4.1's 25-word ceiling; MC-21's review enumeration regrouped (security+legal together, procurement carrying the GAP marker alone) so the marker stayed adjacent to its claim; gate held at 41 codes discrimination-proven throughout. — Same repair class 04-05 applied to examples/before-after.md, extended to the second shipped example file so 04-07's example-sentence-length code can scan both files without narrowing scope around a known breach. A coherent-rewrite backstop truth stays a disclosed, un-mechanised semantic residual.
 - [Phase 04]: 04-07: example-sentence-length, before-after-spelled-count, example-rule-narration registered end to end; mutation-test moved 41 to 44 codes discrimination-proven. Corrected two of the plan's own interfaces-block measurements (deal-brief.md spelled cardinals 12->13, worked-examples.md 3->5) rather than shipping the plan's stated figures in the docstring, filed as WINDOWS.md id 14.
 - [Phase 04]: 04-07: EX-02 stays unchecked despite gsd-tools requirements ready-ids reporting it mechanically ready -- REQUIREMENTS.md's own EX-02 note forbids marking Complete from a SUMMARY's requirements-completed field, and this plan mechanizes only 3 of 7 named UAT gaps (G-04-1/2/4); G-04-3/G-04-5 stay backstop truths, G-04-6/G-04-7 belong to unexecuted 04-08/04-09/04-10.
+- [Phase 04]: 04-08: Repaired all six 04-UAT.md test-4 README defects — before/after pair now leads the file (line 14, was 23), each install route states its own runnability, maintainer instruction moved below Status, layout legend and tree agree (0 stray markers), and two over-broad sentences (catalog-effect claim, models-count caveat) narrowed to what the catalog and RESULTS-mod04.md actually support. — Gate held at 44 codes discrimination-proven throughout; no new violation code registered. WINDOWS.md entry 12 (DIST-06 prose-quality residual) stays open by the plan's own instruction, pending 04-09/end-of-phase verification.
 
 ### Pending Todos
 
@@ -194,6 +196,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-17T10:00:38.161Z
-Stopped at: Completed 04-07-PLAN.md
+Last session: 2026-09-17T10:11:07.858Z
+Stopped at: Completed 04-08-PLAN.md
 Resume file: None

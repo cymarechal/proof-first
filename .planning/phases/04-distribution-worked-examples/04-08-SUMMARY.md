@@ -172,3 +172,11 @@ None — no external service configuration required.
 ---
 *Phase: 04-distribution-worked-examples*
 *Completed: 2026-09-17*
+
+## Self-Check: PASSED
+
+- `README.md` exists on disk.
+- `.planning/phases/04-distribution-worked-examples/04-08-SUMMARY.md` exists on disk.
+- All three commits (`b59dba6`, `6c50822`, `67687f2`) resolve in `git log --oneline --all`.
+- All plan-level `<verification>` commands re-ran clean: `--self-test` PASS, `--mutation-test` reports `44 codes discrimination-proven` with `0 unexpected` CONTROL and no FIRE-ONLY line, `check_repo.py` prints `check_repo: 0 violations`, `generate_derivatives.py --check` exits 0.
+- All task-level `<acceptance_criteria>` re-verified: heading order `['Before and after', 'What this is', 'Install', 'Status', 'Keeping derivatives in sync', ...]`, first `✗` at line 14, `(exists)`/`planned` counts both 0, results-pointer count 2, attribution-pointer count 1, `<owner>/<repo>` count unchanged at 4, `Every rule` count 0, `both measured models` absent with a model identifier present.

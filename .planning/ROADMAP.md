@@ -226,7 +226,7 @@ Plans:
 
 **Gap wave 3** *(blocked on gap wave 2)*
 
-- [ ] 04-08-PLAN.md — README prose repair: lead with the example inside the first screen, state each install route's runnability, move maintainer instruction below Status, narrow the over-broad catalog claim and the model-count caveat, and make the layout legend agree with the tree (G-04-6; 44 codes, unchanged)
+- [x] 04-08-PLAN.md — README prose repair: lead with the example inside the first screen, state each install route's runnability, move maintainer instruction below Status, narrow the over-broad catalog claim and the model-count caveat, and make the layout legend agree with the tree (G-04-6; 44 codes, unchanged)
 
 **Gap wave 4** *(blocked on gap wave 3)*
 
