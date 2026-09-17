@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Distribution & Worked Examples
-status: verifying
-stopped_at: Completed 04-04-PLAN.md
-last_updated: "2026-09-17T08:00:48.817Z"
+status: executing
+stopped_at: Completed 04-05-PLAN.md
+last_updated: "2026-09-17T09:32:15.482Z"
 last_activity: 2026-09-17
 last_activity_desc: Phase 04 execution started
-state_head: 5e0e3ff78dd5db275acefca77e824b53c296df07
+state_head: eb673496dfa14c0eac0c438320277a27b327113c
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 36
-  completed_plans: 36
+  total_plans: 42
+  completed_plans: 37
   percent: 33
 ---
 
@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 04 (Distribution & Worked Examples) — EXECUTING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
+Plan: 2 of 10
+Status: Ready to execute
 Last activity: 2026-09-17 — Phase 04 execution started
 
 Progress: [███░░░░░░░] 33%
@@ -95,6 +95,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P02 | ~55min | 2 tasks | 2 files |
 | Phase 04 P03 | 55min | 3 tasks | 5 files |
 | Phase 04 P04 | 14min | 2 tasks | 2 files |
+| Phase 04 P05 | 8min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -163,6 +164,7 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-02: examples/before-after.md ships four document-level before/after pairs (one per frozen artifact family); before-after-family-missing and before-after-citation-missing make family coverage, pair completeness, family order, and citation presence build failures — discrimination-proven total 35 -> 37. — EX-02's after columns cite real allocated rule IDs and every figure traces to the Canonical figures table; content-quality correctness (does the after column demonstrate the rewrite rather than restate the rule) stays a verification: backstop truth for end-of-phase UAT.
 - [Phase 04]: [Phase 04]: 04-03: Two independent freshness guards built for both generated derivatives (skill-derivative-stale's digest recomputation and generate_derivatives.py --check's byte comparison, P4-14), with the stamp located by pattern rather than physical line number (P4-12) so the output style keeps its YAML frontmatter at line 1 while the system prompt carries the same stamp with none. Mutation-test moved 37 -> 39 discrimination-proven; two Rule 1 deviations found and resolved while running the plan's own acceptance criteria (a composed-tuple regex mismatch fixed in code; an over-broad NUMBERING.md scan in the plan's own verification script documented, no shipped code affected). requirements-completed: [DIST-05] only -- DIST-03/DIST-04's behavioural half stays unverified pending Phase 5's benchmark.
 - [Phase 04]: [Phase 04]: 04-04: README rewritten to lead with a real before/after pair and state all four install routes (skills CLI, Claude Code plugin, output style, system prompt) sharing one publish-location placeholder, made mechanical by readme-install-path-missing and readme-before-after-order — mutation-test total 39 -> 41, closing Phase 4 at nine new codes (32 -> 41 since Phase 3). Two plan-authored acceptance-criteria/interfaces errors documented rather than force-fit (a function-body-scoped literal-reuse scan, and a RESULTS-mod04.md occurrence-count miscount), matching the 03-04/04-01/04-03 precedent. DIST-06's prose-quality half and DIST-01's live-install flow both stay provisional pending end-of-phase UAT / a published repository.
+- [Phase 04]: [Phase 04]: 04-05: All four examples/before-after.md ✓ columns repaired to obey PF-4.1 (25-word sentence ceiling), narrate no rule, and invent no count; Solution proposal recast so PF-1.9 leads with the capability (AWS Control Tower named only as the means afterward); PF-3.3 marker moved off Marcus Feld's trailing quotation onto the vendor-authored retained term "a landing zone the team can actually govern" inside the demo-script sentence. README's reproduced RFP pair kept byte-identical. Gate held at 41 codes discrimination-proven throughout; this plan added no violation code. G-04-3 and G-04-5's semantic judgments stay disclosed verification:backstop residuals, not mechanised here.
 
 ### Pending Todos
 
@@ -187,6 +189,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-17T08:00:39.268Z
-Stopped at: Completed 04-04-PLAN.md
+Last session: 2026-09-17T09:32:15.211Z
+Stopped at: Completed 04-05-PLAN.md
 Resume file: None
