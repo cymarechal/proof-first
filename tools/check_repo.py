@@ -365,8 +365,20 @@ Violation codes implemented in this file:
                       be counted the way its author intended; and it reads
                       one named path, not every results file that might
                       ever exist.
+  plugin-manifest-version-mismatch - a .claude-plugin/plugin.json or
+                      .claude-plugin/marketplace.json states a `version`
+                      that disagrees with skills/*/SKILL.md's frontmatter
+                      `metadata.version`, or either manifest exists while no
+                      skill states a version to compare against. Fires once
+                      per disagreeing manifest, naming both values. Absence
+                      of both manifests is not a violation. Declared
+                      ceiling: this check compares three declared strings
+                      for equality. It says nothing about whether the
+                      version is semantically correct, whether a git tag
+                      exists for it, or whether the manifest installs.
 """
 import argparse
+import json
 import re
 import shutil
 import sys
@@ -383,6 +395,9 @@ POINTER_SECTION = 'Attribution pointer'
 CARRIERS_MARKER = 'Files required to carry it'
 
 SKILL_GLOB = 'skills/*/SKILL.md'
+
+PLUGIN_MANIFEST_PATH = '.claude-plugin/plugin.json'
+MARKETPLACE_MANIFEST_PATH = '.claude-plugin/marketplace.json'
 
 
 def strip_fences(text):
@@ -1149,6 +1164,43 @@ def parse_frontmatter(path):
     return keys, problems
 
 
+METADATA_VERSION_RE = re.compile(r'^version:\s*"?([^"\s]+)"?\s*$', re.MULTILINE)
+
+
+def _skill_metadata_version(skill_path):
+    """Return the version string a SKILL.md's frontmatter `metadata` block
+    states, or None if the file has no `metadata` key or that key's opaque
+    text has no `version:` sub-key. Built on parse_frontmatter, which keeps
+    a nested map's value as opaque indented text (D-33) -- this applies one
+    small, targeted regex over that opaque string rather than adding a
+    general YAML parser."""
+    keys, _ = parse_frontmatter(skill_path)
+    metadata_text = keys.get('metadata', '')
+    m = METADATA_VERSION_RE.search(metadata_text)
+    return m.group(1) if m else None
+
+
+def _load_json_manifest(repo_root, rel_path):
+    """Load a .claude-plugin/*.json manifest with stdlib json only -- these
+    are genuine JSON files, unlike SKILL.md's hand-parsed frontmatter, so no
+    targeted extractor is needed here. Returns (data, error): (None, None)
+    when the file does not exist (absence is not a violation, matching this
+    checker's established posture); (None, message) when the file exists
+    but fails to parse as JSON or does not parse to a JSON object; (data,
+    None) on success."""
+    path = repo_root / rel_path
+    if not path.exists():
+        return None, None
+    text = path.read_text(encoding='utf-8')
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as e:
+        return None, f"{rel_path} is not valid JSON: {e}"
+    if not isinstance(data, dict):
+        return None, f"{rel_path} does not parse to a JSON object"
+    return data, None
+
+
 def _collapse_whitespace(text):
     return ' '.join(text.split())
 
@@ -1802,10 +1854,84 @@ def run_catalog_checks(repo_root):
     return violations
 
 
+# ---------------------------------------------------------------------------
+# .claude-plugin/plugin.json and .claude-plugin/marketplace.json (Phase 4,
+# 04-01) -- the Claude Code plugin distribution channel.
+# ---------------------------------------------------------------------------
+
+def check_plugin_manifest_version(repo_root):
+    """Compare each existing plugin manifest's stated `version` against
+    skills/proof-first/SKILL.md's frontmatter `metadata.version`, the
+    source of truth NUMBERING.md already names for this obligation.
+    Returns an empty list before any read when neither manifest exists.
+    Fires once per manifest whose version disagrees with the skill's, and
+    once per manifest when the skill states no version to compare against
+    at all. A manifest that fails to parse as JSON is silently skipped
+    here -- that is plugin-manifest-invalid's job, not this code's."""
+    plugin_exists = (repo_root / PLUGIN_MANIFEST_PATH).exists()
+    marketplace_exists = (repo_root / MARKETPLACE_MANIFEST_PATH).exists()
+    if not plugin_exists and not marketplace_exists:
+        return []
+
+    skill_version = None
+    for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
+        v = _skill_metadata_version(skill_path)
+        if v is not None:
+            skill_version = v
+            break
+
+    violations = []
+
+    plugin_data, plugin_error = _load_json_manifest(repo_root, PLUGIN_MANIFEST_PATH)
+    if plugin_data is not None and plugin_error is None:
+        manifest_version = plugin_data.get('version')
+        if skill_version is None:
+            violations.append((PLUGIN_MANIFEST_PATH, (
+                f"plugin-manifest-version-mismatch {PLUGIN_MANIFEST_PATH} states version "
+                f"'{manifest_version}', but no skills/*/SKILL.md states a metadata.version "
+                f"to compare against"
+            )))
+        elif manifest_version != skill_version:
+            violations.append((PLUGIN_MANIFEST_PATH, (
+                f"plugin-manifest-version-mismatch {PLUGIN_MANIFEST_PATH} states version "
+                f"'{manifest_version}', but the skill frontmatter states '{skill_version}'"
+            )))
+
+    marketplace_data, marketplace_error = _load_json_manifest(repo_root, MARKETPLACE_MANIFEST_PATH)
+    if marketplace_data is not None and marketplace_error is None:
+        plugins = marketplace_data.get('plugins')
+        entry_version = None
+        if isinstance(plugins, list) and plugins and isinstance(plugins[0], dict):
+            entry_version = plugins[0].get('version')
+        if skill_version is None:
+            violations.append((MARKETPLACE_MANIFEST_PATH, (
+                f"plugin-manifest-version-mismatch {MARKETPLACE_MANIFEST_PATH} states version "
+                f"'{entry_version}', but no skills/*/SKILL.md states a metadata.version to "
+                f"compare against"
+            )))
+        elif entry_version != skill_version:
+            violations.append((MARKETPLACE_MANIFEST_PATH, (
+                f"plugin-manifest-version-mismatch {MARKETPLACE_MANIFEST_PATH} states version "
+                f"'{entry_version}', but the skill frontmatter states '{skill_version}'"
+            )))
+
+    return violations
+
+
+PLUGIN_CHECK_CODES = ['plugin-manifest-version-mismatch']
+
+
+def run_plugin_checks(repo_root):
+    violations = []
+    violations += check_plugin_manifest_version(repo_root)
+    return violations
+
+
 ALL_CHECK_CODES = (
     ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
     + LICENSE_CHECK_CODES + README_CHECK_CODES + RESULTS_CHECK_CODES
     + FRAMEWORK_CHECK_CODES + FRONTMATTER_CHECK_CODES + CATALOG_CHECK_CODES
+    + PLUGIN_CHECK_CODES
 )
 
 
@@ -1824,6 +1950,7 @@ def run_all_checks(repo_root):
     violations += run_framework_checks(repo_root)
     violations += run_frontmatter_checks(repo_root)
     violations += run_catalog_checks(repo_root)
+    violations += run_plugin_checks(repo_root)
     return violations
 
 
@@ -1863,7 +1990,7 @@ KNOWN_OPEN_VIOLATIONS = frozenset()
 # instances of it.
 # ---------------------------------------------------------------------------
 
-MUTATION_SOURCES = ('LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools', 'skills', 'evals')
+MUTATION_SOURCES = ('LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools', 'skills', 'evals', '.claude-plugin')
 
 
 def _copy_repo_subset(repo_root, dest):
@@ -2276,6 +2403,16 @@ def _mutate_source_label_in_skill_content(root):
     path.write_text(text, encoding='utf-8')
 
 
+def _mutate_plugin_manifest_version_mismatch(root):
+    """Change the copied real .claude-plugin/plugin.json's version so it no
+    longer equals skills/proof-first/SKILL.md's frontmatter metadata.version,
+    mutating only the copy."""
+    path = root / PLUGIN_MANIFEST_PATH
+    data = json.loads(path.read_text(encoding='utf-8'))
+    data['version'] = '9.9.9'
+    path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+
+
 def _mutate_catalog_opening_rule_count(root):
     """Add a second PF-0 rule to both NUMBERING.md and the checklist, violating
     CAT-03 which requires exactly one opening rule resolving the Before-scenario /
@@ -2326,6 +2463,7 @@ MUTATIONS = [
     ('skill-family-line-gate-missing', "delete the family-line pass item from the real skills/proof-first/SKILL.md's self-check section, leaving the heading and other two passes in place", _mutate_skill_family_line_gate_missing),
     ('skill-family-order-gate-missing', "replace the ordering pass wording with pre-03-11 presence-only wording in the real skills/proof-first/SKILL.md's self-check section, leaving the family-line presence anchors and other two passes in place", _mutate_skill_family_order_gate_missing),
     ('source-label-in-skill-content', "insert the frozen 'economic buyer' label into the real skills/proof-first/references/artifact-patterns.md", _mutate_source_label_in_skill_content),
+    ('plugin-manifest-version-mismatch', "change the real .claude-plugin/plugin.json version so it no longer equals the skill frontmatter's metadata.version", _mutate_plugin_manifest_version_mismatch),
 ]
 
 
@@ -2794,6 +2932,77 @@ def _overmax_frontmatter():
         "---\n"
         "\n# Overmax skill\n\nBody text.\n"
     )
+
+
+def _plugin_fixture_skill(version):
+    """A minimal, valid SKILL.md fixture at skills/proof-first/ whose
+    frontmatter metadata.version is the given string -- the source of
+    truth the plugin-manifest-version-mismatch fixtures below compare
+    their manifests against."""
+    return (
+        "---\n"
+        "name: proof-first\n"
+        f"description: {'x' * DESCRIPTION_MIN}\n"
+        "license: MIT\n"
+        "metadata:\n"
+        f"  version: \"{version}\"\n"
+        "---\n"
+        "\n# Proof First\n\nBody text.\n"
+    )
+
+
+def _plugin_manifest_json(version, name='proof-first'):
+    return json.dumps({
+        'name': name,
+        'displayName': 'Proof First',
+        'description': 'Fixture description.',
+        'version': version,
+        'author': {'name': 'Test'},
+        'homepage': 'https://github.com/<owner>/<repo>',
+        'repository': 'https://github.com/<owner>/<repo>',
+        'license': 'MIT',
+        'keywords': ['presales'],
+    }, indent=2) + '\n'
+
+
+def _marketplace_manifest_json(version, name='proof-first', source='./'):
+    return json.dumps({
+        'name': name,
+        'owner': {'name': 'Test', 'url': 'https://github.com/<owner>'},
+        'description': 'Fixture description.',
+        'plugins': [{
+            'name': name,
+            'source': source,
+            'displayName': 'Proof First',
+            'description': 'Fixture description.',
+            'version': version,
+            'author': {'name': 'Test'},
+            'homepage': 'https://github.com/<owner>/<repo>',
+            'repository': 'https://github.com/<owner>/<repo>',
+            'license': 'MIT',
+            'keywords': ['presales'],
+        }],
+    }, indent=2) + '\n'
+
+
+def _good_plugin_manifests(root):
+    """A skill fixture stating version '0.1.0' and both manifests agreeing
+    with it and with each other -- silent on plugin-manifest-version-
+    mismatch."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
+    _write(root / MARKETPLACE_MANIFEST_PATH, _marketplace_manifest_json('0.1.0'))
+
+
+def _bad_plugin_manifests(root):
+    """The skill fixture states '0.1.0'; plugin.json states '9.9.9' instead
+    -- disagreeing with its own fixture SKILL.md, so
+    plugin-manifest-version-mismatch must fire naming plugin.json.
+    marketplace.json is left agreeing with the skill so this root isolates
+    the one code under test."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('9.9.9'))
+    _write(root / MARKETPLACE_MANIFEST_PATH, _marketplace_manifest_json('0.1.0'))
 
 
 def _minimal_frontmatter_lines():
@@ -3281,6 +3490,9 @@ def self_test():
 
         family_capitalized_root = tmp_root / 'family_capitalized'
 
+        plugin_good_root = tmp_root / 'plugin_good'
+        plugin_bad_root = tmp_root / 'plugin_bad'
+
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
         _write(bad_root / 'examples' / 'deal-brief.md', _bad_deal_brief())
@@ -3516,6 +3728,13 @@ def self_test():
         _write(family_capitalized_root / 'skills' / 'proof-first' / 'SKILL.md', _capitalized_skill_family_gate())
         _write(family_capitalized_root / 'skills' / 'proof-first' / 'references' / 'checklist.md', _good_checklist())
 
+        # Plugin-manifest-version fixtures (plugin-manifest-version-mismatch,
+        # Phase 4 04-01): plugin_good_root's manifests and skill all state
+        # '0.1.0'; plugin_bad_root's plugin.json states '9.9.9' against its
+        # own fixture SKILL.md's '0.1.0'.
+        _good_plugin_manifests(plugin_good_root)
+        _bad_plugin_manifests(plugin_bad_root)
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -3572,6 +3791,9 @@ def self_test():
 
         family_capitalized_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_capitalized_root)}
 
+        plugin_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_good_root)}
+        plugin_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -3583,7 +3805,7 @@ def self_test():
             | token_bad_codes | opening_bad_codes | mc_bad_codes
             | mc_count_unstated_codes | mc_count_mismatch_codes | artifact_bad_codes
             | family_bad_codes | family_order_bad_codes | source_label_bad_codes
-            | results_bad_codes
+            | results_bad_codes | plugin_bad_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -3738,6 +3960,17 @@ def self_test():
             all_ok = False
         if 'results-breakdown-count-mismatch' in good_codes:
             print("FAIL: results-breakdown-count-mismatch fired on a fixture root shipping no results file")
+            all_ok = False
+
+        # Plugin-manifest-version assertions.
+        if 'plugin-manifest-version-mismatch' in plugin_good_codes:
+            print("FAIL: plugin-manifest-version-mismatch fired on manifests agreeing with the skill's version")
+            all_ok = False
+        if 'plugin-manifest-version-mismatch' not in plugin_bad_codes:
+            print("FAIL: plugin-manifest-version-mismatch did not fire when plugin.json's version disagreed with the skill's")
+            all_ok = False
+        if 'plugin-manifest-version-mismatch' in good_codes:
+            print("FAIL: plugin-manifest-version-mismatch fired on a fixture root shipping no .claude-plugin/ directory")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
