@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 6
+open_count: 7
 waived_count: 1
 fixed_count: 6
-total_count: 13
-last_updated: 2026-09-17T07:58:46.489Z
+total_count: 14
+last_updated: 2026-09-17T09:56:36.048Z
 ---
 
 # Broken Windows Ledger
@@ -28,6 +28,7 @@ last_updated: 2026-09-17T07:58:46.489Z
 | 11 | 04 | unrun-verify | .claude-plugin/plugin.json |  | Publish location frozen as the placeholder <owner>/<repo> (P4-03): .claude-plugin/plugin.json's homepage/repository, .claude-plugin/marketplace.json's homepage/repository/owner.url all state https://github.com/<owner>/<repo> or https://github.com/<owner>, enforced consistent by publish-location-drift. This is a disclosed, non-resolving placeholder pending the real GitHub owner/repo (no git remote is configured); closes when the real value is substituted and verified, routed to Phase 6's LEG-04 launch gate. | open |  | 2026-09-17T06:22:03.471Z |  |
 | 12 | 04 | unrun-verify | README.md |  | DIST-06's prose-quality half (does the lead-in genuinely read as leading with examples, is the Install section clear to a first-time reader) is unverified by any check in this repository -- only the structural half (four anchors present, Before-and-after precedes Install and Status) is CI-enforced by readme-install-path-missing/readme-before-after-order. Provisional pending end-of-phase UAT per workflow.human_verify_mode: end-of-phase. | open |  | 2026-09-17T07:58:46.362Z |  |
 | 13 | 04 | deviation | README.md |  | 04-04-PLAN.md's own acceptance criteria and <verification> expect grep -cF 'evals/conformance/RESULTS-mod04.md' README.md to print 3, describing a third occurrence 'in the layout tree at line 104' pre-rewrite. Direct inspection (both live and via git show HEAD before this plan) confirms the pre-rewrite count was 2: the tree only ever contained the bare filename 'RESULTS-mod04.md' nested under 'conformance/', never the literal concatenated path string. The guarded literal is preserved byte-identical at its original 2 occurrences (readme-results-pointer-missing passes); no third occurrence was fabricated to force the miscounted script to pass, matching the 03-04/04-01/04-03 precedent for documenting plan-authored verification-script errors rather than force-fitting shipped content to them. | open |  | 2026-09-17T07:58:46.489Z |  |
+| 14 | 04 | deviation | tools/check_repo.py |  | 04-07-PLAN.md's own interfaces block stated 12 word-spelled cardinals measured in examples/deal-brief.md's prose and 3 such occurrences in skills/proof-first/references/worked-examples.md. Direct measurement with the exact SPELLED_CARDINAL_RE the shipped code uses (\\b(two\|three\|four\|five\|six\|seven\|eight\|nine\|ten\|eleven\|twelve)\\b, case-insensitive) found 13 and 5 respectively. The shipped before-after-spelled-count docstring states the corrected figures (13, 5), not the plan's stated ones, matching the 03-04/04-01/04-04/04-04(id-13) precedent of documenting plan-authored measurement errors rather than force-fitting shipped content to them. No behavior or scope decision changes -- both files remain out of this code's scan (BEFORE_AFTER_PATH only). | open |  | 2026-09-17T09:56:36.048Z |  |
 
 ````json
 [
@@ -185,6 +186,18 @@ last_updated: 2026-09-17T07:58:46.489Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-17T07:58:46.489Z",
+    "resolved_at": null
+  },
+  {
+    "id": 14,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "tools/check_repo.py",
+    "line": null,
+    "description": "04-07-PLAN.md's own interfaces block stated 12 word-spelled cardinals measured in examples/deal-brief.md's prose and 3 such occurrences in skills/proof-first/references/worked-examples.md. Direct measurement with the exact SPELLED_CARDINAL_RE the shipped code uses (\\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\\b, case-insensitive) found 13 and 5 respectively. The shipped before-after-spelled-count docstring states the corrected figures (13, 5), not the plan's stated ones, matching the 03-04/04-01/04-04/04-04(id-13) precedent of documenting plan-authored measurement errors rather than force-fitting shipped content to them. No behavior or scope decision changes -- both files remain out of this code's scan (BEFORE_AFTER_PATH only).",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-17T09:56:36.048Z",
     "resolved_at": null
   }
 ]

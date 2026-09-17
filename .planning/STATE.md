@@ -1,18 +1,18 @@
 ---
-gsd_state_version: 1.0
+gsd_state_version: "1.0"
 current_phase: 04
 current_phase_name: Distribution & Worked Examples
 status: executing
-stopped_at: Completed 04-06-PLAN.md
-last_updated: "2026-09-17T09:40:31.598Z"
+stopped_at: Completed 04-07-PLAN.md
+last_updated: "2026-09-17T10:00:54.659Z"
 last_activity: 2026-09-17
 last_activity_desc: Phase 04 execution started
-state_head: ed3817e3c505bf1dff588ff85b4555d4ad1b8982
+state_head: 28a45acdbb3ceef01abed18242e933e560bb7482
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 42
-  completed_plans: 38
+  completed_plans: 39
   percent: 33
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 04 (Distribution & Worked Examples) — EXECUTING
-Plan: 3 of 10
+Plan: 4 of 10
 Status: Ready to execute
 Last activity: 2026-09-17 — Phase 04 execution started
 
@@ -97,6 +97,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P04 | 14min | 2 tasks | 2 files |
 | Phase 04 P05 | 8min | 3 tasks | 2 files |
 | Phase 04 P06 | 12min | 2 tasks | 1 files |
+| Phase 04 P07 | 55min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -167,6 +168,8 @@ Recent decisions affecting current work:
 - [Phase 04]: [Phase 04]: 04-04: README rewritten to lead with a real before/after pair and state all four install routes (skills CLI, Claude Code plugin, output style, system prompt) sharing one publish-location placeholder, made mechanical by readme-install-path-missing and readme-before-after-order — mutation-test total 39 -> 41, closing Phase 4 at nine new codes (32 -> 41 since Phase 3). Two plan-authored acceptance-criteria/interfaces errors documented rather than force-fit (a function-body-scoped literal-reuse scan, and a RESULTS-mod04.md occurrence-count miscount), matching the 03-04/04-01/04-03 precedent. DIST-06's prose-quality half and DIST-01's live-install flow both stay provisional pending end-of-phase UAT / a published repository.
 - [Phase 04]: [Phase 04]: 04-05: All four examples/before-after.md ✓ columns repaired to obey PF-4.1 (25-word sentence ceiling), narrate no rule, and invent no count; Solution proposal recast so PF-1.9 leads with the capability (AWS Control Tower named only as the means afterward); PF-3.3 marker moved off Marcus Feld's trailing quotation onto the vendor-authored retained term "a landing zone the team can actually govern" inside the demo-script sentence. README's reproduced RFP pair kept byte-identical. Gate held at 41 codes discrimination-proven throughout; this plan added no violation code. G-04-3 and G-04-5's semantic judgments stay disclosed verification:backstop residuals, not mechanised here.
 - [Phase 04]: 04-06: worked-examples.md's 8 over-ceiling PF-1.25/PF-2.17/MC-6/MC-11/MC-16/MC-21/MC-31/MC-36 sentences split under PF-4.1's 25-word ceiling; MC-21's review enumeration regrouped (security+legal together, procurement carrying the GAP marker alone) so the marker stayed adjacent to its claim; gate held at 41 codes discrimination-proven throughout. — Same repair class 04-05 applied to examples/before-after.md, extended to the second shipped example file so 04-07's example-sentence-length code can scan both files without narrowing scope around a known breach. A coherent-rewrite backstop truth stays a disclosed, un-mechanised semantic residual.
+- [Phase 04]: 04-07: example-sentence-length, before-after-spelled-count, example-rule-narration registered end to end; mutation-test moved 41 to 44 codes discrimination-proven. Corrected two of the plan's own interfaces-block measurements (deal-brief.md spelled cardinals 12->13, worked-examples.md 3->5) rather than shipping the plan's stated figures in the docstring, filed as WINDOWS.md id 14.
+- [Phase 04]: 04-07: EX-02 stays unchecked despite gsd-tools requirements ready-ids reporting it mechanically ready -- REQUIREMENTS.md's own EX-02 note forbids marking Complete from a SUMMARY's requirements-completed field, and this plan mechanizes only 3 of 7 named UAT gaps (G-04-1/2/4); G-04-3/G-04-5 stay backstop truths, G-04-6/G-04-7 belong to unexecuted 04-08/04-09/04-10.
 
 ### Pending Todos
 
@@ -191,6 +194,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-17T09:40:31.319Z
-Stopped at: Completed 04-06-PLAN.md
+Last session: 2026-09-17T10:00:38.161Z
+Stopped at: Completed 04-07-PLAN.md
 Resume file: None
