@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Distribution & Worked Examples
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-09-17T07:26:22.943Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-09-17T07:44:48.331Z"
 last_activity: 2026-09-17
 last_activity_desc: Phase 04 execution started
-state_head: 96e8b26a0eeff99cb3534edb3d542a0e9487b79c
+state_head: eb589fec0b2b58f524271bf8ae068fe15e93d9a5
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 36
-  completed_plans: 34
+  completed_plans: 35
   percent: 33
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 04 (Distribution & Worked Examples) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-09-17 — Phase 04 execution started
 
@@ -93,6 +93,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 03 P16 | ~25min | 3 tasks | 5 files |
 | Phase 04 P01 | 16 min | 2 tasks | 3 files |
 | Phase 04 P02 | ~55min | 2 tasks | 2 files |
+| Phase 04 P03 | 55min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -159,6 +160,7 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-16: Rewrote self-test behavior case 11 to genuinely discriminate _write_result_line()'s flush call via a call-recording proxy handle plus a pre-close read; proved in both directions by a one-time mutation probe (real file clean, mutated sibling copy FAIL). Corrected the module docstring and RESULTS-mod04.md's over-attribution, closed 03-REVIEW.md IN-01/IN-02, and recorded WINDOWS.md entry 10 as fixed. No published MOD-04 figure moved; MOD-04 stays unchecked -- this plan repairs the instrument, not the requirement.
 - [Phase 04]: 04-01: Plugin manifests + version/publish-location enforcement wired end-to-end; publish-location-drift normalizes to GitHub owner segment (not full owner/repo) so owner.url's bare form compares consistently with homepage/repository's full form. — Literal full-string comparison would misfire on every correct manifest since owner.url structurally carries no repo segment; disclosed as a declared ceiling (catches owner drift, not repo-name-only drift).
 - [Phase 04]: 04-02: examples/before-after.md ships four document-level before/after pairs (one per frozen artifact family); before-after-family-missing and before-after-citation-missing make family coverage, pair completeness, family order, and citation presence build failures — discrimination-proven total 35 -> 37. — EX-02's after columns cite real allocated rule IDs and every figure traces to the Canonical figures table; content-quality correctness (does the after column demonstrate the rewrite rather than restate the rule) stays a verification: backstop truth for end-of-phase UAT.
+- [Phase 04]: [Phase 04]: 04-03: Two independent freshness guards built for both generated derivatives (skill-derivative-stale's digest recomputation and generate_derivatives.py --check's byte comparison, P4-14), with the stamp located by pattern rather than physical line number (P4-12) so the output style keeps its YAML frontmatter at line 1 while the system prompt carries the same stamp with none. Mutation-test moved 37 -> 39 discrimination-proven; two Rule 1 deviations found and resolved while running the plan's own acceptance criteria (a composed-tuple regex mismatch fixed in code; an over-broad NUMBERING.md scan in the plan's own verification script documented, no shipped code affected). requirements-completed: [DIST-05] only -- DIST-03/DIST-04's behavioural half stays unverified pending Phase 5's benchmark.
 
 ### Pending Todos
 
@@ -183,6 +185,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-17T07:26:22.729Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-09-17T07:44:48.123Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None
