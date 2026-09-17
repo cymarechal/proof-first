@@ -194,7 +194,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 4/4 plans executed
+**Plans**: 4/4 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps
 
 Plans:
 **Wave 1**
@@ -212,6 +212,29 @@ Plans:
 **Wave 4** *(blocked on Wave 3 completion)*
 
 - [x] 04-04-PLAN.md — README rewritten to lead with a before/after pair and state all four install routes, with the derivative re-sync step documented and the existing measured-figure disclosure preserved; `readme-install-path-missing` and `readme-before-after-order` proven live (39 → 41)
+
+**Gap closure** *(04-UAT.md status `gaps_found`; run with `/gsd-execute-phase 4 --gaps-only`; wave numbers below are internal to this set)*
+
+**Gap wave 1** *(parallel: disjoint files)*
+
+- [ ] 04-05-PLAN.md — `examples/before-after.md` prose repair: rule narration out of all four ✓ columns, every ✓ sentence under PF-4.1's 25-word ceiling, the PF-1.9 inversion recast capability-first, both invented counts dropped, the PF-3.3 marker re-attached to a term, and README's reproduced pair kept identical (G-04-1..G-04-5; 41 codes, unchanged)
+- [ ] 04-06-PLAN.md — `skills/proof-first/references/worked-examples.md` PF-4.1 repair: 8 of 31 ✓ sentences over the ceiling, maximum 37 words, measured during gap planning rather than listed in the UAT; repaired so the sentence-length code can scan both example files honestly (41 codes, unchanged)
+
+**Gap wave 2** *(blocked on gap wave 1)*
+
+- [ ] 04-07-PLAN.md — three example-prose violation codes with firing fixtures, silent fixtures and registered mutations: `example-sentence-length`, `before-after-spelled-count`, `example-rule-narration` (G-04-2, G-04-4, G-04-1; 41 → 44)
+
+**Gap wave 3** *(blocked on gap wave 2)*
+
+- [ ] 04-08-PLAN.md — README prose repair: lead with the example inside the first screen, state each install route's runnability, move maintainer instruction below Status, narrow the over-broad catalog claim and the model-count caveat, and make the layout legend agree with the tree (G-04-6; 44 codes, unchanged)
+
+**Gap wave 4** *(blocked on gap wave 3)*
+
+- [ ] 04-09-PLAN.md — three README violation codes: `readme-example-drift`, `readme-example-lead-distance`, `readme-layout-legend-drift` (G-04-6 mechanised; 44 → 47)
+
+**Gap wave 5** *(blocked on gap wave 4)*
+
+- [ ] 04-10-PLAN.md — `04-REVIEW.md`'s three deferred warnings: `_owner_segment` normalised across four GitHub URL forms, `generate_derivatives.py --check` made genuinely byte-comparing with a platform-pinned writer, and both plugin-manifest checks' one-skill assumption disclosed and enforced (G-04-7; 47 codes, unchanged)
 
 ### Phase 5: Evaluation Harness
 
