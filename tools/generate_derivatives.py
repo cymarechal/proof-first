@@ -28,7 +28,10 @@ Usage:
   python3 tools/generate_derivatives.py
       Render both derivatives from the current source files and write
       them to output-styles/proof-first.md and prompts/system-prompt.md,
-      overwriting whatever is already there.
+      overwriting whatever is already there. The writer pins the output
+      line ending to LF regardless of the host platform's native line
+      ending, so the bytes produced are the same whether this is run on
+      the CI runner or on a contributor's own machine.
 
   python3 tools/generate_derivatives.py --check
       Render both derivatives in memory and compare them byte for byte
@@ -226,20 +229,33 @@ def _render_both(repo_root):
 def write_derivatives(repo_root):
     """Render both derivatives and write them. The output is a pure
     function of the source bytes: calling this twice in a row on an
-    unchanged tree leaves both files byte-identical."""
+    unchanged tree leaves both files byte-identical. newline='\\n' pins
+    the output line ending to LF on every platform -- without it,
+    Path.write_text() translates '\\n' to os.linesep, so regenerating on
+    a platform whose native line ending is CRLF would write different
+    bytes than this repository ships, and before this fix --check could
+    not see that difference."""
     rendered = _render_both(repo_root)
     for rel, text in rendered.items():
         path = repo_root / rel
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding='utf-8')
+        path.write_text(text, encoding='utf-8', newline='\n')
 
 
 def check_derivatives(repo_root):
     """Render both derivatives in memory and compare them byte for byte
-    against the committed files. Prints which file differs, and a short
-    indication of where, for every difference found. A missing
-    derivative file counts as a difference. Returns True only when both
-    committed files equal freshly rendered output exactly."""
+    against the committed files' bytes -- the verdict is decided on
+    bytes, never on decoded text, so a CRLF-terminated committed file no
+    longer compares equal to an LF-terminated render under Python's
+    universal-newline text-mode translation. Prints which file differs,
+    and a short indication of where, for every difference found; the
+    first-differing-line report decodes both byte strings defensively
+    (a file that is not valid UTF-8 produces a report rather than an
+    exception) but that decode is for the message only, never for the
+    verdict, which has already been reached from the bytes by that
+    point. A missing derivative file counts as a difference. Returns
+    True only when both committed files' bytes equal freshly rendered
+    output's bytes exactly."""
     rendered = _render_both(repo_root)
     ok = True
     for rel, expected_text in rendered.items():
@@ -248,10 +264,11 @@ def check_derivatives(repo_root):
             print(f"generate_derivatives --check: {rel} is missing -- run this script with no flag to create it")
             ok = False
             continue
-        actual_text = path.read_text(encoding='utf-8')
-        if actual_text != expected_text:
-            expected_lines = expected_text.splitlines()
-            actual_lines = actual_text.splitlines()
+        expected_bytes = expected_text.encode('utf-8')
+        actual_bytes = path.read_bytes()
+        if actual_bytes != expected_bytes:
+            expected_lines = expected_bytes.decode('utf-8', errors='replace').splitlines()
+            actual_lines = actual_bytes.decode('utf-8', errors='replace').splitlines()
             first_diff = next(
                 (i for i, (a, b) in enumerate(zip(expected_lines, actual_lines)) if a != b),
                 min(len(expected_lines), len(actual_lines)),
