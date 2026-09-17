@@ -69,8 +69,16 @@ REFERENCE_SOURCES = (
 # check_repo.py's skill-derivative-stale code is what enforces that
 # agreement. Neither file imports the other -- a sibling import inside
 # tools/ would depend on how the script happens to be invoked, which is
-# exactly the fragility this project avoids elsewhere.
-DERIVATIVE_SOURCE_NAMES = (SKILL_PATH,) + REFERENCE_SOURCES
+# exactly the fragility this project avoids elsewhere. Written out as a
+# literal tuple, not composed from SKILL_PATH/REFERENCE_SOURCES above, so
+# both files' tuples are byte-for-byte comparable by a simple text scan.
+DERIVATIVE_SOURCE_NAMES = (
+    'skills/proof-first/SKILL.md',
+    'skills/proof-first/references/deletion-test.md',
+    'skills/proof-first/references/completeness-audit.md',
+    'skills/proof-first/references/artifact-patterns.md',
+    'skills/proof-first/references/checklist.md',
+)
 
 # Deliberately omitted. worked-examples.md supplies illustration rather
 # than instruction: every rule it illustrates already carries its own
