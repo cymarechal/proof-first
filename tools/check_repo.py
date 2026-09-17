@@ -642,6 +642,31 @@ Violation codes implemented in this file:
                       examples/before-after.md and absent from README is
                       not a violation, because README is a lead-in and
                       is not required to reproduce everything.
+  readme-example-lead-distance - README.md carries no line beginning
+                      with the ballot-cross character at all, or its
+                      first such line sits past
+                      README_FIRST_EXAMPLE_MAX_LINE (20), a frozen
+                      ceiling with deliberate margin over the measured
+                      pre-repair value of 23. Returns no violation
+                      before any read when README.md does not exist.
+                      Fires once, naming which of the two conditions
+                      applied. Declared ceiling: line numbers are
+                      counted as physical lines from the top of the raw
+                      file, so one long paragraph written as a single
+                      physical line counts once while the same prose
+                      hard-wrapped counts many times -- a stated
+                      definition, not an implied one, and the reason the
+                      ceiling carries margin. It asserts the example
+                      arrives early, never that the example is good,
+                      that the prose above it is necessary, or that the
+                      pair below it is complete -- readme-example-drift
+                      owns the reproduction's fidelity and
+                      readme-before-after-order owns the section
+                      ordering. It reads only the ballot-cross
+                      character, so a README leading with a check line
+                      and no ballot-cross line is reported as having no
+                      example, which is intended: the contrast is the
+                      point.
 """
 import argparse
 import hashlib
@@ -1169,20 +1194,21 @@ def check_readme_results_pointer(repo_root):
 
 README_CHECK_CODES = [
     'readme-results-pointer-missing', 'readme-install-path-missing', 'readme-before-after-order',
-    'readme-example-drift',
+    'readme-example-drift', 'readme-example-lead-distance',
 ]
 
 
 def run_readme_checks(repo_root):
-    # check_readme_install_paths, check_readme_before_after_order, and
-    # check_readme_example_drift are all defined later in this file,
-    # after SKILLS_CLI_INSTALL_RE and MARKETPLACE_ADD_RE (Phase 4, 04-04)
-    # or after README_BEFORE_AFTER_HEADING (Phase 4, 04-09 Task 1) --
-    # each reuses module-level patterns declared at those later points
-    # rather than declaring a second copy, so each is defined where
-    # those patterns already exist. Python resolves these names at call
-    # time, not at def time, so calling them here (before their own def
-    # statements appear in the file) is safe: by the time
+    # check_readme_install_paths, check_readme_before_after_order,
+    # check_readme_example_drift, and check_readme_example_lead_distance
+    # are all defined later in this file, after SKILLS_CLI_INSTALL_RE
+    # and MARKETPLACE_ADD_RE (Phase 4, 04-04) or after
+    # README_BEFORE_AFTER_HEADING/README_FIRST_EXAMPLE_MAX_LINE (Phase 4,
+    # 04-09) -- each reuses module-level patterns declared at those
+    # later points rather than declaring a second copy, so each is
+    # defined where those patterns already exist. Python resolves these
+    # names at call time, not at def time, so calling them here (before
+    # their own def statements appear in the file) is safe: by the time
     # run_readme_checks() actually runs, the whole module has been
     # loaded.
     violations = []
@@ -1190,6 +1216,7 @@ def run_readme_checks(repo_root):
     violations += check_readme_install_paths(repo_root)
     violations += check_readme_before_after_order(repo_root)
     violations += check_readme_example_drift(repo_root)
+    violations += check_readme_example_lead_distance(repo_root)
     return violations
 
 
@@ -2743,6 +2770,13 @@ README_CROSS_CHAR = '✗'
 README_CHECK_CHAR = '✓'
 README_APPLIED_RULES_PREFIX = 'Rules applied:'
 
+# Frozen ceiling with deliberate margin (Phase 4, 04-09 Task 2): the
+# measured pre-repair first-ballot-cross-line number was 23; the
+# repaired file sits at or below 20. Raising this number is a
+# deliberate weakening of DIST-06's lead-with-examples promise and
+# should be argued for, not typed.
+README_FIRST_EXAMPLE_MAX_LINE = 20
+
 
 def check_readme_install_paths(repo_root):
     """For README.md, require each of README_INSTALL_ANCHORS' four route
@@ -2876,6 +2910,46 @@ def check_readme_example_drift(repo_root):
                 f"character, a line of {BEFORE_AFTER_PATH}: \"{prefix} ...\""
             )))
     return violations
+
+
+def check_readme_example_lead_distance(repo_root):
+    """Require README.md to carry at least one line beginning with
+    README_CROSS_CHAR, and require the first such line's one-based line
+    number to be at or below README_FIRST_EXAMPLE_MAX_LINE. Reads the
+    file raw, without calling strip_fences. Returns an empty list before
+    any read when README.md does not exist. Fires once, naming whichever
+    of the two conditions applied: no such line exists at all, or the
+    first one sits past the ceiling.
+
+    Declared ceiling: it counts physical lines from the top of the raw
+    file, so a long paragraph written as one physical line counts once
+    while the same prose hard-wrapped counts many times -- a stated
+    definition, not an implied one, and the reason the ceiling carries
+    margin. It asserts the example arrives early, never that the example
+    is good, that the prose above it is necessary, or that the pair
+    below it is complete -- readme-example-drift owns the reproduction's
+    fidelity and readme-before-after-order owns the section ordering. It
+    reads only README_CROSS_CHAR, so a README leading with a check line
+    and no ballot-cross line is reported as having no example, which is
+    intended: the contrast is the point."""
+    readme_path = repo_root / 'README.md'
+    if not readme_path.exists():
+        return []
+    rel = readme_path.relative_to(repo_root)
+    lines = readme_path.read_text(encoding='utf-8').splitlines()
+    first_idx = next((i for i, l in enumerate(lines) if l.startswith(README_CROSS_CHAR)), None)
+    if first_idx is None:
+        return [(str(rel), (
+            f"readme-example-lead-distance {rel} carries no line beginning with "
+            f"'{README_CROSS_CHAR}', so it shows no before/after example at all"
+        ))]
+    line_no = first_idx + 1
+    if line_no > README_FIRST_EXAMPLE_MAX_LINE:
+        return [(str(rel), (
+            f"readme-example-lead-distance {rel}'s first '{README_CROSS_CHAR}' line "
+            f"sits at line {line_no}, past the {README_FIRST_EXAMPLE_MAX_LINE}-line ceiling"
+        ))]
+    return []
 
 
 # ---------------------------------------------------------------------------
@@ -3681,6 +3755,21 @@ def _mutate_readme_example_drift(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_readme_example_lead_distance(root):
+    """Insert plain filler lines immediately after the copied real
+    README.md's title line, pushing its first README_CROSS_CHAR line
+    past README_FIRST_EXAMPLE_MAX_LINE, mutating only the copy. The
+    filler text carries no PF-/MC--shaped token, because
+    check_undefined_id scans README with fences stripped and an
+    unallocated token there would make this mutation fire a second,
+    unrelated code."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    filler = [f"Fixture filler line {n}." for n in range(1, 11)]
+    lines = lines[:1] + [''] + filler + lines[1:]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 def _mutate_example_sentence_length(root):
     """Insert one additional sentence of 30 repeated filler words
     immediately before the closing quotation mark of the ✓ line under
@@ -3793,6 +3882,7 @@ MUTATIONS = [
     ('before-after-spelled-count', "insert 'seven bidders' into the real examples/before-after.md's RFP and RFI response ✓ line, a word-spelled cardinal that routes around unlisted-figure's digit-shaped interface", _mutate_before_after_spelled_count),
     ('example-rule-narration', "insert a 'rather than a generic strength' narration sentence into the real examples/before-after.md's Solution proposal ✓ line", _mutate_example_rule_narration),
     ('readme-example-drift', "change one phrase of the real README.md's first ✗ line, breaking its promised reproduction from examples/before-after.md", _mutate_readme_example_drift),
+    ('readme-example-lead-distance', "insert plain filler lines after the real README.md's title line, pushing its first ✗ line past the frozen 20-line ceiling", _mutate_readme_example_lead_distance),
 ]
 
 
@@ -4824,6 +4914,44 @@ def _readme_drift_before_after_bad():
     )
 
 
+def _late_example_readme():
+    """Same headings and anchors as _good_readme_install(), preceded by
+    fifteen filler prose lines so the first ballot-cross line lands past
+    README_FIRST_EXAMPLE_MAX_LINE (with margin, not merely one line
+    over)."""
+    filler = "".join(f"Fixture filler line {n}.\n" for n in range(1, 16))
+    return (
+        "# Proof First\n\n"
+        f"{filler}\n"
+        "## What this is\n\nFixture body.\n\n"
+        f"{README_BEFORE_AFTER_HEADING}\n\n"
+        f"{README_CROSS_CHAR} \"Fixture non-compliant passage.\"\n"
+        f"{README_CHECK_CHAR} \"Fixture compliant passage.\"\n\n"
+        f"{README_APPLIED_RULES_PREFIX} PF-0.1.\n\n"
+        f"{README_INSTALL_HEADING}\n\n"
+        "```\nnpx skills add <owner>/<repo>\n```\n\n"
+        "```\nclaude plugin marketplace add <owner>/<repo>\n```\n\n"
+        "`output-styles/proof-first.md` and `prompts/system-prompt.md` are the other two routes.\n\n"
+        f"{README_STATUS_HEADING}\n\nFixture status body.\n"
+    )
+
+
+def _no_example_readme():
+    """Same headings and anchors as _good_readme_install(), but with no
+    ballot-cross line at all -- readme-example-lead-distance's other
+    firing condition."""
+    return (
+        "# Proof First\n\n"
+        "## What this is\n\nFixture body.\n\n"
+        f"{README_BEFORE_AFTER_HEADING}\n\nFixture pair, no ballot-cross line.\n\n"
+        f"{README_INSTALL_HEADING}\n\n"
+        "```\nnpx skills add <owner>/<repo>\n```\n\n"
+        "```\nclaude plugin marketplace add <owner>/<repo>\n```\n\n"
+        "`output-styles/proof-first.md` and `prompts/system-prompt.md` are the other two routes.\n\n"
+        f"{README_STATUS_HEADING}\n\nFixture status body.\n"
+    )
+
+
 def _derivative_source_fixture_files():
     """Minimal fixture content for each of the five real
     DERIVATIVE_SOURCE_NAMES paths, used by derivative_good_root and
@@ -5165,6 +5293,9 @@ def self_test():
 
         readme_drift_good_root = tmp_root / 'readme_drift_good'
         readme_drift_bad_root = tmp_root / 'readme_drift_bad'
+
+        readme_lead_late_root = tmp_root / 'readme_lead_late'
+        readme_lead_none_root = tmp_root / 'readme_lead_none'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -5509,6 +5640,15 @@ def self_test():
         _write(readme_drift_bad_root / 'README.md', _good_readme_install())
         _write(readme_drift_bad_root / BEFORE_AFTER_PATH, _readme_drift_before_after_bad())
 
+        # readme_lead_late_root / readme_lead_none_root
+        # (readme-example-lead-distance, Phase 4 04-09 Task 2): the late
+        # root's first ballot-cross line sits past
+        # README_FIRST_EXAMPLE_MAX_LINE; the none root carries no
+        # ballot-cross line at all -- both firing conditions proven
+        # separately, neither standing in for the other.
+        _write(readme_lead_late_root / 'README.md', _late_example_readme())
+        _write(readme_lead_none_root / 'README.md', _no_example_readme())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -5592,6 +5732,9 @@ def self_test():
         readme_drift_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_drift_good_root)}
         readme_drift_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_drift_bad_root)}
 
+        readme_lead_late_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_lead_late_root)}
+        readme_lead_none_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_lead_none_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -5610,6 +5753,7 @@ def self_test():
             | sentence_bad_codes | sentence_skill_bad_codes
             | spelled_bad_codes | narration_bad_codes
             | readme_drift_bad_codes
+            | readme_lead_late_codes | readme_lead_none_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -5667,6 +5811,20 @@ def self_test():
             all_ok = False
         if 'readme-example-drift' in good_codes:
             print("FAIL: readme-example-drift fired on a fixture root shipping no README.md")
+            all_ok = False
+
+        # readme-example-lead-distance assertions (Phase 4, 04-09 Task 2).
+        if 'readme-example-lead-distance' not in readme_lead_late_codes:
+            print("FAIL: readme-example-lead-distance did not fire on the late-example fixture")
+            all_ok = False
+        if 'readme-example-lead-distance' not in readme_lead_none_codes:
+            print("FAIL: readme-example-lead-distance did not fire on the no-example fixture")
+            all_ok = False
+        if 'readme-example-lead-distance' in readme_install_good_codes:
+            print("FAIL: readme-example-lead-distance fired on the known-good README install fixture")
+            all_ok = False
+        if 'readme-example-lead-distance' in good_codes:
+            print("FAIL: readme-example-lead-distance fired on a fixture root shipping no README.md")
             all_ok = False
 
         # before-after-family-missing / before-after-citation-missing
