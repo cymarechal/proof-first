@@ -52,15 +52,16 @@ This repository discloses one measured v1 limitation: whether a live write-mode 
 artifact family before its first rule citation, reproducible from the committed, stdlib-only
 `evals/conformance/run_conformance.py` script. Measured 2026-09-16, under the anchored scorer,
 across five committed fixtures: `claude-sonnet-5` conformed in 3 of 10 scoreable sessions
-(30.0%), against a paired same-instrument baseline of the immediately prior skill version at 4 of
-10 (40.0%). This is a known, accepted, disclosed v1 limitation of live model behavior, not a
-quality or persuasion claim — the shipped classification instruction and its two mechanical gates
-(family-line presence, family-line ordering) are present and enforced in `SKILL.md` regardless of
-what any individual live session does. Full run-by-run figures, exclusions, and caveats live in
-`evals/conformance/RESULTS-mod04.md` — read that file before trusting anything downstream of it,
-including its "v1 disposition decision (03-15)" section recording why this residual is accepted
-for v1 rather than pursued further. At minimum: both measured models are Anthropic-hosted, the
-harness gives no determinism guarantee (no temperature or seed flag), and every figure recorded
+(30.0%) — a 10-point decline against a paired same-instrument baseline of the immediately prior
+skill version at 4 of 10 (40.0%). This is a known, accepted, disclosed v1 limitation of live
+model behavior, not a quality or persuasion claim — the shipped classification instruction and
+its two mechanical gates (family-line presence, family-line ordering) are present and enforced
+in `SKILL.md` regardless of what any individual live session does. Full run-by-run figures,
+exclusions, and caveats live in `evals/conformance/RESULTS-mod04.md` — read that file before
+trusting anything downstream of it, including its "v1 disposition decision (03-15)" section
+recording why this residual is accepted for v1 rather than pursued further. At minimum: both
+measured models are Anthropic-hosted, the harness gives no determinism guarantee (no temperature
+or seed flag), and every figure recorded
 before this project's own scorer-anchoring fix (see that file's "Scorer anchoring correction
 (CR-01)" section) is an optimistic, unrecoverable ceiling, not comparable to the anchored figures
 above.

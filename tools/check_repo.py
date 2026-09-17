@@ -1872,10 +1872,11 @@ def _copy_repo_subset(repo_root, dest):
     'evals' was added by 03-14 so the real evals/conformance/RESULTS-mod04.md
     is reachable from the mutation harness, making
     results-breakdown-count-mismatch discrimination-proven rather than
-    merely registered. No existing check reads anything under evals/ --
-    every glob and named-path scan in this module targets NUMBERING.md,
-    examples/, tools/, or skills/*/SKILL.md paths -- so widening this copy
-    does not change what any other code fires against."""
+    merely registered. No check other than results-breakdown-count-mismatch
+    itself reads anything under evals/ -- every other glob and named-path
+    scan in this module targets NUMBERING.md, examples/, tools/, or
+    skills/*/SKILL.md paths -- so widening this copy does not change what
+    any other code fires against."""
     for name in MUTATION_SOURCES:
         src = repo_root / name
         if not src.exists():
