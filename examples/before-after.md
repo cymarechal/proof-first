@@ -34,4 +34,3 @@ Rules applied: PF-0.1, PF-1.25, PF-2.11.
 ✓ "Marcus Feld, Vice President of Infrastructure, said in discovery: 'We need a landing zone we can actually govern — right now every VM is a snowflake' [PF-3.3: customer's term, retained — Marcus Feld, discovery]. The demo script that follows shows AWS Control Tower governing three representative accounts drawn from the 850-VM estate, the exact scenario Marcus Feld described rather than a standard product tour, with success judged by whether an out-of-band change to any of the three accounts is blocked, agreed with Marcus Feld's team before the session runs. Follow-up owner: the Kestrel Systems Group solutions architect who ran the session, with a written summary due before the next scheduled call — [PF-2.14 REVIEW (commitment): confirm this delivery date before it is promised]."
 
 Rules applied: PF-3.3, PF-2.14, MC-31.
-</content>
