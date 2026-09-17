@@ -442,6 +442,42 @@ Violation codes implemented in this file:
                       check enforces PF-4.1 alone, saying nothing about
                       PF-4.2's active voice, PF-4.3's modal discipline,
                       or any other prose-mechanics rule.
+  before-after-spelled-count - a ✗ or ✓ column line in
+                      examples/before-after.md names a word-spelled
+                      cardinal from two through twelve (SPELLED_CARDINAL_RE;
+                      one is deliberately excluded -- English uses it as
+                      an article far more often than as a count), unless
+                      the matched word and the whitespace-delimited word
+                      immediately after it both begin with an uppercase
+                      letter, a two-token proper-noun heuristic that
+                      exempts a party name containing a number word.
+                      Fires once per surviving match, naming the matched
+                      word and the line's opening words. Absence of the
+                      file is not a violation, checked before any read.
+                      Rationale: unlisted-figure inspects digit-shaped
+                      tokens only, so a count written as a word is
+                      structurally invisible to the Canonical figures
+                      interface; requiring a count in this file's quoted
+                      columns to be written in digits routes every count
+                      through that interface instead of around it. This
+                      is the word-spelled half of the bare-count hole
+                      unlisted-figure's own declared ceiling discloses;
+                      the digit half remains open and is named as still
+                      open. Declared ceiling: the scan is this one
+                      file's quoted lines only. examples/deal-brief.md
+                      is out of scope because the brief is the
+                      definition of what counts as invented, and a count
+                      it states is by construction not invented -- 13
+                      spelled cardinals were measured in its prose,
+                      including a party name containing a number word.
+                      skills/** is out of scope because the same party
+                      name appears there and because a per-rule
+                      illustrative pair reads naturally with a spelled
+                      count -- 5 such occurrences were measured. The
+                      proper-noun heuristic is two tokens wide and will
+                      therefore also exempt a cardinal that happens to
+                      end a sentence immediately before a capitalised
+                      sentence start.
   publish-location-drift - the GitHub owner segment stated by this
                       repository's own carriers of its publish location
                       (plugin.json's and marketplace.json's `homepage`,
@@ -586,6 +622,13 @@ PF41_WORD_CEILING = 25
 
 MARKER_SPAN_RE = re.compile(r'\[[^\]]*\]')
 SENTENCE_SPLIT_RE = re.compile(r'(?<=[.?!])\s+')
+
+# Word-spelled cardinals two through twelve, case-insensitively. 'one' is
+# deliberately excluded: English uses it as an article far more often than
+# as a count, and including it would fire on ordinary prose such as
+# "one folder" or "one shared brief".
+SPELLED_CARDINAL_RE = re.compile(
+    r'\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b', re.I)
 
 
 def strip_fences(text):
@@ -2195,9 +2238,56 @@ def check_example_sentence_length(repo_root):
     return violations
 
 
+def check_before_after_spelled_count(repo_root):
+    """For BEFORE_AFTER_PATH, if it exists, require every ✗/✓ column line
+    to write a count from two through twelve in digits, not words --
+    routing every count through the digit-shaped Canonical figures
+    interface unlisted-figure already reads, rather than letting a
+    word-spelled count drift between examples undetected. Returns an
+    empty list before any read when BEFORE_AFTER_PATH does not exist.
+
+    Rationale: unlisted-figure inspects digit-shaped tokens only, so a
+    count written as a word is structurally invisible to the Canonical
+    figures interface. This is the word-spelled half of the bare-count
+    hole unlisted-figure's own declared ceiling discloses; the digit
+    half remains open. Declared ceiling: the scan is this one file's
+    quoted lines only. examples/deal-brief.md is out of scope because
+    the brief is the definition of what counts as invented, and a count
+    it states is by construction not invented -- 13 spelled cardinals
+    were measured in its prose, including a party name containing a
+    number word. skills/** is out of scope because the same party name
+    appears there and because a per-rule illustrative pair reads
+    naturally with a spelled count -- 5 such occurrences were measured.
+    The proper-noun heuristic (matched word and the following word both
+    capitalised) is two tokens wide and will therefore also exempt a
+    cardinal that happens to end a sentence immediately before a
+    capitalised sentence start."""
+    path = repo_root / BEFORE_AFTER_PATH
+    if not path.exists():
+        return []
+    rel = path.relative_to(repo_root)
+    text = strip_fences(path.read_text(encoding='utf-8'))
+    violations = []
+    for line in text.splitlines():
+        if not (line.startswith('✗') or line.startswith('✓')):
+            continue
+        for m in SPELLED_CARDINAL_RE.finditer(line):
+            word = m.group(0)
+            rest = line[m.end():].lstrip()
+            next_word = rest.split(' ', 1)[0] if rest else ''
+            if word[0:1].isupper() and next_word[0:1].isupper():
+                continue
+            prefix = ' '.join(line[1:].strip().split()[:8])
+            violations.append((str(rel), (
+                f"before-after-spelled-count {rel} names the word-spelled count "
+                f"'{word}' instead of a digit: \"{prefix} ...\""
+            )))
+    return violations
+
+
 EXAMPLE_CHECK_CODES = [
     'before-after-family-missing', 'before-after-citation-missing',
-    'example-sentence-length',
+    'example-sentence-length', 'before-after-spelled-count',
 ]
 
 
@@ -2206,6 +2296,7 @@ def run_example_checks(repo_root):
     violations += check_before_after_families(repo_root)
     violations += check_before_after_citations(repo_root)
     violations += check_example_sentence_length(repo_root)
+    violations += check_before_after_spelled_count(repo_root)
     return violations
 
 
@@ -3398,6 +3489,27 @@ def _mutate_example_sentence_length(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_before_after_spelled_count(root):
+    """Insert ' across seven bidders' immediately before the closing
+    period of the ✓ line under '## RFP and RFI response' in the copied
+    real examples/before-after.md, mutating only the copy. 'seven' and
+    'bidders' appear nowhere in the real repaired prose, so the mutation
+    is unambiguously the thing under test."""
+    path = root / BEFORE_AFTER_PATH
+    lines = path.read_text(encoding='utf-8').splitlines()
+    heading = '## RFP and RFI response'
+    start = next(i for i, l in enumerate(lines) if l.strip() == heading)
+    end = len(lines)
+    for j in range(start + 1, len(lines)):
+        if lines[j].startswith('## '):
+            end = j
+            break
+    check_idx = next(j for j in range(start, end) if lines[j].startswith('✓'))
+    line = lines[check_idx].rstrip()
+    lines[check_idx] = line[:-2] + ' across seven bidders."'
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -3441,6 +3553,7 @@ MUTATIONS = [
     ('readme-install-path-missing', "delete every line of the real README.md containing the skills-CLI install command prefix", _mutate_readme_install_path_missing),
     ('readme-before-after-order', "move the real README.md's '## Before and after' heading line to immediately after its '## Status' heading line", _mutate_readme_before_after_order),
     ('example-sentence-length', "insert one 30-word filler sentence into the real examples/before-after.md's Executive summary ✓ line, past PF-4.1's 25-word ceiling", _mutate_example_sentence_length),
+    ('before-after-spelled-count', "insert 'seven bidders' into the real examples/before-after.md's RFP and RFI response ✓ line, a word-spelled cardinal that routes around unlisted-figure's digit-shaped interface", _mutate_before_after_spelled_count),
 ]
 
 
@@ -4362,6 +4475,28 @@ def _long_sentence_worked_examples():
     )
 
 
+def _spelled_count_before_after():
+    """All four frozen family headings, each complete and cited, except
+    'RFP and RFI response' carries a ✓ line naming a lowercase
+    word-spelled cardinal followed by an ordinary noun (the firing
+    path) and 'Executive summary' carries a ✓ line naming a capitalised
+    two-token phrase whose first word is a cardinal (the proper-noun
+    exemption) -- exercising both conditions in the same fixture the
+    way _bad_before_after already does for the other example codes."""
+    return "\n".join([
+        _before_after_section(
+            'RFP and RFI response', citation='PF-2.1',
+            check_text='The proposal spans three phases.',
+        ),
+        _before_after_section('Solution proposal', citation='PF-1.9'),
+        _before_after_section(
+            'Executive summary', citation='PF-1.25',
+            check_text='Nine Peaks Advisory reviewed this proposal.',
+        ),
+        _before_after_section('Demo and discovery material', citation='MC-31'),
+    ])
+
+
 def _good_readme_install():
     """All three ordering headings present in the required order, and all
     four install anchors present -- silent on both
@@ -4723,6 +4858,9 @@ def self_test():
         sentence_bad_root = tmp_root / 'sentence_bad'
         sentence_skill_bad_root = tmp_root / 'sentence_skill_bad'
 
+        spelled_bad_root = tmp_root / 'spelled_bad'
+        spelled_brief_root = tmp_root / 'spelled_brief'
+
         derivative_good_root = tmp_root / 'derivative_good'
         derivative_bad_root = tmp_root / 'derivative_bad'
 
@@ -5001,6 +5139,21 @@ def self_test():
             _long_sentence_worked_examples(),
         )
 
+        # before-after-spelled-count fixtures (Phase 4, 04-07 Task 2):
+        # spelled_bad_root exercises both the firing path (a lowercase
+        # word-spelled cardinal) and the proper-noun exemption (a
+        # capitalised two-token phrase) in one fixture, mirroring
+        # _bad_before_after's documented practice of combining
+        # conditions. spelled_brief_root ships only the real repository's
+        # examples/deal-brief.md, proving the brief's deliberate
+        # out-of-scope decision is a tested assertion, not a docstring
+        # claim -- neither root ships NUMBERING.md or skills/.
+        _write(spelled_bad_root / BEFORE_AFTER_PATH, _spelled_count_before_after())
+        _write(
+            spelled_brief_root / 'examples' / 'deal-brief.md',
+            (REPO_ROOT / 'examples' / 'deal-brief.md').read_text(encoding='utf-8'),
+        )
+
         # derivative_good_root / derivative_bad_root (skill-derivative-stale,
         # derivative-rule-coverage-incomplete, Phase 4 04-03): each root
         # carries its own NUMBERING.md and its own copy of the five
@@ -5106,6 +5259,9 @@ def self_test():
         sentence_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(sentence_bad_root)}
         sentence_skill_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(sentence_skill_bad_root)}
 
+        spelled_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(spelled_bad_root)}
+        spelled_brief_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(spelled_brief_root)}
+
         derivative_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(derivative_good_root)}
         derivative_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(derivative_bad_root)}
 
@@ -5128,6 +5284,7 @@ def self_test():
             | beforeafter_bad_codes | beforeafter_order_bad_codes
             | derivative_bad_codes | readme_install_bad_codes
             | sentence_bad_codes | sentence_skill_bad_codes
+            | spelled_bad_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -5218,6 +5375,20 @@ def self_test():
             all_ok = False
         if 'example-sentence-length' in beforeafter_order_bad_codes:
             print("FAIL: example-sentence-length fired on beforeafter_order_bad_root, whose short fixture lines are within the ceiling")
+            all_ok = False
+
+        # before-after-spelled-count assertions (Phase 4, 04-07 Task 2).
+        if 'before-after-spelled-count' not in spelled_bad_codes:
+            print("FAIL: before-after-spelled-count did not fire on the lowercase-spelled-cardinal fixture")
+            all_ok = False
+        if 'before-after-spelled-count' in beforeafter_good_codes:
+            print("FAIL: before-after-spelled-count fired on the known-good before-after fixture")
+            all_ok = False
+        if 'before-after-spelled-count' in good_codes:
+            print("FAIL: before-after-spelled-count fired on a fixture root shipping no examples/before-after.md")
+            all_ok = False
+        if 'before-after-spelled-count' in spelled_brief_codes:
+            print("FAIL: before-after-spelled-count fired on a root shipping only the real examples/deal-brief.md, which is deliberately out of scope")
             all_ok = False
 
         if 'catalog-id-drift' in good_catalog_codes:
