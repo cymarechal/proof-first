@@ -2501,16 +2501,17 @@ def check_derivative_rule_coverage(allocated, repo_root):
     return violations
 
 
-# NOTE (Task 2 of 04-03): derivative-rule-coverage-incomplete is wired into
-# DERIVATIVE_CHECK_CODES and run_derivative_checks by Task 3, once its own
-# MUTATIONS entry exists -- ALL_CHECK_CODES must never list a code with no
-# registered mutation, or mutation-test reports it uncovered.
-DERIVATIVE_CHECK_CODES = ['skill-derivative-stale']
+DERIVATIVE_CHECK_CODES = ['skill-derivative-stale', 'derivative-rule-coverage-incomplete']
 
 
 def run_derivative_checks(repo_root):
     violations = []
     violations += check_skill_derivative_stale(repo_root)
+    numbering_path = repo_root / 'NUMBERING.md'
+    if not numbering_path.exists():
+        return violations
+    data = parse_numbering(numbering_path)
+    violations += check_derivative_rule_coverage(data['allocated'], repo_root)
     return violations
 
 
@@ -3139,9 +3140,7 @@ MUTATIONS = [
     ('before-after-family-missing', "delete the '## Solution proposal' heading from the real examples/before-after.md, leaving its body in place", _mutate_before_after_family_missing),
     ('before-after-citation-missing', "strip every PF-/MC- token from the '## Demo and discovery material' section of the real examples/before-after.md", _mutate_before_after_citation_missing),
     ('skill-derivative-stale', "change one hex character of the recorded sha256 in the real output-styles/proof-first.md stamp", _mutate_skill_derivative_stale),
-    # NOTE (Task 2 of 04-03): derivative-rule-coverage-incomplete's own
-    # MUTATIONS entry is registered by Task 3, alongside wiring the code
-    # itself into DERIVATIVE_CHECK_CODES.
+    ('derivative-rule-coverage-incomplete', "delete one '### PF-' rule heading line from the real prompts/system-prompt.md, leaving its body in place", _mutate_derivative_rule_coverage),
 ]
 
 
@@ -4737,6 +4736,16 @@ def self_test():
             all_ok = False
         if 'skill-derivative-stale' in good_codes:
             print("FAIL: skill-derivative-stale fired on a fixture root shipping no derivative files")
+            all_ok = False
+
+        if 'derivative-rule-coverage-incomplete' in derivative_good_codes:
+            print("FAIL: derivative-rule-coverage-incomplete fired on the known-good derivative fixture")
+            all_ok = False
+        if 'derivative-rule-coverage-incomplete' not in derivative_bad_codes:
+            print("FAIL: derivative-rule-coverage-incomplete did not fire on the missing-heading/missing-family derivative fixture")
+            all_ok = False
+        if 'derivative-rule-coverage-incomplete' in good_codes:
+            print("FAIL: derivative-rule-coverage-incomplete fired on a fixture root shipping no derivative files")
             all_ok = False
 
         # before-after-family-missing / before-after-citation-missing
