@@ -175,6 +175,14 @@ Per this plan's `<artifacts_this_phase_produces>` block, this plan closes or rec
 - All four gate commands remain green at 41 codes discrimination-proven — this plan added no violation code and no new fixture root, matching its stated scope.
 - G-04-3 and G-04-5 stay as disclosed, un-mechanised semantic judgments pending Phase 6's LEG-04 gate or a future plan that decides to mechanise them further; not blockers for `04-06`/`04-07`.
 
+## Self-Check: PASSED
+
+- `examples/before-after.md` exists on disk.
+- `README.md` exists on disk.
+- `.planning/phases/04-distribution-worked-examples/04-05-SUMMARY.md` exists on disk.
+- Commits `5de105d`, `f8ebf78`, `8e3f7f1` all found in `git log --oneline --all`.
+- All `<acceptance_criteria>` re-run per task (Tasks 1-3) and the plan-level `<verification>` block (5 checks) re-confirmed passing before this SUMMARY was written.
+
 ---
 *Phase: 04-distribution-worked-examples*
 *Completed: 2026-09-17*
