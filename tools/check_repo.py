@@ -667,6 +667,33 @@ Violation codes implemented in this file:
                       and no ballot-cross line is reported as having no
                       example, which is intended: the contrast is the
                       point.
+  readme-layout-legend-drift - README.md's '## Repository layout'
+                      section, if present, carries a legend-prose marker
+                      (a short lowercase word or hyphenated phrase inside
+                      double quotes) the fenced tree never uses in
+                      parentheses, or a tree marker the legend prose
+                      never mentions. Returns no violation before any
+                      read when README.md does not exist, and when the
+                      layout heading itself is absent -- a README with
+                      no layout section is silent, not violating,
+                      matching publish-location-drift's stated decision
+                      that a carrier with nothing to say is silent.
+                      Fires once per mismatched marker, naming the
+                      marker and which direction the mismatch runs.
+                      Declared ceiling: it compares marker vocabulary
+                      only. It says nothing about whether a marker is
+                      applied to the right entries, whether the tree
+                      matches the filesystem, whether the legend's
+                      explanation of a marker is accurate, or whether an
+                      entry that carries no marker should. Its marker
+                      shape is a short lowercase token inside double
+                      quotes in prose and inside parentheses in the
+                      tree, bounded to at most 20 characters each; a
+                      marker written in any other shape -- bracketed,
+                      uppercase, or longer than the stated bound -- is
+                      invisible to this check. And it reads only the
+                      layout section, so a marker vocabulary introduced
+                      elsewhere in README is out of scope.
 """
 import argparse
 import hashlib
@@ -1194,16 +1221,17 @@ def check_readme_results_pointer(repo_root):
 
 README_CHECK_CODES = [
     'readme-results-pointer-missing', 'readme-install-path-missing', 'readme-before-after-order',
-    'readme-example-drift', 'readme-example-lead-distance',
+    'readme-example-drift', 'readme-example-lead-distance', 'readme-layout-legend-drift',
 ]
 
 
 def run_readme_checks(repo_root):
     # check_readme_install_paths, check_readme_before_after_order,
-    # check_readme_example_drift, and check_readme_example_lead_distance
-    # are all defined later in this file, after SKILLS_CLI_INSTALL_RE
-    # and MARKETPLACE_ADD_RE (Phase 4, 04-04) or after
-    # README_BEFORE_AFTER_HEADING/README_FIRST_EXAMPLE_MAX_LINE (Phase 4,
+    # check_readme_example_drift, check_readme_example_lead_distance,
+    # and check_readme_layout_legend_drift are all defined later in this
+    # file, after SKILLS_CLI_INSTALL_RE and MARKETPLACE_ADD_RE (Phase 4,
+    # 04-04) or after README_BEFORE_AFTER_HEADING/
+    # README_FIRST_EXAMPLE_MAX_LINE/README_LAYOUT_HEADING (Phase 4,
     # 04-09) -- each reuses module-level patterns declared at those
     # later points rather than declaring a second copy, so each is
     # defined where those patterns already exist. Python resolves these
@@ -1217,6 +1245,7 @@ def run_readme_checks(repo_root):
     violations += check_readme_before_after_order(repo_root)
     violations += check_readme_example_drift(repo_root)
     violations += check_readme_example_lead_distance(repo_root)
+    violations += check_readme_layout_legend_drift(repo_root)
     return violations
 
 
@@ -2757,6 +2786,7 @@ README_INSTALL_ANCHORS = (
 README_BEFORE_AFTER_HEADING = '## Before and after'
 README_INSTALL_HEADING = '## Install'
 README_STATUS_HEADING = '## Status'
+README_LAYOUT_HEADING = '## Repository layout'
 
 # The ✗/✓ column marker characters and the applied-rules footer prefix
 # that open each footer line in both README.md's reproduced quotations
@@ -2950,6 +2980,82 @@ def check_readme_example_lead_distance(repo_root):
             f"sits at line {line_no}, past the {README_FIRST_EXAMPLE_MAX_LINE}-line ceiling"
         ))]
     return []
+
+
+# Bounded to a lowercase letter followed by up to 19 more lowercase
+# letters or hyphens (20 characters total), so an ordinary quoted phrase
+# or a parenthesised sentence containing spaces or punctuation is not
+# mistaken for a marker -- the character class itself excludes spaces,
+# so there is no unbounded-width match to backtrack over.
+README_LAYOUT_LEGEND_MARKER_RE = re.compile(r'"([a-z][a-z-]{0,19})"')
+README_LAYOUT_TREE_MARKER_RE = re.compile(r'\(([a-z][a-z-]{0,19})\)')
+
+
+def check_readme_layout_legend_drift(repo_root):
+    """Within README.md's README_LAYOUT_HEADING section (if present),
+    compare the set of markers the prose explains (a short lowercase
+    word or hyphenated phrase inside double quotes,
+    README_LAYOUT_LEGEND_MARKER_RE) against the set of markers the
+    fenced tree uses (the same shape inside parentheses,
+    README_LAYOUT_TREE_MARKER_RE), reusing FENCE_RE to isolate the tree
+    away from the surrounding prose. Returns an empty list before any read
+    when README.md does not exist, and returns an empty list when the
+    layout heading itself is absent -- a README with no layout section
+    is silent, not violating, matching publish-location-drift's stated
+    decision that a carrier with nothing to say is silent. Fires once
+    per marker the prose explains that the tree never uses, and once
+    per marker the tree uses that the prose never mentions, naming the
+    marker and which direction the mismatch runs.
+
+    Declared ceiling: it compares marker vocabulary only. It says
+    nothing about whether a marker is applied to the right entries,
+    whether the tree matches the filesystem, whether the legend's
+    explanation of a marker is accurate, or whether an entry that
+    carries no marker should. Its marker shape is a short lowercase
+    token inside double quotes in prose and inside parentheses in the
+    tree, bounded to at most 20 characters each; a marker written in any
+    other shape -- bracketed, uppercase, or longer than the stated bound
+    -- is invisible to this check. And it reads only the layout section,
+    so a marker vocabulary introduced elsewhere in README is out of
+    scope."""
+    readme_path = repo_root / 'README.md'
+    if not readme_path.exists():
+        return []
+    rel = readme_path.relative_to(repo_root)
+    lines = readme_path.read_text(encoding='utf-8').splitlines()
+    start = next((i for i, l in enumerate(lines) if l.strip() == README_LAYOUT_HEADING), None)
+    if start is None:
+        return []
+    end = len(lines)
+    for j in range(start + 1, len(lines)):
+        if re.match(r'^## ', lines[j]):
+            end = j
+            break
+    body = '\n'.join(lines[start + 1:end])
+
+    fence_match = FENCE_RE.search(body)
+    if fence_match:
+        tree_text = fence_match.group(0)
+        prose_text = body[:fence_match.start()] + body[fence_match.end():]
+    else:
+        tree_text = ''
+        prose_text = body
+
+    legend_markers = {m.group(1) for m in README_LAYOUT_LEGEND_MARKER_RE.finditer(prose_text)}
+    tree_markers = {m.group(1) for m in README_LAYOUT_TREE_MARKER_RE.finditer(tree_text)}
+
+    violations = []
+    for marker in sorted(legend_markers - tree_markers):
+        violations.append((str(rel), (
+            f"readme-layout-legend-drift {rel}'s '{README_LAYOUT_HEADING}' legend "
+            f"explains marker \"{marker}\", which the tree never uses"
+        )))
+    for marker in sorted(tree_markers - legend_markers):
+        violations.append((str(rel), (
+            f"readme-layout-legend-drift {rel}'s '{README_LAYOUT_HEADING}' tree uses "
+            f"marker \"{marker}\", which the legend never mentions"
+        )))
+    return violations
 
 
 # ---------------------------------------------------------------------------
@@ -3770,6 +3876,19 @@ def _mutate_readme_example_lead_distance(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_readme_layout_legend_drift(root):
+    """Insert one sentence into the copied real README.md's
+    '## Repository layout' section prose, immediately after the heading,
+    explaining a quoted "planned" marker the real tree never uses,
+    mutating only the copy."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    h_idx = next(i for i, l in enumerate(lines) if l.strip() == README_LAYOUT_HEADING)
+    lines.insert(h_idx + 1, '')
+    lines.insert(h_idx + 2, 'An entry marked "planned" does not yet exist in this repository.')
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 def _mutate_example_sentence_length(root):
     """Insert one additional sentence of 30 repeated filler words
     immediately before the closing quotation mark of the ✓ line under
@@ -3883,6 +4002,7 @@ MUTATIONS = [
     ('example-rule-narration', "insert a 'rather than a generic strength' narration sentence into the real examples/before-after.md's Solution proposal ✓ line", _mutate_example_rule_narration),
     ('readme-example-drift', "change one phrase of the real README.md's first ✗ line, breaking its promised reproduction from examples/before-after.md", _mutate_readme_example_drift),
     ('readme-example-lead-distance', "insert plain filler lines after the real README.md's title line, pushing its first ✗ line past the frozen 20-line ceiling", _mutate_readme_example_lead_distance),
+    ('readme-layout-legend-drift', "insert a sentence explaining a quoted 'planned' marker into the real README.md's Repository layout section prose, which the real tree never uses", _mutate_readme_layout_legend_drift),
 ]
 
 
@@ -4952,6 +5072,41 @@ def _no_example_readme():
     )
 
 
+def _good_readme_layout():
+    """A minimal README carrying a layout heading, a prose sentence
+    explaining one marker in the quoted shape, and a fenced tree using
+    that same marker on at least one entry -- silent on
+    readme-layout-legend-drift."""
+    return (
+        "# Proof First\n\n"
+        f"{README_LAYOUT_HEADING}\n\n"
+        "The tree below marks a fixture entry \"planned\" when it does not yet exist.\n\n"
+        "```\n"
+        "proof-first/\n"
+        "├── fixture.md (planned)\n"
+        "└── other.md\n"
+        "```\n"
+    )
+
+
+def _bad_readme_layout():
+    """A prose sentence explaining marker \"planned\", which the tree
+    never uses, and a tree using marker \"exists\", which the prose
+    never mentions -- both mismatch directions in one fixture,
+    following _bad_before_after's documented practice of combining
+    conditions."""
+    return (
+        "# Proof First\n\n"
+        f"{README_LAYOUT_HEADING}\n\n"
+        "The tree below marks a fixture entry \"planned\" when it does not yet exist.\n\n"
+        "```\n"
+        "proof-first/\n"
+        "├── fixture.md (exists)\n"
+        "└── other.md\n"
+        "```\n"
+    )
+
+
 def _derivative_source_fixture_files():
     """Minimal fixture content for each of the five real
     DERIVATIVE_SOURCE_NAMES paths, used by derivative_good_root and
@@ -5296,6 +5451,9 @@ def self_test():
 
         readme_lead_late_root = tmp_root / 'readme_lead_late'
         readme_lead_none_root = tmp_root / 'readme_lead_none'
+
+        readme_layout_good_root = tmp_root / 'readme_layout_good'
+        readme_layout_bad_root = tmp_root / 'readme_layout_bad'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -5649,6 +5807,15 @@ def self_test():
         _write(readme_lead_late_root / 'README.md', _late_example_readme())
         _write(readme_lead_none_root / 'README.md', _no_example_readme())
 
+        # readme_layout_good_root / readme_layout_bad_root
+        # (readme-layout-legend-drift, Phase 4 04-09 Task 3): the good
+        # root's legend and tree agree on one marker; the bad root's
+        # legend explains a marker the tree never uses while the tree
+        # uses a second marker the legend never mentions -- both
+        # mismatch directions in one fixture.
+        _write(readme_layout_good_root / 'README.md', _good_readme_layout())
+        _write(readme_layout_bad_root / 'README.md', _bad_readme_layout())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -5735,6 +5902,9 @@ def self_test():
         readme_lead_late_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_lead_late_root)}
         readme_lead_none_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_lead_none_root)}
 
+        readme_layout_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_layout_good_root)}
+        readme_layout_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_layout_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -5754,6 +5924,7 @@ def self_test():
             | spelled_bad_codes | narration_bad_codes
             | readme_drift_bad_codes
             | readme_lead_late_codes | readme_lead_none_codes
+            | readme_layout_bad_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -5825,6 +5996,20 @@ def self_test():
             all_ok = False
         if 'readme-example-lead-distance' in good_codes:
             print("FAIL: readme-example-lead-distance fired on a fixture root shipping no README.md")
+            all_ok = False
+
+        # readme-layout-legend-drift assertions (Phase 4, 04-09 Task 3).
+        if 'readme-layout-legend-drift' in readme_layout_good_codes:
+            print("FAIL: readme-layout-legend-drift fired on the known-good layout fixture")
+            all_ok = False
+        if 'readme-layout-legend-drift' not in readme_layout_bad_codes:
+            print("FAIL: readme-layout-legend-drift did not fire on the mismatched-marker layout fixture")
+            all_ok = False
+        if 'readme-layout-legend-drift' in readme_install_good_codes:
+            print("FAIL: readme-layout-legend-drift fired on readme_install_good_root, which ships no '## Repository layout' heading at all")
+            all_ok = False
+        if 'readme-layout-legend-drift' in good_codes:
+            print("FAIL: readme-layout-legend-drift fired on a fixture root shipping no README.md")
             all_ok = False
 
         # before-after-family-missing / before-after-citation-missing
