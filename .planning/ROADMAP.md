@@ -194,7 +194,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 5/10 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps
+**Plans**: 6/10 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps
 
 Plans:
 **Wave 1**
@@ -218,7 +218,7 @@ Plans:
 **Gap wave 1** *(parallel: disjoint files)*
 
 - [x] 04-05-PLAN.md — `examples/before-after.md` prose repair: rule narration out of all four ✓ columns, every ✓ sentence under PF-4.1's 25-word ceiling, the PF-1.9 inversion recast capability-first, both invented counts dropped, the PF-3.3 marker re-attached to a term, and README's reproduced pair kept identical (G-04-1..G-04-5; 41 codes, unchanged)
-- [ ] 04-06-PLAN.md — `skills/proof-first/references/worked-examples.md` PF-4.1 repair: 8 of 31 ✓ sentences over the ceiling, maximum 37 words, measured during gap planning rather than listed in the UAT; repaired so the sentence-length code can scan both example files honestly (41 codes, unchanged)
+- [x] 04-06-PLAN.md — `skills/proof-first/references/worked-examples.md` PF-4.1 repair: 8 of 31 ✓ sentences over the ceiling, maximum 37 words, measured during gap planning rather than listed in the UAT; repaired so the sentence-length code can scan both example files honestly (41 codes, unchanged)
 
 **Gap wave 2** *(blocked on gap wave 1)*
 
@@ -273,7 +273,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
-| 4. Distribution & Worked Examples | 5/10 | In Progress|  |
+| 4. Distribution & Worked Examples | 6/10 | In Progress|  |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
 
