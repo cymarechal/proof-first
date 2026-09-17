@@ -2,15 +2,6 @@
 
 An agent skill for technical presales writing that replaces adjectives with specificity and evidence.
 
-## What this is
-
-Proof First is a public, MIT-licensed agent skill for technical presales writing: RFP and RFI
-responses, solution proposals, executive summaries, and demo and discovery material. It is built
-for presales engineers, solution architects, and bid teams who need a document a technical
-evaluator finishes believing the author genuinely understands their problem. It is vendor-neutral
-— usable by anyone, regardless of who they sell for — and it has zero dependencies: one folder,
-no install step.
-
 ## Before and after
 
 Every rule in this skill exists to turn a paragraph like the one on the left into the one on the
@@ -29,11 +20,26 @@ The other three artifact families this skill classifies — solution proposal, e
 and demo and discovery material — each have their own full before/after pair in
 [`examples/before-after.md`](examples/before-after.md).
 
+## What this is
+
+Proof First is a public, MIT-licensed agent skill for technical presales writing: RFP and RFI
+responses, solution proposals, executive summaries, and demo and discovery material. It is built
+for presales engineers, solution architects, and bid teams who need a document a technical
+evaluator finishes believing the author genuinely understands their problem. It is vendor-neutral
+— usable by anyone, regardless of who they sell for — and it has zero dependencies: one folder,
+no install step.
+
 ## Install
 
 Proof First supports four install paths, one per harness class this project targets. The
 publish-location placeholder `<owner>/<repo>` below stands for wherever this repository is
 published; every command and manifest that states it is checked to agree.
+
+Routes 3 and 4 work today, from a local clone of this repository: `output-styles/proof-first.md`
+and `prompts/system-prompt.md` are committed files a reader already has once the clone exists.
+Routes 1 and 2 name the placeholder below and will not resolve until this repository is
+published. That placeholder is deliberate and disclosed, not an oversight; every command and
+manifest stating it is held identical by a check in this repository.
 
 **1. Skills CLI** — for any harness the Agent Skills standard covers (Cursor, Codex, Copilot,
 Gemini CLI, OpenCode, and the rest), install with the `skills` CLI's one-line command:
@@ -67,19 +73,6 @@ The output style and the system prompt carry the same rule text, the same comple
 the same artifact-family conventions as the skill, proven by a check in this repository; whether a
 session driven by either reaches the same conclusions as one with the skill folder installed has
 not been measured, and this repository publishes measured claims or none.
-
-## Keeping derivatives in sync
-
-`output-styles/proof-first.md` and `prompts/system-prompt.md` are generated, not hand-written.
-After editing `skills/proof-first/SKILL.md` or any of its reference files, run:
-
-```
-python3 tools/generate_derivatives.py
-```
-
-CI runs the generator's own `--check` mode and `tools/check_repo.py`'s `skill-derivative-stale`
-code; either one fails the build if a derivative is committed stale, so skipping this step cannot
-ship silently.
 
 ## Status
 
@@ -141,6 +134,19 @@ that will eventually let this README state a headline persuasion or quality numb
 and has not run. No persuasion or quality claim is made anywhere in this repository. Any number
 this README ever carries in the future will be sourced from committed benchmark results, and it
 will state the model versions and the date it was produced.
+
+## Keeping derivatives in sync
+
+`output-styles/proof-first.md` and `prompts/system-prompt.md` are generated, not hand-written.
+After editing `skills/proof-first/SKILL.md` or any of its reference files, run:
+
+```
+python3 tools/generate_derivatives.py
+```
+
+CI runs the generator's own `--check` mode and `tools/check_repo.py`'s `skill-derivative-stale`
+code; either one fails the build if a derivative is committed stale, so skipping this step cannot
+ship silently.
 
 ## Repository layout
 
