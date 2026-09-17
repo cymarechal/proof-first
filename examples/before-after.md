@@ -1,0 +1,37 @@
+# Before and After
+
+This file carries one document-level before/after pair for each of the four artifact families
+this skill classifies, at whole-passage granularity rather than the per-rule contrast
+`references/worked-examples.md` already carries — read that file for the rule-by-rule pairs.
+Every fact in every example below traces to `examples/deal-brief.md`; the deal, its parties, and
+its figures are invented. Every after column cites at least one rule ID allocated in
+`NUMBERING.md`.
+
+## RFP and RFI response
+
+✗ "Kestrel Systems Group brings decades of experience delivering large-scale cloud transformations for complex, regulated enterprises across many industries. Our proven methodology and world-class team have consistently delivered exceptional outcomes for clients facing challenges like Halverton Mutual's. Before turning to the specific migration approach Question 1 asks for, it is worth noting the breadth of our platform expertise and the strength of our partner ecosystem. Our approach is comprehensive and follows industry best practices, backed by a proven cut-over methodology and rigorous testing."
+✓ "Question 1, the highest-weighted scored question in this RFP at 30%, asks for the migration approach and cut-over plan: Kestrel Systems Group moves Halverton Mutual's 850-VM VMware vSphere estate and 40 Oracle Database instances to Amazon EC2 and Amazon Aurora PostgreSQL in four sequenced waves, cutting each wave over inside its own scheduled maintenance window and validating settlement-batch completion against the required 6-hour window before advancing to the next wave — evidence a scoring committee can check against the buyer's own rubric, not a claim asserted without it. That answer stands first, before any account of Kestrel Systems Group's own background or platform breadth."
+
+Rules applied: PF-2.1, MC-11.
+
+## Solution proposal
+
+✗ "Kestrel Systems Group delivers a best-in-class, enterprise-grade cloud migration built on cutting-edge AWS services. Our solution provides comprehensive landing-zone governance, seamless data migration, and world-class operational support. Halverton Mutual can expect this transformation to be executed flawlessly, on schedule, with zero disruption to the business."
+✓ "The target architecture moves Halverton Mutual's on-premises estate of 850 VMware vSphere virtual machines and 40 Oracle Database instances onto Amazon EC2 for compute and Amazon Aurora PostgreSQL for the migrated data layer, governed end to end by AWS Control Tower's account-level guardrails. That architecture is what delivers the capability Halverton Mutual actually asked for: a landing zone the team can govern, mapped here to AWS Control Tower rather than asserted as a generic strength. Two risks have no honest mitigation available before this proposal ships, so both are named rather than omitted: Kestrel Systems Group holds a SOC 2 Type I report while the RFP requires Type II — [PF-2.17 REVIEW (compliance): confirm this gap is acceptable to the buyer before this ships] — and Kestrel Systems Group's own most comparable prior migration programme ran 14 months, longer than Halverton Mutual's 8-month examination window — [PF-2.14 REVIEW (commitment): confirm the proposed timeline against that comparable duration before this date is promised]."
+
+Rules applied: PF-1.9, PF-2.14, PF-2.17.
+
+## Executive summary
+
+✗ "Kestrel Systems Group offers a comprehensive suite of cutting-edge cloud capabilities: elastic compute, managed database services, and end-to-end landing-zone governance. This migration will significantly reduce settlement batch overruns and dramatically lower operating costs. Halverton Mutual should choose Kestrel Systems Group for this transformative migration."
+✓ "Halverton Mutual's nightly settlement batch job regularly overruns its required 6-hour window, and the size of that overrun has never been measured — [PF-2.11 GAP: no measured baseline for the settlement batch overrun]. Diane Osoria, the Chief Financial Officer, is measured on bringing the current annual run rate down from $2,300,000 and on a clean regulatory examination, not on architecture elegance, and the business case below is built from those two terms rather than from a capability list. Only after that reframe and that case does this summary turn to what the migration delivers: automated failover, Oracle Database licensing relief, and a landing zone the team can govern."
+
+Rules applied: PF-0.1, PF-1.25, PF-2.11.
+
+## Demo and discovery material
+
+✗ "This demo showcases our platform's robust governance capabilities across your entire cloud estate. We will walk through a standard product tour highlighting landing zone automation, guardrails, and account provisioning — everything a well-architected environment needs."
+✓ "Marcus Feld, Vice President of Infrastructure, said in discovery: 'We need a landing zone we can actually govern — right now every VM is a snowflake' [PF-3.3: customer's term, retained — Marcus Feld, discovery]. The demo script that follows shows AWS Control Tower governing three representative accounts drawn from the 850-VM estate, the exact scenario Marcus Feld described rather than a standard product tour, with success judged by whether an out-of-band change to any of the three accounts is blocked, agreed with Marcus Feld's team before the session runs. Follow-up owner: the Kestrel Systems Group solutions architect who ran the session, with a written summary due before the next scheduled call — [PF-2.14 REVIEW (commitment): confirm this delivery date before it is promised]."
+
+Rules applied: PF-3.3, PF-2.14, MC-31.
+</content>
