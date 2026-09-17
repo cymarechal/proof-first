@@ -615,6 +615,33 @@ Violation codes implemented in this file:
                       before-after-family-missing's job over a different
                       file, and the last two are manual judgments left to
                       end-of-phase UAT.
+  readme-example-drift - a line of README.md beginning with the
+                      ballot-cross character, the check character, or
+                      the applied-rules footer prefix (README_CROSS_CHAR,
+                      README_CHECK_CHAR, README_APPLIED_RULES_PREFIX) is
+                      not, character for character, a line of
+                      examples/before-after.md (BEFORE_AFTER_PATH).
+                      Returns no violation before any read when either
+                      README.md or BEFORE_AFTER_PATH does not exist --
+                      both files are required for the comparison to mean
+                      anything. Fires once per unmatched README line,
+                      naming the line number and the line's opening
+                      words. Declared ceiling: comparison is whole-line
+                      code-point equality with no Unicode normalisation,
+                      no case folding and no whitespace collapsing -- the
+                      same convention pointer-missing already states, so
+                      a reproduction differing only in an invisible code
+                      point is reported as drift, which is the intended
+                      direction. It asserts membership, not position or
+                      completeness: README may reproduce one pair, four
+                      pairs, or none at all, and may reproduce a check
+                      line without its ballot-cross line. It says
+                      nothing about the surrounding prose, the family
+                      label, or the link line. And it asserts nothing in
+                      the opposite direction: a line present in
+                      examples/before-after.md and absent from README is
+                      not a violation, because README is a lead-in and
+                      is not required to reproduce everything.
 """
 import argparse
 import hashlib
@@ -1142,23 +1169,27 @@ def check_readme_results_pointer(repo_root):
 
 README_CHECK_CODES = [
     'readme-results-pointer-missing', 'readme-install-path-missing', 'readme-before-after-order',
+    'readme-example-drift',
 ]
 
 
 def run_readme_checks(repo_root):
-    # check_readme_install_paths and check_readme_before_after_order are
-    # defined later in this file, after SKILLS_CLI_INSTALL_RE and
-    # MARKETPLACE_ADD_RE (Phase 4, 04-04) -- both new checks reuse those
-    # two module-level patterns rather than declaring a third copy, so
-    # they are defined where those patterns already exist. Python
-    # resolves these names at call time, not at def time, so calling them
-    # here (before their own def statements appear in the file) is safe:
-    # by the time run_readme_checks() actually runs, the whole module has
-    # been loaded.
+    # check_readme_install_paths, check_readme_before_after_order, and
+    # check_readme_example_drift are all defined later in this file,
+    # after SKILLS_CLI_INSTALL_RE and MARKETPLACE_ADD_RE (Phase 4, 04-04)
+    # or after README_BEFORE_AFTER_HEADING (Phase 4, 04-09 Task 1) --
+    # each reuses module-level patterns declared at those later points
+    # rather than declaring a second copy, so each is defined where
+    # those patterns already exist. Python resolves these names at call
+    # time, not at def time, so calling them here (before their own def
+    # statements appear in the file) is safe: by the time
+    # run_readme_checks() actually runs, the whole module has been
+    # loaded.
     violations = []
     violations += check_readme_results_pointer(repo_root)
     violations += check_readme_install_paths(repo_root)
     violations += check_readme_before_after_order(repo_root)
+    violations += check_readme_example_drift(repo_root)
     return violations
 
 
@@ -2700,6 +2731,18 @@ README_BEFORE_AFTER_HEADING = '## Before and after'
 README_INSTALL_HEADING = '## Install'
 README_STATUS_HEADING = '## Status'
 
+# The ✗/✓ column marker characters and the applied-rules footer prefix
+# that open each footer line in both README.md's reproduced quotations
+# and examples/before-after.md (Phase 4, 04-09 Task 1). The module
+# already uses the raw '✗'/'✓' characters directly at several existing
+# call sites with no shared constant; these three names exist because
+# check_readme_example_drift below is a new call site that needs one
+# shared definition rather than retyping the raw characters or the
+# prefix string at each of its own comparisons.
+README_CROSS_CHAR = '✗'
+README_CHECK_CHAR = '✓'
+README_APPLIED_RULES_PREFIX = 'Rules applied:'
+
 
 def check_readme_install_paths(repo_root):
     """For README.md, require each of README_INSTALL_ANCHORS' four route
@@ -2781,6 +2824,56 @@ def check_readme_before_after_order(repo_root):
                 f"(line {ba_idx + 1}) does not precede both '{README_INSTALL_HEADING}' "
                 f"(line {install_idx + 1}) and '{README_STATUS_HEADING}' (line {status_idx + 1}); "
                 f"DIST-06 requires before/after pairs to precede both sections"
+            )))
+    return violations
+
+
+def check_readme_example_drift(repo_root):
+    """Require every README.md line beginning with README_CROSS_CHAR,
+    README_CHECK_CHAR, or README_APPLIED_RULES_PREFIX to be, character
+    for character, a line of examples/before-after.md (BEFORE_AFTER_PATH).
+    Reads both files raw, without calling strip_fences, for the same
+    reason check_readme_install_paths gives: the reproduced lines are
+    plain prose lines and fence-stripping would change what is compared.
+    Returns an empty list before any read when either README.md or
+    BEFORE_AFTER_PATH does not exist -- both files are required for the
+    comparison to mean anything. Fires once per README line with no
+    match, naming the line number and a short prefix of the line's text.
+
+    Declared ceiling: comparison is whole-line code-point equality with
+    no Unicode normalisation, no case folding, and no whitespace
+    collapsing -- the same convention pointer-missing already states --
+    so a reproduction differing only in an invisible code point is
+    reported as drift, which is the intended direction. It asserts
+    membership, not position or completeness: README may reproduce one
+    pair, four pairs, or none at all, and may reproduce a check line
+    without its ballot-cross line; this check says nothing about which
+    pair README chose or whether the pair is whole. It does not compare
+    the surrounding prose, the family label, or the link line. And it
+    asserts nothing in the opposite direction: a line present in
+    examples/before-after.md and absent from README is not a violation,
+    because README is a lead-in and is not required to reproduce
+    everything."""
+    readme_path = repo_root / 'README.md'
+    before_after_path = repo_root / BEFORE_AFTER_PATH
+    if not readme_path.exists() or not before_after_path.exists():
+        return []
+    rel = readme_path.relative_to(repo_root)
+    before_after_lines = set(before_after_path.read_text(encoding='utf-8').splitlines())
+    readme_lines = readme_path.read_text(encoding='utf-8').splitlines()
+    violations = []
+    for i, line in enumerate(readme_lines):
+        if not (
+            line.startswith(README_CROSS_CHAR)
+            or line.startswith(README_CHECK_CHAR)
+            or line.startswith(README_APPLIED_RULES_PREFIX)
+        ):
+            continue
+        if line not in before_after_lines:
+            prefix = ' '.join(line.split()[:8])
+            violations.append((str(rel), (
+                f"readme-example-drift {rel} line {i + 1} is not, character for "
+                f"character, a line of {BEFORE_AFTER_PATH}: \"{prefix} ...\""
             )))
     return violations
 
@@ -3575,6 +3668,19 @@ def _mutate_readme_before_after_order(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_readme_example_drift(root):
+    """Locate the copied real README.md's first line beginning with
+    README_CROSS_CHAR and replace one phrase of it with a different
+    phrase, mutating only the copy -- reproduces the real failure mode
+    this code exists for: README drifting away from the source it names
+    itself as reproduced from."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    idx = next(i for i, l in enumerate(lines) if l.startswith(README_CROSS_CHAR))
+    lines[idx] = lines[idx].replace('Kestrel Systems Group', 'A Different Vendor', 1)
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 def _mutate_example_sentence_length(root):
     """Insert one additional sentence of 30 repeated filler words
     immediately before the closing quotation mark of the ✓ line under
@@ -3686,6 +3792,7 @@ MUTATIONS = [
     ('example-sentence-length', "insert one 30-word filler sentence into the real examples/before-after.md's Executive summary ✓ line, past PF-4.1's 25-word ceiling", _mutate_example_sentence_length),
     ('before-after-spelled-count', "insert 'seven bidders' into the real examples/before-after.md's RFP and RFI response ✓ line, a word-spelled cardinal that routes around unlisted-figure's digit-shaped interface", _mutate_before_after_spelled_count),
     ('example-rule-narration', "insert a 'rather than a generic strength' narration sentence into the real examples/before-after.md's Solution proposal ✓ line", _mutate_example_rule_narration),
+    ('readme-example-drift', "change one phrase of the real README.md's first ✗ line, breaking its promised reproduction from examples/before-after.md", _mutate_readme_example_drift),
 ]
 
 
@@ -4656,11 +4763,20 @@ def _rule_narration_before_after():
 def _good_readme_install():
     """All three ordering headings present in the required order, and all
     four install anchors present -- silent on both
-    readme-install-path-missing and readme-before-after-order."""
+    readme-install-path-missing and readme-before-after-order. Extended
+    in 04-09 Task 1 to also carry a ballot-cross line, a check line, and
+    an applied-rules footer line immediately after the before/after
+    heading, so readme_install_good_root also proves
+    readme-example-drift's both-files-required precondition: this root
+    ships no examples/before-after.md, so the check must stay silent
+    here even though README carries reproduced-looking lines."""
     return (
         "# Proof First\n\n"
         "## What this is\n\nFixture body.\n\n"
-        f"{README_BEFORE_AFTER_HEADING}\n\nFixture before/after pair.\n\n"
+        f"{README_BEFORE_AFTER_HEADING}\n\n"
+        f"{README_CROSS_CHAR} \"Fixture non-compliant passage.\"\n"
+        f"{README_CHECK_CHAR} \"Fixture compliant passage.\"\n\n"
+        f"{README_APPLIED_RULES_PREFIX} PF-0.1.\n\n"
         f"{README_INSTALL_HEADING}\n\n"
         "```\nnpx skills add <owner>/<repo>\n```\n\n"
         "```\nclaude plugin marketplace add <owner>/<repo>\n```\n\n"
@@ -4683,6 +4799,28 @@ def _bad_readme_install():
         "`output-styles/proof-first.md` is one of the routes.\n\n"
         f"{README_STATUS_HEADING}\n\nFixture status body.\n\n"
         f"{README_BEFORE_AFTER_HEADING}\n\nFixture pair, moved below Status.\n"
+    )
+
+
+def _readme_drift_before_after():
+    """Minimal examples/before-after.md fixture whose lines include the
+    exact three lines _good_readme_install() reproduces in README, so
+    readme_drift_good_root's pair is consistent."""
+    return (
+        f"{README_CROSS_CHAR} \"Fixture non-compliant passage.\"\n"
+        f"{README_CHECK_CHAR} \"Fixture compliant passage.\"\n"
+        f"{README_APPLIED_RULES_PREFIX} PF-0.1.\n"
+    )
+
+
+def _readme_drift_before_after_bad():
+    """Same three lines as _readme_drift_before_after(), but the check
+    line differs by one word from what README reproduces -- the drift
+    readme-example-drift exists to catch."""
+    return (
+        f"{README_CROSS_CHAR} \"Fixture non-compliant passage.\"\n"
+        f"{README_CHECK_CHAR} \"Fixture different passage.\"\n"
+        f"{README_APPLIED_RULES_PREFIX} PF-0.1.\n"
     )
 
 
@@ -5025,6 +5163,9 @@ def self_test():
         readme_install_good_root = tmp_root / 'readme_install_good'
         readme_install_bad_root = tmp_root / 'readme_install_bad'
 
+        readme_drift_good_root = tmp_root / 'readme_drift_good'
+        readme_drift_bad_root = tmp_root / 'readme_drift_bad'
+
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
         _write(bad_root / 'examples' / 'deal-brief.md', _bad_deal_brief())
@@ -5356,6 +5497,18 @@ def self_test():
         _write(readme_install_good_root / 'README.md', _good_readme_install())
         _write(readme_install_bad_root / 'README.md', _bad_readme_install())
 
+        # readme_drift_good_root / readme_drift_bad_root
+        # (readme-example-drift, Phase 4 04-09 Task 1): both roots share
+        # the same README.md (_good_readme_install(), which now carries a
+        # ballot-cross line, a check line, and an applied-rules footer
+        # line). The good root's examples/before-after.md reproduces
+        # those same three lines exactly; the bad root's differs by one
+        # word on the check line, so only the bad root fires.
+        _write(readme_drift_good_root / 'README.md', _good_readme_install())
+        _write(readme_drift_good_root / BEFORE_AFTER_PATH, _readme_drift_before_after())
+        _write(readme_drift_bad_root / 'README.md', _good_readme_install())
+        _write(readme_drift_bad_root / BEFORE_AFTER_PATH, _readme_drift_before_after_bad())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -5436,6 +5589,9 @@ def self_test():
         readme_install_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_install_good_root)}
         readme_install_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_install_bad_root)}
 
+        readme_drift_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_drift_good_root)}
+        readme_drift_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_drift_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -5453,6 +5609,7 @@ def self_test():
             | derivative_bad_codes | readme_install_bad_codes
             | sentence_bad_codes | sentence_skill_bad_codes
             | spelled_bad_codes | narration_bad_codes
+            | readme_drift_bad_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -5496,6 +5653,20 @@ def self_test():
             all_ok = False
         if 'readme-before-after-order' in good_codes:
             print("FAIL: readme-before-after-order fired on a fixture root shipping no README.md")
+            all_ok = False
+
+        # readme-example-drift assertions (Phase 4, 04-09 Task 1).
+        if 'readme-example-drift' in readme_drift_good_codes:
+            print("FAIL: readme-example-drift fired on the known-good drift fixture")
+            all_ok = False
+        if 'readme-example-drift' not in readme_drift_bad_codes:
+            print("FAIL: readme-example-drift did not fire on the drifted before-after fixture")
+            all_ok = False
+        if 'readme-example-drift' in readme_install_good_codes:
+            print("FAIL: readme-example-drift fired on readme_install_good_root, which ships no examples/before-after.md -- both-files-required precondition violated")
+            all_ok = False
+        if 'readme-example-drift' in good_codes:
+            print("FAIL: readme-example-drift fired on a fixture root shipping no README.md")
             all_ok = False
 
         # before-after-family-missing / before-after-citation-missing
