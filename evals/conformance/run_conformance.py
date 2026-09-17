@@ -267,6 +267,33 @@ def _decode_stream(value):
     return value if value else '(empty -- no output captured before timeout)'
 
 
+class _FlushTrackingHandle:
+    """Self-test-only proxy over a real writable handle.
+
+    Records the order of `write`/`flush` calls made on it in `self.calls`
+    (e.g. `['write', 'flush', 'write', 'flush']`), so behavior case 11 can
+    assert the write-then-flush discipline `_write_result_line()` is
+    supposed to hold, independently of what any context manager's own
+    close() does on exit. Defines only `write` and `flush` -- deliberately
+    no `__getattr__` delegation, so a future code path that reaches the
+    results handle by any route other than `_write_result_line()` raises
+    `AttributeError` loudly inside the self-test rather than being silently
+    proxied through to the real handle. Never constructed in live mode.
+    """
+
+    def __init__(self, real_handle):
+        self._real = real_handle
+        self.calls = []
+
+    def write(self, text):
+        self.calls.append('write')
+        return self._real.write(text)
+
+    def flush(self):
+        self.calls.append('flush')
+        return self._real.flush()
+
+
 def self_test():
     """Offline proof the scorer discriminates known verdicts. No subprocess call.
 
@@ -598,16 +625,27 @@ def self_test():
         if fake_out_dir_10 is not None:
             shutil.rmtree(fake_out_dir_10, ignore_errors=True)
 
-    # Case 11 (03-REVIEW.md CR-01, 03-13-PLAN.md): an interruption between
-    # sessions of a `run_matrix()` invocation must lose at most the
-    # in-flight session -- every session already scored in that invocation
-    # must already be durable on disk (written and flushed) before the
-    # interrupting exception propagates. A stub matching run_session's
-    # keyword signature returns a family-first (conformant) transcript for
-    # its first two calls and raises KeyboardInterrupt on its third -- an
-    # exception type deliberately outside every handler run_matrix catches,
-    # exactly the "process interrupted between sessions" condition
-    # CR-01 describes. Still offline: no real `claude` invocation, no
+    # Case 11 (03-REVIEW.md CR-01, 03-VERIFICATION.md, 03-16-PLAN.md): the
+    # discriminating assertion is the recorded write-then-flush call
+    # sequence on a proxy handle, and the pre-close read of the results file
+    # is its filesystem-level confirmation -- proving the bytes actually
+    # left Python's buffer before the handle was closed, not merely that a
+    # context manager's own close()-on-exit flushed everything regardless.
+    # The previous form of this case caught the interrupting exception
+    # inside the same `with`-block whose own close-on-exit flushed the file
+    # regardless of whether `_write_result_line()`'s flush call ran, so it
+    # passed identically with that line deleted -- raised as `CR-01` in
+    # 03-REVIEW.md's round-5 review and independently reproduced by
+    # 03-VERIFICATION.md's verifier. This case is the regression guard for
+    # `_write_result_line()`'s flush call and is expected to fail if that
+    # line is removed. A stub matching run_session's keyword signature
+    # returns a family-first (conformant) transcript for its first two calls
+    # and raises KeyboardInterrupt on its third -- an exception type
+    # deliberately outside every handler run_matrix catches, exactly the
+    # "process interrupted between sessions" condition CR-01 describes.
+    # This assertion holds regardless of which exception type interrupts
+    # the matrix and regardless of what any context manager's close-on-exit
+    # would have done. Still offline: no real `claude` invocation, no
     # network call.
     fake_out_dir_11 = None
     try:
@@ -628,7 +666,9 @@ def self_test():
             return conformant_transcript_11
 
         interrupted_11 = False
-        with open(fake_results_path_11, 'a') as fake_handle_11:
+        real_handle_11 = open(fake_results_path_11, 'a')
+        tracked_handle_11 = _FlushTrackingHandle(real_handle_11)
+        try:
             try:
                 run_matrix(
                     models=['claude-sonnet-5'],
@@ -637,28 +677,40 @@ def self_test():
                     skill_src=REPO_ROOT / 'skills' / 'proof-first',
                     transcript_dir=fake_out_dir_11,
                     timeout_s=600,
-                    handle=fake_handle_11,
+                    handle=tracked_handle_11,
                     session_fn=_stub_session_fn,
                 )
             except KeyboardInterrupt:
                 interrupted_11 = True
 
+            # Capture both pieces of evidence BEFORE the real handle closes:
+            # the recorded call order, and the file's own on-disk bytes.
+            recorded_calls_11 = list(tracked_handle_11.calls)
+            pre_close_text_11 = fake_results_path_11.read_text()
+        finally:
+            real_handle_11.close()
+
         if not interrupted_11:
             print('FAIL: behavior case 11 (durability on interruption) expected KeyboardInterrupt, none raised')
             all_ok = False
+        elif recorded_calls_11 != ['write', 'flush', 'write', 'flush']:
+            print(
+                'FAIL: behavior case 11 (durability on interruption) expected recorded call sequence '
+                f"['write', 'flush', 'write', 'flush'], actual {recorded_calls_11!r}"
+            )
+            all_ok = False
         else:
-            on_disk_text_11 = fake_results_path_11.read_text()
-            verdict_lines_11 = [line for line in on_disk_text_11.splitlines() if '| verdict=' in line]
+            verdict_lines_11 = [line for line in pre_close_text_11.splitlines() if '| verdict=' in line]
             if len(verdict_lines_11) != 2:
                 print(
                     'FAIL: behavior case 11 (durability on interruption) expected exactly 2 '
-                    f'"| verdict=" lines already on disk, found {len(verdict_lines_11)}: {on_disk_text_11!r}'
+                    f'"| verdict=" lines already on disk before close, found {len(verdict_lines_11)}: {pre_close_text_11!r}'
                 )
                 all_ok = False
             elif not all('verdict=conformant' in line for line in verdict_lines_11):
                 print(
-                    'FAIL: behavior case 11 (durability on interruption) expected both on-disk lines '
-                    f'to be verdict=conformant: {verdict_lines_11!r}'
+                    'FAIL: behavior case 11 (durability on interruption) expected both pre-close '
+                    f'on-disk lines to be verdict=conformant: {verdict_lines_11!r}'
                 )
                 all_ok = False
             else:
