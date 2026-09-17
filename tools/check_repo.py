@@ -519,17 +519,24 @@ Violation codes implemented in this file:
                       `npx skills add` and `claude plugin marketplace add`
                       command arguments) disagree, or a manifest carrier
                       exists and states none at all while another existing
-                      carrier states one. A carrier yielding no match at
+                      carrier states one. Each value is normalised across
+                      four GitHub URL forms before comparison -- HTTPS,
+                      plaintext HTTP, scheme-less, and the SSH remote form
+                      `git remote -v` prints -- so two carriers naming the
+                      same owner in different syntaxes agree rather than
+                      falsely disagreeing. A carrier yielding no match at
                       all (README.md before any install command is
                       written) is silently skipped, not treated as
                       disagreeing. Declared ceiling: it asserts every
                       existing carrier states the same GitHub account/org
-                      segment. It does not assert the location is correct,
-                      that it resolves, or that the repository is
-                      published there; it also compares owner segments
-                      only, so a repository-name-only drift under an
-                      unchanged owner is not detected. See
-                      .planning/WINDOWS.md for the open placeholder item.
+                      segment, once normalised. It does not recognise a
+                      GitHub Enterprise or other self-hosted host; it does
+                      not assert the location is correct, that it
+                      resolves, or that the repository is published there;
+                      it also compares owner segments only, so a
+                      repository-name-only drift under an unchanged owner
+                      is not detected. See .planning/WINDOWS.md for the
+                      open placeholder item.
   skill-derivative-stale - output-styles/proof-first.md or
                       prompts/system-prompt.md, if present, carries a
                       stamp -- the file's first line matching the frozen
@@ -2640,15 +2647,39 @@ MARKETPLACE_ADD_RE = re.compile(r'claude plugin marketplace add ([^\s`]+)')
 
 
 def _owner_segment(value):
-    """Strip a leading 'https://github.com/' and return the text before the
-    first remaining '/', or the whole remainder if there is none -- the
-    GitHub account/org segment, the one granularity every carrier position
-    (a full owner/repo URL, or owner.url's bare owner URL) can state."""
+    """Normalise one of four GitHub URL forms a contributor plausibly
+    writes -- the HTTPS form (https://github.com/<owner>/<repo>), the
+    plaintext HTTP form (http://github.com/<owner>/<repo>), the
+    scheme-less form (github.com/<owner>/<repo>), and the SSH remote form
+    (git@github.com:<owner>/<repo>.git, exactly as `git remote -v`
+    prints it) -- then return the text before the first remaining '/',
+    or the whole remainder if there is none: the GitHub account/org
+    segment, the one granularity every carrier position (a full
+    owner/repo URL, or owner.url's bare owner URL) can state. Tries each
+    prefix in the order listed above and stops at the first hit, so a
+    value already stripped is never stripped twice; after whichever
+    prefix matched (or none), strips surrounding whitespace, a trailing
+    slash, and a trailing '.git' suffix (the SSH form carries one, the
+    HTTPS form usually does not -- left on, it would make the repository
+    segment disagree between two forms of the same repository even once
+    the owner agrees). Declared ceiling: this does not recognise a
+    GitHub Enterprise or other self-hosted host, and it compares the
+    owner segment only, so two carriers naming the same owner and
+    different repositories are treated as agreeing -- the granularity
+    check_publish_location_drift's own docstring already claims and this
+    normalisation preserves rather than widens."""
     v = value
-    prefix = 'https://github.com/'
-    if v.startswith(prefix):
-        v = v[len(prefix):]
+    for prefix in ('https://github.com/', 'http://github.com/', 'github.com/'):
+        if v.startswith(prefix):
+            v = v[len(prefix):]
+            break
+    else:
+        ssh_prefix = 'git@github.com:'
+        if v.startswith(ssh_prefix):
+            v = v[len(ssh_prefix):]
     v = v.strip().rstrip('/')
+    if v.endswith('.git'):
+        v = v[:-len('.git')]
     return v.split('/', 1)[0] if v else v
 
 
@@ -4580,6 +4611,52 @@ def _publish_location_drift_manifests(root):
     _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(data, indent=2) + '\n')
 
 
+def _mixed_url_form_manifests(root):
+    """A root isolating the WR-01 false positive this task fixes: all
+    three publish-location carrier positions name the same owner, acme,
+    but each writes it in a different GitHub URL syntax -- plugin.json's
+    `repository` in the SSH form, marketplace.json's plugin entry
+    `repository` in the HTTPS form, and marketplace.json's `owner.url` in
+    the scheme-less form. Built by the same construction
+    _good_plugin_manifests uses -- same required keys, same version
+    agreement with the fixture skill -- so this root is silent on
+    plugin-manifest-version-mismatch and plugin-manifest-invalid and
+    must be silent on publish-location-drift too, once _owner_segment
+    normalises all three syntaxes to the same owner."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+
+    plugin_data = json.loads(_plugin_manifest_json('0.1.0'))
+    plugin_data['homepage'] = 'https://github.com/acme/proof-first'
+    plugin_data['repository'] = 'git@github.com:acme/proof-first.git'
+    _write(root / PLUGIN_MANIFEST_PATH, json.dumps(plugin_data, indent=2) + '\n')
+
+    marketplace_data = json.loads(_marketplace_manifest_json('0.1.0'))
+    marketplace_data['plugins'][0]['homepage'] = 'https://github.com/acme/proof-first'
+    marketplace_data['plugins'][0]['repository'] = 'https://github.com/acme/proof-first'
+    marketplace_data['owner']['url'] = 'github.com/acme'
+    _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(marketplace_data, indent=2) + '\n')
+
+
+def _mixed_url_form_drift_manifests(root):
+    """Identical to _mixed_url_form_manifests except plugin.json's
+    SSH-form `repository` names a different owner, other, from the
+    acme every other carrier position states -- the proof that
+    normalising URL syntax across the four forms did not also turn
+    publish-location-drift into a tautology that never fires."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+
+    plugin_data = json.loads(_plugin_manifest_json('0.1.0'))
+    plugin_data['homepage'] = 'https://github.com/acme/proof-first'
+    plugin_data['repository'] = 'git@github.com:other/proof-first.git'
+    _write(root / PLUGIN_MANIFEST_PATH, json.dumps(plugin_data, indent=2) + '\n')
+
+    marketplace_data = json.loads(_marketplace_manifest_json('0.1.0'))
+    marketplace_data['plugins'][0]['homepage'] = 'https://github.com/acme/proof-first'
+    marketplace_data['plugins'][0]['repository'] = 'https://github.com/acme/proof-first'
+    marketplace_data['owner']['url'] = 'github.com/acme'
+    _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(marketplace_data, indent=2) + '\n')
+
+
 def _minimal_frontmatter_lines():
     """A valid, minimal frontmatter block (name equals 'proof-first',
     matching the directory every catalog/line-ceiling/token-budget fixture
@@ -5427,6 +5504,8 @@ def self_test():
         plugin_invalid_root = tmp_root / 'plugin_invalid'
         plugin_marketplace_shape_root = tmp_root / 'plugin_marketplace_shape'
         plugin_publish_drift_root = tmp_root / 'plugin_publish_drift'
+        plugin_mixed_url_root = tmp_root / 'plugin_mixed_url'
+        plugin_mixed_url_drift_root = tmp_root / 'plugin_mixed_url_drift'
 
         beforeafter_good_root = tmp_root / 'beforeafter_good'
         beforeafter_bad_root = tmp_root / 'beforeafter_bad'
@@ -5699,6 +5778,8 @@ def self_test():
         _invalid_plugin_manifests(plugin_invalid_root)
         _bad_marketplace_shape(plugin_marketplace_shape_root)
         _publish_location_drift_manifests(plugin_publish_drift_root)
+        _mixed_url_form_manifests(plugin_mixed_url_root)
+        _mixed_url_form_drift_manifests(plugin_mixed_url_drift_root)
 
         # examples/before-after.md fixtures (before-after-family-missing,
         # before-after-citation-missing, Phase 4 04-02): beforeafter_good_root
@@ -5877,6 +5958,8 @@ def self_test():
         plugin_invalid_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_invalid_root)}
         plugin_marketplace_shape_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_marketplace_shape_root)}
         plugin_publish_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_publish_drift_root)}
+        plugin_mixed_url_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_mixed_url_root)}
+        plugin_mixed_url_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_mixed_url_drift_root)}
 
         beforeafter_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_good_root)}
         beforeafter_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_bad_root)}
@@ -5918,6 +6001,7 @@ def self_test():
             | family_bad_codes | family_order_bad_codes | source_label_bad_codes
             | results_bad_codes | plugin_bad_codes | plugin_invalid_codes
             | plugin_marketplace_shape_codes | plugin_publish_drift_codes
+            | plugin_mixed_url_drift_codes
             | beforeafter_bad_codes | beforeafter_order_bad_codes
             | derivative_bad_codes | readme_install_bad_codes
             | sentence_bad_codes | sentence_skill_bad_codes
@@ -6278,6 +6362,16 @@ def self_test():
             all_ok = False
         if 'publish-location-drift' in good_codes:
             print("FAIL: publish-location-drift fired on a fixture root shipping no .claude-plugin/ directory")
+            all_ok = False
+
+        # Publish-location-drift mixed-URL-form assertions (WR-01):
+        # normalising four GitHub URL forms must stay silent on genuine
+        # agreement and still fire on genuine disagreement.
+        if 'publish-location-drift' in plugin_mixed_url_codes:
+            print("FAIL: publish-location-drift fired on carriers naming the same owner in different GitHub URL forms")
+            all_ok = False
+        if 'publish-location-drift' not in plugin_mixed_url_drift_codes:
+            print("FAIL: publish-location-drift did not fire when the SSH-form carrier named a different owner from the others")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
