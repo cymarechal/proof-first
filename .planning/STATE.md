@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 03
 current_phase_name: completeness-audit-artifact-patterns
 status: executing
-stopped_at: Completed 03-15-PLAN.md (MOD-04 v1 disposition decision -- accept and disclose, propagated across RESULTS-mod04.md, WINDOWS.md, README.md, REQUIREMENTS.md, 03-UAT.md)
-last_updated: "2026-09-17T02:33:02.630Z"
+stopped_at: Completed 03-16-PLAN.md (self-test discrimination fix for run_conformance.py's flush-call durability guard)
+last_updated: "2026-09-17T04:13:11.046Z"
 last_activity: 2026-09-16
 last_activity_desc: Phase 03 execution started
-state_head: 00bed91289edcba926bfc08977be39851b395ac6
+state_head: 82535c79526717bc83dcabc9e1036b047edcffb1
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 32
-  completed_plans: 31
+  completed_plans: 32
   percent: 17
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03 (completeness-audit-artifact-patterns) — READY TO EXECUTE
-Plan: 4 of 15
+Plan: 5 of 15
 Status: Ready to execute
 Last activity: 2026-09-16 — Phase 03 execution started
 
@@ -89,6 +89,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 03-completeness-audit-artifact-patterns P13 | 10min | 2 tasks | 2 files |
 | Phase 03 P14 | 25min | 2 tasks | 1 files |
 | Phase 03 P15 | ~20 min | 3 tasks | 5 files |
+| Phase 03 P16 | ~25min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -152,6 +153,7 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-13: run_conformance.py made per-session durable (run_matrix()/_write_result_line(), closing 03-REVIEW.md CR-01); RESULTS-mod04.md's Arm A no-family enumeration corrected to name all 7 sessions (WR-01) and a dated durability-fix section added. No figure changes, MOD-04 stays unchecked.
 - [Phase 03]: 03-14: results-breakdown-count-mismatch added (32nd discrimination-proven check_repo.py code), guarding RESULTS-mod04.md's verdict-breakdown bullets against stated-count/enumeration disagreement (WR-01 gap closure); WR-02 (family-gate case-sensitivity asymmetry) and IN-01 (stale token-budget docstring claim) both closed. MOD-04/AUD-02/MOD-05 all stay unchecked -- this plan closes no requirement.
 - [Phase 03]: 03-15: MOD-04's v1 disposition resolved as an explicit human decision (Option A, accept-and-disclose) rather than a branch-table default -- decided 2026-09-16 by the project owner in an interactive /gsd-execute-phase 03 --gaps-only session. README.md now publishes the measured figure (3/10, 30.0% vs paired 4/10, 40.0%) in its own prose. WINDOWS.md entry 8 stays waived, MOD-04 stays unchecked -- accepted and disclosed, not satisfied. — Four measurement rounds across three structurally distinct levers landed under the 87.5% closure bar; route (a)'s post-generation-repair candidate is architecturally unavailable to an Agent Skill under the zero-dependency and cross-harness-portability constraints, so the project chose to publish the honest number rather than spend further live-session budget.
+- [Phase 03]: 03-16: Rewrote self-test behavior case 11 to genuinely discriminate _write_result_line()'s flush call via a call-recording proxy handle plus a pre-close read; proved in both directions by a one-time mutation probe (real file clean, mutated sibling copy FAIL). Corrected the module docstring and RESULTS-mod04.md's over-attribution, closed 03-REVIEW.md IN-01/IN-02, and recorded WINDOWS.md entry 10 as fixed. No published MOD-04 figure moved; MOD-04 stays unchecked -- this plan repairs the instrument, not the requirement.
 
 ### Pending Todos
 
@@ -176,6 +178,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-16T11:19:11.058Z
-Stopped at: Completed 03-15-PLAN.md (MOD-04 v1 disposition decision -- accept and disclose, propagated across RESULTS-mod04.md, WINDOWS.md, README.md, REQUIREMENTS.md, 03-UAT.md)
+Last session: 2026-09-17T04:13:10.911Z
+Stopped at: Completed 03-16-PLAN.md (self-test discrimination fix for run_conformance.py's flush-call durability guard)
 Resume file: None

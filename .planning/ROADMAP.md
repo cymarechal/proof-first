@@ -118,7 +118,7 @@ Plans:
   4. Check mode reports prose violations, completeness gaps, and integrity flags as three separately labeled categories, plus a structural ordering pass.
   5. Check mode never cites a rule number that doesn't exist in the shipped catalog or checklist files.
 
-**Plans**: 15/16 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`, 4 gap-closure plans added after the third re-verification returned `gaps_found` with two Critical code-review findings, 3 gap-closure plans added after the fourth re-verification returned `gaps_found` with one Critical and two Warning code-review findings, 1 gap-closure plan added after the fifth re-verification returned `gaps_found` with one Critical verification-integrity defect in the round's own added code)
+**Plans**: 16/16 plans executed (4 original, 1 gap-closure plan added after UAT found gaps, 3 gap-closure plans added after re-verification returned `gaps_found`, 4 gap-closure plans added after the third re-verification returned `gaps_found` with two Critical code-review findings, 3 gap-closure plans added after the fourth re-verification returned `gaps_found` with one Critical and two Warning code-review findings, 1 gap-closure plan added after the fifth re-verification returned `gaps_found` with one Critical verification-integrity defect in the round's own added code)
 
 Plans:
 
@@ -179,7 +179,7 @@ Plans:
 
 **Wave 14** *(gap closure after the fifth `03-VERIFICATION.md` returned `gaps_found`; run with `/gsd-execute-phase 03 --gaps-only`)*
 
-- [ ] 03-16-PLAN.md — Tracer: the verification-integrity defect in this phase's own regression guard — self-test behavior case 11 rewritten to assert write-then-flush call pairing through a `_FlushTrackingHandle` proxy and a pre-close read of the results file, so deleting `_write_result_line()`'s flush call makes CI red instead of green, proven in both directions by a one-time mutation probe; then the two documents that overclaimed what case 11 proved corrected with their provenance recorded, plus the checker's self-contradictory `evals/` comment, README's unnamed decline, and a WINDOWS ledger entry so the defect is tracked rather than untracked
+- [x] 03-16-PLAN.md — Tracer: the verification-integrity defect in this phase's own regression guard — self-test behavior case 11 rewritten to assert write-then-flush call pairing through a `_FlushTrackingHandle` proxy and a pre-close read of the results file, so deleting `_write_result_line()`'s flush call makes CI red instead of green, proven in both directions by a one-time mutation probe; then the two documents that overclaimed what case 11 proved corrected with their provenance recorded, plus the checker's self-contradictory `evals/` comment, README's unnamed decline, and a WINDOWS ledger entry so the defect is tracked rather than untracked
 
 ### Phase 4: Distribution & Worked Examples
 
@@ -232,7 +232,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 |-------|----------------|--------|-----------|
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
-| 3. Completeness Audit & Artifact Patterns | 15/15 | In Progress|  |
+| 3. Completeness Audit & Artifact Patterns | 16/16 | In Progress|  |
 | 4. Distribution & Worked Examples | 0/TBD | Not started | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
