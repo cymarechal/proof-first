@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
-current_phase: 4
+current_phase: 04
 current_phase_name: Distribution & Worked Examples
 status: executing
-stopped_at: Phase 03 complete, ready to plan Phase 2
-last_updated: "2026-09-17T06:03:23.102Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-09-17T06:23:48.606Z"
 last_activity: 2026-09-17
-last_activity_desc: Phase 03 complete, transitioned to Phase 2
-state_head: 5c75069a9b3141232f7c323edf682e7c32f38e57
+last_activity_desc: Phase 04 execution started
+state_head: d790b50ba6578007a47a801170cf31e98202a465
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 36
-  completed_plans: 32
+  completed_plans: 33
   percent: 33
 ---
 
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** A technical evaluator finishes the document believing the author genuinely understands their problem — because complex things were made simple without being made wrong.
-**Current focus:** Phase 03 — Completeness Audit & Artifact Patterns
+**Current focus:** Phase 04 — Distribution & Worked Examples
 
 ## Current Position
 
-Phase: 4 (Distribution & Worked Examples) — READY TO EXECUTE
-Plan: Not started
+Phase: 04 (Distribution & Worked Examples) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-09-17 — Phase 03 complete, transitioned to Phase 2
+Last activity: 2026-09-17 — Phase 04 execution started
 
-Progress: [██░░░░░░░░] 17%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -91,6 +91,7 @@ Progress: [██░░░░░░░░] 17%
 | Phase 03 P14 | 25min | 2 tasks | 1 files |
 | Phase 03 P15 | ~20 min | 3 tasks | 5 files |
 | Phase 03 P16 | ~25min | 3 tasks | 5 files |
+| Phase 04 P01 | 16 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -155,6 +156,7 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-14: results-breakdown-count-mismatch added (32nd discrimination-proven check_repo.py code), guarding RESULTS-mod04.md's verdict-breakdown bullets against stated-count/enumeration disagreement (WR-01 gap closure); WR-02 (family-gate case-sensitivity asymmetry) and IN-01 (stale token-budget docstring claim) both closed. MOD-04/AUD-02/MOD-05 all stay unchecked -- this plan closes no requirement.
 - [Phase 03]: 03-15: MOD-04's v1 disposition resolved as an explicit human decision (Option A, accept-and-disclose) rather than a branch-table default -- decided 2026-09-16 by the project owner in an interactive /gsd-execute-phase 03 --gaps-only session. README.md now publishes the measured figure (3/10, 30.0% vs paired 4/10, 40.0%) in its own prose. WINDOWS.md entry 8 stays waived, MOD-04 stays unchecked -- accepted and disclosed, not satisfied. — Four measurement rounds across three structurally distinct levers landed under the 87.5% closure bar; route (a)'s post-generation-repair candidate is architecturally unavailable to an Agent Skill under the zero-dependency and cross-harness-portability constraints, so the project chose to publish the honest number rather than spend further live-session budget.
 - [Phase 03]: 03-16: Rewrote self-test behavior case 11 to genuinely discriminate _write_result_line()'s flush call via a call-recording proxy handle plus a pre-close read; proved in both directions by a one-time mutation probe (real file clean, mutated sibling copy FAIL). Corrected the module docstring and RESULTS-mod04.md's over-attribution, closed 03-REVIEW.md IN-01/IN-02, and recorded WINDOWS.md entry 10 as fixed. No published MOD-04 figure moved; MOD-04 stays unchecked -- this plan repairs the instrument, not the requirement.
+- [Phase 04]: 04-01: Plugin manifests + version/publish-location enforcement wired end-to-end; publish-location-drift normalizes to GitHub owner segment (not full owner/repo) so owner.url's bare form compares consistently with homepage/repository's full form. — Literal full-string comparison would misfire on every correct manifest since owner.url structurally carries no repo segment; disclosed as a declared ceiling (catches owner drift, not repo-name-only drift).
 
 ### Pending Todos
 
@@ -179,6 +181,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-17T04:13:10.911Z
-Stopped at: Phase 03 complete, ready to plan Phase 2
+Last session: 2026-09-17T06:23:41.233Z
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None

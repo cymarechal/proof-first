@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 3
+open_count: 4
 waived_count: 1
 fixed_count: 6
-total_count: 10
-last_updated: 2026-09-17T04:10:23.158Z
+total_count: 11
+last_updated: 2026-09-17T06:22:03.471Z
 ---
 
 # Broken Windows Ledger
@@ -25,6 +25,7 @@ last_updated: 2026-09-17T04:10:23.158Z
 | 8 | 03 | unmet-truth | skills/proof-first/SKILL.md |  | MOD-04 anchored remeasurement (03-12), the first measurement of this residual produced entirely under 03-09's anchored scorer (FAMILY_LINE_WINDOW_CHARS=400) rather than the unbounded pre-fix search -- every figure below is a precise measurement, not an optimistic ceiling. Prior figures retained for the record: 03-05's unanchored UAT recipe measured 5/6 then 14/16; 03-08's same-instrument unanchored measurement of 03-07's levers measured 16/20 (both models) with a 5/11 sonnet-5-only paired baseline (6/10 vs 5/11 same-model, 45.5%->60.0%). None of those four are directly comparable to this round's figures (different scorer, or different recipe entirely). This round: Arm A -- post-03-11 skill (blob fadc48613f71fb29d55b42f70805225f9087a2b9), the ordering-gate lever under test -- scored 3 of 10 scoreable claude-sonnet-5 sessions conformant (30.0%). Arm B -- the paired same-instrument baseline, pre-03-11 skill materialised from commit c7c1df45e5042636565747f31d4eb5c38513dbac (blob 9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a) -- scored 4 of 10 (40.0%). The delta (N_A/M_A - N_B/M_B = -10.0 percentage points) is below the pre-committed rule's 0.10 improvement threshold, selecting Branch 4: the honest finding is a decline, not merely flat movement, though at n=10 per arm this is within plausible sampling noise for a true rate difference of zero. Every non-conformant session this round scored no-family (no family phrase within the anchored 400-character window at all); zero sessions scored rule-before-family, a different residual shape from every earlier, unanchored measurement of this entry. Three levers have now each been measured and none reached the 87.5% closure bar: 03-05's restatement, 03-07's five-value family line plus presence gate, and 03-11's self-check ordering re-scan. This residual is accepted and disclosed as a known, measured limitation -- not hidden, and not claimed satisfied. Full run-by-run evidence, exclusions, and the reproduction command: evals/conformance/RESULTS-mod04.md, section '## Anchored remeasurement result (03-12)'. | waived | Anchored remeasurement (03-12): Arm A (post-03-11, ordering-gate lever) 3/10 (30.0%) conformant vs. Arm B (pre-03-11, paired same-instrument baseline) 4/10 (40.0%) -- a -10.0 percentage-point delta, selecting the pre-committed rule's Branch 4 (delta < 0.10). Three levers now measured (03-05 restatement, 03-07 family line plus presence gate, 03-11 ordering re-scan) and none reached the 87.5% bar. This is the first anchored (non-optimistic-ceiling) MOD-04 measurement; the residual is accepted and disclosed, not satisfied. Full evidence: evals/conformance/RESULTS-mod04.md, section Anchored remeasurement result (03-12). Explicit v1 disposition decided 2026-09-16 by the project owner (human, in an interactive /gsd-execute-phase 03 --gaps-only session, not the executing agent on the project's behalf): Option A, accept and disclose. See evals/conformance/RESULTS-mod04.md, section '## v1 disposition decision (03-15)'. | 2026-09-15T01:50:32.188Z | 2026-09-16T09:15:30.640Z |
 | 9 | 03 | unmet-truth | skills/proof-first/references/artifact-patterns.md |  | Residual source label outside 03-05's scope: artifact-patterns.md line 103 still reads 'Diane Osoria, the economic buyer'. Plan 03-05 scoped the G-03-5 fix to the six affected MC bodies in completeness-audit.md, so this one occurrence in the Executive summary family section was not covered and is the last remaining instance of a frozen NUMBERING.md registry label used as this repository's own unattributed noun in shipped skill content. One-word fix ('the person who signs'); left unmade rather than silently widening a verified plan's scope. Closure: fold into the next content plan or into Phase 6 LEG-04 alongside entries 3 and 6. | fixed |  | 2026-09-15T01:50:41.248Z | 2026-09-15T03:04:40.161Z |
 | 10 | 03 | unmet-truth | evals/conformance/run_conformance.py |  | Self-test behavior case 11 in evals/conformance/run_conformance.py, added by 03-13 to prove that _write_result_line()'s flush call makes each scored session durable against a process interruption, did not discriminate the flush call's presence from its absence, because the interrupting exception was caught inside the same block whose own close-on-exit flushed the file regardless. A future silent deletion of that one line would have reintroduced the exact data-loss bug that has already destroyed two real measurement runs, shipping with a green self-test and a green CI -- the failure mode this repository's own mutation-testing preamble exists to prevent. Two independent reproductions: 03-REVIEW.md's round-5 CR-01 and 03-VERIFICATION.md's verifier, each by copying the script to a sibling path inside evals/conformance/, removing the flush call and observing a clean self-test PASS. The fix: 03-16 rewrote case 11 to assert the recorded write-then-flush call sequence through a proxy handle and to read the results file before the underlying handle is closed, proven in both directions by a one-time mutation probe. The residual and its route: run_conformance.py still ships no committed mutation harness of its own, unlike tools/check_repo.py --mutation-test, so this discrimination is proven once rather than continuously; that narrower guarantee is disclosed in the module docstring, in RESULTS-mod04.md's Self-test discrimination correction (03-16) section and here, and is routed to Phase 5's eval-harness work rather than claimed closed. | fixed |  | 2026-09-17T04:10:16.975Z | 2026-09-17T04:10:23.158Z |
+| 11 | 04 | unrun-verify | .claude-plugin/plugin.json |  | Publish location frozen as the placeholder <owner>/<repo> (P4-03): .claude-plugin/plugin.json's homepage/repository, .claude-plugin/marketplace.json's homepage/repository/owner.url all state https://github.com/<owner>/<repo> or https://github.com/<owner>, enforced consistent by publish-location-drift. This is a disclosed, non-resolving placeholder pending the real GitHub owner/repo (no git remote is configured); closes when the real value is substituted and verified, routed to Phase 6's LEG-04 launch gate. | open |  | 2026-09-17T06:22:03.471Z |  |
 
 ````json
 [
@@ -147,6 +148,18 @@ last_updated: 2026-09-17T04:10:23.158Z
     "reason": "",
     "recorded_at": "2026-09-17T04:10:16.975Z",
     "resolved_at": "2026-09-17T04:10:23.158Z"
+  },
+  {
+    "id": 11,
+    "kind": "unrun-verify",
+    "phase": "04",
+    "file": ".claude-plugin/plugin.json",
+    "line": null,
+    "description": "Publish location frozen as the placeholder <owner>/<repo> (P4-03): .claude-plugin/plugin.json's homepage/repository, .claude-plugin/marketplace.json's homepage/repository/owner.url all state https://github.com/<owner>/<repo> or https://github.com/<owner>, enforced consistent by publish-location-drift. This is a disclosed, non-resolving placeholder pending the real GitHub owner/repo (no git remote is configured); closes when the real value is substituted and verified, routed to Phase 6's LEG-04 launch gate.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-17T06:22:03.471Z",
+    "resolved_at": null
   }
 ]
 ````
