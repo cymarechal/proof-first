@@ -431,6 +431,8 @@ SKILL_GLOB = 'skills/*/SKILL.md'
 PLUGIN_MANIFEST_PATH = '.claude-plugin/plugin.json'
 MARKETPLACE_MANIFEST_PATH = '.claude-plugin/marketplace.json'
 
+BEFORE_AFTER_PATH = 'examples/before-after.md'
+
 
 def strip_fences(text):
     return FENCE_RE.sub('', text)
@@ -3537,6 +3539,71 @@ def _bad_artifact_patterns():
     )
 
 
+def _before_after_section(heading, cross_line=True, check_line=True, citation=None):
+    """Build one '## {heading}' section body for an examples/before-after.md
+    fixture. cross_line/check_line control whether the ✗/✓ lines are
+    present at all; citation, when given, is appended as its own short
+    line naming a bare PF-/MC- token."""
+    lines = [f"## {heading}", ""]
+    if cross_line:
+        lines.append(f"✗ \"Fixture non-compliant passage for {heading}.\"")
+    if check_line:
+        lines.append(f"✓ \"Fixture compliant rewrite for {heading}.\"")
+    if citation:
+        lines.append("")
+        lines.append(f"Rules applied: {citation}.")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _good_before_after():
+    """All four frozen family headings, in the frozen order, each with a
+    ✗ line, a ✓ line, and at least one bare PF-/MC- token -- silent on
+    both before-after-family-missing and before-after-citation-missing."""
+    return "\n".join(
+        _before_after_section(heading, citation=citation)
+        for heading, citation in zip(
+            ARTIFACT_FAMILY_SECTIONS, ('PF-0.1', 'PF-1.9', 'PF-1.25', 'MC-31'),
+        )
+    )
+
+
+def _bad_before_after():
+    """Combines three of the four conditions before-after-family-missing
+    and before-after-citation-missing exist to catch, isolated from the
+    fourth (heading order) because the ordering comparison is only
+    meaningful once all four headings are present -- see
+    _order_bad_before_after() for that case:
+    - '## Solution proposal' is missing entirely (family-missing, missing
+      heading).
+    - '## RFP and RFI response' is present but carries no ✓ line
+      (family-missing, missing half).
+    - '## Demo and discovery material' is present, complete, but cites no
+      PF-/MC- token (citation-missing).
+    - '## Executive summary' is present and fully compliant, so both
+      codes' silence on a compliant section is exercised in the same
+      fixture as their firing on the non-compliant ones."""
+    return "\n".join([
+        _before_after_section('RFP and RFI response', check_line=False),
+        _before_after_section('Executive summary', citation='PF-1.25'),
+        _before_after_section('Demo and discovery material'),
+    ])
+
+
+def _order_bad_before_after():
+    """All four frozen headings present and each section complete and
+    cited, but 'Executive summary' and 'Solution proposal' are swapped
+    relative to ARTIFACT_FAMILY_SECTIONS' own order -- isolates the
+    ordering condition from the other three, which this fixture does not
+    exercise at all (every section here is fully compliant on its own)."""
+    return "\n".join([
+        _before_after_section('RFP and RFI response', citation='PF-2.1'),
+        _before_after_section('Executive summary', citation='PF-1.25'),
+        _before_after_section('Solution proposal', citation='PF-1.9'),
+        _before_after_section('Demo and discovery material', citation='MC-31'),
+    ])
+
+
 def _good_skill_family_gate():
     """A SKILL.md whose self-check section names both anchors the
     family-line gate requires -- the silent case for
@@ -3779,6 +3846,10 @@ def self_test():
         plugin_invalid_root = tmp_root / 'plugin_invalid'
         plugin_marketplace_shape_root = tmp_root / 'plugin_marketplace_shape'
         plugin_publish_drift_root = tmp_root / 'plugin_publish_drift'
+
+        beforeafter_good_root = tmp_root / 'beforeafter_good'
+        beforeafter_bad_root = tmp_root / 'beforeafter_bad'
+        beforeafter_order_bad_root = tmp_root / 'beforeafter_order_bad'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -4025,6 +4096,19 @@ def self_test():
         _bad_marketplace_shape(plugin_marketplace_shape_root)
         _publish_location_drift_manifests(plugin_publish_drift_root)
 
+        # examples/before-after.md fixtures (before-after-family-missing,
+        # before-after-citation-missing, Phase 4 04-02): beforeafter_good_root
+        # is silent on both new codes; beforeafter_bad_root combines a missing
+        # heading, a section missing its ✓ half, and a section with no rule
+        # citation; beforeafter_order_bad_root isolates the heading-order
+        # condition, which only applies once all four headings are present.
+        # None of these roots ship NUMBERING.md, examples/deal-brief.md, or
+        # skills/ -- every other check silently returns no violations for a
+        # root missing the file it reads, isolating the two new codes.
+        _write(beforeafter_good_root / BEFORE_AFTER_PATH, _good_before_after())
+        _write(beforeafter_bad_root / BEFORE_AFTER_PATH, _bad_before_after())
+        _write(beforeafter_order_bad_root / BEFORE_AFTER_PATH, _order_bad_before_after())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -4087,6 +4171,10 @@ def self_test():
         plugin_marketplace_shape_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_marketplace_shape_root)}
         plugin_publish_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_publish_drift_root)}
 
+        beforeafter_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_good_root)}
+        beforeafter_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_bad_root)}
+        beforeafter_order_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_order_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -4100,7 +4188,35 @@ def self_test():
             | family_bad_codes | family_order_bad_codes | source_label_bad_codes
             | results_bad_codes | plugin_bad_codes | plugin_invalid_codes
             | plugin_marketplace_shape_codes | plugin_publish_drift_codes
+            | beforeafter_bad_codes | beforeafter_order_bad_codes
         )
+
+        # before-after-family-missing / before-after-citation-missing
+        # assertions (EX-02, Phase 4 04-02).
+        if 'before-after-family-missing' in beforeafter_good_codes:
+            print("FAIL: before-after-family-missing fired on the known-good before-after fixture")
+            all_ok = False
+        if 'before-after-citation-missing' in beforeafter_good_codes:
+            print("FAIL: before-after-citation-missing fired on the known-good before-after fixture")
+            all_ok = False
+        if 'before-after-family-missing' not in beforeafter_bad_codes:
+            print("FAIL: before-after-family-missing did not fire on the combined missing-heading/missing-half fixture")
+            all_ok = False
+        if 'before-after-citation-missing' not in beforeafter_bad_codes:
+            print("FAIL: before-after-citation-missing did not fire on the section with no rule token")
+            all_ok = False
+        if 'before-after-family-missing' in good_codes:
+            print("FAIL: before-after-family-missing fired on a fixture root shipping no examples/before-after.md")
+            all_ok = False
+        if 'before-after-citation-missing' in good_codes:
+            print("FAIL: before-after-citation-missing fired on a fixture root shipping no examples/before-after.md")
+            all_ok = False
+        if 'before-after-family-missing' not in beforeafter_order_bad_codes:
+            print("FAIL: before-after-family-missing did not fire on the swapped-heading-order fixture")
+            all_ok = False
+        if 'before-after-citation-missing' in beforeafter_order_bad_codes:
+            print("FAIL: before-after-citation-missing fired on the swapped-heading-order fixture, which cites a token in every section")
+            all_ok = False
 
         if 'catalog-id-drift' in good_catalog_codes:
             print("FAIL: catalog-id-drift fired on the known-good skill/checklist fixture")
