@@ -57,12 +57,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Distribution
 
-- [ ] **DIST-01**: User can install via the skills CLI with one command
+- [x] **DIST-01**: User can install via the skills CLI with one command
 - [x] **DIST-02**: User can install as a Claude Code plugin from a marketplace manifest in this repo
 - [ ] **DIST-03**: User can turn the discipline on permanently as a Claude Code output style
 - [ ] **DIST-04**: User with no skill support can paste a system prompt version and get the same behavior
 - [ ] **DIST-05**: Derivative artifacts (output style, system prompt) are regenerated from SKILL.md whenever it changes, and a documented re-sync step exists
-- [ ] **DIST-06**: Reader gets a README that leads with before/after pairs and states install paths for each harness
+- [x] **DIST-06**: Reader gets a README that leads with before/after pairs and states install paths for each harness
 
 ### Evaluation
 
@@ -159,12 +159,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOD-05 | Phase 3 | Complete |
 | EX-01 | Phase 1 | Complete |
 | EX-02 | Phase 4 | Complete |
-| DIST-01 | Phase 4 | Pending |
+| DIST-01 | Phase 4 | Complete |
 | DIST-02 | Phase 4 | Complete |
 | DIST-03 | Phase 4 | Pending |
 | DIST-04 | Phase 4 | Pending |
 | DIST-05 | Phase 4 | Pending |
-| DIST-06 | Phase 4 | Pending |
+| DIST-06 | Phase 4 | Complete |
 | EVAL-01 | Phase 5 | Pending |
 | EVAL-02 | Phase 5 | Pending |
 | EVAL-03 | Phase 5 | Pending |

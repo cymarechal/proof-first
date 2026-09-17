@@ -194,7 +194,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 3/4 plans executed
+**Plans**: 4/4 plans executed
 
 Plans:
 **Wave 1**
@@ -211,7 +211,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 04-04-PLAN.md — README rewritten to lead with a before/after pair and state all four install routes, with the derivative re-sync step documented and the existing measured-figure disclosure preserved; `readme-install-path-missing` and `readme-before-after-order` proven live (39 → 41)
+- [x] 04-04-PLAN.md — README rewritten to lead with a before/after pair and state all four install routes, with the derivative re-sync step documented and the existing measured-figure disclosure preserved; `readme-install-path-missing` and `readme-before-after-order` proven live (39 → 41)
 
 ### Phase 5: Evaluation Harness
 
@@ -250,7 +250,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
-| 4. Distribution & Worked Examples | 3/4 | In Progress|  |
+| 4. Distribution & Worked Examples | 4/4 | In Progress|  |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
 

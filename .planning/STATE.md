@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Distribution & Worked Examples
-status: executing
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-09-17T07:44:48.331Z"
+status: verifying
+stopped_at: Completed 04-04-PLAN.md
+last_updated: "2026-09-17T08:00:48.817Z"
 last_activity: 2026-09-17
 last_activity_desc: Phase 04 execution started
-state_head: eb589fec0b2b58f524271bf8ae068fe15e93d9a5
+state_head: 5e0e3ff78dd5db275acefca77e824b53c296df07
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 36
-  completed_plans: 35
+  completed_plans: 36
   percent: 33
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 Phase: 04 (Distribution & Worked Examples) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-17 — Phase 04 execution started
 
 Progress: [███░░░░░░░] 33%
@@ -94,6 +94,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P01 | 16 min | 2 tasks | 3 files |
 | Phase 04 P02 | ~55min | 2 tasks | 2 files |
 | Phase 04 P03 | 55min | 3 tasks | 5 files |
+| Phase 04 P04 | 14min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -161,6 +162,7 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-01: Plugin manifests + version/publish-location enforcement wired end-to-end; publish-location-drift normalizes to GitHub owner segment (not full owner/repo) so owner.url's bare form compares consistently with homepage/repository's full form. — Literal full-string comparison would misfire on every correct manifest since owner.url structurally carries no repo segment; disclosed as a declared ceiling (catches owner drift, not repo-name-only drift).
 - [Phase 04]: 04-02: examples/before-after.md ships four document-level before/after pairs (one per frozen artifact family); before-after-family-missing and before-after-citation-missing make family coverage, pair completeness, family order, and citation presence build failures — discrimination-proven total 35 -> 37. — EX-02's after columns cite real allocated rule IDs and every figure traces to the Canonical figures table; content-quality correctness (does the after column demonstrate the rewrite rather than restate the rule) stays a verification: backstop truth for end-of-phase UAT.
 - [Phase 04]: [Phase 04]: 04-03: Two independent freshness guards built for both generated derivatives (skill-derivative-stale's digest recomputation and generate_derivatives.py --check's byte comparison, P4-14), with the stamp located by pattern rather than physical line number (P4-12) so the output style keeps its YAML frontmatter at line 1 while the system prompt carries the same stamp with none. Mutation-test moved 37 -> 39 discrimination-proven; two Rule 1 deviations found and resolved while running the plan's own acceptance criteria (a composed-tuple regex mismatch fixed in code; an over-broad NUMBERING.md scan in the plan's own verification script documented, no shipped code affected). requirements-completed: [DIST-05] only -- DIST-03/DIST-04's behavioural half stays unverified pending Phase 5's benchmark.
+- [Phase 04]: [Phase 04]: 04-04: README rewritten to lead with a real before/after pair and state all four install routes (skills CLI, Claude Code plugin, output style, system prompt) sharing one publish-location placeholder, made mechanical by readme-install-path-missing and readme-before-after-order — mutation-test total 39 -> 41, closing Phase 4 at nine new codes (32 -> 41 since Phase 3). Two plan-authored acceptance-criteria/interfaces errors documented rather than force-fit (a function-body-scoped literal-reuse scan, and a RESULTS-mod04.md occurrence-count miscount), matching the 03-04/04-01/04-03 precedent. DIST-06's prose-quality half and DIST-01's live-install flow both stay provisional pending end-of-phase UAT / a published repository.
 
 ### Pending Todos
 
@@ -185,6 +187,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-17T07:44:48.123Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-09-17T08:00:39.268Z
+Stopped at: Completed 04-04-PLAN.md
 Resume file: None

@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 4
+open_count: 6
 waived_count: 1
 fixed_count: 6
-total_count: 11
-last_updated: 2026-09-17T06:22:03.471Z
+total_count: 13
+last_updated: 2026-09-17T07:58:46.489Z
 ---
 
 # Broken Windows Ledger
@@ -26,6 +26,8 @@ last_updated: 2026-09-17T06:22:03.471Z
 | 9 | 03 | unmet-truth | skills/proof-first/references/artifact-patterns.md |  | Residual source label outside 03-05's scope: artifact-patterns.md line 103 still reads 'Diane Osoria, the economic buyer'. Plan 03-05 scoped the G-03-5 fix to the six affected MC bodies in completeness-audit.md, so this one occurrence in the Executive summary family section was not covered and is the last remaining instance of a frozen NUMBERING.md registry label used as this repository's own unattributed noun in shipped skill content. One-word fix ('the person who signs'); left unmade rather than silently widening a verified plan's scope. Closure: fold into the next content plan or into Phase 6 LEG-04 alongside entries 3 and 6. | fixed |  | 2026-09-15T01:50:41.248Z | 2026-09-15T03:04:40.161Z |
 | 10 | 03 | unmet-truth | evals/conformance/run_conformance.py |  | Self-test behavior case 11 in evals/conformance/run_conformance.py, added by 03-13 to prove that _write_result_line()'s flush call makes each scored session durable against a process interruption, did not discriminate the flush call's presence from its absence, because the interrupting exception was caught inside the same block whose own close-on-exit flushed the file regardless. A future silent deletion of that one line would have reintroduced the exact data-loss bug that has already destroyed two real measurement runs, shipping with a green self-test and a green CI -- the failure mode this repository's own mutation-testing preamble exists to prevent. Two independent reproductions: 03-REVIEW.md's round-5 CR-01 and 03-VERIFICATION.md's verifier, each by copying the script to a sibling path inside evals/conformance/, removing the flush call and observing a clean self-test PASS. The fix: 03-16 rewrote case 11 to assert the recorded write-then-flush call sequence through a proxy handle and to read the results file before the underlying handle is closed, proven in both directions by a one-time mutation probe. The residual and its route: run_conformance.py still ships no committed mutation harness of its own, unlike tools/check_repo.py --mutation-test, so this discrimination is proven once rather than continuously; that narrower guarantee is disclosed in the module docstring, in RESULTS-mod04.md's Self-test discrimination correction (03-16) section and here, and is routed to Phase 5's eval-harness work rather than claimed closed. | fixed |  | 2026-09-17T04:10:16.975Z | 2026-09-17T04:10:23.158Z |
 | 11 | 04 | unrun-verify | .claude-plugin/plugin.json |  | Publish location frozen as the placeholder <owner>/<repo> (P4-03): .claude-plugin/plugin.json's homepage/repository, .claude-plugin/marketplace.json's homepage/repository/owner.url all state https://github.com/<owner>/<repo> or https://github.com/<owner>, enforced consistent by publish-location-drift. This is a disclosed, non-resolving placeholder pending the real GitHub owner/repo (no git remote is configured); closes when the real value is substituted and verified, routed to Phase 6's LEG-04 launch gate. | open |  | 2026-09-17T06:22:03.471Z |  |
+| 12 | 04 | unrun-verify | README.md |  | DIST-06's prose-quality half (does the lead-in genuinely read as leading with examples, is the Install section clear to a first-time reader) is unverified by any check in this repository -- only the structural half (four anchors present, Before-and-after precedes Install and Status) is CI-enforced by readme-install-path-missing/readme-before-after-order. Provisional pending end-of-phase UAT per workflow.human_verify_mode: end-of-phase. | open |  | 2026-09-17T07:58:46.362Z |  |
+| 13 | 04 | deviation | README.md |  | 04-04-PLAN.md's own acceptance criteria and <verification> expect grep -cF 'evals/conformance/RESULTS-mod04.md' README.md to print 3, describing a third occurrence 'in the layout tree at line 104' pre-rewrite. Direct inspection (both live and via git show HEAD before this plan) confirms the pre-rewrite count was 2: the tree only ever contained the bare filename 'RESULTS-mod04.md' nested under 'conformance/', never the literal concatenated path string. The guarded literal is preserved byte-identical at its original 2 occurrences (readme-results-pointer-missing passes); no third occurrence was fabricated to force the miscounted script to pass, matching the 03-04/04-01/04-03 precedent for documenting plan-authored verification-script errors rather than force-fitting shipped content to them. | open |  | 2026-09-17T07:58:46.489Z |  |
 
 ````json
 [
@@ -159,6 +161,30 @@ last_updated: 2026-09-17T06:22:03.471Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-17T06:22:03.471Z",
+    "resolved_at": null
+  },
+  {
+    "id": 12,
+    "kind": "unrun-verify",
+    "phase": "04",
+    "file": "README.md",
+    "line": null,
+    "description": "DIST-06's prose-quality half (does the lead-in genuinely read as leading with examples, is the Install section clear to a first-time reader) is unverified by any check in this repository -- only the structural half (four anchors present, Before-and-after precedes Install and Status) is CI-enforced by readme-install-path-missing/readme-before-after-order. Provisional pending end-of-phase UAT per workflow.human_verify_mode: end-of-phase.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-17T07:58:46.362Z",
+    "resolved_at": null
+  },
+  {
+    "id": 13,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "README.md",
+    "line": null,
+    "description": "04-04-PLAN.md's own acceptance criteria and <verification> expect grep -cF 'evals/conformance/RESULTS-mod04.md' README.md to print 3, describing a third occurrence 'in the layout tree at line 104' pre-rewrite. Direct inspection (both live and via git show HEAD before this plan) confirms the pre-rewrite count was 2: the tree only ever contained the bare filename 'RESULTS-mod04.md' nested under 'conformance/', never the literal concatenated path string. The guarded literal is preserved byte-identical at its original 2 occurrences (readme-results-pointer-missing passes); no third occurrence was fabricated to force the miscounted script to pass, matching the 03-04/04-01/04-03 precedent for documenting plan-authored verification-script errors rather than force-fitting shipped content to them.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-17T07:58:46.489Z",
     "resolved_at": null
   }
 ]
