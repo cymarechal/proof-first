@@ -194,7 +194,24 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Tracer: the Claude Code plugin channel end to end — `.claude-plugin/plugin.json` and `marketplace.json` bound to `SKILL.md`'s frontmatter version, with `plugin-manifest-invalid`, `plugin-manifest-version-mismatch` and `publish-location-drift` proven live (32 → 35 codes); freezes the plugin identifier, the `source: "./"` rooting and the publish-location placeholder behind a blocking decision checkpoint
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02-PLAN.md — `examples/before-after.md`: one document-level before/after pair per artifact family in the frozen order, every after column citing a shipped rule ID, with `before-after-family-missing` and `before-after-citation-missing` proven live (35 → 37)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04-03-PLAN.md — `tools/generate_derivatives.py` and the two generated, hash-stamped derivatives (`output-styles/proof-first.md`, `prompts/system-prompt.md`), guarded from two directions by `skill-derivative-stale` and the generator's own `--check` mode in CI, plus `derivative-rule-coverage-incomplete` proving all 39 rule headings and four family headings reach each artifact (37 → 39)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 04-04-PLAN.md — README rewritten to lead with a before/after pair and state all four install routes, with the derivative re-sync step documented and the existing measured-figure disclosure preserved; `readme-install-path-missing` and `readme-before-after-order` proven live (39 → 41)
 
 ### Phase 5: Evaluation Harness
 
@@ -233,7 +250,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
-| 4. Distribution & Worked Examples | 0/TBD | Not started | - |
+| 4. Distribution & Worked Examples | 0/4 | Planned | - |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
 
