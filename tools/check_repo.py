@@ -369,12 +369,23 @@ Violation codes implemented in this file:
                       .claude-plugin/marketplace.json states a `version`
                       that disagrees with skills/*/SKILL.md's frontmatter
                       `metadata.version`, or either manifest exists while no
-                      skill states a version to compare against. Fires once
-                      per disagreeing manifest, naming both values. Absence
-                      of both manifests is not a violation. Declared ceiling:
-                      this check compares three declared strings for
-                      equality. It says nothing about whether the version
-                      is semantically correct, whether a git tag exists for
+                      skill states a version to compare against, or two or
+                      more shipped skills each state a metadata.version and
+                      those versions disagree with each other. Fires once
+                      per disagreeing manifest, naming both values, and
+                      once naming every disagreeing skill and its version
+                      when the skills themselves disagree. Absence of both
+                      manifests is not a violation. Declared ceiling: the
+                      manifest comparison resolves its single comparison
+                      value from the alphabetically first skill that states
+                      a version -- unchanged and exact when exactly one
+                      skill states one, the live case; in a multi-skill
+                      repository a manifest could still agree with that one
+                      skill and disagree with another with no manifest-
+                      level violation naming that specific disagreement --
+                      the skills' mutual disagreement is what fires
+                      instead. It says nothing about whether the version is
+                      semantically correct, whether a git tag exists for
                       it, or whether the manifest installs.
   plugin-manifest-invalid - a .claude-plugin/plugin.json or
                       .claude-plugin/marketplace.json is not valid JSON, is
@@ -382,14 +393,23 @@ Violation codes implemented in this file:
                       from the one shipped skills/*/ folder name, or
                       marketplace.json's `owner` has no non-empty `name`, or
                       its `plugins` array is not exactly one object, or that
-                      object's `source` is not the literal `./`. Absence of
-                      both manifests is not a violation. Declared ceiling:
-                      it asserts JSON well-formedness, key presence and the
-                      folder-name equality only. It never validates a
-                      value's semantics, never reaches the network, and
-                      says nothing about whether a real `claude plugin
-                      marketplace add` succeeds -- that is a manual smoke
-                      test recorded in 04-VALIDATION.md.
+                      object's `source` is not the literal `./`. Also fires
+                      when plugin.json states a `name` and the repository
+                      ships anything other than exactly one skills/*/
+                      folder, naming how many were found -- zero and
+                      multiple are worded differently, since zero means the
+                      manifest names a skill that is not there and multiple
+                      means it names one of several without saying which.
+                      Absence of both manifests is not a violation. Declared
+                      ceiling: it asserts JSON well-formedness, key presence
+                      and the folder-name equality only, and that equality
+                      is verified (not merely not-skipped) only in the
+                      one-skill case -- the multi-skill and zero-skill cases
+                      are reported as unverifiable rather than resolved. It
+                      never validates a value's semantics, never reaches
+                      the network, and says nothing about whether a real
+                      `claude plugin marketplace add` succeeds -- that is a
+                      manual smoke test recorded in 04-VALIDATION.md.
   before-after-family-missing - examples/before-after.md, if it exists,
                       is missing one of the four frozen ARTIFACT_FAMILY_
                       SECTIONS headings; or a present heading's section
@@ -2516,18 +2536,29 @@ def check_plugin_manifest_version(repo_root):
     Fires once per manifest whose version disagrees with the skill's, and
     once per manifest when the skill states no version to compare against
     at all. A manifest that fails to parse as JSON is silently skipped
-    here -- that is plugin-manifest-invalid's job, not this code's."""
+    here -- that is plugin-manifest-invalid's job, not this code's. Also
+    fires once, independent of either manifest, when two or more shipped
+    skills each state a metadata.version and those stated versions are
+    not all equal, naming every disagreeing skill and its version.
+    Declared ceiling: the manifest comparison above still resolves its
+    single comparison value from the alphabetically first skill that
+    states a version -- unchanged when exactly one skill states one, the
+    live case -- so in a multi-skill repository a manifest could agree
+    with that one skill and disagree with another without a
+    manifest-level violation naming that disagreement; the skills'
+    mutual disagreement is what fires instead, via the check just
+    described."""
     plugin_exists = (repo_root / PLUGIN_MANIFEST_PATH).exists()
     marketplace_exists = (repo_root / MARKETPLACE_MANIFEST_PATH).exists()
     if not plugin_exists and not marketplace_exists:
         return []
 
-    skill_version = None
+    skill_versions = {}
     for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
         v = _skill_metadata_version(skill_path)
         if v is not None:
-            skill_version = v
-            break
+            skill_versions[skill_path.parent.name] = v
+    skill_version = next(iter(skill_versions.values()), None)
 
     violations = []
 
@@ -2564,6 +2595,15 @@ def check_plugin_manifest_version(repo_root):
                 f"'{entry_version}', but the skill frontmatter states '{skill_version}'"
             )))
 
+    if len(skill_versions) > 1 and len(set(skill_versions.values())) > 1:
+        detail = ', '.join(
+            f"{name} states '{v}'" for name, v in sorted(skill_versions.items())
+        )
+        violations.append((PLUGIN_MANIFEST_PATH, (
+            f"plugin-manifest-version-mismatch shipped skills disagree on their own "
+            f"metadata.version: {detail}"
+        )))
+
     return violations
 
 
@@ -2579,7 +2619,16 @@ def check_plugin_manifest_invalid(repo_root):
     required key present, plugin.json's `name` equal to the single shipped
     skill folder name, and marketplace.json's `owner`/`plugins`/`source`
     shape correct. Returns an empty list before any read when neither
-    manifest exists."""
+    manifest exists. Declared ceiling: the folder-name equality check is
+    verified only when exactly one skill folder matches SKILL_GLOB, the
+    live case; when the repository ships zero or more than one skill
+    folder while plugin.json states a `name`, the equality itself cannot
+    be resolved against a single shipped skill, so this fires naming the
+    ambiguity (how many skill folders were found) instead of silently
+    skipping the check -- zero and multiple are reported with different
+    wording, because zero means the manifest names a skill that is not
+    there and multiple means it names one of several without saying
+    which."""
     plugin_exists = (repo_root / PLUGIN_MANIFEST_PATH).exists()
     marketplace_exists = (repo_root / MARKETPLACE_MANIFEST_PATH).exists()
     if not plugin_exists and not marketplace_exists:
@@ -2597,13 +2646,26 @@ def check_plugin_manifest_invalid(repo_root):
                     f"plugin-manifest-invalid {PLUGIN_MANIFEST_PATH} is missing required key '{key}'"
                 )))
         skill_dirs = sorted({p.parent.name for p in repo_root.glob(SKILL_GLOB)})
-        if 'name' in plugin_data and len(skill_dirs) == 1:
-            skill_dir = skill_dirs[0]
+        if 'name' in plugin_data:
             name_value = plugin_data['name']
-            if name_value != skill_dir:
+            if len(skill_dirs) == 1:
+                skill_dir = skill_dirs[0]
+                if name_value != skill_dir:
+                    violations.append((PLUGIN_MANIFEST_PATH, (
+                        f"plugin-manifest-invalid {PLUGIN_MANIFEST_PATH} name '{name_value}' "
+                        f"differs from the shipped skill folder name '{skill_dir}'"
+                    )))
+            elif len(skill_dirs) == 0:
                 violations.append((PLUGIN_MANIFEST_PATH, (
-                    f"plugin-manifest-invalid {PLUGIN_MANIFEST_PATH} name '{name_value}' "
-                    f"differs from the shipped skill folder name '{skill_dir}'"
+                    f"plugin-manifest-invalid {PLUGIN_MANIFEST_PATH} states name "
+                    f"'{name_value}', but no skills/*/SKILL.md folder exists to check it against"
+                )))
+            else:
+                violations.append((PLUGIN_MANIFEST_PATH, (
+                    f"plugin-manifest-invalid {PLUGIN_MANIFEST_PATH} states name "
+                    f"'{name_value}', but {len(skill_dirs)} skill folders exist "
+                    f"({', '.join(skill_dirs)}) -- the name cannot be checked against a "
+                    f"single shipped skill folder"
                 )))
 
     marketplace_data, marketplace_error = _load_json_manifest(repo_root, MARKETPLACE_MANIFEST_PATH)
@@ -4657,6 +4719,24 @@ def _mixed_url_form_drift_manifests(root):
     _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(marketplace_data, indent=2) + '\n')
 
 
+def _multi_skill_manifests(root):
+    """A root isolating WR-03: two skill folders exist, each stating its
+    own metadata.version, and the second's version differs from the
+    first's. Built by the same construction _good_plugin_manifests
+    uses -- same manifests, same first skill fixture, same version
+    agreement between plugin.json, marketplace.json and the first
+    skill -- with a second skill folder added under skills/ so the
+    folder count is two rather than one. This root is expected to also
+    trip unrelated catalog/frontmatter checks from the second skill
+    folder; that noise is harmless, because the two assertions this
+    fixture proves name plugin-manifest-invalid and
+    plugin-manifest-version-mismatch explicitly."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    _write(root / 'skills' / 'second-skill' / 'SKILL.md', _plugin_fixture_skill('9.9.9'))
+    _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
+    _write(root / MARKETPLACE_MANIFEST_PATH, _marketplace_manifest_json('0.1.0'))
+
+
 def _minimal_frontmatter_lines():
     """A valid, minimal frontmatter block (name equals 'proof-first',
     matching the directory every catalog/line-ceiling/token-budget fixture
@@ -5506,6 +5586,7 @@ def self_test():
         plugin_publish_drift_root = tmp_root / 'plugin_publish_drift'
         plugin_mixed_url_root = tmp_root / 'plugin_mixed_url'
         plugin_mixed_url_drift_root = tmp_root / 'plugin_mixed_url_drift'
+        plugin_multiskill_root = tmp_root / 'plugin_multiskill'
 
         beforeafter_good_root = tmp_root / 'beforeafter_good'
         beforeafter_bad_root = tmp_root / 'beforeafter_bad'
@@ -5780,6 +5861,7 @@ def self_test():
         _publish_location_drift_manifests(plugin_publish_drift_root)
         _mixed_url_form_manifests(plugin_mixed_url_root)
         _mixed_url_form_drift_manifests(plugin_mixed_url_drift_root)
+        _multi_skill_manifests(plugin_multiskill_root)
 
         # examples/before-after.md fixtures (before-after-family-missing,
         # before-after-citation-missing, Phase 4 04-02): beforeafter_good_root
@@ -5960,6 +6042,7 @@ def self_test():
         plugin_publish_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_publish_drift_root)}
         plugin_mixed_url_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_mixed_url_root)}
         plugin_mixed_url_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_mixed_url_drift_root)}
+        plugin_multiskill_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_multiskill_root)}
 
         beforeafter_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_good_root)}
         beforeafter_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(beforeafter_bad_root)}
@@ -6001,7 +6084,7 @@ def self_test():
             | family_bad_codes | family_order_bad_codes | source_label_bad_codes
             | results_bad_codes | plugin_bad_codes | plugin_invalid_codes
             | plugin_marketplace_shape_codes | plugin_publish_drift_codes
-            | plugin_mixed_url_drift_codes
+            | plugin_mixed_url_drift_codes | plugin_multiskill_codes
             | beforeafter_bad_codes | beforeafter_order_bad_codes
             | derivative_bad_codes | readme_install_bad_codes
             | sentence_bad_codes | sentence_skill_bad_codes
@@ -6372,6 +6455,16 @@ def self_test():
             all_ok = False
         if 'publish-location-drift' not in plugin_mixed_url_drift_codes:
             print("FAIL: publish-location-drift did not fire when the SSH-form carrier named a different owner from the others")
+            all_ok = False
+
+        # Multi-skill plugin-manifest assertions (WR-03): a repository
+        # shipping other than exactly one skill folder must raise the
+        # ambiguity rather than silently skip the checks that assume one.
+        if 'plugin-manifest-invalid' not in plugin_multiskill_codes:
+            print("FAIL: plugin-manifest-invalid did not fire when two skill folders existed")
+            all_ok = False
+        if 'plugin-manifest-version-mismatch' not in plugin_multiskill_codes:
+            print("FAIL: plugin-manifest-version-mismatch did not fire when two skills stated disagreeing versions")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
