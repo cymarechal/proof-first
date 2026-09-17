@@ -855,9 +855,14 @@ in the instrument itself.
 which writes and flushes each session's result line to the open results-file handle,
 through a new `_write_result_line()` helper, at the moment that session is scored. No
 result text is accumulated in memory anywhere in `main()` or `run_matrix()` any more. A new
-offline self-test behavior case (case 11) proves this: it interrupts a matrix mid-run with
-`KeyboardInterrupt` — an exception type outside every handler `run_matrix()` catches — and
-asserts the sessions scored before the interruption are already durable on disk. The one
+offline self-test behavior case (case 11) was added at the time: it interrupted a matrix
+mid-run with `KeyboardInterrupt` — an exception type outside every handler `run_matrix()`
+catches — and found the sessions scored before the interruption already readable on disk
+after the interrupting exception unwound through the open file's own context manager. That
+check did not discriminate the explicit flush call from its absence: the same block's own
+close-on-exit flushed the file regardless of whether `_write_result_line()`'s flush call
+ran, so the case would have passed identically with that line deleted. This over-attribution
+was corrected in 03-16 — see `## Self-test discrimination correction (03-16)` below. The one
 residual this fix does not close, and does not claim to: two `run_conformance.py`
 invocations appending to this file at the same time are not guaranteed to produce
 non-interleaved output. The tool makes no parallel-safety claim, and the project's
@@ -959,3 +964,34 @@ identified and named before any further live-session budget is spent on it, per 
 prohibition against another instruction-wording round. Reopening `WINDOWS.md` entry 8 itself is a
 one-line ledger operation — editing its `status` field back to `open` with a reason naming the
 new evidence or scope change; nothing about this disposition is a permanent close.
+
+## Self-test discrimination correction (03-16)
+
+**The defect.** Behavior case 11 in `evals/conformance/run_conformance.py` was written to prove
+offline that `_write_result_line()`'s `handle.flush()` call makes each scored session durable
+against a process interruption. It did not: the interrupting `KeyboardInterrupt` was caught
+inside the same `with`-block whose own close-on-exit flushed the file regardless of whether the
+explicit flush call ran, so the case passed identically with that one line deleted from
+`_write_result_line()`.
+
+**The provenance.** Found as `CR-01` in `03-REVIEW.md`'s round-5 review and independently
+reproduced by `03-VERIFICATION.md`'s verifier, both by copying the script to a sibling path
+inside `evals/conformance/`, removing the flush call, and observing a clean `self-test PASS`.
+
+**The fix.** `03-16` rewrote case 11 to assert the recorded write-then-flush call sequence on a
+proxy handle (`_FlushTrackingHandle`) and to read the results file from its own path before the
+underlying handle is closed, so it fails whenever the flush call is removed, regardless of which
+exception type interrupts the run.
+
+**The evidence.** The both-directions probe, run 2026-09-16: silent against the real file
+(`--self-test` exits `0`, no `FAIL:` line), firing against the mutated sibling copy with the
+flush call removed (`--self-test` exits non-zero, prints a line beginning `FAIL: behavior case
+11`). Exact transcripts recorded in `03-16-SUMMARY.md`.
+
+**The residual and what does not change.** `run_conformance.py` still ships no committed mutation
+harness of its own, unlike `tools/check_repo.py --mutation-test` — this discrimination is proven
+once, at the commit that landed the rewrite, rather than continuously. That residual is tracked
+in `.planning/WINDOWS.md` and routed to Phase 5's eval-harness work. No figure in this file
+moves: `N_A = 3, M_A = 10` (30.0%), `N_B = 4, M_B = 10` (40.0%), the -10.0 percentage-point delta,
+and every committed run block stand exactly as recorded. `MOD-04` stays unchecked. This
+correction repairs a verification claim about the test, not a measurement.

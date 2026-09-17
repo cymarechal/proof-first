@@ -32,11 +32,21 @@ Usage:
       guarantee: each session's result line is written and flushed to the
       results file at the moment that session is scored, so an interruption
       at session N of M loses at most the in-flight session, not the N-1
-      sessions already scored in this invocation (03-REVIEW.md CR-01;
-      proved offline by `--self-test` behavior case 11). What is still NOT
-      guaranteed: two invocations appending to the same results file at the
-      same time may interleave their lines -- this tool makes no
-      parallel-safety claim, and the project's operating pattern is one
+      sessions already scored in this invocation (03-REVIEW.md CR-01).
+      `--self-test` behavior case 11 asserts this via a call-recording proxy
+      handle: it drives `run_matrix()` through the proxy and asserts the
+      recorded call sequence is exactly write-then-flush for every result
+      line, with no trailing unflushed write; it also reads the results file
+      from its own path before the underlying handle is closed, so the
+      assertion is about bytes on disk rather than about buffered state.
+      Removing `_write_result_line()`'s flush call therefore makes case 11
+      fail rather than pass silently. That discrimination was verified once,
+      by a one-time mutation probe run at the commit that landed the
+      rewrite (03-16-PLAN.md); this file ships no committed mutation harness
+      of its own, unlike `tools/check_repo.py --mutation-test`. What is
+      still NOT guaranteed: two invocations appending to the same results
+      file at the same time may interleave their lines -- this tool makes
+      no parallel-safety claim, and the project's operating pattern is one
       foreground invocation at a time.
 """
 
