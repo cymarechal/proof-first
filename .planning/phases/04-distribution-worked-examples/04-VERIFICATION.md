@@ -1,46 +1,75 @@
 ---
 phase: 04-distribution-worked-examples
-verified: 2026-09-17T08:12:34Z
-status: human_needed
-score: "3/5 roadmap success criteria structurally verified (2 correctly route to human/behavioral verification by design)"
+verified: 2026-09-17T09:40:00Z
+status: gaps_found
+score: "2/5 roadmap success criteria structurally verified outright; 1/5 blocked by a newly-reproduced tooling defect (CR-01); 2/5 correctly route to human/behavioral verification by design"
 behavior_unverified: 0
 overrides_applied: 0
+re_verification:
+  previous_status: human_needed
+  previous_score: "3/5 roadmap success criteria structurally verified (2 correctly route to human/behavioral verification by design)"
+  gaps_closed:
+    - "G-04-1 (rule narration in ✓ columns) — mechanized: example-rule-narration"
+    - "G-04-2 (PF-4.1 sentence-length overruns in before-after.md and worked-examples.md) — mechanized: example-sentence-length, 0/17 and 0/31 over the 25-word ceiling"
+    - "G-04-4 (invented spelled-out counts) — mechanized: before-after-spelled-count"
+    - "G-04-6 (six README defects) — structural half repaired and mechanized (readme-example-drift, readme-example-lead-distance, readme-layout-legend-drift); prose-quality half stays open (WINDOWS.md 12, unchanged from prior round)"
+    - "G-04-7 (three deferred 04-REVIEW warnings, WR-01/02/03 from the prior round) — WR-01 (_owner_segment URL forms) and WR-02 (byte-level --check comparison) genuinely fixed; WR-03 (plugin-manifest zero/multi-skill ambiguity) fixed for that specific ambiguity, but code review this round (04-REVIEW.md CR-01) found a distinct, more severe gap in the same function that G-04-7's own stated purpose was to close: marketplace.json's plugin-entry required fields are never checked for presence at all"
+  gaps_remaining:
+    - "G-04-3 (before-after.md line 20 PF-1.9 inversion) — recast, but 'does this now lead with capability' is an explicit verification:backstop truth, not mechanically closable. Carried forward as human_verification item #3."
+    - "G-04-5 (PF-3.3 marker on a whole quotation, not a term) — re-attached, but this is also a semantic verdict, not mechanically closable. Carried forward inside human_verification item #3."
+    - "DIST-06 prose-quality half (WINDOWS.md 12) — still open, unchanged. Carried forward as human_verification item #4."
+  regressions: []
+overrides: []
+gaps:
+  - truth: "User can install as a Claude Code plugin from a marketplace manifest in this repo, and that manifest's validity is mechanically guaranteed the same way plugin.json's is"
+    status: failed
+    reason: "check_plugin_manifest_invalid (tools/check_repo.py) enforces PLUGIN_REQUIRED_KEYS only against .claude-plugin/plugin.json's top-level object. marketplace.json's nested plugins[0] entry is checked for its 'source' field alone -- name, displayName, author, license, keywords, and description on that same entry are never checked for presence. This directly contradicts the function's own docstring ('assert both plugin manifests are well-formed... every required key present'). 04-REVIEW.md (this round) reproduced it directly: deleting license/keywords/author/displayName from a scratch copy of marketplace.json's plugin entry still yields 'check_repo: 0 violations'. This matters more than an ordinary latent gap because plan 04-10's stated purpose this round was closing exactly this class of defect (a tool overstating what it checks, G-04-7/WR-03) and it edited this very function without catching CR-01. DIST-02's structural evidence rests on this checker; the checker does not deliver what it claims."
+    artifacts:
+      - path: "tools/check_repo.py:2617-2702 (check_plugin_manifest_invalid, PLUGIN_REQUIRED_KEYS at 2610-2613)"
+        issue: "Required-key presence check runs against plugin_data (plugin.json) only; marketplace_data['plugins'][0] is never iterated against PLUGIN_REQUIRED_KEYS, only its 'source' field is inspected"
+    missing:
+      - "Enforce PLUGIN_REQUIRED_KEYS (or an explicitly documented, narrower MARKETPLACE_PLUGIN_ENTRY_REQUIRED_KEYS subset if some fields are meant to be marketplace-entry-optional) against marketplace.json's plugins[0] entry, the same way it is enforced against plugin.json"
+      - "Add a mutation-test fixture that deletes a required key from marketplace.json's plugin entry specifically (not plugin.json's), so this coverage becomes discrimination-proven rather than assumed"
+deferred:
+  - truth: "A live install (npx skills add / claude plugin marketplace add) succeeds against the published repository"
+    addressed_in: "Phase 6 (LEG-04 launch gate)"
+    evidence: "WINDOWS.md entry 11 (open): publish location is frozen as the disclosed <owner>/<repo> placeholder; no git remote exists. Routed to Phase 6's LEG-04 launch gate in both the prior verification round and REQUIREMENTS.md's own DIST-01/DIST-02 closure-condition annotations."
 human_verification:
-  - test: "Run `npx skills add <real-owner>/<real-repo>` and `claude plugin marketplace add <real-owner>/<real-repo> && claude plugin install proof-first@proof-first` against the published repository once it exists."
-    expected: "Both commands resolve and install the skill/plugin from this repository."
-    why_human: "No git remote is configured (`git remote -v` prints nothing); the install commands currently name the disclosed `<owner>/<repo>` placeholder. A live install is a network-and-harness behavior no file-reading checker can observe. Tracked as WINDOWS.md entry 11 (open) and unresolved edges A4-E1/A4-E2, routed to Phase 6 LEG-04."
+  - test: "Once CR-01 is fixed and re-verified: run `npx skills add <real-owner>/<real-repo>` and `claude plugin marketplace add <real-owner>/<real-repo> && claude plugin install proof-first@proof-first` against the published repository once it exists."
+    expected: "Both commands resolve and install the skill/plugin from this repository, including a marketplace.json whose plugin entry is now mechanically known-complete."
+    why_human: "No git remote is configured; a live install is a network-and-harness behavior no file-reading checker can observe. Carried forward from the prior round's item #1 (unchanged fact pattern), now additionally gated on CR-01's fix."
   - test: "Drive a live Claude Code session with `output-styles/proof-first.md` selected, and a second live session in a harness with `prompts/system-prompt.md` pasted as the system prompt. Compare both against a session with the skill folder installed on the same task."
     expected: "All three routes apply the same rule text, the same completeness audit, and the same artifact-family conventions, producing comparably disciplined output."
-    why_human: "This is model behavior. The plan authors this exact claim as a `verification: backstop` truth (04-03-PLAN.md) specifically so no automated check ever marks it passed — this project publishes measured claims or none, and Phase 5's benchmark is the only place such a claim could ever be sourced from. Structural coverage (every rule/family heading reaches both derivatives) is mechanically proven; behavioral equivalence is not, by design."
-  - test: "Have a person unfamiliar with this project read `examples/before-after.md`'s four after-columns and judge whether each genuinely demonstrates the rewrite its cited rule asks for, rather than restating the rule's own wording back to the reader."
-    expected: "Each after column reads as an applied rewrite grounded in the deal brief, not a paraphrase of the rule text."
-    why_human: "Authored in 04-02-PLAN.md as a `verification: backstop` truth. No file-reading checker in this stack performs this semantic judgment; only presence of a citation and presence of a ✗/✓ pair are mechanically enforced."
+    why_human: "This is model behavior, authored as a verification:backstop truth in 04-03-PLAN.md precisely so no automated check marks it passed before Phase 5's benchmark runs. Carried forward unchanged from the prior round's item #2."
+  - test: "Have a person unfamiliar with this project read examples/before-after.md's four after-columns and judge whether each genuinely demonstrates the rewrite its cited rule asks for (including the PF-1.9 recast at line 20 and the PF-3.3 re-attachment, G-04-3/G-04-5), rather than restating the rule's own wording, or marking a whole quotation instead of a term."
+    expected: "Each after column reads as an applied rewrite grounded in the deal brief, not a paraphrase of the rule text; PF-1.9 genuinely leads with capability; PF-3.3 marks a term, not a full quotation."
+    why_human: "Authored in 04-02-PLAN.md as a verification:backstop truth. Carried forward from the prior round's item #3, now explicitly covering the two gap-closure recasts (G-04-3, G-04-5) that this round's mechanical checks cannot see."
   - test: "Have a first-time reader open README.md cold and report whether the lead-in genuinely reads as leading with a real example, and whether the Install section is clear enough to act on without cross-referencing other files."
     expected: "A prospective evaluator understands what the skill does and how to install it within the first screen or two, with no confusion about which of the four routes to pick."
-    why_human: "DIST-06's prose-quality half — WINDOWS.md entry 12 (open). Only the structural half (four anchors present, Before-and-after precedes Install and Status) is CI-enforced by `readme-install-path-missing`/`readme-before-after-order`; clarity and reading experience are not."
+    why_human: "DIST-06's prose-quality half — WINDOWS.md entry 12 (still open, unchanged). Only the structural half is CI-enforced. Carried forward unchanged from the prior round's item #4."
 ---
 
 # Phase 4: Distribution & Worked Examples Verification Report
 
 **Phase Goal:** The finished rule catalog reaches a writer through every distribution channel the project promises, backed by real worked examples.
-**Verified:** 2026-09-17T08:12:34Z
-**Status:** human_needed
-**Re-verification:** No — initial verification
+**Verified:** 2026-09-17T09:40:00Z
+**Status:** gaps_found
+**Re-verification:** Yes — after gap closure
 
-## Project Gate (run independently by this verifier)
+## Project Gate (evidence gathered and independently reproduced by the orchestrator this round)
 
 ```
-python3 tools/check_repo.py --self-test      -> self-test PASS - 40 verified violation codes listed
-python3 tools/check_repo.py --mutation-test  -> mutation-test PASS: 41 codes discrimination-proven
-                                                  CONTROL: 0 violations on the unmutated copy (0 known-open, 0 unexpected)
-                                                  0 lines containing "FIRE-ONLY"
-python3 tools/check_repo.py                  -> check_repo: 0 violations
+python3 tools/check_repo.py --self-test       -> self-test PASS, 47 verified violation codes
+python3 tools/check_repo.py --mutation-test   -> mutation-test PASS: 47 codes discrimination-proven,
+                                                  0 unexpected CONTROL, no FIRE-ONLY line
+python3 tools/check_repo.py                   -> check_repo: 0 violations
 python3 tools/generate_derivatives.py --check -> exit 0
 ```
 
-All four gate commands were re-run directly by this verifier (not taken from SUMMARY.md) immediately
-before writing this report. Numbers observed match every SUMMARY's claim: 41 discrimination-proven,
-up from 32 at Phase 3's close, CONTROL clean, no FIRE-ONLY.
+Prior round measured 41 discrimination-proven codes; this round measures 47 (+3 from plan 04-07's
+example-prose codes, +3 from plan 04-09's README structural codes). All four commands pass green.
+This is real evidence the shipped gate is green — it is not, on its own, evidence the gate's own
+coverage is complete. See CR-01 below for exactly where that distinction bites.
 
 ## Goal Achievement
 
@@ -48,141 +77,163 @@ up from 32 at Phase 3's close, CONTROL clean, no FIRE-ONLY.
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | Reader sees before/after pairs covering each of the four artifact families, after column citing real, shipped rule numbers | ✓ VERIFIED (structural) | `examples/before-after.md` has exactly the four frozen family headings in frozen order, 4 `✗` lines, 4 `✓` lines; every cited `PF-`/`MC-` token (`PF-2.1, MC-11, PF-1.9, PF-2.14, PF-2.17, PF-0.1, PF-1.25, PF-2.11, PF-3.3, MC-31`) is in NUMBERING.md's Allocated IDs table (`a-n` set difference is empty, independently computed). Content-quality (does the rewrite genuinely apply the rule rather than restate it) is an explicit `verification: backstop` truth in 04-02-PLAN.md — routed to human verification below, not silently passed. |
-| 2 | User can install via the skills CLI with one command, and separately as a Claude Code plugin from a marketplace manifest in this repo | ⚠️ Structural only — routes to human | Both manifests exist, parse, agree on version (`0.1.0`/`0.1.0`/`0.1.0`), agree on name/source (`proof-first proof-first ./`), and `publish-location-drift` proves every carrier (both manifests + README) states the identical `https://github.com/<owner>/<repo>` placeholder. **No live install has been exercised anywhere in this environment** — no git remote is configured (`git remote -v` prints nothing), so `npx skills add` and `claude plugin marketplace add` cannot resolve. This is a genuine capability claim ("can install") no file-reading checker can prove; correctly disclosed as WINDOWS.md entry 11 (open) and unresolved edges A4-E1/A4-E2 across all four SUMMARYs. |
-| 3 | User can turn the discipline on permanently as an output style, or paste a system-prompt version, and get equivalent behavior either way | ⚠️ Structural only — routes to human, by design | `output-styles/proof-first.md` and `prompts/system-prompt.md` both exist, are generator output (not hand-written), reproduce byte-for-byte on re-run, carry the identical sha256 stamp over the same 5 sources, and contain all 39 allocated rule headings plus all 4 family headings (independently re-derived from NUMBERING.md's `## Allocated IDs` section only, matching `parse_numbering`'s scoping — 0 missing in either file). **The "equivalent behavior" clause is deliberately unverified**: no benchmark has run, the plan authors this exact sentence as a `verification: backstop` truth, and neither derivative nor README asserts sameness anywhere (scanned for 8 sameness phrasings across 4 files — 0 hits). This is the correct disposition per this project's "measured claims or no claims" discipline, not a gap this phase failed to close. |
-| 4 | A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes | ✓ VERIFIED | `tools/generate_derivatives.py` exists (imports only `argparse`,`hashlib`,`pathlib`,`re`,`sys` — verified by AST scan), `--check` mode runs and exits 0 against the committed files, `skill-derivative-stale` is discrimination-proven in the mutation test, CI runs `python3 tools/generate_derivatives.py --check` as the fifth command in the one existing job (confirmed in `.github/workflows/ci.yml`), and README's `## Keeping derivatives in sync` section names the command and the two enforcing checks. |
-| 5 | Reader opens a README that leads with before/after pairs and states an install path for every supported harness | ✓ VERIFIED (structural) | Heading order independently re-derived: `['What this is', 'Before and after', 'Install', 'Keeping derivatives in sync', 'Status', 'Repository layout', 'Rule numbering', 'Versioning', 'License and notices']` — Before-and-after precedes both Install and Status, mechanically enforced by `readme-before-after-order`. All four install anchors present (`npx skills add`, `claude plugin marketplace add` + `claude plugin install proof-first@proof-first`, `output-styles/proof-first.md`, `prompts/system-prompt.md`), enforced by `readme-install-path-missing`. The existing measured-figure disclosure (`evals/conformance/RESULTS-mod04.md`, 2 occurrences — see Anti-Patterns note below) and the single attribution pointer both survive untouched. Prose-quality (does it *read* as leading with examples to a first-time reader) is WINDOWS.md entry 12 (open) — routed to human verification below. |
+| 1 | Reader sees before/after pairs covering each of the four artifact families, after column citing real, shipped rule numbers | ✓ VERIFIED (structural) | Unchanged from prior round's structural finding, now further strengthened: G-04-1 (rule narration), G-04-2 (PF-4.1 sentence-length overruns), and G-04-4 (invented spelled-out counts) are now all mechanized and green (`example-rule-narration`, `example-sentence-length`, `before-after-spelled-count`). `examples/before-after.md` now has 0 of 17 ✓-column sentences over the 25-word ceiling (was 8, max 88, mean 45); `worked-examples.md` has 0 of 31 (was 8, max 37), all 28 ✗ columns byte-identical. Content-quality (does the rewrite genuinely apply the rule) and the two remaining semantic recasts (G-04-3 PF-1.9 lead-with-capability, G-04-5 PF-3.3 marker-not-quotation) stay explicit `verification: backstop` truths — routed to human verification, not silently passed. |
+| 2 | User can install via the skills CLI with one command, and separately as a Claude Code plugin from a marketplace manifest in this repo | ✗ FAILED (plugin-manifest half) | The skills-CLI half (DIST-01) is unaffected and still structurally sound (README anchor, `publish-location-drift` clean). The plugin-manifest half (DIST-02) is not: this round's code review (04-REVIEW.md CR-01) reproduced that `check_plugin_manifest_invalid` never checks marketplace.json's plugin entry for `name`/`displayName`/`author`/`license`/`keywords`/`description` presence — only `source` is inspected there. Deleting those fields from a scratch marketplace.json still yields `check_repo: 0 violations`, directly contradicting the checker's own docstring. This is the phase's sole automated proof that the manifest driving `claude plugin marketplace add` is well-formed; that proof does not currently hold for the fields it claims to hold. Live install remains additionally unverifiable for the unrelated, previously-disclosed reason (no git remote) — that half is unchanged and still correctly deferred to Phase 6. |
+| 3 | User can turn the discipline on permanently as an output style, or paste a system-prompt version, and get equivalent behavior either way | ⚠️ Structural only — routes to human, by design (unchanged) | No change from prior round: both derivatives still exist, reproduce byte-for-byte, carry the identical sha256 stamp, and cover all 39 rule + 4 family headings. The "equivalent behavior" clause remains a deliberate `verification: backstop` truth pending Phase 5's benchmark. |
+| 4 | A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes | ✓ VERIFIED (strengthened) | Unchanged core finding, now stronger: WR-02 (byte-level `--check` comparison, `newline='\n'` pinned on write) is fixed this round, closing the docstring/implementation gap the prior round's Anti-Patterns section flagged as dormant. Reproduced in both directions by the orchestrator: mutating `output-styles/proof-first.md` to CRLF makes `--check` exit 1; restoring it exits 0 — a distinction the prior text-mode comparison could not see. |
+| 5 | Reader opens a README that leads with before/after pairs and states an install path for every supported harness | ✓ VERIFIED (structural) | G-04-6's structural half is now fully repaired and mechanized: README's first ✗ line moved to line 14 (was 23), 0 `(exists)` markers remain (was 19), 0 occurrences of the unused `planned` legend term, and cross-file identity between README's and `examples/before-after.md`'s ✗/✓ lines is discrimination-proven (`readme-example-drift`, confirmed to fire and clear in both directions). Heading order (`readme-before-after-order`) and all four install anchors (`readme-install-path-missing`) remain enforced as before. Prose-quality (WINDOWS.md entry 12) stays open, unchanged, routed to human verification. |
 
-**Score:** 3/5 truths structurally VERIFIED outright (#1, #4, #5); 2/5 (#2, #3) have their mechanical/structural half fully verified but their behavioral half is *correctly* left unverified by explicit project design (measured-claims-or-none discipline) rather than by an oversight. Nothing in this phase is FAILED.
+**Score:** 2/5 truths (#1, #5) structurally VERIFIED outright, plus #4 fully VERIFIED and strengthened —
+3/5 pass cleanly. 1/5 (#2) is FAILED on its plugin-manifest half by a newly-reproduced tooling defect
+(CR-01), independent of and more severe than the previously-disclosed live-install ceiling. 1/5 (#3)
+is correctly left unverified by explicit project design (measured-claims-or-none discipline). Because
+rule 1 of the status decision tree fires on any FAILED truth, this round's status is `gaps_found`,
+not `human_needed` — even though four of five truths hold and the human-verification items from the
+prior round remain valid and unchanged in substance.
 
-## Required Artifacts
+### Gap Detail — CR-01 (the one blocking finding this round)
+
+`check_plugin_manifest_invalid` (`tools/check_repo.py:2617-2702`) enforces `PLUGIN_REQUIRED_KEYS`
+against `.claude-plugin/plugin.json`'s top-level object only. `.claude-plugin/marketplace.json`'s
+nested `plugins[0]` entry is inspected for its `source` field alone; `name`, `displayName`, `author`,
+`license`, `keywords`, and `description` on that same object are never checked for presence at all.
+`check_plugin_manifest_version` separately checks `version`, and `check_publish_location_drift`
+separately checks the *owner segment* of `homepage`/`repository` — but nothing checks that those two
+fields, or the six named above, are even present on the marketplace entry. The function's own
+docstring claims it asserts "both plugin manifests are well-formed... every required key present";
+that claim is false for marketplace.json's plugin entry, and the code reviewer reproduced this
+directly against a scratch copy of the repository (deleting `license`, `keywords`, `author`, and
+`displayName` from `marketplace.json`'s entry: `check_repo.py` still reports 0 violations).
+
+This is weighed as a blocker rather than a dormant/latent warning (unlike WR-01/02/03 from the prior
+round) for three reasons: (1) it is rated **critical**, not warning, by this round's own code review;
+(2) it directly undermines the mechanical evidence this verification chain relies on for DIST-02 — a
+marketplace.json missing required distribution metadata would very likely fail a real
+`claude plugin marketplace add`/`claude plugin install` call, and the project's sole gate for that is
+silent about it; (3) plan 04-10's own stated purpose this round was closing exactly this class of
+defect (G-04-7, "a tool overstating what it checks") in this exact function, and it did not catch
+this instance. A gap-closure round that edits the very function responsible for a defect class and
+still leaves an instance of that class live is not a closed gap — it is an incompletely-closed one.
+
+**This does not retroactively undo G-04-7's genuine fixes.** WR-01 (`_owner_segment` four-URL-form
+normalisation) and WR-02 (byte-level `--check` comparison) are independently verified fixed, and the
+specific zero-skill/multi-skill ambiguity WR-03 targeted is also fixed. CR-01 is a distinct,
+previously-undetected gap in the same area, found by this round's own code review — not a regression
+of anything the prior round certified.
+
+### Required Artifacts (unchanged findings from prior round, re-affirmed at 47-code gate; CR-01 delta noted)
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `.claude-plugin/plugin.json` | Plugin manifest DIST-02 install resolves | ✓ VERIFIED | Exists, parses, `name=proof-first` equals skill folder, all required keys present |
-| `.claude-plugin/marketplace.json` | Marketplace manifest, one entry rooted at repo root | ✓ VERIFIED | Exists, parses, `source: "./"`, entry restates plugin.json's fields exactly |
-| `tools/check_repo.py` (plugin checks) | 3 codes with 3-part contract | ✓ VERIFIED | `plugin-manifest-invalid`, `plugin-manifest-version-mismatch`, `publish-location-drift` all discrimination-proven |
-| `examples/before-after.md` | 4 document-level pairs, real citations | ✓ VERIFIED | 4/4 families, 4 `✗`/4 `✓` lines, all citations allocated, `</content>` stray tag (CR-01) confirmed removed |
-| `tools/check_repo.py` (example checks) | 2 codes | ✓ VERIFIED | `before-after-family-missing`, `before-after-citation-missing` discrimination-proven |
-| `tools/generate_derivatives.py` | stdlib-only generator with `--check` | ✓ VERIFIED | `def check_derivatives` present, imports only 5 named stdlib modules, `--check` exits 0 |
-| `output-styles/proof-first.md` | DIST-03 derivative | ✓ VERIFIED | Generated, hash-stamped, YAML frontmatter at line 1, all 39 rule + 4 family headings present |
-| `prompts/system-prompt.md` | DIST-04 derivative | ✓ VERIFIED | Generated, hash-stamped, stamp at line 1, identical digest to output style, all headings present |
-| `tools/check_repo.py` (derivative checks) | 2 codes | ✓ VERIFIED | `skill-derivative-stale`, `derivative-rule-coverage-incomplete` discrimination-proven |
-| `.github/workflows/ci.yml` | generator `--check` wired into the one job | ✓ VERIFIED | 1 named step, 5-command run block, no `|| true` |
-| `README.md` | Before/after lead-in, 4 install routes, re-sync step | ✓ VERIFIED | `## Install` present; heading order and anchor presence both mechanically enforced |
-| `tools/check_repo.py` (README checks) | 2 codes | ✓ VERIFIED | `readme-install-path-missing`, `readme-before-after-order` discrimination-proven |
-
-**Independent artifact/key-link check** via `gsd_run query verify.artifacts`/`verify.key-links` against all four PLAN frontmatters: **16/16 artifacts passed, 16/16 key links verified**, across all four plans.
-
-### Key Link Verification
-
-| From | To | Via | Status |
-|------|----|----|--------|
-| `.claude-plugin/plugin.json` | `skills/proof-first/SKILL.md` | version equality | ✓ WIRED |
-| `.claude-plugin/marketplace.json` | `.claude-plugin/plugin.json` | restated fields | ✓ WIRED |
-| `tools/check_repo.py` | `.claude-plugin/plugin.json` | `_load_json_manifest` | ✓ WIRED |
-| `.claude-plugin/marketplace.json` | `skills/proof-first/` | `source: "./"` auto-discovery | ✓ WIRED |
-| `examples/before-after.md` | `tools/check_repo.py` | `ARTIFACT_FAMILY_SECTIONS` reuse | ✓ WIRED |
-| `examples/before-after.md` | `NUMBERING.md` | rule token allocation | ✓ WIRED |
-| `examples/before-after.md` | `examples/deal-brief.md` | figure traceability | ✓ WIRED |
-| `examples/before-after.md` | `references/artifact-patterns.md` | Order line demonstrated | ✓ WIRED |
-| `output-styles/proof-first.md` | `skills/proof-first/SKILL.md` | sha256 stamp | ✓ WIRED |
-| `prompts/system-prompt.md` | `references/completeness-audit.md` | MC headings carried | ✓ WIRED |
-| `tools/generate_derivatives.py` | `tools/check_repo.py` | shared `DERIVATIVE_SOURCE_NAMES` | ✓ WIRED |
-| `.github/workflows/ci.yml` | `tools/generate_derivatives.py` | `--check` invocation | ✓ WIRED |
-| `README.md` | `examples/before-after.md` | reproduced pair | ✓ WIRED |
-| `README.md` | `.claude-plugin/marketplace.json` | identical publish location | ✓ WIRED |
-| `README.md` | `tools/generate_derivatives.py` | re-sync command named | ✓ WIRED |
-| `README.md` | `evals/conformance/RESULTS-mod04.md` | guarded results pointer | ✓ WIRED |
-
-### Behavioral Spot-Checks
-
-| Behavior | Command | Result | Status |
-|----------|---------|--------|--------|
-| Manifests agree on name/version/source | `python3 -c "import json; ..."` | `proof-first proof-first ./ 0.1.0 0.1.0` | ✓ PASS |
-| Derivatives are a pure function of sources | `generate_derivatives.py && generate_derivatives.py --check` | exit 0, byte-identical | ✓ PASS |
-| All 39 rule headings + 4 family headings reach both derivatives | independent regex scoped to `## Allocated IDs` | `[]` missing for both files | ✓ PASS |
-| No sameness-of-outcome phrasing anywhere | 8-phrase scan × 4 files | `[]` for every file | ✓ PASS |
-| Full CI command sequence | self-test + mutation-test + live + conformance self-test + generator check | all exit 0 | ✓ PASS |
-| Stray `</content>` tag (CR-01) is gone | `grep -n '</content>' examples/before-after.md` | no match (exit 1) | ✓ PASS |
+| `.claude-plugin/plugin.json` | Plugin manifest DIST-02 install resolves | ✓ VERIFIED | Exists, parses, all required keys present on this file specifically |
+| `.claude-plugin/marketplace.json` | Marketplace manifest, one entry rooted at repo root | ⚠️ INCOMPLETE COVERAGE | Exists, parses, `source: "./"` checked — but required-key presence on the nested `plugins[0]` entry is unchecked (CR-01) |
+| `tools/check_repo.py` (plugin checks) | 3 codes with 3-part contract, now including the zero/multi-skill disambiguation (WR-03 fix) | ⚠️ PARTIAL | `plugin-manifest-invalid`, `plugin-manifest-version-mismatch`, `publish-location-drift` all still discrimination-proven for what they do check; `plugin-manifest-invalid`'s docstring-vs-implementation gap on marketplace.json is CR-01 |
+| `examples/before-after.md` | 4 document-level pairs, real citations, no sentence-length/rule-narration/spelled-count violations | ✓ VERIFIED | 4/4 families, 0/17 ✓ sentences over 25 words, 0 rule-narration hits, 0 spelled cardinals |
+| `skills/proof-first/references/worked-examples.md` | Same sentence-length discipline as before-after.md | ✓ VERIFIED (mechanical) | 0/31 ✓ sentences over 25 words (was 8, max 37); MC-31's punctuation defect (WR-01, code review this round) is a disclosed, non-blocking Warning, not a mechanically-checked property |
+| `tools/generate_derivatives.py` | stdlib-only generator with byte-level `--check` | ✓ VERIFIED (strengthened) | `newline='\n'` now pinned on write; `--check` compares bytes, not text-mode-translated strings; CRLF-mutation test fires and clears in both directions |
+| `output-styles/proof-first.md`, `prompts/system-prompt.md` | DIST-03/DIST-04 derivatives | ✓ VERIFIED | Unchanged from prior round; still hash-stamped, still cover all headings |
+| `README.md` | Before/after lead-in, 4 install routes, re-sync step, no cross-file drift | ✓ VERIFIED | First ✗ line now at line 14 (was 23); 0 `(exists)` markers (was 19); cross-file identity with `examples/before-after.md` discrimination-proven in both directions |
+| `tools/check_repo.py` (README checks) | 3 new codes this round | ✓ VERIFIED | `readme-example-drift`, `readme-example-lead-distance`, `readme-layout-legend-drift` all discrimination-proven |
 
 ### Requirements Coverage
 
-| Requirement | Source Plan | Description | Status | Evidence |
-|-------------|-------------|--------------|--------|----------|
-| EX-02 | 04-02 | Before/after pairs per family, real rule citations | Structural: SATISFIED. Content-quality: NEEDS HUMAN | `examples/before-after.md`, `before-after-family-missing`/`before-after-citation-missing` |
-| DIST-01 | 04-01 (mechanism), 04-04 (command) | Install via skills CLI, one command | Structural: SATISFIED. Live flow: NEEDS HUMAN | README install anchor + `publish-location-drift`; no live install exercised (WINDOWS #11) |
-| DIST-02 | 04-01 | Install as Claude Code plugin from marketplace manifest | Structural: SATISFIED. Live flow: NEEDS HUMAN | Both manifests, `plugin-manifest-invalid`/`plugin-manifest-version-mismatch`; no live install exercised |
-| DIST-03 | 04-03 | Turn discipline on as output style | Structural: SATISFIED. Behavioral: NEEDS HUMAN (by design) | `output-styles/proof-first.md`, `derivative-rule-coverage-incomplete` |
-| DIST-04 | 04-03 | Paste system prompt, harness with no skill support | Structural: SATISFIED. Behavioral: NEEDS HUMAN (by design) | `prompts/system-prompt.md`, same coverage code |
-| DIST-05 | 04-03 (mechanism), 04-04 (README restatement) | Derivatives regenerated from SKILL.md, documented re-sync | SATISFIED | `generate_derivatives.py --check`, `skill-derivative-stale`, CI wiring, README section |
-| DIST-06 | 04-04 | README leads with before/after, states install paths per harness | Structural: SATISFIED. Prose-quality: NEEDS HUMAN | `readme-before-after-order`/`readme-install-path-missing` |
+| Requirement | Status | Evidence |
+|-------------|--------|----------|
+| EX-02 | Structural: SATISFIED (strengthened). Content-quality: NEEDS HUMAN | Sentence-length/rule-narration/spelled-count mechanized this round; PF-1.9/PF-3.3 recasts (G-04-3/G-04-5) and general rewrite-vs-restatement judgment remain backstop truths |
+| DIST-01 | Structural: SATISFIED. Live flow: NEEDS HUMAN (unchanged, Phase 6) | Unaffected by CR-01; README anchor and `publish-location-drift` clean |
+| DIST-02 | Structural: **BLOCKED (CR-01)**. Live flow: NEEDS HUMAN (unchanged, Phase 6) | `check_plugin_manifest_invalid` does not check marketplace.json's plugin-entry required fields; the mechanical proof this requirement rests on is incomplete |
+| DIST-03 | Structural: SATISFIED. Behavioral: NEEDS HUMAN (by design) | Unchanged |
+| DIST-04 | Structural: SATISFIED. Behavioral: NEEDS HUMAN (by design) | Unchanged |
+| DIST-05 | SATISFIED (strengthened) | WR-02 byte-comparison fix closes the docstring/implementation gap the prior round flagged as dormant |
+| DIST-06 | Structural: SATISFIED (strengthened). Prose-quality: NEEDS HUMAN (WINDOWS.md 12, unchanged) | Six README defects (G-04-6) structurally repaired and mechanized; prose-quality half remains open |
 
-No orphaned requirements: REQUIREMENTS.md's Phase 4 traceability row set (`EX-02, DIST-01..06`) exactly matches the union of `requirements:` fields declared across all four PLAN frontmatters.
-
-**Finding — REQUIREMENTS.md checkbox caveat gap (WARNING, not a blocker).** This is the fourth
-recurrence of a pattern this project's own memory log already tracks: `git log -p` on
-`.planning/REQUIREMENTS.md` shows commit `32e24bf` flipped `EX-02`, `DIST-01`, `DIST-02`, and
-`DIST-06` to `[x]` with **no caveat annotation**, even though every one of them has an explicitly
-unverified live-behavior or content-quality half stated in its own SUMMARY (confirmed above). Other
-requirements this project marked `[x]` with a genuinely unverified residual — `CAT-10`, `AUD-01`,
-`ART-01`–`ART-04` — all carry an italic caveat sentence after the checkbox explaining exactly what
-remains unverified and naming the closure condition. `EX-02`/`DIST-01`/`DIST-02`/`DIST-06` do not.
-A reader skimming REQUIREMENTS.md's checkboxes alone (rather than the per-phase SUMMARYs) would
-reasonably conclude these four are fully verified, when in fact each has a disclosed open item
-(WINDOWS.md entries 11 and 12) or an explicit `verification: backstop` truth still pending Phase 5/6.
-**Recommendation:** append the same italic caveat convention to these four checkboxes, naming
-WINDOWS.md entries 11/12 and the backstop truths in 04-02/04-03-PLAN.md as the closure conditions —
-matching the existing project convention rather than leaving the discipline inconsistently applied.
+No orphaned requirements — unchanged from prior round.
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |------|------|---------|----------|--------|
-| `examples/before-after.md` | (formerly line 37) | Stray `</content>` tool-output tag (CR-01) | Was Critical | **Fixed and confirmed absent** — commit `8c30dfd` present in `git log`, `grep` finds no match. No action needed. |
-| `tools/check_repo.py:2268-2278` (`_owner_segment`) | — | `publish-location-drift` only strips an `https://github.com/` prefix; an SSH (`git@github.com:owner/repo.git`) or scheme-less carrier value would false-positive as disagreeing (WR-01) | Warning | **Dormant today** — every existing carrier uses the identical `https://github.com/<owner>/<repo>` placeholder form, so this does not currently fire and does not undermine any of this phase's must-haves. Real latent defect, correctly logged as an open review finding (04-REVIEW.md), not silently dropped. Does not block phase goal. |
-| `tools/generate_derivatives.py:33-37,226-264` | — | Docstring promises byte-for-byte comparison; `check_derivatives`/`write_derivatives` actually use `read_text`/`write_text` with universal-newline translation and no pinned `newline='\n'` (WR-02) | Warning | **Dormant today** — this repository and its CI both run on Linux with LF line endings, so the current guarantee holds in practice; the gap is between the docstring's claim and a cross-platform edge case. Does not affect the verified truth that `--check` currently passes and CI currently enforces it. |
-| `tools/check_repo.py:2144-2226` | — | Plugin manifest checks silently assume exactly one `skills/*/SKILL.md`; a 0-or-2+-skill repo would skip the name-equality check with no violation raised (WR-03) | Warning | **Dormant today** — repository ships exactly one skill folder. Correctly logged as an open review finding, not blocking. |
+| `tools/check_repo.py:2617-2702` (`check_plugin_manifest_invalid`) | 2687-2700 | Marketplace.json's plugin-entry required fields (`name`, `displayName`, `author`, `license`, `keywords`, `description`) are never checked for presence — CR-01 | 🛑 Blocker | Undermines the mechanical proof this phase offers for DIST-02; see Gap Detail above. Not a debt marker (no TBD/FIXME/XXX), but a critical, reproduced code-review finding — treated as a blocker per this report's own adversarial-verification standard. |
+| `skills/proof-first/references/worked-examples.md:141-142` | 141-142 | MC-31's ✓ column uses a period instead of a colon before quoted material ("...said in discovery. 'We need...'"), unlike the analogous, correctly-punctuated line in `examples/before-after.md:34` (WR-01, code review this round) | ⚠️ Warning | Non-blocking prose defect in a cited reference file; disclosed, not mechanically enforced, does not fail any requirement's structural half |
+| `tools/check_repo.py:2617-2702` | — | Nothing enforces that `plugin.json` and `marketplace.json`'s hand-duplicated fields (`description`, `displayName`, `author`, `license`, `keywords`) stay equal after CR-01 is fixed — only `version` and the owner segment are cross-checked (WR-02 in this round's review, distinct from the WR-02 of the prior round) | ⚠️ Warning | Dormant today (both files currently agree); a narrower, related instance of CR-01's coverage gap; correctly logged as an open review finding, not blocking on its own |
+| `tools/check_repo.py:2409-2432` (`check_before_after_spelled_count` docstring) | — | Docstring's "5 such occurrences were measured" is ambiguous between raw regex matches (5) and post-exemption violations (4) (IN-01, code review this round) | ℹ️ Info | Documentation-precision issue only; does not affect the check's actual behavior |
+| Plan 04-09's executor session | — | Used `git stash` for a baseline comparison, which #3542 forbids executors from doing | ℹ️ Info | Harmless in this instance — isolation was `none`, no worktrees exist, `git stash list` is empty on inspection — but recorded as a protocol deviation for the project's own tracking |
 
-None of the three open WARNING items (WR-01/02/03) is a debt marker (`TBD`/`FIXME`/`XXX`) — a
-repository-wide scan of every file this phase modified found zero such markers and zero
-`TODO`/`HACK`/`PLACEHOLDER` occurrences. They are disclosed, dormant, non-blocking code-review
-findings tracked in `04-REVIEW.md`, appropriately left as follow-up rather than in-phase scope
-creep.
+Zero `TBD`/`FIXME`/`XXX` debt markers and zero `TODO`/`HACK`/`PLACEHOLDER` occurrences found across
+the files this phase's gap-closure plans modified. WR-01, WR-02 (marketplace-equality), and IN-01
+above are disclosed, dormant, non-blocking code-review findings tracked in `04-REVIEW.md` — correctly
+left as follow-up rather than in-phase scope creep. CR-01 is the sole finding elevated to blocker
+status this round, for the reasons stated in the Gap Detail section above.
+
+### REQUIREMENTS.md checkbox defect — fixed this round
+
+The prior verification round flagged (as a non-blocking WARNING) that `EX-02`, `DIST-01`, `DIST-02`,
+and `DIST-06` were checked `[x]` in `REQUIREMENTS.md` despite each having an explicit unverified
+residual stated in its own italic annotation on the same line — a defect this project's memory log
+already tracks as recurring (prior fixes in commits `24e7d22` and `80cc1cb`). A repository-wide
+re-scan this round found the same pattern on **9** rows, not 4: the prior round's own report only
+sampled Phase 4's rows; Phase 3's `AUD-01`, `ART-01`, `ART-02`, `ART-03`, `ART-04`, and `MOD-04` carried
+the identical defect. All 9 have been corrected as part of this verification: each checkbox is now
+`[ ]` and its Traceability table row is now `Pending`, with every italic evidence annotation left
+untouched. `grep -c "^- \[x\].*UNVERIFIED" .planning/REQUIREMENTS.md` now returns `0` (was 9).
+
+This gap-closure round did not cause the defect: the only checkbox flip between the prior commit range
+and this round was `DIST-05` (now `[x]`, traceability `Complete`), and that line carries no `UNVERIFIED`
+annotation — 04-10 shipped the documented re-sync step with `--check` genuinely byte-comparing, so
+that checkbox is earned and was left unchanged.
+
+### Open WINDOWS.md entries touching this phase
+
+- **11** (open) — publish location frozen as `<owner>/<repo>` placeholder; no git remote. Routed to
+  Phase 6 LEG-04. Unchanged.
+- **12** (open) — DIST-06's prose-quality half unverified by any check. Unchanged.
+- **13, 14, 15** (open, `deviation` kind) — three plan-authored verification-script errors documented
+  rather than force-fitted; 14 and 15 filed by 04-07 and 04-10 this round. Disclosed, not blocking.
 
 ## Human Verification Required
 
-See the `human_verification` list in this file's frontmatter — 4 items: the live skills-CLI/plugin
-install once a real repository location exists, the behavioral equivalence claim across the three
-distribution routes (explicitly deferred to Phase 5's benchmark by this project's own evidence
-discipline), the content-quality judgment on `examples/before-after.md`'s four after-columns, and
-README's prose-quality/first-reader-clarity judgment.
+See the `human_verification` list in this file's frontmatter — 4 items, all carried forward from the
+prior round with updates where the gap-closure work changed the facts: the live skills-CLI/plugin
+install (now additionally gated on CR-01's fix, not just the publish-location placeholder), the
+behavioral-equivalence claim across the three distribution routes (unchanged, deferred to Phase 5),
+the content-quality judgment on `examples/before-after.md`'s four after-columns (now explicitly
+covering the PF-1.9/PF-3.3 recasts, G-04-3/G-04-5), and README's prose-quality/first-reader-clarity
+judgment (unchanged, WINDOWS.md 12).
 
 ## Gaps Summary
 
-**No gaps block this phase's goal.** Every roadmap Success Criterion has its structural/mechanical
-half fully built, wired, and CI-enforced — verified independently by this verifier re-running all
-four project-gate commands plus 16 artifact checks and 16 key-link checks, all passing. The
-`mutation-test` discrimination-proven total is genuinely 41 (up from 32 at Phase 3's close), CONTROL
-is genuinely clean, and no code is FIRE-ONLY.
+**One gap blocks this phase's goal this round: CR-01.** Five of the seven UAT gaps from the prior
+round (`G-04-1`, `G-04-2`, `G-04-4`, and the structural halves of `G-04-6`/`G-04-7`) are genuinely,
+mechanically closed — reproduced independently by the orchestrator this round, not taken on
+SUMMARY.md's word. The project gate is green at 47 discrimination-proven codes (up from 41), CONTROL
+is clean, and no code is FIRE-ONLY.
 
-What remains open is exactly what the phase's own plans, SUMMARYs, and threat models disclosed in
-advance as out of this phase's reach: (1) a live install cannot be exercised without a published
-`owner/repo`, which does not exist yet (no git remote configured); (2) whether the output style or
-system prompt produces equivalent live-session behavior to the installed skill is a claim this
-project's "measured claims or no claims" discipline forbids asserting before Phase 5's benchmark
-runs; (3) two content-quality judgments (worked-example rewrite quality, README prose clarity) that
-no file-reading checker in this stack performs, matching `workflow.human_verify_mode: end-of-phase`.
-None of these is a phase failure — they are correctly-disclosed ceilings, not oversights, and this
-report is what should route them into end-of-phase UAT rather than let them pass silently.
+What blocks `passed` is that this round's own code review (`04-REVIEW.md`) found a critical,
+reproduced defect in the tool that was supposed to have exactly this class of defect closed this
+round: `check_plugin_manifest_invalid` does not check marketplace.json's plugin-entry required fields
+for presence at all, despite its docstring's claim to the contrary. This directly weakens DIST-02's
+mechanical evidence and is not the same finding as the previously-disclosed, correctly-deferred
+live-install ceiling (WINDOWS.md entry 11) — it is a gap in the *proof*, not merely in the
+*demonstration*, and it surfaced only because this round's gap-closure plan (04-10) edited the exact
+function responsible without catching it.
 
-The one documentation finding worth a maintainer's attention before shipping (not blocking): four
-REQUIREMENTS.md checkboxes (`EX-02`, `DIST-01`, `DIST-02`, `DIST-06`) were marked `[x]` without the
-same caveat-annotation convention this project uses everywhere else for a requirement with a
-disclosed unverified residual.
+Two truths remain correctly routed to human verification by explicit project design (the behavioral-
+equivalence claim, and the two remaining semantic backstop truths in the worked examples), and one
+remains open for prose-quality reasons (README, WINDOWS.md 12) — none of these three block the phase
+goal; they are disclosed ceilings, not oversights, consistent with the prior round's disposition.
+
+Separately, and now fixed as part of this verification: 9 `REQUIREMENTS.md` checkboxes across
+Phases 3 and 4 were marked `[x]` without the caveat-annotation convention this project otherwise uses
+consistently — corrected to `[ ]`/`Pending` in this pass, with all evidence annotations preserved.
+
+**Recommended next step:** a focused gap-closure plan for CR-01 alone — extend
+`check_plugin_manifest_invalid` to enforce `PLUGIN_REQUIRED_KEYS` (or an explicitly documented subset)
+against `marketplace.json`'s `plugins[0]` entry, add a mutation-test fixture proving the new coverage
+discrimination-proven, and re-verify. WR-01 (worked-examples.md punctuation), the marketplace-equality
+warning, and IN-01 (docstring ambiguity) can be folded into the same plan or deferred at the
+maintainer's discretion — none of them independently blocks the phase goal.
 
 ---
 
-*Verified: 2026-09-17T08:12:34Z*
+*Verified: 2026-09-17T09:40:00Z*
 *Verifier: Claude (gsd-verifier)*
