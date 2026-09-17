@@ -4,10 +4,10 @@ An agent skill for technical presales writing that replaces adjectives with spec
 
 ## Before and after
 
-Every rule in this skill exists to turn a paragraph like the one on the left into the one on the
-right: adjectives and claims of comprehensiveness replaced by the buyer's own numbers, drawn from
-the one shared canonical deal brief this repository ships, with the rule that drove each change
-named alongside it. One full pair, reproduced from `examples/before-after.md`:
+The rules cited below turned a paragraph like the one on the left into the one on the right:
+adjectives and claims of comprehensiveness replaced by the buyer's own numbers, drawn from the one
+shared canonical deal brief this repository ships, with each rule that drove a change named
+alongside it. One full pair, reproduced from `examples/before-after.md`:
 
 **RFP and RFI response**
 
@@ -122,12 +122,13 @@ its two mechanical gates (family-line presence, family-line ordering) are presen
 in `SKILL.md` regardless of what any individual live session does. Full run-by-run figures,
 exclusions, and caveats live in `evals/conformance/RESULTS-mod04.md` — read that file before
 trusting anything downstream of it, including its "v1 disposition decision (03-15)" section
-recording why this residual is accepted for v1 rather than pursued further. At minimum: both
-measured models are Anthropic-hosted, the harness gives no determinism guarantee (no temperature
-or seed flag), and every figure recorded
+recording why this residual is accepted for v1 rather than pursued further. At minimum:
+`claude-sonnet-5`, the only model behind the anchored figures above, is Anthropic-hosted; the
+harness gives no determinism guarantee (no temperature or seed flag); and every figure recorded
 before this project's own scorer-anchoring fix (see that file's "Scorer anchoring correction
 (CR-01)" section) is an optimistic, unrecoverable ceiling, not comparable to the anchored figures
-above.
+above — including the file's earlier, superseded `claude-opus-5` sessions, none of which sit
+behind an anchored figure this README states.
 
 This is not the persuasion benchmark. The skill-on/skill-off, multi-model, judge-scored benchmark
 that will eventually let this README state a headline persuasion or quality number is Phase 5's
@@ -150,8 +151,8 @@ ship silently.
 
 ## Repository layout
 
-The tree below shows the target layout. Entries marked "planned" are documented here but not yet
-created — this repository does not ship empty placeholder files for work that has not started.
+The tree below shows this repository's layout. Every path it names exists in this repository
+today.
 
 ```
 proof-first/
@@ -165,33 +166,33 @@ proof-first/
 │           ├── deletion-test.md
 │           └── worked-examples.md
 ├── output-styles/
-│   └── proof-first.md                  (exists)
+│   └── proof-first.md
 ├── prompts/
-│   └── system-prompt.md                (exists)
+│   └── system-prompt.md
 ├── examples/
-│   ├── deal-brief.md                   (exists)
-│   └── before-after.md                 (exists)
+│   ├── deal-brief.md
+│   └── before-after.md
 ├── evals/
 │   ├── pressure-tests.md
-│   └── conformance/                     (exists)
-│       ├── run_conformance.py          (exists)
-│       ├── fixtures/                   (exists)
-│       ├── transcripts/                (exists)
-│       └── RESULTS-mod04.md            (exists)
-├── .claude-plugin/                     (exists)
-│   ├── plugin.json                     (exists)
-│   └── marketplace.json                (exists)
+│   └── conformance/
+│       ├── run_conformance.py
+│       ├── fixtures/
+│       ├── transcripts/
+│       └── RESULTS-mod04.md
+├── .claude-plugin/
+│   ├── plugin.json
+│   └── marketplace.json
 ├── tools/
-│   ├── check_repo.py                   (exists)
-│   └── generate_derivatives.py         (exists)
+│   ├── check_repo.py
+│   └── generate_derivatives.py
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                      (exists)
-├── LICENSE                             (exists)
-├── NOTICES.md                          (exists)
-├── SOURCES.md                          (exists)
-├── NUMBERING.md                        (exists)
-└── README.md                           (exists — this file)
+│       └── ci.yml
+├── LICENSE
+├── NOTICES.md
+├── SOURCES.md
+├── NUMBERING.md
+└── README.md — this file
 ```
 
 The skill lives at `skills/proof-first/`: the folder name must equal the frontmatter `name` field
