@@ -479,6 +479,47 @@ Violation codes implemented in this file:
                       anything. Phase 5's benchmark is the only place
                       such a statement could ever be sourced from; until
                       then this repository makes no such claim.
+  readme-install-path-missing - README.md is missing one of
+                      README_INSTALL_ANCHORS' four route anchors: the
+                      skills-CLI command prefix (SKILLS_CLI_INSTALL_RE),
+                      the marketplace add command prefix
+                      (MARKETPLACE_ADD_RE), or the literal
+                      output-styles/proof-first.md or
+                      prompts/system-prompt.md path. Reads README.md's raw
+                      text, never strip_fences -- every anchor lives
+                      inside a fenced command block, and stripping fences
+                      would find none of them. Fires once per missing
+                      anchor. Absence of README.md is not a violation,
+                      checked before any read. Declared ceiling: this
+                      check asserts each route's identifying text appears
+                      somewhere in the file. It does not assert the
+                      command is correct, that it resolves, that its
+                      argument names a real repository, or that the four
+                      routes appear under the '## Install' heading rather
+                      than scattered elsewhere -- publish-location-drift
+                      owns the argument's consistency, and nothing owns
+                      the command's correctness until the repository is
+                      published.
+  readme-before-after-order - README.md is missing one of
+                      README_BEFORE_AFTER_HEADING, README_INSTALL_HEADING,
+                      or README_STATUS_HEADING (the '## Before and
+                      after', '## Install', and '## Status' headings), or
+                      -- only once all three are present -- the before/
+                      after heading does not precede both the install and
+                      the status heading. Fires once per missing heading,
+                      and once naming the order found and the order
+                      required when all three are present but out of
+                      order. Absence of README.md is not a violation,
+                      checked before any read. Declared ceiling: this
+                      check asserts heading presence and relative
+                      position only. It says nothing about whether the
+                      '## Before and after' section actually contains a
+                      pair, whether the pair is any good, or whether a
+                      reader experiences the file as leading with
+                      examples -- the first of those is
+                      before-after-family-missing's job over a different
+                      file, and the last two are manual judgments left to
+                      end-of-phase UAT.
 """
 import argparse
 import hashlib
@@ -961,12 +1002,25 @@ def check_readme_results_pointer(repo_root):
     return violations
 
 
-README_CHECK_CODES = ['readme-results-pointer-missing']
+README_CHECK_CODES = [
+    'readme-results-pointer-missing', 'readme-install-path-missing', 'readme-before-after-order',
+]
 
 
 def run_readme_checks(repo_root):
+    # check_readme_install_paths and check_readme_before_after_order are
+    # defined later in this file, after SKILLS_CLI_INSTALL_RE and
+    # MARKETPLACE_ADD_RE (Phase 4, 04-04) -- both new checks reuse those
+    # two module-level patterns rather than declaring a third copy, so
+    # they are defined where those patterns already exist. Python
+    # resolves these names at call time, not at def time, so calling them
+    # here (before their own def statements appear in the file) is safe:
+    # by the time run_readme_checks() actually runs, the whole module has
+    # been loaded.
     violations = []
     violations += check_readme_results_pointer(repo_root)
+    violations += check_readme_install_paths(repo_root)
+    violations += check_readme_before_after_order(repo_root)
     return violations
 
 
@@ -2337,6 +2391,114 @@ def run_plugin_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
+# README.md -- install-path coverage and before/after ordering (Phase 4,
+# 04-04). DIST-06's structural half: every promised install route has a
+# stated anchor, and the before/after lead-in precedes both the install
+# and the status sections. Defined here, after SKILLS_CLI_INSTALL_RE and
+# MARKETPLACE_ADD_RE, because both new checks reuse those two module-level
+# patterns rather than declaring a third copy of either command prefix.
+# Both codes join README_CHECK_CODES / run_readme_checks() above, which
+# already calls them by name (Python resolves module-level names at call
+# time, not at def time) -- there is no fourth README aggregator.
+# ---------------------------------------------------------------------------
+
+README_INSTALL_ANCHORS = (
+    ('skills CLI', SKILLS_CLI_INSTALL_RE),
+    ('Claude Code marketplace', MARKETPLACE_ADD_RE),
+    ('output style', 'output-styles/proof-first.md'),
+    ('system prompt', 'prompts/system-prompt.md'),
+)
+
+README_BEFORE_AFTER_HEADING = '## Before and after'
+README_INSTALL_HEADING = '## Install'
+README_STATUS_HEADING = '## Status'
+
+
+def check_readme_install_paths(repo_root):
+    """For README.md, require each of README_INSTALL_ANCHORS' four route
+    anchors to appear somewhere in the file: the skills-CLI command
+    prefix (SKILLS_CLI_INSTALL_RE, reused rather than a second copy), the
+    marketplace add command prefix (MARKETPLACE_ADD_RE, likewise reused),
+    and the literal output-style and system-prompt paths. Reads
+    README.md's raw text and never calls strip_fences: every anchor lives
+    inside a fenced command block or a code span, and stripping fences
+    would find none of them and pass silently on an empty README. Fires
+    once per missing anchor. Returns an empty list before any read when
+    README.md does not exist.
+
+    Declared ceiling: this check asserts each route's identifying text
+    appears somewhere in the file. It does not assert the command is
+    correct, that it resolves, that its argument names a real
+    repository, or that the four routes appear under the '## Install'
+    heading rather than scattered elsewhere in the file --
+    publish-location-drift owns the argument's consistency, and nothing
+    in this repository owns the command's correctness until the
+    repository is published."""
+    violations = []
+    readme_path = repo_root / 'README.md'
+    if not readme_path.exists():
+        return violations
+    text = readme_path.read_text(encoding='utf-8')
+    for label, matcher in README_INSTALL_ANCHORS:
+        found = (matcher in text) if isinstance(matcher, str) else (matcher.search(text) is not None)
+        if not found:
+            violations.append(('README.md', (
+                f"readme-install-path-missing README.md is missing the {label} install route, "
+                f"which DIST-06 requires"
+            )))
+    return violations
+
+
+def check_readme_before_after_order(repo_root):
+    """For README.md, require README_BEFORE_AFTER_HEADING,
+    README_INSTALL_HEADING, and README_STATUS_HEADING to each be present
+    as an exact '## ' heading line, and -- only once all three are
+    present -- require the before/after heading's line index to be lower
+    than both the install and the status heading's line index. Fires once
+    per absent heading, and once naming the order found and the order
+    required when all three are present but out of order. Returns an
+    empty list before any read when README.md does not exist.
+
+    Declared ceiling: this check asserts heading presence and relative
+    position only. It says nothing about whether the '## Before and
+    after' section actually contains a pair, whether the pair is any
+    good, or whether a reader experiences the file as leading with
+    examples -- the first of those is before-after-family-missing's job
+    over a different file, and the last two are manual judgments left to
+    end-of-phase UAT."""
+    violations = []
+    readme_path = repo_root / 'README.md'
+    if not readme_path.exists():
+        return violations
+    lines = readme_path.read_text(encoding='utf-8').splitlines()
+    headings = (README_BEFORE_AFTER_HEADING, README_INSTALL_HEADING, README_STATUS_HEADING)
+    indices = {}
+    for heading in headings:
+        for i, line in enumerate(lines):
+            if line.strip() == heading:
+                indices[heading] = i
+                break
+    missing = [h for h in headings if h not in indices]
+    for heading in missing:
+        violations.append(('README.md', (
+            f"readme-before-after-order README.md is missing the required '{heading}' "
+            f"heading, which DIST-06 requires"
+        )))
+    if not missing:
+        ba_idx = indices[README_BEFORE_AFTER_HEADING]
+        install_idx = indices[README_INSTALL_HEADING]
+        status_idx = indices[README_STATUS_HEADING]
+        if not (ba_idx < install_idx and ba_idx < status_idx):
+            violations.append(('README.md', (
+                f"readme-before-after-order README.md's '{README_BEFORE_AFTER_HEADING}' heading "
+                f"(line {ba_idx + 1}) does not precede both '{README_INSTALL_HEADING}' "
+                f"(line {install_idx + 1}) and '{README_STATUS_HEADING}' (line {status_idx + 1}); "
+                f"DIST-06 requires before/after pairs to precede both sections"
+            )))
+    return violations
+
+
+# ---------------------------------------------------------------------------
 # output-styles/proof-first.md and prompts/system-prompt.md (Phase 4, 04-03)
 # -- DIST-05's generated-derivative freshness and coverage guarantee. This
 # is the authoritative copy of DERIVATIVE_SOURCE_NAMES and DERIVATIVE_PATHS;
@@ -3101,6 +3263,31 @@ def _mutate_derivative_rule_coverage(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_readme_install_path_missing(root):
+    """Delete every line of the copied real README.md containing the
+    skills-CLI install command prefix ('npx skills add '), mutating only
+    the copy -- removes exactly one of readme-install-path-missing's four
+    anchors, leaving the other three untouched."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if 'npx skills add ' not in l]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_readme_before_after_order(root):
+    """Move the copied real README.md's '## Before and after' heading
+    line to immediately after its '## Status' heading line, mutating
+    only the copy -- moving the one heading line is enough to violate
+    the ordering check without relocating the section body it heads."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    ba_idx = lines.index(README_BEFORE_AFTER_HEADING)
+    line = lines.pop(ba_idx)
+    status_idx = lines.index(README_STATUS_HEADING)
+    lines.insert(status_idx + 1, line)
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -3141,6 +3328,8 @@ MUTATIONS = [
     ('before-after-citation-missing', "strip every PF-/MC- token from the '## Demo and discovery material' section of the real examples/before-after.md", _mutate_before_after_citation_missing),
     ('skill-derivative-stale', "change one hex character of the recorded sha256 in the real output-styles/proof-first.md stamp", _mutate_skill_derivative_stale),
     ('derivative-rule-coverage-incomplete', "delete one '### PF-' rule heading line from the real prompts/system-prompt.md, leaving its body in place", _mutate_derivative_rule_coverage),
+    ('readme-install-path-missing', "delete every line of the real README.md containing the skills-CLI install command prefix", _mutate_readme_install_path_missing),
+    ('readme-before-after-order', "move the real README.md's '## Before and after' heading line to immediately after its '## Status' heading line", _mutate_readme_before_after_order),
 ]
 
 
@@ -4031,6 +4220,39 @@ def _order_bad_before_after():
     ])
 
 
+def _good_readme_install():
+    """All three ordering headings present in the required order, and all
+    four install anchors present -- silent on both
+    readme-install-path-missing and readme-before-after-order."""
+    return (
+        "# Proof First\n\n"
+        "## What this is\n\nFixture body.\n\n"
+        f"{README_BEFORE_AFTER_HEADING}\n\nFixture before/after pair.\n\n"
+        f"{README_INSTALL_HEADING}\n\n"
+        "```\nnpx skills add <owner>/<repo>\n```\n\n"
+        "```\nclaude plugin marketplace add <owner>/<repo>\n```\n\n"
+        "`output-styles/proof-first.md` and `prompts/system-prompt.md` are the other two routes.\n\n"
+        f"{README_STATUS_HEADING}\n\nFixture status body.\n"
+    )
+
+
+def _bad_readme_install():
+    """Missing two of the four readme-install-path-missing anchors (the
+    skills-CLI command and the system-prompt path), and
+    '## Before and after' placed after '## Status' rather than before it
+    -- both new codes fire on this one fixture, matching the task's own
+    bad-fixture description."""
+    return (
+        "# Proof First\n\n"
+        "## What this is\n\nFixture body.\n\n"
+        f"{README_INSTALL_HEADING}\n\n"
+        "```\nclaude plugin marketplace add <owner>/<repo>\n```\n\n"
+        "`output-styles/proof-first.md` is one of the routes.\n\n"
+        f"{README_STATUS_HEADING}\n\nFixture status body.\n\n"
+        f"{README_BEFORE_AFTER_HEADING}\n\nFixture pair, moved below Status.\n"
+    )
+
+
 def _derivative_source_fixture_files():
     """Minimal fixture content for each of the five real
     DERIVATIVE_SOURCE_NAMES paths, used by derivative_good_root and
@@ -4359,6 +4581,9 @@ def self_test():
         derivative_good_root = tmp_root / 'derivative_good'
         derivative_bad_root = tmp_root / 'derivative_bad'
 
+        readme_install_good_root = tmp_root / 'readme_install_good'
+        readme_install_bad_root = tmp_root / 'readme_install_bad'
+
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
         _write(bad_root / 'examples' / 'deal-brief.md', _bad_deal_brief())
@@ -4640,6 +4865,19 @@ def self_test():
         _write(derivative_bad_root / DERIVATIVE_PATHS[0], _stale_derivative(_derivative_bad_digest))
         _write(derivative_bad_root / DERIVATIVE_PATHS[1], _no_stamp_derivative())
 
+        # readme_install_good_root / readme_install_bad_root
+        # (readme-install-path-missing, readme-before-after-order, Phase 4
+        # 04-04): the good root's README.md carries all three ordering
+        # headings in the required order and all four install anchors, so
+        # both new codes stay silent. The bad root's README.md is missing
+        # two of the four install anchors and carries '## Before and
+        # after' after '## Status' rather than before it, so both new
+        # codes fire. Neither root ships NUMBERING.md, examples/, or
+        # skills/ -- every other check silently returns no violations for
+        # a root missing the file it reads, isolating the two new codes.
+        _write(readme_install_good_root / 'README.md', _good_readme_install())
+        _write(readme_install_bad_root / 'README.md', _bad_readme_install())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -4709,6 +4947,9 @@ def self_test():
         derivative_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(derivative_good_root)}
         derivative_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(derivative_bad_root)}
 
+        readme_install_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_install_good_root)}
+        readme_install_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_install_bad_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -4723,7 +4964,7 @@ def self_test():
             | results_bad_codes | plugin_bad_codes | plugin_invalid_codes
             | plugin_marketplace_shape_codes | plugin_publish_drift_codes
             | beforeafter_bad_codes | beforeafter_order_bad_codes
-            | derivative_bad_codes
+            | derivative_bad_codes | readme_install_bad_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -4746,6 +4987,27 @@ def self_test():
             all_ok = False
         if 'derivative-rule-coverage-incomplete' in good_codes:
             print("FAIL: derivative-rule-coverage-incomplete fired on a fixture root shipping no derivative files")
+            all_ok = False
+
+        # readme-install-path-missing / readme-before-after-order
+        # assertions (DIST-06, Phase 4 04-04).
+        if 'readme-install-path-missing' in readme_install_good_codes:
+            print("FAIL: readme-install-path-missing fired on the known-good README install fixture")
+            all_ok = False
+        if 'readme-before-after-order' in readme_install_good_codes:
+            print("FAIL: readme-before-after-order fired on the known-good README install fixture")
+            all_ok = False
+        if 'readme-install-path-missing' not in readme_install_bad_codes:
+            print("FAIL: readme-install-path-missing did not fire on the two-missing-anchor README fixture")
+            all_ok = False
+        if 'readme-before-after-order' not in readme_install_bad_codes:
+            print("FAIL: readme-before-after-order did not fire on the README fixture with Before-and-after moved below Status")
+            all_ok = False
+        if 'readme-install-path-missing' in good_codes:
+            print("FAIL: readme-install-path-missing fired on a fixture root shipping no README.md")
+            all_ok = False
+        if 'readme-before-after-order' in good_codes:
+            print("FAIL: readme-before-after-order fired on a fixture root shipping no README.md")
             all_ok = False
 
         # before-after-family-missing / before-after-citation-missing
