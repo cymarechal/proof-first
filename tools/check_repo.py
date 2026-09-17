@@ -390,6 +390,33 @@ Violation codes implemented in this file:
                       says nothing about whether a real `claude plugin
                       marketplace add` succeeds -- that is a manual smoke
                       test recorded in 04-VALIDATION.md.
+  before-after-family-missing - examples/before-after.md, if it exists,
+                      is missing one of the four frozen ARTIFACT_FAMILY_
+                      SECTIONS headings; or a present heading's section
+                      body carries no line beginning with ✗, or no line
+                      beginning with ✓; or, only once all four headings
+                      are present, they appear in an order other than
+                      ARTIFACT_FAMILY_SECTIONS' own order. Absence of the
+                      file is not a violation. Declared ceiling: this is
+                      heading presence, ✗/✓ line presence, and order
+                      only. It says nothing about whether a pair's before
+                      half is genuinely non-compliant, whether its after
+                      half is genuinely a rewrite rather than a
+                      restatement of the rule's own wording, or whether
+                      the rewrite obeys its family's stated ordering
+                      convention -- those are semantic judgements this
+                      repository's stack does not perform, and they stay
+                      with end-of-phase UAT.
+  before-after-citation-missing - examples/before-after.md, if it exists,
+                      has a present ARTIFACT_FAMILY_SECTIONS heading whose
+                      section body carries no PF-#.# or MC-# token.
+                      Absence of the file is not a violation. Declared
+                      ceiling: it asserts that a citation exists somewhere
+                      in the section, not that the citation is textually
+                      adjacent to the sentence it justifies, nor that the
+                      cited rule is the correct one for that rewrite.
+                      Validity of the token itself is undefined-id's job;
+                      this check asserts presence only.
   publish-location-drift - the GitHub owner segment stated by this
                       repository's own carriers of its publish location
                       (plugin.json's and marketplace.json's `homepage`,
@@ -1889,6 +1916,114 @@ def run_catalog_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
+# examples/before-after.md -- EX-02's family coverage and citation guarantee
+# (Phase 4, 04-02). Reuses ARTIFACT_FAMILY_SECTIONS (declared above) rather
+# than a second typed copy of the four frozen family strings.
+# ---------------------------------------------------------------------------
+
+def check_before_after_families(repo_root):
+    """For BEFORE_AFTER_PATH, if it exists, require all four frozen
+    ARTIFACT_FAMILY_SECTIONS headings to be present; require each present
+    heading's body to carry at least one line starting with the
+    ballot-cross character ('✗') and at least one line starting with
+    the check character ('✓'); and, only once all four headings are
+    present, require them to appear in the file in exactly
+    ARTIFACT_FAMILY_SECTIONS' own order. Returns an empty list before any
+    read when BEFORE_AFTER_PATH does not exist.
+
+    Declared ceiling: this is heading presence, ✗/✓ line presence, and
+    order only. It says nothing about whether a pair's before half is
+    genuinely non-compliant, whether its after half is genuinely a
+    rewrite rather than a restatement of the rule's own wording, or
+    whether the rewrite obeys its family's stated ordering convention --
+    those are semantic judgements this repository's stack does not
+    perform, and they stay with end-of-phase UAT."""
+    path = repo_root / BEFORE_AFTER_PATH
+    if not path.exists():
+        return []
+    rel = path.relative_to(repo_root)
+    text = strip_fences(path.read_text(encoding='utf-8'))
+    sections = split_sections(text)
+    violations = []
+
+    for heading in ARTIFACT_FAMILY_SECTIONS:
+        if heading not in sections:
+            violations.append((str(rel), (
+                f"before-after-family-missing {rel} is missing the required "
+                f"'## {heading}' section, which EX-02 requires"
+            )))
+            continue
+        body_lines = sections[heading].splitlines()
+        if not any(l.startswith('✗') for l in body_lines):
+            violations.append((str(rel), (
+                f"before-after-family-missing {rel}'s '## {heading}' section is present but "
+                f"carries no line beginning with ✗, which EX-02 requires"
+            )))
+        if not any(l.startswith('✓') for l in body_lines):
+            violations.append((str(rel), (
+                f"before-after-family-missing {rel}'s '## {heading}' section is present but "
+                f"carries no line beginning with ✓, which EX-02 requires"
+            )))
+
+    # Ordering: read the raw heading line sequence, not split_sections'
+    # unordered {heading: body} mapping.
+    found_order = [m.group(1).strip() for m in re.finditer(r'^## (.+?)\s*$', text, re.M)]
+    family_order_found = [h for h in found_order if h in ARTIFACT_FAMILY_SECTIONS]
+    if (
+        len(family_order_found) == len(ARTIFACT_FAMILY_SECTIONS)
+        and set(family_order_found) == set(ARTIFACT_FAMILY_SECTIONS)
+        and tuple(family_order_found) != ARTIFACT_FAMILY_SECTIONS
+    ):
+        violations.append((str(rel), (
+            f"before-after-family-missing {rel}'s four family headings appear in the order "
+            f"{family_order_found}, but EX-02 requires the order {list(ARTIFACT_FAMILY_SECTIONS)}"
+        )))
+
+    return violations
+
+
+def check_before_after_citations(repo_root):
+    """For BEFORE_AFTER_PATH, if it exists, require each present
+    ARTIFACT_FAMILY_SECTIONS heading's body to carry at least one PF-#.# or
+    MC-# token, using the same token shapes check_undefined_id already
+    uses. Returns an empty list before any read when BEFORE_AFTER_PATH
+    does not exist.
+
+    Declared ceiling: it asserts that a citation exists somewhere in the
+    section, not that the citation is textually adjacent to the sentence
+    it justifies, nor that the cited rule is the correct one for that
+    rewrite. Validity of the token itself is undefined-id's job; this
+    check asserts presence only."""
+    path = repo_root / BEFORE_AFTER_PATH
+    if not path.exists():
+        return []
+    rel = path.relative_to(repo_root)
+    text = strip_fences(path.read_text(encoding='utf-8'))
+    sections = split_sections(text)
+    violations = []
+    for heading in ARTIFACT_FAMILY_SECTIONS:
+        if heading not in sections:
+            continue
+        body = sections[heading]
+        if not (re.search(r'PF-\d+\.\d+', body) or re.search(r'MC-\d+', body)):
+            violations.append((str(rel), (
+                f"before-after-citation-missing {rel}'s '## {heading}' section carries no "
+                f"PF- or MC- rule citation, which EX-02 requires"
+            )))
+    return violations
+
+
+EXAMPLE_CHECK_CODES = ['before-after-family-missing', 'before-after-citation-missing']
+
+
+def run_example_checks(repo_root):
+    violations = []
+    violations += check_before_after_families(repo_root)
+    violations += check_before_after_citations(repo_root)
+    return violations
+
+
+# ---------------------------------------------------------------------------
 # .claude-plugin/plugin.json and .claude-plugin/marketplace.json (Phase 4,
 # 04-01) -- the Claude Code plugin distribution channel.
 # ---------------------------------------------------------------------------
@@ -2160,7 +2295,7 @@ ALL_CHECK_CODES = (
     ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
     + LICENSE_CHECK_CODES + README_CHECK_CODES + RESULTS_CHECK_CODES
     + FRAMEWORK_CHECK_CODES + FRONTMATTER_CHECK_CODES + CATALOG_CHECK_CODES
-    + PLUGIN_CHECK_CODES
+    + PLUGIN_CHECK_CODES + EXAMPLE_CHECK_CODES
 )
 
 
@@ -2180,6 +2315,7 @@ def run_all_checks(repo_root):
     violations += run_frontmatter_checks(repo_root)
     violations += run_catalog_checks(repo_root)
     violations += run_plugin_checks(repo_root)
+    violations += run_example_checks(repo_root)
     return violations
 
 
@@ -2661,6 +2797,37 @@ def _mutate_publish_location_drift(root):
     path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
 
 
+def _mutate_before_after_family_missing(root):
+    """Delete the '## Solution proposal' heading line from the copied real
+    examples/before-after.md, leaving its body in place -- a minimal
+    mutation targeting exactly the heading the check reads, mirroring
+    _mutate_artifact_family_section_missing's shape."""
+    path = root / BEFORE_AFTER_PATH
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if l.strip() != '## Solution proposal']
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_before_after_citation_missing(root):
+    """Strip every PF-/MC- token from the '## Demo and discovery material'
+    section of the copied real examples/before-after.md, leaving every
+    other section's citations in place -- isolates exactly the one
+    section-level citation-absence condition this check reads."""
+    path = root / BEFORE_AFTER_PATH
+    lines = path.read_text(encoding='utf-8').splitlines()
+    heading = '## Demo and discovery material'
+    start = next(i for i, l in enumerate(lines) if l.strip() == heading)
+    end = len(lines)
+    for j in range(start + 1, len(lines)):
+        if lines[j].startswith('## '):
+            end = j
+            break
+    token_re = re.compile(r'PF-\d+\.\d+|MC-\d+')
+    for j in range(start, end):
+        lines[j] = token_re.sub('', lines[j])
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 def _mutate_catalog_opening_rule_count(root):
     """Add a second PF-0 rule to both NUMBERING.md and the checklist, violating
     CAT-03 which requires exactly one opening rule resolving the Before-scenario /
@@ -2714,6 +2881,8 @@ MUTATIONS = [
     ('plugin-manifest-version-mismatch', "change the real .claude-plugin/plugin.json version so it no longer equals the skill frontmatter's metadata.version", _mutate_plugin_manifest_version_mismatch),
     ('plugin-manifest-invalid', "delete the required 'license' key from the real .claude-plugin/plugin.json", _mutate_plugin_manifest_invalid),
     ('publish-location-drift', "rewrite the real .claude-plugin/marketplace.json plugin entry's repository to a different owner/repo than plugin.json states", _mutate_publish_location_drift),
+    ('before-after-family-missing', "delete the '## Solution proposal' heading from the real examples/before-after.md, leaving its body in place", _mutate_before_after_family_missing),
+    ('before-after-citation-missing', "strip every PF-/MC- token from the '## Demo and discovery material' section of the real examples/before-after.md", _mutate_before_after_citation_missing),
 ]
 
 
