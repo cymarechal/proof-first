@@ -11,6 +11,76 @@ evaluator finishes believing the author genuinely understands their problem. It 
 — usable by anyone, regardless of who they sell for — and it has zero dependencies: one folder,
 no install step.
 
+## Before and after
+
+Every rule in this skill exists to turn a paragraph like the one on the left into the one on the
+right: adjectives and claims of comprehensiveness replaced by the buyer's own numbers, drawn from
+the one shared canonical deal brief this repository ships, with the rule that drove each change
+named alongside it. One full pair, reproduced from `examples/before-after.md`:
+
+**RFP and RFI response**
+
+✗ "Kestrel Systems Group brings decades of experience delivering large-scale cloud transformations for complex, regulated enterprises across many industries. Our proven methodology and world-class team have consistently delivered exceptional outcomes for clients facing challenges like Halverton Mutual's. Before turning to the specific migration approach Question 1 asks for, it is worth noting the breadth of our platform expertise and the strength of our partner ecosystem. Our approach is comprehensive and follows industry best practices, backed by a proven cut-over methodology and rigorous testing."
+✓ "Question 1, the highest-weighted scored question in this RFP at 30%, asks for the migration approach and cut-over plan: Kestrel Systems Group moves Halverton Mutual's 850-VM VMware vSphere estate and 40 Oracle Database instances to Amazon EC2 and Amazon Aurora PostgreSQL in four sequenced waves, cutting each wave over inside its own scheduled maintenance window and validating settlement-batch completion against the required 6-hour window before advancing to the next wave — evidence a scoring committee can check against the buyer's own rubric, not a claim asserted without it. That answer stands first, before any account of Kestrel Systems Group's own background or platform breadth."
+
+Rules applied: PF-2.1, MC-11.
+
+The other three artifact families this skill classifies — solution proposal, executive summary,
+and demo and discovery material — each have their own full before/after pair in
+[`examples/before-after.md`](examples/before-after.md).
+
+## Install
+
+Proof First supports four install paths, one per harness class this project targets. The
+publish-location placeholder `<owner>/<repo>` below stands for wherever this repository is
+published; every command and manifest that states it is checked to agree.
+
+**1. Skills CLI** — for any harness the Agent Skills standard covers (Cursor, Codex, Copilot,
+Gemini CLI, OpenCode, and the rest), install with the `skills` CLI's one-line command:
+
+```
+npx skills add <owner>/<repo>
+```
+
+**2. Claude Code plugin** — Claude Code installs this skill as a plugin from the marketplace
+manifest committed in this repository at `.claude-plugin/`:
+
+```
+claude plugin marketplace add <owner>/<repo> && claude plugin install proof-first@proof-first
+```
+
+Or inside a running Claude Code session:
+
+```
+/plugin marketplace add <owner>/<repo>
+/plugin install proof-first@proof-first
+```
+
+**3. Output style** — `output-styles/proof-first.md` is a Claude Code output style, generated
+mechanically from the skill content rather than written separately. Select it through `/config`;
+once selected it stays on for the whole session.
+
+**4. System prompt** — `prompts/system-prompt.md` is a paste-able system prompt for a harness with
+no skill support: paste it whole into a system-prompt field, an `AGENTS.md`, or an equivalent.
+
+The output style and the system prompt carry the same rule text, the same completeness audit, and
+the same artifact-family conventions as the skill, proven by a check in this repository; whether a
+session driven by either reaches the same conclusions as one with the skill folder installed has
+not been measured, and this repository publishes measured claims or none.
+
+## Keeping derivatives in sync
+
+`output-styles/proof-first.md` and `prompts/system-prompt.md` are generated, not hand-written.
+After editing `skills/proof-first/SKILL.md` or any of its reference files, run:
+
+```
+python3 tools/generate_derivatives.py
+```
+
+CI runs the generator's own `--check` mode and `tools/check_repo.py`'s `skill-derivative-stale`
+code; either one fails the build if a derivative is committed stale, so skipping this step cannot
+ship silently.
+
 ## Status
 
 This repository is under active construction. `NUMBERING.md`'s rule-ID registry, the
@@ -38,13 +108,13 @@ What exists today:
 - `NOTICES.md` — the trademark and attribution posture.
 - `SOURCES.md` — the approved-source list and the paraphrase boundary.
 - `tools/check_repo.py` — a stdlib-only checker enforcing all of the above, wired into CI.
+- `.claude-plugin/` — the Claude Code plugin manifests (`plugin.json`, `marketplace.json`).
+- `output-styles/proof-first.md` — the output style.
+- `prompts/system-prompt.md` — the paste-able system prompt.
+- `examples/before-after.md` — the worked before-and-after examples.
 
 What does not exist yet:
 
-- The distribution manifests (`.claude-plugin/`).
-- The output style.
-- The paste-able system prompt.
-- The worked before-and-after examples.
 - Phase 5's skill-on/skill-off, multi-model, judge-scored persuasion benchmark (the pressure-test
   method exists; no observations are recorded yet).
 
@@ -89,12 +159,12 @@ proof-first/
 │           ├── deletion-test.md
 │           └── worked-examples.md
 ├── output-styles/
-│   └── proof-first.md                  (planned)
+│   └── proof-first.md                  (exists)
 ├── prompts/
-│   └── system-prompt.md                (planned)
+│   └── system-prompt.md                (exists)
 ├── examples/
 │   ├── deal-brief.md                   (exists)
-│   └── before-after.md                 (planned)
+│   └── before-after.md                 (exists)
 ├── evals/
 │   ├── pressure-tests.md
 │   └── conformance/                     (exists)
@@ -102,9 +172,12 @@ proof-first/
 │       ├── fixtures/                   (exists)
 │       ├── transcripts/                (exists)
 │       └── RESULTS-mod04.md            (exists)
-├── .claude-plugin/                     (planned)
+├── .claude-plugin/                     (exists)
+│   ├── plugin.json                     (exists)
+│   └── marketplace.json                (exists)
 ├── tools/
-│   └── check_repo.py                   (exists)
+│   ├── check_repo.py                   (exists)
+│   └── generate_derivatives.py         (exists)
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                      (exists)
