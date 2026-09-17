@@ -194,7 +194,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 1/4 plans executed
+**Plans**: 2/4 plans executed
 
 Plans:
 **Wave 1**
@@ -203,7 +203,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02-PLAN.md — `examples/before-after.md`: one document-level before/after pair per artifact family in the frozen order, every after column citing a shipped rule ID, with `before-after-family-missing` and `before-after-citation-missing` proven live (35 → 37)
+- [x] 04-02-PLAN.md — `examples/before-after.md`: one document-level before/after pair per artifact family in the frozen order, every after column citing a shipped rule ID, with `before-after-family-missing` and `before-after-citation-missing` proven live (35 → 37)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -250,7 +250,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
-| 4. Distribution & Worked Examples | 1/4 | In Progress|  |
+| 4. Distribution & Worked Examples | 2/4 | In Progress|  |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
 
