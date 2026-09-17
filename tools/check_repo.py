@@ -371,11 +371,43 @@ Violation codes implemented in this file:
                       `metadata.version`, or either manifest exists while no
                       skill states a version to compare against. Fires once
                       per disagreeing manifest, naming both values. Absence
-                      of both manifests is not a violation. Declared
-                      ceiling: this check compares three declared strings
-                      for equality. It says nothing about whether the
-                      version is semantically correct, whether a git tag
-                      exists for it, or whether the manifest installs.
+                      of both manifests is not a violation. Declared ceiling:
+                      this check compares three declared strings for
+                      equality. It says nothing about whether the version
+                      is semantically correct, whether a git tag exists for
+                      it, or whether the manifest installs.
+  plugin-manifest-invalid - a .claude-plugin/plugin.json or
+                      .claude-plugin/marketplace.json is not valid JSON, is
+                      missing a required key, plugin.json's `name` differs
+                      from the one shipped skills/*/ folder name, or
+                      marketplace.json's `owner` has no non-empty `name`, or
+                      its `plugins` array is not exactly one object, or that
+                      object's `source` is not the literal `./`. Absence of
+                      both manifests is not a violation. Declared ceiling:
+                      it asserts JSON well-formedness, key presence and the
+                      folder-name equality only. It never validates a
+                      value's semantics, never reaches the network, and
+                      says nothing about whether a real `claude plugin
+                      marketplace add` succeeds -- that is a manual smoke
+                      test recorded in 04-VALIDATION.md.
+  publish-location-drift - the GitHub owner segment stated by this
+                      repository's own carriers of its publish location
+                      (plugin.json's and marketplace.json's `homepage`,
+                      `repository`, and `owner.url` fields; README.md's
+                      `npx skills add` and `claude plugin marketplace add`
+                      command arguments) disagree, or a manifest carrier
+                      exists and states none at all while another existing
+                      carrier states one. A carrier yielding no match at
+                      all (README.md before any install command is
+                      written) is silently skipped, not treated as
+                      disagreeing. Declared ceiling: it asserts every
+                      existing carrier states the same GitHub account/org
+                      segment. It does not assert the location is correct,
+                      that it resolves, or that the repository is
+                      published there; it also compares owner segments
+                      only, so a repository-name-only drift under an
+                      unchanged owner is not detected. See
+                      .planning/WINDOWS.md for the open placeholder item.
 """
 import argparse
 import json
@@ -1918,12 +1950,207 @@ def check_plugin_manifest_version(repo_root):
     return violations
 
 
-PLUGIN_CHECK_CODES = ['plugin-manifest-version-mismatch']
+PLUGIN_REQUIRED_KEYS = (
+    'name', 'displayName', 'description', 'version', 'author', 'homepage',
+    'repository', 'license', 'keywords',
+)
+MARKETPLACE_REQUIRED_KEYS = ('name', 'owner', 'description', 'plugins')
+
+
+def check_plugin_manifest_invalid(repo_root):
+    """Assert both plugin manifests are well-formed: valid JSON, every
+    required key present, plugin.json's `name` equal to the single shipped
+    skill folder name, and marketplace.json's `owner`/`plugins`/`source`
+    shape correct. Returns an empty list before any read when neither
+    manifest exists."""
+    plugin_exists = (repo_root / PLUGIN_MANIFEST_PATH).exists()
+    marketplace_exists = (repo_root / MARKETPLACE_MANIFEST_PATH).exists()
+    if not plugin_exists and not marketplace_exists:
+        return []
+
+    violations = []
+
+    plugin_data, plugin_error = _load_json_manifest(repo_root, PLUGIN_MANIFEST_PATH)
+    if plugin_error:
+        violations.append((PLUGIN_MANIFEST_PATH, f"plugin-manifest-invalid {plugin_error}"))
+    elif plugin_data is not None:
+        for key in PLUGIN_REQUIRED_KEYS:
+            if key not in plugin_data:
+                violations.append((PLUGIN_MANIFEST_PATH, (
+                    f"plugin-manifest-invalid {PLUGIN_MANIFEST_PATH} is missing required key '{key}'"
+                )))
+        skill_dirs = sorted({p.parent.name for p in repo_root.glob(SKILL_GLOB)})
+        if 'name' in plugin_data and len(skill_dirs) == 1:
+            skill_dir = skill_dirs[0]
+            name_value = plugin_data['name']
+            if name_value != skill_dir:
+                violations.append((PLUGIN_MANIFEST_PATH, (
+                    f"plugin-manifest-invalid {PLUGIN_MANIFEST_PATH} name '{name_value}' "
+                    f"differs from the shipped skill folder name '{skill_dir}'"
+                )))
+
+    marketplace_data, marketplace_error = _load_json_manifest(repo_root, MARKETPLACE_MANIFEST_PATH)
+    if marketplace_error:
+        violations.append((MARKETPLACE_MANIFEST_PATH, f"plugin-manifest-invalid {marketplace_error}"))
+    elif marketplace_data is not None:
+        for key in MARKETPLACE_REQUIRED_KEYS:
+            if key not in marketplace_data:
+                violations.append((MARKETPLACE_MANIFEST_PATH, (
+                    f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH} is missing required key '{key}'"
+                )))
+        if 'owner' in marketplace_data:
+            owner = marketplace_data['owner']
+            if not isinstance(owner, dict) or not owner.get('name'):
+                violations.append((MARKETPLACE_MANIFEST_PATH, (
+                    f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH} 'owner' must be an "
+                    f"object carrying a non-empty 'name'"
+                )))
+        if 'plugins' in marketplace_data:
+            plugins = marketplace_data['plugins']
+            if not isinstance(plugins, list) or len(plugins) != 1 or not isinstance(plugins[0], dict):
+                violations.append((MARKETPLACE_MANIFEST_PATH, (
+                    f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH} 'plugins' must be a "
+                    f"list of exactly one object"
+                )))
+            else:
+                source = plugins[0].get('source')
+                if source != './':
+                    violations.append((MARKETPLACE_MANIFEST_PATH, (
+                        f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH} plugin entry "
+                        f"'source' is '{source}', not the required './'"
+                    )))
+
+    return violations
+
+
+PUBLISH_LOCATION_CARRIERS = (PLUGIN_MANIFEST_PATH, MARKETPLACE_MANIFEST_PATH, 'README.md')
+
+SKILLS_CLI_INSTALL_RE = re.compile(r'npx skills add ([^\s`]+)')
+MARKETPLACE_ADD_RE = re.compile(r'claude plugin marketplace add ([^\s`]+)')
+
+
+def _owner_segment(value):
+    """Strip a leading 'https://github.com/' and return the text before the
+    first remaining '/', or the whole remainder if there is none -- the
+    GitHub account/org segment, the one granularity every carrier position
+    (a full owner/repo URL, or owner.url's bare owner URL) can state."""
+    v = value
+    prefix = 'https://github.com/'
+    if v.startswith(prefix):
+        v = v[len(prefix):]
+    v = v.strip().rstrip('/')
+    return v.split('/', 1)[0] if v else v
+
+
+def _publish_locations_in(repo_root, rel_path):
+    """Return the set of distinct GitHub owner segments a single carrier
+    states, read from structured positions only, never from a loose scan
+    of every link in the file: for plugin.json, its `homepage` and
+    `repository` values; for marketplace.json, its plugin entry's same two
+    fields plus `owner.url`; for README.md, the argument following the
+    literal command prefixes `npx skills add ` and
+    `claude plugin marketplace add ` on a line. Every position is reduced
+    to its owner segment via _owner_segment. Returns an empty set when the
+    carrier does not exist or states nothing at any of its positions."""
+    if not (repo_root / rel_path).exists():
+        return set()
+
+    owners = set()
+
+    if rel_path == PLUGIN_MANIFEST_PATH:
+        data, error = _load_json_manifest(repo_root, rel_path)
+        if data is not None and error is None:
+            for field in ('homepage', 'repository'):
+                value = data.get(field)
+                if value:
+                    owners.add(_owner_segment(value))
+    elif rel_path == MARKETPLACE_MANIFEST_PATH:
+        data, error = _load_json_manifest(repo_root, rel_path)
+        if data is not None and error is None:
+            plugins = data.get('plugins')
+            if isinstance(plugins, list) and plugins and isinstance(plugins[0], dict):
+                for field in ('homepage', 'repository'):
+                    value = plugins[0].get(field)
+                    if value:
+                        owners.add(_owner_segment(value))
+            owner = data.get('owner')
+            if isinstance(owner, dict) and owner.get('url'):
+                owners.add(_owner_segment(owner['url']))
+    else:
+        text = (repo_root / rel_path).read_text(encoding='utf-8')
+        for m in SKILLS_CLI_INSTALL_RE.finditer(text):
+            owners.add(_owner_segment(m.group(1)))
+        for m in MARKETPLACE_ADD_RE.finditer(text):
+            owners.add(_owner_segment(m.group(1)))
+
+    return owners
+
+
+# Carriers whose very existence structurally implies they should state a
+# publish location once plugin-manifest-invalid's own required-key check
+# passes (both manifests declare homepage/repository as required keys).
+# README.md is not in this set: a README with no install command yet is
+# silent, not violating (see the module docstring's publish-location-drift
+# entry and the P4-05 decision this mirrors).
+PUBLISH_LOCATION_REQUIRED_CARRIERS = (PLUGIN_MANIFEST_PATH, MARKETPLACE_MANIFEST_PATH)
+
+
+def check_publish_location_drift(repo_root):
+    """Assert every existing carrier in PUBLISH_LOCATION_CARRIERS states the
+    same GitHub owner segment for this repository's publish location.
+    Fires once naming a required carrier (a manifest) that exists but
+    states none while another existing carrier states one, and once
+    naming every carrier and the distinct owner segments they state when
+    more than one distinct value exists across all non-empty carriers.
+    Returns an empty list when no carrier exists, or when every existing
+    carrier states nothing at all."""
+    existing = {}
+    for rel_path in PUBLISH_LOCATION_CARRIERS:
+        if (repo_root / rel_path).exists():
+            existing[rel_path] = _publish_locations_in(repo_root, rel_path)
+
+    if not existing:
+        return []
+
+    non_empty = {p: o for p, o in existing.items() if o}
+    if not non_empty:
+        return []
+
+    violations = []
+
+    for rel_path in PUBLISH_LOCATION_REQUIRED_CARRIERS:
+        if rel_path in existing and not existing[rel_path]:
+            others = ', '.join(sorted(non_empty))
+            violations.append((rel_path, (
+                f"publish-location-drift {rel_path} exists but states no publish "
+                f"location, while {others} does"
+            )))
+
+    all_owners = set()
+    for owners in non_empty.values():
+        all_owners |= owners
+    if len(all_owners) > 1:
+        detail = '; '.join(
+            f"{p} states {', '.join(sorted(o))}" for p, o in sorted(non_empty.items())
+        )
+        violations.append((PUBLISH_LOCATION_CARRIERS[0], (
+            f"publish-location-drift these carriers disagree on the repository's "
+            f"publish location: {detail}"
+        )))
+
+    return violations
+
+
+PLUGIN_CHECK_CODES = [
+    'plugin-manifest-version-mismatch', 'plugin-manifest-invalid', 'publish-location-drift',
+]
 
 
 def run_plugin_checks(repo_root):
     violations = []
     violations += check_plugin_manifest_version(repo_root)
+    violations += check_plugin_manifest_invalid(repo_root)
+    violations += check_publish_location_drift(repo_root)
     return violations
 
 
@@ -2413,6 +2640,25 @@ def _mutate_plugin_manifest_version_mismatch(root):
     path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
 
 
+def _mutate_plugin_manifest_invalid(root):
+    """Delete the required 'license' key from the copied real
+    .claude-plugin/plugin.json, mutating only the copy."""
+    path = root / PLUGIN_MANIFEST_PATH
+    data = json.loads(path.read_text(encoding='utf-8'))
+    data.pop('license', None)
+    path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+
+
+def _mutate_publish_location_drift(root):
+    """Rewrite the copied real .claude-plugin/marketplace.json's plugin
+    entry 'repository' to a different owner/repo than plugin.json states,
+    mutating only the copy."""
+    path = root / MARKETPLACE_MANIFEST_PATH
+    data = json.loads(path.read_text(encoding='utf-8'))
+    data['plugins'][0]['repository'] = 'https://github.com/someone/else'
+    path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+
+
 def _mutate_catalog_opening_rule_count(root):
     """Add a second PF-0 rule to both NUMBERING.md and the checklist, violating
     CAT-03 which requires exactly one opening rule resolving the Before-scenario /
@@ -2464,6 +2710,8 @@ MUTATIONS = [
     ('skill-family-order-gate-missing', "replace the ordering pass wording with pre-03-11 presence-only wording in the real skills/proof-first/SKILL.md's self-check section, leaving the family-line presence anchors and other two passes in place", _mutate_skill_family_order_gate_missing),
     ('source-label-in-skill-content', "insert the frozen 'economic buyer' label into the real skills/proof-first/references/artifact-patterns.md", _mutate_source_label_in_skill_content),
     ('plugin-manifest-version-mismatch', "change the real .claude-plugin/plugin.json version so it no longer equals the skill frontmatter's metadata.version", _mutate_plugin_manifest_version_mismatch),
+    ('plugin-manifest-invalid', "delete the required 'license' key from the real .claude-plugin/plugin.json", _mutate_plugin_manifest_invalid),
+    ('publish-location-drift', "rewrite the real .claude-plugin/marketplace.json plugin entry's repository to a different owner/repo than plugin.json states", _mutate_publish_location_drift),
 ]
 
 
@@ -3005,6 +3253,42 @@ def _bad_plugin_manifests(root):
     _write(root / MARKETPLACE_MANIFEST_PATH, _marketplace_manifest_json('0.1.0'))
 
 
+def _invalid_plugin_manifests(root):
+    """A root isolating plugin-manifest-invalid: plugin.json is missing its
+    required 'license' key and its name 'wrong-name' differs from the
+    shipped skill folder 'proof-first'. marketplace.json is left
+    well-formed and agreeing with plugin.json's version, so this root
+    fires plugin-manifest-invalid only."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    data = json.loads(_plugin_manifest_json('0.1.0', name='wrong-name'))
+    data.pop('license')
+    _write(root / PLUGIN_MANIFEST_PATH, json.dumps(data, indent=2) + '\n')
+    _write(root / MARKETPLACE_MANIFEST_PATH, _marketplace_manifest_json('0.1.0', name='wrong-name'))
+
+
+def _bad_marketplace_shape(root):
+    """A root isolating the marketplace-shape half of plugin-manifest-
+    invalid: an empty 'plugins' array. plugin.json is left well-formed so
+    this root fires plugin-manifest-invalid for marketplace.json alone."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
+    data = json.loads(_marketplace_manifest_json('0.1.0'))
+    data['plugins'] = []
+    _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(data, indent=2) + '\n')
+
+
+def _publish_location_drift_manifests(root):
+    """A root isolating publish-location-drift: plugin.json states one
+    owner, marketplace.json's plugin entry states a different one for
+    'repository' -- both manifests are otherwise well-formed and version-
+    matched, so this root fires publish-location-drift only."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
+    data = json.loads(_marketplace_manifest_json('0.1.0'))
+    data['plugins'][0]['repository'] = 'https://github.com/someone/else'
+    _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(data, indent=2) + '\n')
+
+
 def _minimal_frontmatter_lines():
     """A valid, minimal frontmatter block (name equals 'proof-first',
     matching the directory every catalog/line-ceiling/token-budget fixture
@@ -3492,6 +3776,9 @@ def self_test():
 
         plugin_good_root = tmp_root / 'plugin_good'
         plugin_bad_root = tmp_root / 'plugin_bad'
+        plugin_invalid_root = tmp_root / 'plugin_invalid'
+        plugin_marketplace_shape_root = tmp_root / 'plugin_marketplace_shape'
+        plugin_publish_drift_root = tmp_root / 'plugin_publish_drift'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -3734,6 +4021,9 @@ def self_test():
         # own fixture SKILL.md's '0.1.0'.
         _good_plugin_manifests(plugin_good_root)
         _bad_plugin_manifests(plugin_bad_root)
+        _invalid_plugin_manifests(plugin_invalid_root)
+        _bad_marketplace_shape(plugin_marketplace_shape_root)
+        _publish_location_drift_manifests(plugin_publish_drift_root)
 
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
@@ -3793,6 +4083,9 @@ def self_test():
 
         plugin_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_good_root)}
         plugin_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_bad_root)}
+        plugin_invalid_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_invalid_root)}
+        plugin_marketplace_shape_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_marketplace_shape_root)}
+        plugin_publish_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_publish_drift_root)}
 
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
@@ -3805,7 +4098,8 @@ def self_test():
             | token_bad_codes | opening_bad_codes | mc_bad_codes
             | mc_count_unstated_codes | mc_count_mismatch_codes | artifact_bad_codes
             | family_bad_codes | family_order_bad_codes | source_label_bad_codes
-            | results_bad_codes | plugin_bad_codes
+            | results_bad_codes | plugin_bad_codes | plugin_invalid_codes
+            | plugin_marketplace_shape_codes | plugin_publish_drift_codes
         )
 
         if 'catalog-id-drift' in good_catalog_codes:
@@ -3971,6 +4265,31 @@ def self_test():
             all_ok = False
         if 'plugin-manifest-version-mismatch' in good_codes:
             print("FAIL: plugin-manifest-version-mismatch fired on a fixture root shipping no .claude-plugin/ directory")
+            all_ok = False
+
+        # Plugin-manifest-invalid assertions.
+        if 'plugin-manifest-invalid' in plugin_good_codes:
+            print("FAIL: plugin-manifest-invalid fired on well-formed manifests")
+            all_ok = False
+        if 'plugin-manifest-invalid' not in plugin_invalid_codes:
+            print("FAIL: plugin-manifest-invalid did not fire on a manifest missing a required key with a mismatched name")
+            all_ok = False
+        if 'plugin-manifest-invalid' not in plugin_marketplace_shape_codes:
+            print("FAIL: plugin-manifest-invalid did not fire on a marketplace.json with an empty plugins array")
+            all_ok = False
+        if 'plugin-manifest-invalid' in good_codes:
+            print("FAIL: plugin-manifest-invalid fired on a fixture root shipping no .claude-plugin/ directory")
+            all_ok = False
+
+        # Publish-location-drift assertions.
+        if 'publish-location-drift' in plugin_good_codes:
+            print("FAIL: publish-location-drift fired on manifests agreeing on their publish location")
+            all_ok = False
+        if 'publish-location-drift' not in plugin_publish_drift_codes:
+            print("FAIL: publish-location-drift did not fire when marketplace.json's repository disagreed with plugin.json's")
+            all_ok = False
+        if 'publish-location-drift' in good_codes:
+            print("FAIL: publish-location-drift fired on a fixture root shipping no .claude-plugin/ directory")
             all_ok = False
 
         for code in ALL_CHECK_CODES:
