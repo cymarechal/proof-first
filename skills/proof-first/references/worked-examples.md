@@ -54,7 +54,7 @@ to.
 ## PF-1.25
 
 ✗ "This migration delivers significant business value across the organization."
-✓ "For Diane Osoria, Halverton Mutual's CFO: this migration is measured on the run rate she needs down from $2,300,000 and on a clean regulatory examination — not on architecture elegance."
+✓ "For Diane Osoria, Halverton Mutual's CFO, this migration is measured on the run rate she needs down from $2,300,000. It is also measured on a clean regulatory examination — not on architecture elegance."
 
 ## PF-2.11
 
@@ -89,7 +89,7 @@ to.
 ## PF-2.17
 
 ✗ "Kestrel Systems Group meets Halverton Mutual's SOC 2 Type II requirement."
-✓ "Kestrel Systems Group holds a SOC 2 Type I report today; Halverton Mutual's RFP requires Type II, and Kestrel's Type II observation window closes after the 2026-10-30 submission date — [PF-2.17 REVIEW (compliance): confirm this gap is acceptable to the buyer before this ships]."
+✓ "Kestrel Systems Group holds a SOC 2 Type I report today; Halverton Mutual's RFP requires Type II. Kestrel's Type II observation window closes after the 2026-10-30 submission date — [PF-2.17 REVIEW (compliance): confirm this gap is acceptable to the buyer before this ships]."
 
 ## PF-3.1
 
