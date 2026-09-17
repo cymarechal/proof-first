@@ -3,11 +3,11 @@ gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Distribution & Worked Examples
 status: executing
-stopped_at: Completed 04-09-PLAN.md
-last_updated: "2026-09-17T10:33:59.068Z"
+stopped_at: Completed 04-10-PLAN.md
+last_updated: "2026-09-17T10:48:34.879Z"
 last_activity: 2026-09-17
 last_activity_desc: Phase 04 execution started
-state_head: 717cf4f7fdb7b993571cb7b0d9cd73b962f213af
+state_head: 2af0c67b429921988822f79d6bacac6fd9f56c7c
 progress:
   total_phases: 6
   completed_phases: 2
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 04 (Distribution & Worked Examples) — EXECUTING
-Plan: 6 of 10
+Plan: 7 of 10
 Status: Ready to execute
 Last activity: 2026-09-17 — Phase 04 execution started
 
@@ -100,6 +100,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P07 | 55min | 3 tasks | 1 files |
 | Phase 04-distribution-worked-examples P08 | 35min | 2 tasks | 1 files |
 | Phase 04 P09 | 21min | 3 tasks | 1 files |
+| Phase 04 P10 | 15min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -174,6 +175,7 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-07: EX-02 stays unchecked despite gsd-tools requirements ready-ids reporting it mechanically ready -- REQUIREMENTS.md's own EX-02 note forbids marking Complete from a SUMMARY's requirements-completed field, and this plan mechanizes only 3 of 7 named UAT gaps (G-04-1/2/4); G-04-3/G-04-5 stay backstop truths, G-04-6/G-04-7 belong to unexecuted 04-08/04-09/04-10.
 - [Phase 04]: 04-08: Repaired all six 04-UAT.md test-4 README defects — before/after pair now leads the file (line 14, was 23), each install route states its own runnability, maintainer instruction moved below Status, layout legend and tree agree (0 stray markers), and two over-broad sentences (catalog-effect claim, models-count caveat) narrowed to what the catalog and RESULTS-mod04.md actually support. — Gate held at 44 codes discrimination-proven throughout; no new violation code registered. WINDOWS.md entry 12 (DIST-06 prose-quality residual) stays open by the plan's own instruction, pending 04-09/end-of-phase verification.
 - [Phase 04]: 04-09: readme-example-drift, readme-example-lead-distance, and readme-layout-legend-drift registered end to end (44 -> 47 discrimination-proven codes); README_FIRST_EXAMPLE_MAX_LINE frozen at 20 (measured value is 14) so a future contributor raising it is a visible, argued-for change; WINDOWS.md entry 12's prose-quality half of DIST-06 stays open, narrowed but not closed.
+- [Phase 04]: 04-10 closed G-04-7 (three 04-REVIEW.md warnings): _owner_segment now normalises four GitHub URL forms (HTTPS, HTTP, scheme-less, SSH) before comparing publish-location owners; generate_derivatives.py --check now compares bytes (not str) and write_derivatives pins LF, fixing a defect where a CRLF-only divergence silently passed; both plugin-manifest checks now fire on their previously-silent zero/multi-skill ambiguity instead of skipping it. No new violation code; mutation-test holds at 47 codes discrimination-proven throughout. DIST-05 marked Complete.
 
 ### Pending Todos
 
@@ -198,6 +200,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-17T10:33:58.783Z
-Stopped at: Completed 04-09-PLAN.md
+Last session: 2026-09-17T10:48:34.593Z
+Stopped at: Completed 04-10-PLAN.md
 Resume file: None

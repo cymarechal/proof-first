@@ -61,7 +61,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **DIST-02**: User can install as a Claude Code plugin from a marketplace manifest in this repo — *implementation shipped; live-install reliability UNVERIFIED. Both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` exist, parse, and are held consistent with `skills/proof-first/SKILL.md`'s `metadata.version` by `plugin-manifest-version-mismatch`, with required keys and name equality held by `plugin-manifest-invalid`. The `claude plugin marketplace add` flow has never resolved, for the same reason as DIST-01: no git remote, no published repository, placeholder publish location. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition: WINDOWS.md id 11, routed to Phase 6's LEG-04 launch gate.*
 - [ ] **DIST-03**: User can turn the discipline on permanently as a Claude Code output style
 - [ ] **DIST-04**: User with no skill support can paste a system prompt version and get the same behavior
-- [ ] **DIST-05**: Derivative artifacts (output style, system prompt) are regenerated from SKILL.md whenever it changes, and a documented re-sync step exists
+- [x] **DIST-05**: Derivative artifacts (output style, system prompt) are regenerated from SKILL.md whenever it changes, and a documented re-sync step exists
 - [x] **DIST-06**: Reader gets a README that leads with before/after pairs and states install paths for each harness — *implementation shipped; prose-quality reliability UNVERIFIED. The structural half is CI-enforced: `readme-install-path-missing` asserts each of the four install anchors is present beneath `## Install` rather than merely asserting the heading, and `readme-before-after-order` fails the build if the before/after section stops preceding both Install and Status. Whether the lead-in genuinely reads as leading with an example, and whether the Install section is clear enough to act on without opening another file, is not checkable by any code in this repository. Do not re-mark Complete from a SUMMARY's `requirements-completed` field — that field records implementation, not verification. Closure condition RAN with issues (04-UAT.md test 4): the macro-order and the honesty posture both hold, but six concrete defects remain — no install command is identified as runnable today, the layout legend contradicts itself, maintainer instruction sits inside the install path, line 133 names one model while claiming two, and lines 16-17 make an unmeasured claim about the repo's own rules. Gap G-04-6. Closure condition: WINDOWS.md id 12, reopened.*
 
 ### Evaluation
@@ -163,7 +163,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIST-02 | Phase 4 | Complete |
 | DIST-03 | Phase 4 | Pending |
 | DIST-04 | Phase 4 | Pending |
-| DIST-05 | Phase 4 | Pending |
+| DIST-05 | Phase 4 | Complete |
 | DIST-06 | Phase 4 | Complete |
 | EVAL-01 | Phase 5 | Pending |
 | EVAL-02 | Phase 5 | Pending |
