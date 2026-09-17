@@ -114,22 +114,22 @@ to.
 ## MC-6
 
 ✗ "This proposal addresses Halverton Mutual's leadership team, who value cost efficiency and operational excellence across the organization."
-✓ "Diane Osoria, Halverton Mutual's Chief Financial Officer, states her own priority directly: 'the current annual run rate down from $2,300,000 — that is the number I answer for.'"
+✓ "Diane Osoria, Halverton Mutual's Chief Financial Officer, states her own priority directly. She said: 'the current annual run rate down from $2,300,000 — that is the number I answer for.'"
 
 ## MC-11
 
 ✗ "This proposal is evaluated on Kestrel Systems Group's overall value to Halverton Mutual."
-✓ "Halverton Mutual scores bidders 55% on technical approach, 25% on commercial model, and 20% on security posture, and separately weights its five RFP questions from 15% to 30% each."
+✓ "Halverton Mutual scores bidders 55% on technical approach, 25% on commercial model, and 20% on security posture. It separately weights its five RFP questions from 15% to 30% each."
 
 ## MC-16
 
 ✗ "This proposal will be reviewed alongside the leading alternatives before Halverton Mutual decides."
-✓ "Three bidders are shortlisted; proposals are due 2026-10-30, and every bidder is scored against the same five questions inside the 8-month window before Halverton Mutual's next regulatory examination."
+✓ "Three bidders are shortlisted; proposals are due 2026-10-30, and every bidder is scored against the same five questions. That scoring happens inside the 8-month window before Halverton Mutual's next regulatory examination."
 
 ## MC-21
 
 ✗ "The proposal moves quickly to signature once Halverton Mutual approves it."
-✓ "The proposal clears a security review (15 business days), a procurement review with no duration Halverton Mutual has stated, and a legal review (10 business days) before signature — [MC-21 GAP: no duration stated for the procurement review]."
+✓ "The proposal clears a security review (15 business days) and a legal review (10 business days) before signature. It also clears a procurement review with no duration Halverton Mutual has stated — [MC-21 GAP: no duration stated for the procurement review]."
 
 ## MC-26
 
@@ -139,9 +139,9 @@ to.
 ## MC-31
 
 ✗ "Halverton Mutual's infrastructure team is supportive of this migration."
-✓ "Marcus Feld, Halverton Mutual's Vice President of Infrastructure, said in discovery: 'We need a landing zone we can actually govern — right now every VM is a snowflake.'"
+✓ "Marcus Feld, Halverton Mutual's Vice President of Infrastructure, said in discovery. 'We need a landing zone we can actually govern — right now every VM is a snowflake.'"
 
 ## MC-36
 
 ✗ "Only Kestrel Systems Group can deliver a governance boundary that actually replaces Halverton Mutual's current estate."
-✓ "Halverton Mutual is weighing three bidders, including Ardent Digital, the incumbent managing 62% of the estate today, and Vantage Nine Consulting; Priya Raghunathan, the technical evaluator, has said she would rather extend the incumbent's contract than migrate."
+✓ "Halverton Mutual is weighing three bidders, including Ardent Digital, the incumbent managing 62% of the estate today, and Vantage Nine Consulting. Priya Raghunathan, the technical evaluator, has said she would rather extend the incumbent's contract than migrate."
