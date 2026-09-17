@@ -56,8 +56,11 @@ detail: |
      banned by name. The `Rules applied:` footer already exists outside the
      quotes and is the correct home for this rationale.
 
-  b. PF-4.1 (25-word sentence limit) broken in 10 of 11 after-column sentences;
-     longest 88 words, mean 45. The before columns break it once in 12, mean 17.
+  b. PF-4.1 (25-word sentence limit) broken in 8 of 11 after-column sentences;
+     longest 88 words, mean 40. The before columns break it once in 12, mean 17.
+     Counted with bracketed marker spans stripped before splitting, the method
+     04-07's `example-sentence-length` code applies. A first pass reported 10 of
+     11 by counting markers as prose; that figure is superseded.
      Measured by the orchestrator, not asserted. On the catalog's one countable
      rule, the writing presented as correct scores worse than the writing
      presented as wrong.
@@ -118,7 +121,7 @@ blocked: 2
 - G-04-1: Rule narration embedded in the quoted prose of all four after columns
   in examples/before-after.md, contradicting SKILL.md:261. Relocate the rationale
   into the existing `Rules applied:` footers.
-- G-04-2: PF-4.1 broken in 10 of 11 after-column sentences (max 88 words, mean
+- G-04-2: PF-4.1 broken in 8 of 11 after-column sentences, bracket-stripped (max 88 words, mean
   45) while the before columns comply (1 of 12, mean 17). Split at clause
   boundaries; the split is nearly free once G-04-1's narration is deleted.
 - G-04-3: examples/before-after.md line 20 inverts PF-1.9 — product as sentence
