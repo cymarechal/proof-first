@@ -194,7 +194,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 10/10 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps
+**Plans**: 10/10 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap
 
 Plans:
 **Wave 1**
@@ -235,6 +235,10 @@ Plans:
 **Gap wave 5** *(blocked on gap wave 4)*
 
 - [x] 04-10-PLAN.md — `04-REVIEW.md`'s three deferred warnings: `_owner_segment` normalised across four GitHub URL forms, `generate_derivatives.py --check` made genuinely byte-comparing with a platform-pinned writer, and both plugin-manifest checks' one-skill assumption disclosed and enforced (G-04-7; 47 codes, unchanged)
+
+**Gap closure, round 2** *(04-VERIFICATION.md status `gaps_found`, one gap; run with `/gsd-execute-phase 4 --gaps-only`)*
+
+- [ ] 04-11-PLAN.md — CR-01: `check_plugin_manifest_invalid` enforces `PLUGIN_REQUIRED_KEYS` on `marketplace.json`'s `plugins[0]` entry, proven red-then-green by a second real-file mutation and exhaustively by a nine-key-by-two-position `--self-test` matrix that closes the class rather than the instance; plus the three review fold-ins — duplicated-field equality between the two manifests, MC-31's colon repair inside PF-4.1's ceiling, and the ambiguous spelled-count measurement disambiguated (DIST-02; 47 codes, unchanged)
 
 ### Phase 5: Evaluation Harness
 
