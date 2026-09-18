@@ -11,12 +11,28 @@ this module is a count of mechanical proxies, never a compliance verdict on a
 document. It imports only the Python standard library; no package-manager
 dependency is introduced by this file or by the CI job that runs it.
 
-Sentence segmentation is naive: a sentence is delimited by `.`, `?`, or `!`
-followed by whitespace or end of string. An abbreviation or a decimal point
-inside a sentence splits it early, which inflates the sentence count and
-deflates per-sentence word counts for the affected sentence and its
-neighbour. No stdlib-only splitter avoids this; it is a declared ceiling,
-not a solved problem.
+Three ceilings are declared here in full, in the same sentence class
+tools/check_repo.py's own docstring already uses:
+
+1. The deletion test is a semantic judgement this file does not perform.
+   Whether removing a term changes the technical meaning of a sentence is
+   PF-3.1's actual rule; this file counts occurrences of terms an external
+   style guide names, which is a proxy for that rule and not the rule. A
+   count from this file is not a compliance verdict on a document.
+2. Provenance is proven outward, not inward. Every shipped term traces to
+   one of two named external lists (evals/proxy-sources.md), and no term
+   traces only to this repository. This does not prove a human never read
+   skills/proof-first/references/worked-examples.md while choosing which
+   external-list entries to ship, and it does not claim the shipped terms
+   are absent from this repository's own prose: measured 2026-09-18, nine
+   of eighteen candidate terms already appear in worked-examples.md or
+   examples/before-after.md, the expected consequence of a skill that
+   illustrates itself with the puffery it deletes.
+3. Sentence segmentation is naive: a sentence is delimited by `.`, `?`, or
+   `!` followed by whitespace or end of string. An abbreviation or a
+   decimal point inside a sentence splits it early, which inflates the
+   sentence count and deflates per-sentence word counts for the affected
+   sentence and its neighbour. No stdlib-only splitter avoids this.
 
 Longest-match counting rule: proxy terms are matched on a word-boundary
 regex built from the term list sorted longest-first, so the longest term
@@ -38,22 +54,50 @@ Violation codes implemented in this file:
   buzzword-term          - a term registered in evals/proxy-sources.md's
                            "Buzzword and jargon terms" table appears in the
                            text. Proxy for PF-3.1/PF-3.2's deletion test.
+                           Ceiling: a bare occurrence count, not the
+                           deletion test itself (see ceiling 1 above).
   unquantified-superlative - a term registered in the registry's
                            "Superlative terms" table appears in a sentence
                            containing no digit character. Proxy for PF-3.1.
+                           Ceiling: a superlative backed by a digit three
+                           sentences later, not the same one, is not seen.
   claim-without-adjacent-number - a sentence contains one of the frozen
                            CLAIM_VERBS and neither a digit nor a bracketed
                            GAP/REVIEW marker in SKILL.md's marker grammar.
-                           Proxy for PF-2.1.
+                           Proxy for PF-2.1. Ceiling: evidence named in
+                           prose with no digit and no marker is invisible
+                           to this check.
   sentence-over-ceiling  - a sentence's whitespace-split word count exceeds
                            SENTENCE_WORD_CEILING (25). Proxy for PF-4.1.
+                           Ceiling: naive sentence segmentation (ceiling 3
+                           above) means one mis-split sentence can under-
+                           or over-count.
   unbounded-modal        - a term registered in the registry's "Hedge and
                            modal terms" table appears in a sentence with no
                            conditional cue from the frozen CONDITION_CUES.
-                           Proxy for PF-4.3.
+                           Proxy for PF-4.3. Ceiling: a condition stated in
+                           the previous sentence, not the same one, is not
+                           seen.
   proxy-term-unsourced   - a term this file counts (buzzword, superlative, or
                            hedge/modal) has no row anywhere in
                            evals/proxy-sources.md. Proxy for EVAL-02.
+                           Ceiling: proves provenance, not blind curation
+                           (see ceiling 2 above).
+  proxy-term-source-invalid - a registry row's label is not `A`/`B`, or its
+                           URL matches no allow-listed prefix for that
+                           label. Proxy for EVAL-02. Ceiling: an allow-list
+                           over exactly two prefixes; a URL is judged on
+                           string prefix only, never fetched or resolved
+                           over the network.
+  proxy-term-source-is-internal - a registry row's URL, after stripping any
+                           `file://` scheme, resolves to a path inside this
+                           repository, or is a relative path rather than an
+                           absolute URL. Proxy for EVAL-02. Ceiling: catches
+                           a path this environment can resolve; it does not
+                           and cannot confirm a live http(s) URL actually
+                           serves the content the registry claims (see
+                           ceiling 2 above -- this environment has no live
+                           network access).
 """
 
 import argparse
@@ -134,6 +178,8 @@ VIOLATION_CODES = (
     'sentence-over-ceiling',
     'unbounded-modal',
     'proxy-term-unsourced',
+    'proxy-term-source-invalid',
+    'proxy-term-source-is-internal',
 )
 
 
@@ -229,11 +275,17 @@ def check_provenance(terms, rows):
     """Cross-reference `terms` (everything this file counts) against `rows`
     (evals/proxy-sources.md's parsed table rows).
 
-    Fires proxy-term-unsourced for a term with no row at all. This is the
-    mechanical half of EVAL-02: it proves every counted term traces to a row
-    in the committed registry. It cannot prove the registry's own rows are
-    telling the truth about their source -- that is proxy-term-source-invalid
-    and proxy-term-source-is-internal's job.
+    Fires proxy-term-unsourced for a term with no row at all -- the
+    mechanical half of EVAL-02, proving every counted term traces to a row
+    in the committed registry. Fires proxy-term-source-invalid for a row
+    whose label is not `A`/`B` or whose URL matches no allow-listed prefix
+    for that label, and proxy-term-source-is-internal for a row whose URL
+    resolves to a path inside this repository -- both checked independently
+    for every row a term has, so a row that fails both is reported by both
+    (defence in depth, not a single either/or branch). This is an allow-list,
+    never a deny-list: a URL that does not match an allowed prefix is
+    rejected outright, so a future contributor cannot add a fourth source by
+    inventing a plausible-looking domain.
     """
     violations = []
     rows_by_term = {}
@@ -241,7 +293,8 @@ def check_provenance(terms, rows):
         rows_by_term.setdefault(row['term'], []).append(row)
 
     for term in terms:
-        if term not in rows_by_term:
+        matches = rows_by_term.get(term)
+        if not matches:
             violations.append({
                 'code': 'proxy-term-unsourced',
                 'offset': 0,
@@ -251,6 +304,34 @@ def check_provenance(terms, rows):
                     "evals/proxy-sources.md."
                 ),
             })
+            continue
+
+        for row in matches:
+            label = row['label']
+            url = row['url']
+            allowed_prefixes = SOURCE_URL_PREFIXES.get(label, ())
+            if label not in ALLOWED_SOURCE_LABELS or not any(
+                url.startswith(p) for p in allowed_prefixes
+            ):
+                violations.append({
+                    'code': 'proxy-term-source-invalid',
+                    'offset': 0,
+                    'match': term,
+                    'message': (
+                        f"'{term}' cites label {label!r} / url {url!r}, which is not an "
+                        "allow-listed (label, URL-prefix) pair."
+                    ),
+                })
+            if _resolves_inside_repo(url):
+                violations.append({
+                    'code': 'proxy-term-source-is-internal',
+                    'offset': 0,
+                    'match': term,
+                    'message': (
+                        f"'{term}' cites {url!r}, which resolves to a path inside this "
+                        "repository."
+                    ),
+                })
     return violations
 
 
@@ -471,6 +552,51 @@ def self_test():
     fired_terms = {v['match'] for v in mutated_violations if v['code'] == 'proxy-term-unsourced'}
     assert fired_terms == {'robust'}, fired_terms
     codes_covered.add('proxy-term-unsourced')
+
+    # proxy-term-source-invalid: a mutated row citing label 'C' fires; the
+    # shipped registry produces none.
+    shipped_invalid = [v for v in shipped_violations if v['code'] == 'proxy-term-source-invalid']
+    assert shipped_invalid == [], shipped_invalid
+    label_c_lines = [
+        line.replace('| robust | B |', '| robust | C |', 1) if '| robust | B |' in line else line
+        for line in registry_text.splitlines()
+    ]
+    assert label_c_lines != registry_text.splitlines(), "fixture did not mutate the robust row"
+    label_c_rows = parse_proxy_sources_from_text('\n'.join(label_c_lines))
+    label_c_violations = check_provenance(ALL_COUNTED_TERMS, label_c_rows)
+    invalid_terms = {
+        v['match'] for v in label_c_violations if v['code'] == 'proxy-term-source-invalid'
+    }
+    assert 'robust' in invalid_terms, invalid_terms
+    codes_covered.add('proxy-term-source-invalid')
+
+    # proxy-term-source-is-internal: a mutated row citing this repository's
+    # own worked-examples.md as its URL fires -- asserted by its own
+    # dedicated fixture, not inferred from the label-invalid case above,
+    # even though this same fixture also fails the prefix check (defence in
+    # depth, per Task 3's own instruction). The shipped registry produces
+    # none.
+    shipped_internal = [
+        v for v in shipped_violations if v['code'] == 'proxy-term-source-is-internal'
+    ]
+    assert shipped_internal == [], shipped_internal
+    internal_url = 'skills/proof-first/references/worked-examples.md'
+    internal_lines = [
+        line.replace(
+            '| robust | B | https://digital.gov/guides/plain-language/principles/avoid-jargon |',
+            f'| robust | B | {internal_url} |',
+            1,
+        )
+        for line in registry_text.splitlines()
+    ]
+    assert internal_lines != registry_text.splitlines(), "fixture did not mutate the robust row"
+    internal_rows = parse_proxy_sources_from_text('\n'.join(internal_lines))
+    internal_violations = check_provenance(ALL_COUNTED_TERMS, internal_rows)
+    internal_terms = {
+        v['match'] for v in internal_violations if v['code'] == 'proxy-term-source-is-internal'
+    }
+    assert 'robust' in internal_terms, internal_terms
+    codes_covered.add('proxy-term-source-is-internal')
 
     missing = set(VIOLATION_CODES) - codes_covered
     if missing:
