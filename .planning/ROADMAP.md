@@ -194,7 +194,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 11/11 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap, plus 2 gap-closure plans (04-12, 04-13) planned from 04-UAT.md's two remaining major gaps
+**Plans**: 11/11 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap, plus 2 gap-closure plans (04-12, 04-13) planned from 04-UAT.md's two remaining major gaps, plus 1 gap-closure plan (04-14) planned from 04-UAT.md's round-2 re-read, which closed both of those and opened one new major gap
 
 Plans:
 **Wave 1**
@@ -249,6 +249,10 @@ Plans:
 **Gap wave 2** *(blocked on gap wave 1: the new code leaves the repository-wide gate deliberately red between registration and repair)*
 
 - [x] 04-13-PLAN.md — README install truth: route 3's missing copy step and its destination directory stated, the today-runnable claim rewritten to match, and `readme-output-style-destination-missing` registered — a deliberately narrow code proven red on the shipped README and green after, whose declared ceiling refuses the executability claim no code here can make; plus four folded-in credibility defects and one tracked unrun verification (G-04-4; 47 → 48)
+
+**Gap closure, round 4** *(04-UAT.md status `diagnosed`, one major gap opened by round 3's own repair; run with `/gsd-execute-phase 4 --gaps-only`)*
+
+- [ ] 04-14-PLAN.md — README self-contradiction: the false universal negative written by 04-13's own fix narrowed to the interactive case it actually describes, the verbatim copy in WINDOWS entry 16 corrected with it, and the mechanisability question answered with a recorded refusal rather than a 49th code — cross-sentence semantic contradiction is not regex-checkable and a code claiming it would be the CR-01 overstatement a third time; plus three folded-in README credibility defects and one unevidenced deliverable claim in the flagship example (G-04-8; 48 codes, unchanged)
 
 ### Phase 5: Evaluation Harness
 
