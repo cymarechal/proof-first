@@ -244,11 +244,11 @@ Plans:
 
 **Gap wave 1**
 
-- [ ] 04-12-PLAN.md — `examples/before-after.md` factual repair: AWS Control Tower's governance re-scoped from the pre-migration VMware/Oracle estate to the new account structure, agreeing with `deal-brief.md:22`, `worked-examples.md:32` and sentence 1 of its own column, with PF-1.9's capability-first shape and PF-4.1's 25-word ceiling both held; plus Marcus Feld's one recorded utterance quoted once instead of twice and the PF-2.14 marker made actionable (G-04-3; 47 codes, unchanged)
+- [x] 04-12-PLAN.md — `examples/before-after.md` factual repair: AWS Control Tower's governance re-scoped from the pre-migration VMware/Oracle estate to the new account structure, agreeing with `deal-brief.md:22`, `worked-examples.md:32` and sentence 1 of its own column, with PF-1.9's capability-first shape and PF-4.1's 25-word ceiling both held; plus Marcus Feld's one recorded utterance quoted once instead of twice and the PF-2.14 marker made actionable (G-04-3; 47 codes, unchanged)
 
 **Gap wave 2** *(blocked on gap wave 1: the new code leaves the repository-wide gate deliberately red between registration and repair)*
 
-- [ ] 04-13-PLAN.md — README install truth: route 3's missing copy step and its destination directory stated, the today-runnable claim rewritten to match, and `readme-output-style-destination-missing` registered — a deliberately narrow code proven red on the shipped README and green after, whose declared ceiling refuses the executability claim no code here can make; plus four folded-in credibility defects and one tracked unrun verification (G-04-4; 47 → 48)
+- [x] 04-13-PLAN.md — README install truth: route 3's missing copy step and its destination directory stated, the today-runnable claim rewritten to match, and `readme-output-style-destination-missing` registered — a deliberately narrow code proven red on the shipped README and green after, whose declared ceiling refuses the executability claim no code here can make; plus four folded-in credibility defects and one tracked unrun verification (G-04-4; 47 → 48)
 
 ### Phase 5: Evaluation Harness
 
