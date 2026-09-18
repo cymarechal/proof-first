@@ -267,7 +267,20 @@ Plans:
   4. A blind pairwise judge scores skill-on against skill-off with labels stripped and both text orders run, scoring persuasive force as its own dimension so a flat-but-clean draft can't pass on clarity alone.
   5. Published results report mechanical-proxy counts and judged persuasion as two separately labeled figures with variance alongside the mean, name honest caveats (position bias, judge-family bias, baseline prompt parity, proxy provenance, sample size), and every raw generation and judgement is committed so any number can be recomputed with one documented command.
 
-**Plans**: TBD — likely splits across the linter, the scenario/benchmark runner, and the judge; EVAL-06's mandatory 3x-per-cell repetition raises benchmark runtime meaningfully and may warrant its own plan separate from the linter.
+**Plans**: 3 plans in 3 sequential waves. The split follows `05-RESEARCH.md`'s recommendation and isolates the one paid, non-reversible step: plans 1 and 2 are entirely offline and free, so a plan-review cycle on either re-triggers no live call; plan 3 owns the judge and the live matrix behind a blocking decision checkpoint. The waves are strictly sequential because the plans share files — 1 and 2 both touch `.github/workflows/ci.yml`, and 2 and 3 both touch `evals/benchmark/run_benchmark.py`.
+
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — Tracer: one proxy term end to end — `evals/proxy-sources.md` as the external-provenance registry, `evals/lint.py` counting it, `proxy-term-unsourced` making the registry load-bearing, the EVAL-03 disclaimer, and the self-test wired into CI; then the four remaining proxy codes and the provenance allow-list, eight codes each proven in both directions by its own fixture pair (EVAL-01, EVAL-02, EVAL-03)
+
+**Wave 2** *(blocked on Wave 1: shares `.github/workflows/ci.yml`, and imports the linter)*
+
+- [ ] 05-02-PLAN.md — The whole free half of the benchmark: a fresh fictional deal sharing no entity with `examples/deal-brief.md`, eight scenarios across the four artifact families, the generation runner with isolated per-session temp dirs and `unscoreable` failure handling, and the offline aggregator and report renderer — every call faked, no `RESULTS.md` committed, and the report path proven never to shell out (EVAL-04, EVAL-05, EVAL-09, EVAL-10, EVAL-11, EVAL-12)
+
+**Wave 3** *(blocked on Wave 2: extends `run_benchmark.py`; not autonomous — carries the spend checkpoint)*
+
+- [ ] 05-03-PLAN.md — The blind pairwise judge built and proven offline (labels stripped, both orders averaged, ties kept as ties, schema-invalid replies recorded `unscoreable`), then a blocking decision checkpoint authorising ≈$48 and ≈58 minutes of live calls, then one matrix run, 192 committed raw records, and a `RESULTS.md` whose every figure survives a re-render diff (EVAL-06, EVAL-07, EVAL-08)
 
 ### Phase 6: Legal Review Gate & Launch
 
@@ -292,7 +305,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
-| 5. Evaluation Harness | 0/TBD | Not started | - |
+| 5. Evaluation Harness | 0/3 | Planned | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
 
 ---

@@ -43,6 +43,15 @@ created: "2026-09-18"
 
 Task IDs are assigned by the planner; this map is keyed by requirement until plans exist.
 
+Plans now exist. **A = `05-01-PLAN.md`, B = `05-02-PLAN.md`, C = `05-03-PLAN.md`**, in waves 1, 2
+and 3 respectively. One deliberate refinement against this table: EVAL-09 and EVAL-10 are listed
+here under plan C, but their *structural gates* — the two required section headings and the
+five-item caveats block — are built and self-tested against committed fixture records in plan B,
+because they are properties of the renderer and are provable offline. Plan C is where real
+published content satisfies them. Both plans carry EVAL-09 and EVAL-10 in their `requirements`
+frontmatter for that reason. Plan B commits no `RESULTS.md`: a report file carrying fixture
+numbers would be indistinguishable from a real one to any reader who opened it.
+
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
 | TBD | A | 1 | EVAL-01 | — | Linter counts proxy violations deterministically; self-test green | unit (offline) | `python3 evals/lint.py --self-test` | ❌ W0 | ⬜ pending |
