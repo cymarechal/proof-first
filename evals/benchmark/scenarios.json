@@ -3,12 +3,48 @@
     "id": "executive-summary-1",
     "family": "executive-summary",
     "prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
-    "notes": "First of two executive-summary scenarios (05-02 Task 1). Family value: executive-summary."
+    "notes": "Full two-paragraph summary. First of two executive-summary scenarios."
+  },
+  {
+    "id": "executive-summary-2",
+    "family": "executive-summary",
+    "prompt": "Write only the opening paragraph of an executive summary, addressed to a fictional buyer's Chief Financial Officer. The opening paragraph must restate the buyer's own situation, in the buyer's own terms, before naming any vendor, product, or capability. Context: the buyer is spending $1,850,000 a year running an on-premises Microsoft SQL Server and Hyper-V estate, and its next compliance audit opens in 6 months. Return only that one opening paragraph.",
+    "notes": "Problem-reframe opener only, not a full summary. Second of two executive-summary scenarios."
   },
   {
     "id": "rfp-rfi-1",
     "family": "rfp-rfi",
     "prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
-    "notes": "First of two rfp-rfi scenarios (05-02 Task 1). Family value: rfp-rfi."
+    "notes": "Scored-question answer. First of two rfp-rfi scenarios."
+  },
+  {
+    "id": "rfp-rfi-2",
+    "family": "rfp-rfi",
+    "prompt": "Write the compliance statement section of an RFP response, stating plainly and separately from any persuasive argument whether the proposed approach meets or does not meet a stated buyer requirement. Context: the buyer's RFP requires a SOC 2 Type II report; the bidder currently holds only a SOC 2 Type I report, and its Type II observation window closes after the RFP's 2026-11-15 submission date. State the compliance answer (met or not met, and why) on its own, apart from any argument for why the bidder should still be selected. Return only the compliance statement text.",
+    "notes": "Compliance-versus-value section, kept apart from persuasive argument. Second of two rfp-rfi scenarios."
+  },
+  {
+    "id": "solution-proposal-1",
+    "family": "solution-proposal",
+    "prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+    "notes": "Architecture narrative. First of two solution-proposal scenarios."
+  },
+  {
+    "id": "solution-proposal-2",
+    "family": "solution-proposal",
+    "prompt": "Write the risk section of a solution proposal, naming each material risk and what is done about it, and stating plainly any risk that cannot be fully retired rather than omitting it. Context: the buyer's RFP requires a SOC 2 Type II report and the bidder holds only a SOC 2 Type I report today, with the Type II observation window closing after the RFP's submission date; separately, the bidder's own most comparable prior migration took 11 months, close to the buyer's 6-month compliance-audit deadline. Return only the risk section text.",
+    "notes": "Risk treatment, naming risks that cannot be fully retired. Second of two solution-proposal scenarios."
+  },
+  {
+    "id": "demo-discovery-1",
+    "family": "demo-discovery",
+    "prompt": "Write a set of discovery call notes, in the buyer's own words, attributed to the specific people who said them, so a later document can cite this material directly. Context, from a fictional discovery call: the VP of Infrastructure said, 'We need a perimeter we can actually govern -- right now every VM is a snowflake.' The Chief Architect said, 'Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.' The CFO said, 'I'm measured on cost-per-load and a clean audit, not on architecture elegance.' Write these up as discovery notes attributed by role, with a one-line context note for each. Return only the discovery notes text.",
+    "notes": "Discovery-notes write-up, attributed verbatim by role. First of two demo-discovery scenarios."
+  },
+  {
+    "id": "demo-discovery-2",
+    "family": "demo-discovery",
+    "prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+    "notes": "Demo script, not discovery notes. Second of two demo-discovery scenarios."
   }
 ]

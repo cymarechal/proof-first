@@ -353,6 +353,79 @@ def run_generation(model, effort, condition, scenario, repeat, skill_src, timeou
     return record, True
 
 
+def _assert_family_coverage(scenarios):
+    """Raise ValueError, naming the family, if any FAMILIES member has fewer
+    than 2 scenarios in `scenarios`.
+
+    This is a self-test-only completeness assertion over the shipped
+    scenarios.json -- load_scenarios() itself does not enforce this (see its
+    own docstring): an intermediate, partially-populated scenario file is a
+    legitimate input to that generic loader, but the SHIPPED file must cover
+    every family with at least 2 scenarios each.
+    """
+    counts = {}
+    for scenario in scenarios:
+        counts[scenario['family']] = counts.get(scenario['family'], 0) + 1
+    under = [family for family in FAMILIES if counts.get(family, 0) < 2]
+    if under:
+        raise ValueError(f'family coverage incomplete, fewer than 2 scenarios: {under}')
+
+
+def run_matrix(models, conditions, scenarios, repeats, skill_src, raw_dir, timeout_s,
+               effort=DEFAULT_EFFORT, max_budget_usd=MAX_BUDGET_USD, generation_fn=run_generation):
+    """Enumerate model x condition x scenario x repeat, in that nesting
+    order, and drive one generation per cell via `generation_fn` (defaults
+    to run_generation).
+
+    Single-writer-per-path rule, in evals/conformance/run_conformance.py's
+    own words: exactly one call site writes any given raw path, and this
+    runner never parallelises onto a shared path.
+
+    `generation_fn` defaults to run_generation() -- which already skips a
+    cell whose raw file exists and makes no subprocess call for it -- but
+    self_test() injects stubs with the identical keyword signature so the
+    enumeration order, the skip-if-exists property, and the durability-on-
+    interruption property are all checkable offline, with no `claude`
+    binary and no network call.
+
+    On SessionFailedError from `generation_fn`, writes an `unscoreable`
+    record carrying the real reason to the cell's raw path rather than
+    raising out of the loop and losing the rest of the run -- an
+    interruption by any OTHER exception type (a genuine process kill, or a
+    self-test-injected KeyboardInterrupt) still propagates immediately,
+    leaving on disk exactly the records already written by cells before it.
+
+    Returns the full list of (model, condition, scenario_id, repeat) tuples
+    this call enumerated, in the documented deterministic order -- derived
+    from the JSON array order of `scenarios` and the caller-supplied
+    `models`/`conditions`/`repeats`, never from dict iteration order.
+    """
+    raw_dir = pathlib.Path(raw_dir) if raw_dir is not None else RAW_DIR
+    todo = []
+    for model in models:
+        for condition in conditions:
+            for scenario in scenarios:
+                for repeat in range(repeats):
+                    todo.append((model, condition, scenario, repeat))
+
+    for model, condition, scenario, repeat in todo:
+        try:
+            generation_fn(
+                model=model, effort=effort, condition=condition, scenario=scenario,
+                repeat=repeat, skill_src=skill_src, timeout_s=timeout_s,
+                raw_dir=raw_dir, max_budget_usd=max_budget_usd,
+            )
+        except SessionFailedError as exc:
+            record = _unscoreable_generation_record(
+                model, effort, condition, scenario, repeat, skill_src,
+                reason=f'nonzero exit or is_error: returncode={exc.returncode} stderr={exc.stderr!r}',
+            )
+            path = raw_path_for_generation(model, condition, scenario['id'], repeat, raw_dir)
+            _write_json_atomic(path, record)
+
+    return [(model, condition, scenario['id'], repeat) for (model, condition, scenario, repeat) in todo]
+
+
 def self_test():
     """Offline proof of the generation-record schema and its failure paths.
     No subprocess call, no network call; runs on a machine with no `claude`
@@ -610,6 +683,155 @@ def self_test():
         all_ok = False
     else:
         cases_exercised.append('no-entity-collision')
+
+    # --- family-coverage assertion: the shipped scenarios.json carries
+    # exactly 8 scenarios, exactly 2 per family; a negative fixture with a
+    # family carrying only 1 scenario fails the same assertion, naming it. ---
+    shipped_counts = {}
+    for scenario in shipped_scenarios:
+        shipped_counts[scenario['family']] = shipped_counts.get(scenario['family'], 0) + 1
+    if len(shipped_scenarios) != 8 or set(shipped_counts.values()) != {2} or set(shipped_counts) != set(FAMILIES):
+        print(f'FAIL: shipped scenarios.json family coverage wrong: {shipped_counts} (total {len(shipped_scenarios)})')
+        all_ok = False
+    else:
+        try:
+            _assert_family_coverage(shipped_scenarios)
+            cases_exercised.append('family-coverage-positive')
+        except ValueError as exc:
+            print(f'FAIL: _assert_family_coverage raised on the shipped, fully-covered file: {exc}')
+            all_ok = False
+
+    under_covered = [s for s in shipped_scenarios if s['family'] != 'executive-summary'] + [shipped_scenarios[0]]
+    try:
+        _assert_family_coverage(under_covered)
+        print('FAIL: _assert_family_coverage did not raise on a 1-scenario family')
+        all_ok = False
+    except ValueError as exc:
+        if 'executive-summary' not in str(exc):
+            print(f'FAIL: family-coverage error does not name the under-covered family: {exc}')
+            all_ok = False
+        else:
+            cases_exercised.append('family-coverage-negative')
+
+    # --- cell-enumeration assertion: the default matrix (2 models x 2
+    # conditions x 8 scenarios x 3 repeats) enumerates exactly 96 cells, in
+    # the documented (model, condition, scenario, repeat) nesting order --
+    # the expected count is computed from the frozen tuples, never
+    # hardcoded as a bare literal in the assertion message alone. ---
+    expected_cell_count = len(DEFAULT_MODELS) * len(CONDITIONS) * len(shipped_scenarios) * DEFAULT_REPEATS
+    expected_order = []
+    for model in DEFAULT_MODELS:
+        for condition in CONDITIONS:
+            for scenario in shipped_scenarios:
+                for repeat in range(DEFAULT_REPEATS):
+                    expected_order.append((model, condition, scenario['id'], repeat))
+
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        subprocess.run = _fake_success_run
+        try:
+            cells = run_matrix(
+                models=list(DEFAULT_MODELS), conditions=list(CONDITIONS),
+                scenarios=shipped_scenarios, repeats=DEFAULT_REPEATS,
+                skill_src=fake_skill_src, raw_dir=raw_dir, timeout_s=30,
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+
+    if len(cells) != expected_cell_count:
+        print(f'FAIL: run_matrix() default-matrix cell count expected {expected_cell_count}, got {len(cells)}')
+        all_ok = False
+    elif cells != expected_order:
+        print('FAIL: run_matrix() default-matrix cell order does not match the documented nesting order')
+        all_ok = False
+    else:
+        cases_exercised.append('cell-enumeration-96')
+
+    # --- skip-if-exists at the run_matrix() level: a fully-populated raw
+    # directory makes exactly 0 subprocess calls, asserted by a call
+    # counter (not merely by run_generation()'s own single-cell property,
+    # which case "skip-if-exists" above already proved). ---
+    call_counter = {'n': 0}
+
+    def _counting_run(argv, **kwargs):
+        call_counter['n'] += 1
+        return subprocess.CompletedProcess(argv, returncode=0, stdout=json.dumps(success_envelope), stderr='')
+
+    small_scenarios = shipped_scenarios[:2]
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        subprocess.run = _fake_success_run
+        try:
+            run_matrix(
+                models=['claude-sonnet-5'], conditions=['skill-off'],
+                scenarios=small_scenarios, repeats=1,
+                skill_src=fake_skill_src, raw_dir=raw_dir, timeout_s=30,
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+
+        subprocess.run = _counting_run
+        try:
+            run_matrix(
+                models=['claude-sonnet-5'], conditions=['skill-off'],
+                scenarios=small_scenarios, repeats=1,
+                skill_src=fake_skill_src, raw_dir=raw_dir, timeout_s=30,
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+
+    if call_counter['n'] != 0:
+        print(f"FAIL: run_matrix() over a fully-populated raw dir made {call_counter['n']} subprocess calls, expected 0")
+        all_ok = False
+    else:
+        cases_exercised.append('run-matrix-skip-if-exists')
+
+    # --- durability on interruption: a stub generation_fn that writes a
+    # record for each of its first two calls and then raises
+    # KeyboardInterrupt on its third leaves exactly 2 records readable on
+    # disk when run_matrix() propagates that interruption -- proven by
+    # reading the files back, not by inspecting an in-memory list. ---
+    interrupt_state = {'n': 0}
+
+    def _interrupt_stub(model, effort, condition, scenario, repeat, skill_src, timeout_s,
+                         raw_dir, max_budget_usd):
+        interrupt_state['n'] += 1
+        if interrupt_state['n'] >= 3:
+            raise KeyboardInterrupt('simulated interruption between cells')
+        record = _unscoreable_generation_record(model, effort, condition, scenario, repeat, skill_src, reason=None)
+        record['verdict'] = 'generated'
+        record['text'] = 'stub generated text'
+        path = raw_path_for_generation(model, condition, scenario['id'], repeat, raw_dir)
+        _write_json_atomic(path, record)
+        return record, True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        interrupted = False
+        try:
+            run_matrix(
+                models=['claude-sonnet-5'], conditions=['skill-off'],
+                scenarios=shipped_scenarios, repeats=1,
+                skill_src=fake_skill_src, raw_dir=raw_dir, timeout_s=30,
+                generation_fn=_interrupt_stub,
+            )
+        except KeyboardInterrupt:
+            interrupted = True
+
+        written = sorted(raw_dir.glob('*.json'))
+        if not interrupted:
+            print('FAIL: run_matrix() durability-on-interruption expected KeyboardInterrupt, none raised')
+            all_ok = False
+        elif len(written) != 2:
+            print(f'FAIL: run_matrix() durability-on-interruption expected exactly 2 records on disk, found {len(written)}: {written}')
+            all_ok = False
+        else:
+            readable = [json.loads(p.read_text(encoding='utf-8')) for p in written]
+            if not all(r['verdict'] == 'generated' for r in readable):
+                print(f'FAIL: run_matrix() durability-on-interruption records not all generated: {readable}')
+                all_ok = False
+            else:
+                cases_exercised.append('run-matrix-durability-on-interruption')
 
     if not all_ok:
         return False
