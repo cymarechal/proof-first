@@ -31,15 +31,18 @@ no install step.
 
 ## Install
 
-Proof First supports four install paths, one per harness class this project targets. The
-publish-location placeholder `<owner>/<repo>` below stands for wherever this repository is
-published; every command and manifest that states it is checked to agree.
+Proof First supports four install paths, one per harness class this project targets.
 
-Routes 3 and 4 work today, from a local clone of this repository: `output-styles/proof-first.md`
-and `prompts/system-prompt.md` are committed files a reader already has once the clone exists.
-Routes 1 and 2 name the placeholder below and will not resolve until this repository is
-published. That placeholder is deliberate and disclosed, not an oversight; every command and
-manifest stating it is held identical by a check in this repository.
+Routes 1 and 2 name the publish-location placeholder `<owner>/<repo>`, which stands for wherever
+this repository is published. Neither resolves until it is published. The placeholder is
+deliberate and disclosed: `publish-location-drift` in `tools/check_repo.py` fails the build if any
+command or manifest carrying it stops agreeing with the others.
+
+Route 4 runs from a local clone with no step beyond the clone: `prompts/system-prompt.md` is a
+committed file, and pasting it is the whole action. Route 3 runs from a local clone too, but it
+needs one copy step first, stated in full below. `output-styles/` at this repository's root is
+where a plugin ships an output style from, not a directory Claude Code scans, so the file is not
+offered in `/config` until it is copied to one that is.
 
 **1. Skills CLI** — for any harness the Agent Skills standard covers (Cursor, Codex, Copilot,
 Gemini CLI, OpenCode, and the rest), install with the `skills` CLI's one-line command:
@@ -63,8 +66,19 @@ Or inside a running Claude Code session:
 ```
 
 **3. Output style** — `output-styles/proof-first.md` is a Claude Code output style, generated
-mechanically from the skill content rather than written separately. Select it through `/config`;
-once selected it stays on for the whole session.
+mechanically from the skill content rather than written separately. Copy it into the directory
+Claude Code scans for output styles, then select it through `/config`; once selected it stays on
+for the whole session.
+
+```
+mkdir -p ~/.claude/output-styles
+cp output-styles/proof-first.md ~/.claude/output-styles/
+```
+
+Use a project's own `.claude/output-styles/` instead of `~/.claude/output-styles/` to scope the
+style to that project. What this repository checks is that the file exists and that this README
+names the directory it has to reach. That a Claude Code session then lists it in `/config` has not
+been observed here: this repository's own environment drives no live harness session.
 
 **4. System prompt** — `prompts/system-prompt.md` is a paste-able system prompt for a harness with
 no skill support: paste it whole into a system-prompt field, an `AGENTS.md`, or an equivalent.

@@ -745,6 +745,31 @@ Violation codes implemented in this file:
                       invisible to this check. And it reads only the
                       layout section, so a marker vocabulary introduced
                       elsewhere in README is out of scope.
+  readme-output-style-destination-missing - README.md names
+                      README_OUTPUT_STYLE_PATH as the output-style
+                      install route but names neither directory Claude
+                      Code scans for output styles
+                      (README_OUTPUT_STYLE_DESTINATIONS: the user-level
+                      '~/.claude/output-styles/' or the project-level
+                      '.claude/output-styles/'). Returns no violation
+                      before any read when README.md does not exist,
+                      and returns no violation when README never names
+                      README_OUTPUT_STYLE_PATH at all -- a README
+                      stating no output-style route has nothing for
+                      this code to say. Fires once. Declared ceiling:
+                      this check asserts the README tells a reader
+                      which directory the output-style file has to
+                      reach. It asserts nothing about whether the copy
+                      succeeds, whether Claude Code lists or applies
+                      the style, whether the stated command is correct,
+                      or whether any other route is executable --
+                      readme-install-path-missing owns anchor presence
+                      and nothing in this repository owns route
+                      executability. The comparison is literal
+                      substring containment with no path expansion and
+                      no filesystem access, so a README naming the
+                      directory in a different notation is invisible to
+                      it.
 """
 import argparse
 import hashlib
@@ -1273,6 +1298,7 @@ def check_readme_results_pointer(repo_root):
 README_CHECK_CODES = [
     'readme-results-pointer-missing', 'readme-install-path-missing', 'readme-before-after-order',
     'readme-example-drift', 'readme-example-lead-distance', 'readme-layout-legend-drift',
+    'readme-output-style-destination-missing',
 ]
 
 
@@ -1297,6 +1323,7 @@ def run_readme_checks(repo_root):
     violations += check_readme_example_drift(repo_root)
     violations += check_readme_example_lead_distance(repo_root)
     violations += check_readme_layout_legend_drift(repo_root)
+    violations += check_readme_output_style_destination(repo_root)
     return violations
 
 
@@ -2935,10 +2962,28 @@ def run_plugin_checks(repo_root):
 # time, not at def time) -- there is no fourth README aggregator.
 # ---------------------------------------------------------------------------
 
+# The output-style path literal, referenced both by README_INSTALL_ANCHORS'
+# 'output style' entry below and by check_readme_output_style_destination
+# further down, so this literal is typed once here rather than a second
+# time as an inline duplicate (Phase 4, 04-13).
+README_OUTPUT_STYLE_PATH = 'output-styles/proof-first.md'
+
+# The two directories Claude Code scans for output styles: the user-level
+# one and a project's own. Provenance: 04-UAT.md test 4,
+# orchestrator-verified -- this environment has no live network access to
+# cite a documentation URL. The project-level form is a substring of the
+# user-level form ('.claude/output-styles/' sits inside
+# '~/.claude/output-styles/'), so a README naming only the user-level
+# directory already satisfies check_readme_output_style_destination for
+# both, and a mutation targeting this fact must match on the shorter,
+# project-level literal or it leaves the user-level sentence behind and
+# stays inert (Phase 4, 04-13).
+README_OUTPUT_STYLE_DESTINATIONS = ('~/.claude/output-styles/', '.claude/output-styles/')
+
 README_INSTALL_ANCHORS = (
     ('skills CLI', SKILLS_CLI_INSTALL_RE),
     ('Claude Code marketplace', MARKETPLACE_ADD_RE),
-    ('output style', 'output-styles/proof-first.md'),
+    ('output style', README_OUTPUT_STYLE_PATH),
     ('system prompt', 'prompts/system-prompt.md'),
 )
 
@@ -3213,6 +3258,50 @@ def check_readme_layout_legend_drift(repo_root):
         violations.append((str(rel), (
             f"readme-layout-legend-drift {rel}'s '{README_LAYOUT_HEADING}' tree uses "
             f"marker \"{marker}\", which the legend never mentions"
+        )))
+    return violations
+
+
+def check_readme_output_style_destination(repo_root):
+    """Require README.md, if it names README_OUTPUT_STYLE_PATH anywhere,
+    to also name at least one of README_OUTPUT_STYLE_DESTINATIONS -- the
+    directory Claude Code actually scans for output styles, as distinct
+    from this repository's root-level output-styles/, which is where a
+    plugin ships a style from and is scanned only once the repository is
+    installed as a plugin. Reads README.md raw, without calling
+    strip_fences, for the reason check_readme_install_paths already
+    states in its own docstring: the copy command lives inside a fence,
+    and stripping fences would find nothing and pass silently. Returns
+    an empty list before any read when README.md does not exist, and
+    returns an empty list when README never names README_OUTPUT_STYLE_PATH
+    at all -- a README stating no output-style route has nothing for this
+    code to say. Otherwise fires once when the text names neither
+    destination directory, naming the file, the route, and both
+    directories it could have named.
+
+    Declared ceiling: this check asserts the README tells a reader which
+    directory the output-style file has to reach. It asserts nothing
+    about whether the copy succeeds, whether Claude Code lists or applies
+    the style, whether the stated command is correct, or whether any
+    other route is executable -- readme-install-path-missing owns anchor
+    presence and nothing in this repository owns route executability.
+    The comparison is literal substring containment with no path
+    expansion and no filesystem access, so a README naming the directory
+    in a different notation (a different home-directory alias, a
+    relative path, an environment variable) is invisible to it."""
+    violations = []
+    readme_path = repo_root / 'README.md'
+    if not readme_path.exists():
+        return violations
+    text = readme_path.read_text(encoding='utf-8')
+    if README_OUTPUT_STYLE_PATH not in text:
+        return violations
+    if not any(dest in text for dest in README_OUTPUT_STYLE_DESTINATIONS):
+        violations.append(('README.md', (
+            f"readme-output-style-destination-missing README.md names "
+            f"{README_OUTPUT_STYLE_PATH} as the output-style route but names "
+            f"neither directory Claude Code scans for output styles "
+            f"({' or '.join(README_OUTPUT_STYLE_DESTINATIONS)})"
         )))
     return violations
 
@@ -4061,6 +4150,21 @@ def _mutate_readme_layout_legend_drift(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_readme_output_style_destination(root):
+    """Delete every line of the copied real README.md containing the
+    shorter, project-level destination literal
+    ('.claude/output-styles/'), mutating only the copy. Matching on the
+    shorter literal is required: the user-level form
+    ('~/.claude/output-styles/') contains the project-level form as a
+    substring, so a mutation matching only the longer literal would
+    leave the project-level sentence behind, which still satisfies the
+    check, and the mutation would silently not fire."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = [l for l in lines if '.claude/output-styles/' not in l]
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 def _mutate_example_sentence_length(root):
     """Insert one additional sentence of 30 repeated filler words
     immediately before the closing quotation mark of the ✓ line under
@@ -4176,6 +4280,7 @@ MUTATIONS = [
     ('readme-example-drift', "change one phrase of the real README.md's first ✗ line, breaking its promised reproduction from examples/before-after.md", _mutate_readme_example_drift),
     ('readme-example-lead-distance', "insert plain filler lines after the real README.md's title line, pushing its first ✗ line past the frozen 20-line ceiling", _mutate_readme_example_lead_distance),
     ('readme-layout-legend-drift', "insert a sentence explaining a quoted 'planned' marker into the real README.md's Repository layout section prose, which the real tree never uses", _mutate_readme_layout_legend_drift),
+    ('readme-output-style-destination-missing', "delete every line of the real README.md containing the project-level output-style destination directory", _mutate_readme_output_style_destination),
 ]
 
 
@@ -5396,6 +5501,45 @@ def _bad_readme_layout():
     )
 
 
+def _good_readme_output_style():
+    """A minimal README naming README_OUTPUT_STYLE_PATH as a route and
+    naming one destination directory -- silent on
+    readme-output-style-destination-missing. A dedicated fixture rather
+    than a reuse of _good_readme_install(), which names the output-style
+    path with no destination and would incidentally fire this code if
+    reused as the 'good' side (Phase 4, 04-13)."""
+    return (
+        "# Proof First\n\n"
+        "## Install\n\n"
+        f"`{README_OUTPUT_STYLE_PATH}` is a Claude Code output style. Copy it into "
+        f"`{README_OUTPUT_STYLE_DESTINATIONS[0]}`, then select it through `/config`.\n"
+    )
+
+
+def _bad_readme_output_style():
+    """Same output-style route as _good_readme_output_style(), with no
+    destination directory named anywhere -- fires
+    readme-output-style-destination-missing (Phase 4, 04-13)."""
+    return (
+        "# Proof First\n\n"
+        "## Install\n\n"
+        f"`{README_OUTPUT_STYLE_PATH}` is a Claude Code output style. Select it "
+        "through `/config`.\n"
+    )
+
+
+def _no_route_readme_output_style():
+    """A README naming neither README_OUTPUT_STYLE_PATH nor either
+    destination directory -- silent on readme-output-style-destination-missing:
+    a README stating no output-style route has nothing for this code to
+    say (Phase 4, 04-13)."""
+    return (
+        "# Proof First\n\n"
+        "## Install\n\n"
+        "`prompts/system-prompt.md` is a paste-able system prompt.\n"
+    )
+
+
 def _derivative_source_fixture_files():
     """Minimal fixture content for each of the five real
     DERIVATIVE_SOURCE_NAMES paths, used by derivative_good_root and
@@ -5748,6 +5892,10 @@ def self_test():
 
         readme_layout_good_root = tmp_root / 'readme_layout_good'
         readme_layout_bad_root = tmp_root / 'readme_layout_bad'
+
+        readme_output_style_good_root = tmp_root / 'readme_output_style_good'
+        readme_output_style_bad_root = tmp_root / 'readme_output_style_bad'
+        readme_output_style_no_route_root = tmp_root / 'readme_output_style_no_route'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -6115,6 +6263,21 @@ def self_test():
         _write(readme_layout_good_root / 'README.md', _good_readme_layout())
         _write(readme_layout_bad_root / 'README.md', _bad_readme_layout())
 
+        # readme_output_style_good_root / readme_output_style_bad_root /
+        # readme_output_style_no_route_root
+        # (readme-output-style-destination-missing, Phase 4 04-13): the
+        # good root names the output-style path and one destination
+        # directory; the bad root names the path and no destination; the
+        # no-route root names neither the path nor a destination at all.
+        # A dedicated fixture pair rather than a reuse of
+        # readme_install_good_root/readme_install_bad_root, whose
+        # _good_readme_install()/_bad_readme_install() both name the
+        # output-style path with no destination and would incidentally
+        # fire this code if reused as either side of this code's proof.
+        _write(readme_output_style_good_root / 'README.md', _good_readme_output_style())
+        _write(readme_output_style_bad_root / 'README.md', _bad_readme_output_style())
+        _write(readme_output_style_no_route_root / 'README.md', _no_route_readme_output_style())
+
         bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(bad_root)}
         good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(good_root)}
         unparseable_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(unparseable_root)}
@@ -6209,6 +6372,10 @@ def self_test():
         readme_layout_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_layout_good_root)}
         readme_layout_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_layout_bad_root)}
 
+        readme_output_style_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_good_root)}
+        readme_output_style_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_bad_root)}
+        readme_output_style_no_route_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_no_route_root)}
+
         # Union the new roots' codes into the bad-code set so the coverage
         # loop below needs no edit -- it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
@@ -6231,6 +6398,7 @@ def self_test():
             | readme_drift_bad_codes
             | readme_lead_late_codes | readme_lead_none_codes
             | readme_layout_bad_codes
+            | readme_output_style_bad_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -6316,6 +6484,20 @@ def self_test():
             all_ok = False
         if 'readme-layout-legend-drift' in good_codes:
             print("FAIL: readme-layout-legend-drift fired on a fixture root shipping no README.md")
+            all_ok = False
+
+        # readme-output-style-destination-missing assertions (Phase 4, 04-13).
+        if 'readme-output-style-destination-missing' in readme_output_style_good_codes:
+            print("FAIL: readme-output-style-destination-missing fired on the known-good output-style fixture")
+            all_ok = False
+        if 'readme-output-style-destination-missing' not in readme_output_style_bad_codes:
+            print("FAIL: readme-output-style-destination-missing did not fire on the no-destination output-style fixture")
+            all_ok = False
+        if 'readme-output-style-destination-missing' in readme_output_style_no_route_codes:
+            print("FAIL: readme-output-style-destination-missing fired on a fixture naming no output-style route at all")
+            all_ok = False
+        if 'readme-output-style-destination-missing' in good_codes:
+            print("FAIL: readme-output-style-destination-missing fired on a fixture root shipping no README.md")
             all_ok = False
 
         # before-after-family-missing / before-after-citation-missing
