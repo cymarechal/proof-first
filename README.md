@@ -4,10 +4,9 @@ An agent skill for technical presales writing that replaces adjectives with spec
 
 ## Before and after
 
-The rules cited below turned a paragraph like the one on the left into the one on the right:
-adjectives and claims of comprehensiveness replaced by the buyer's own numbers, drawn from the one
-shared canonical deal brief this repository ships, with each rule that drove a change named
-alongside it. One full pair, reproduced from `examples/before-after.md`:
+Below: an unrevised draft, then a rewrite. The rewrite's numbers come from the one shared
+canonical deal brief this repository ships. One full pair, reproduced from
+`examples/before-after.md`:
 
 **RFP and RFI response**
 
@@ -15,6 +14,9 @@ alongside it. One full pair, reproduced from `examples/before-after.md`:
 ✓ "Question 1, the highest-weighted scored question in this RFP at 30%, asks for the migration approach and cut-over plan. Kestrel Systems Group moves Halverton Mutual's 850-VM VMware vSphere estate and 40 Oracle Database instances to Amazon EC2 and Amazon Aurora PostgreSQL. Each cut-over runs inside its own scheduled maintenance window. Settlement-batch completion is validated against the required 6-hour window before the next cut-over proceeds."
 
 Rules applied: PF-2.1, MC-11.
+
+`PF-` and `MC-` are this project's two rule namespaces. `NUMBERING.md` is the registry that
+defines every ID; `skills/proof-first/references/checklist.md` indexes them.
 
 The other three artifact families this skill classifies — solution proposal, executive summary,
 and demo and discovery material — each have their own full before/after pair in
@@ -127,16 +129,24 @@ What does not exist yet:
 
 This repository discloses one measured v1 limitation: whether a live write-mode session names its
 artifact family before its first rule citation, reproducible from the committed, stdlib-only
-`evals/conformance/run_conformance.py` script. Measured 2026-09-16, under the anchored scorer,
+`evals/conformance/run_conformance.py` script.
+
+Measured 2026-09-16, under the anchored scorer,
 across five committed fixtures: `claude-sonnet-5` conformed in 3 of 10 scoreable sessions
 (30.0%) — a 10-point decline against a paired same-instrument baseline of the immediately prior
-skill version at 4 of 10 (40.0%). This is a known, accepted, disclosed v1 limitation of live
+skill version at 4 of 10 (40.0%).
+
+This is a known, accepted, disclosed v1 limitation of live
 model behavior, not a quality or persuasion claim — the shipped classification instruction and
 its two mechanical gates (family-line presence, family-line ordering) are present and enforced
-in `SKILL.md` regardless of what any individual live session does. Full run-by-run figures,
+in `SKILL.md` regardless of what any individual live session does.
+
+Full run-by-run figures,
 exclusions, and caveats live in `evals/conformance/RESULTS-mod04.md` — read that file before
 trusting anything downstream of it, including its "v1 disposition decision (03-15)" section
-recording why this residual is accepted for v1 rather than pursued further. At minimum:
+recording why this residual is accepted for v1 rather than pursued further.
+
+At minimum:
 `claude-sonnet-5`, the only model behind the anchored figures above, is Anthropic-hosted; the
 harness gives no determinism guarantee (no temperature or seed flag); and every figure recorded
 before this project's own scorer-anchoring fix (see that file's "Scorer anchoring correction
