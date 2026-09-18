@@ -194,7 +194,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 10/10 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap
+**Plans**: 11/11 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap
 
 Plans:
 **Wave 1**
@@ -238,7 +238,7 @@ Plans:
 
 **Gap closure, round 2** *(04-VERIFICATION.md status `gaps_found`, one gap; run with `/gsd-execute-phase 4 --gaps-only`)*
 
-- [ ] 04-11-PLAN.md — CR-01: `check_plugin_manifest_invalid` enforces `PLUGIN_REQUIRED_KEYS` on `marketplace.json`'s `plugins[0]` entry, proven red-then-green by a second real-file mutation and exhaustively by a nine-key-by-two-position `--self-test` matrix that closes the class rather than the instance; plus the three review fold-ins — duplicated-field equality between the two manifests, MC-31's colon repair inside PF-4.1's ceiling, and the ambiguous spelled-count measurement disambiguated (DIST-02; 47 codes, unchanged)
+- [x] 04-11-PLAN.md — CR-01: `check_plugin_manifest_invalid` enforces `PLUGIN_REQUIRED_KEYS` on `marketplace.json`'s `plugins[0]` entry, proven red-then-green by a second real-file mutation and exhaustively by a nine-key-by-two-position `--self-test` matrix that closes the class rather than the instance; plus the three review fold-ins — duplicated-field equality between the two manifests, MC-31's colon repair inside PF-4.1's ceiling, and the ambiguous spelled-count measurement disambiguated (DIST-02; 47 codes, unchanged)
 
 ### Phase 5: Evaluation Harness
 
@@ -277,7 +277,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 1. Foundations — Legal Scaffolding, Numbering, Shared Deal | 7/7 | Complete    | 2026-09-10 |
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
-| 4. Distribution & Worked Examples | 10/10 | In Progress|  |
+| 4. Distribution & Worked Examples | 11/11 | In Progress|  |
 | 5. Evaluation Harness | 0/TBD | Not started | - |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
 
