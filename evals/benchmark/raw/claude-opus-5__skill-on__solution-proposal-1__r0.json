@@ -1,0 +1,52 @@
+{
+  "run_id": "db53a169-1398-4cd3-831a-09a15871becb",
+  "timestamp": "2026-09-18T10:27:50.636677+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Artifact family: a proposal section.**\n\nCustomer source material for this task means your RFP question text, discovery notes, or stated requirements. Please send whatever exists. None was supplied here, so the `PF-3.3` provenance override cannot fire, and every term below is judged by the deletion test alone.\n\n---\n\n## Architecture\n\nYou run 28 Microsoft SQL Server instances across 620 Hyper-V virtual machines. Every database sits on hardware you own, patch, and refresh. What that estate costs you today is not stated in the material supplied [PF-1.2 GAP: run-rate cost of the current Hyper-V and SQL Server estate — not supplied by the buyer]. This section describes moving that estate to Google Cloud, and what changes on the day it lands.\n\nThe starting point is the Hyper-V footprint. Today, 620 virtual machines depend on hypervisor hosts you maintain; after migration, those workloads run on Google Compute Engine instances Google maintains. The 620 figure comes from your own estate description. How many of the 620 move as-is, and how many retire before the move, is not yet established [PF-1.13 GAP: per-VM disposition — no discovery inventory supplied].\n\nThe data layer changes shape rather than moving intact. Today your 28 SQL Server instances each carry their own licence, patch cycle, and failover arrangement. After migration, the migrated databases run on Cloud SQL for PostgreSQL, where Google operates backups, patching, and replica failover. This is a database engine change, not a lift. Each of the 28 instances therefore needs a schema, stored-procedure, and application-driver assessment before it moves [PF-2.4 GAP: conversion effort per instance — no schema or T-SQL inventory supplied]. Applications holding SQL Server-specific SQL will need code changes, and the volume of that work is unknown until the assessment runs.\n\nGovernance moves from the host boundary to the project boundary. Today your controls follow the Hyper-V hosts and the network around them. In the target, you define a VPC Service Controls perimeter around the new project, so the Cloud SQL and Compute Engine resources inside it cannot send data to Google Cloud resources outside it. The perimeter is a configuration you own and change, not a setting the platform fixes. Which services and which projects sit inside it is a decision your security owner makes during design [PF-1.25 GAP: the named owner and their stated priority — no stakeholder detail supplied].\n\nThe sequence we propose runs assessment first, then the Compute Engine landing zone and perimeter, then the database conversions in waves. Waves let you test one converted database against its application before committing the next. We have not yet proposed wave sizes or dates [PF-2.14 REVIEW (commitment): any migration timeline or wave schedule must be confirmed against your change windows before it appears in this document].\n\nWe can supply comparable migrations of SQL Server estates to Cloud SQL for PostgreSQL on request [PF-1.17 GAP: named comparable engagement — no reference supplied for this response] [PF-2.15 REVIEW (reference): disclosure permission needed before any client is named].\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP: run-rate cost of the current Hyper-V and SQL Server estate | PF-1.2 | The buyer's stated annual cost of the current estate, or a statement that it has never been captured |\n| GAP: per-VM disposition | PF-1.13 | A discovery inventory splitting the 620 VMs into migrate, retire, and replace |\n| GAP: conversion effort per instance | PF-2.4 | Schema and T-SQL inventory for each of the 28 SQL Server instances |\n| GAP: the named owner and their stated priority | PF-1.25 | The security or platform owner's name and their stated priority, in their words |\n| REVIEW (commitment): migration timeline or wave schedule | PF-2.14 | Confirmation against the buyer's change windows before any date or wave count is stated |\n| GAP: named comparable engagement | PF-1.17 | A comparable SQL Server to Cloud SQL for PostgreSQL migration this vendor can produce |\n| REVIEW (reference): disclosure permission | PF-2.15 | Written permission from the reference client before naming them |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26156,
+    "cache_read_input_tokens": 37493,
+    "output_tokens": 1863,
+    "output_tokens_details": {
+      "thinking_tokens": 266
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26156,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1679,
+        "cache_read_input_tokens": 27000,
+        "cache_creation_input_tokens": 9649,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9649
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.32690149999999996,
+  "duration_ms": 27944,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

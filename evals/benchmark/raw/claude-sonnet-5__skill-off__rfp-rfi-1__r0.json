@@ -1,0 +1,52 @@
+{
+  "run_id": "7fe904a7-9e17-4520-a2b4-d6720d94924a",
+  "timestamp": "2026-09-18T09:59:29.760756+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "Our migration follows a phased, wave-based approach designed to protect the load-matching and carrier-settlement systems' availability while retiring 28 SQL Server instances across 620 Hyper-V VMs within the 24-month, $4.2M budget.\n\n**Phase 1 – Assess & Foundation (Months 1–3).** We inventory all 28 SQL Server instances, mapping schemas, cross-database dependencies, replication topologies, and workloads unique to load-matching versus carrier-settlement. We classify each instance by migration complexity and business criticality, and use this to sequence waves — starting with lower-risk, non-customer-facing databases to validate tooling and build team confidence before touching settlement systems. In parallel, we provision the target landing zone: GCE instance templates and networking for compute, and Cloud SQL for PostgreSQL instances sized and configured (HA, read replicas, backup policy) to match production SLAs. Schema conversion begins here using automated conversion tooling supplemented by manual remediation for SQL Server-specific constructs (stored procedures, T-SQL functions, proprietary data types) that don't map cleanly to PostgreSQL.\n\n**Phase 2 – Parallel Build & Data Replication (Months 4–14).** For each wave, we stand up the converted schema in Cloud SQL and establish continuous replication from the source SQL Server instance (CDC-based where supported, otherwise scheduled delta sync) so the target stays current throughout development and testing. Application and integration layers are re-pointed to the new environment in non-production first. Each wave undergoes functional testing, data reconciliation (row counts, checksums, financial-record validation for settlement data), and performance benchmarking against current on-prem baselines before being marked cutover-ready. Waves are sequenced so that load-matching and carrier-settlement — given their transactional coupling — migrate in the same wave or adjacent waves with a defined data-consistency checkpoint between them, avoiding split-brain scenarios where one system writes against old data and the other against new.\n\n**Phase 3 – Cutover (per wave, executed Months 8–20).** Each cutover follows a standard runbook: a change freeze window, a final delta sync, validation of data parity, DNS/connection-string cutover to Cloud SQL endpoints, and a defined smoke-test suite covering core load-matching and settlement transactions before traffic is released. Cutover windows are scheduled during low-volume periods identified from historical traffic data, targeting under 4 hours per wave. Replication back to the legacy SQL Server instance is maintained for a defined stabilization period (typically 5–10 business days) to preserve reversibility.\n\n**Rollback strategy.** Because replication runs bidirectionally during stabilization, we can revert a wave to on-premises within the same maintenance window if validation fails post-cutover — legacy infrastructure is not decommissioned until the stabilization period closes successfully and sign-off is obtained.\n\n**Decommissioning (Months 15–22).** On-premises SQL Server instances and their Hyper-V VMs are decommissioned wave by wave only after stabilization sign-off, freeing hardware and licensing costs to be reinvested into later waves.\n\n**Compliance alignment.** Given the buyer's compliance audit opens in six months, we prioritize an early wave covering the systems most likely to be in audit scope, ensuring auditors can review either a fully-migrated, evidence-backed environment or a clearly documented in-flight state with reconciliation records, access logs, and control mappings for both source and target environments — avoiding an ambiguous half-migrated posture during the audit window.\n\n**Governance.** Weekly wave-status reviews track data parity metrics, performance deltas, and budget burn against the $4.2M envelope, with go/no-go decisions gated on defined technical and business acceptance criteria before each cutover.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19303,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 1286,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19303,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1286,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19303,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19303
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0932238,
+  "duration_ms": 18207,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

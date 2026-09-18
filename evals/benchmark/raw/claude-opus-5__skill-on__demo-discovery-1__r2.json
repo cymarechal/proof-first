@@ -1,0 +1,52 @@
+{
+  "run_id": "c48a6fc3-b0d8-4310-bf1f-cf81766cb536",
+  "timestamp": "2026-09-18T10:31:32.456140+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-1",
+  "scenario_prompt": "Write a set of discovery call notes, in the buyer's own words, attributed to the specific people who said them, so a later document can cite this material directly. Context, from a fictional discovery call: the VP of Infrastructure said, 'We need a perimeter we can actually govern -- right now every VM is a snowflake.' The Chief Architect said, 'Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.' The CFO said, 'I'm measured on cost-per-load and a clean audit, not on architecture elegance.' Write these up as discovery notes attributed by role, with a one-line context note for each. Return only the discovery notes text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "**Demo or discovery material**\n\n## Discovery call notes — attributed by role\n\n**VP of Infrastructure**\nContext: speaking about the current state of the estate and why it is hard to control.\n> \"We need a perimeter we can actually govern — right now every VM is a snowflake.\"\n\n**Chief Architect**\nContext: speaking about appetite for change during the current audit cycle.\n> \"Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.\"\n\n**Chief Financial Officer**\nContext: speaking about the measures they are personally accountable for.\n> \"I'm measured on cost-per-load and a clean audit, not on architecture elegance.\"\n\n### Notes on use\n\nThese three quotations are the customer source material for this opportunity. Any later document may cite them verbatim and attribute them by role.\n\n[PF-2.11 GAP: no baseline figures were supplied — the VP of Infrastructure's \"every VM is a snowflake\" carries no VM count, and the CFO's \"cost-per-load\" carries no current value, no unit, and no target]\n\n[PF-1.14 GAP: the audit year the Chief Architect refers to is not dated, and the incumbent contract's expiry is not stated]\n\n[PF-2.13 GAP: no before/after contrast, no differentiator, and no opening reframe — this artifact is a verbatim capture of buyer statements, and constructing any of those three here would put vendor language into material meant to be cited as the buyer's own]\n\n[PF-2.16 REVIEW (competitor): the Chief Architect names an incumbent; any later document quoting this line makes a competitor comparison]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP: no baseline figures supplied | PF-2.11 | VM count in scope; current cost-per-load value, unit, and target — asked of the VP of Infrastructure and the CFO |\n| GAP: audit year and contract expiry undated | PF-1.14 | The audit period's start and end dates; the incumbent contract's expiry date |\n| GAP: no contrast, differentiator, or reframe | PF-2.13 | Confirmation that this artifact stays a verbatim capture, with the contrast and reframe built in the document that cites it |\n| REVIEW (competitor) | PF-2.16 | Confirmation of whether the incumbent may be named in buyer-facing material quoting this line |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26125,
+    "cache_read_input_tokens": 37544,
+    "output_tokens": 968,
+    "output_tokens_details": {
+      "thinking_tokens": 67
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26125,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 804,
+        "cache_read_input_tokens": 27051,
+        "cache_creation_input_tokens": 9567,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9567
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.304242,
+  "duration_ms": 15922,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

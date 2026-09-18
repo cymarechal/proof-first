@@ -1,0 +1,52 @@
+{
+  "run_id": "8aa8684d-67f8-4f9d-8424-4067342456f9",
+  "timestamp": "2026-09-18T10:00:50.893249+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "Architecture Narrative: From SQL Server on Hyper-V to Cloud SQL on Google Cloud\n\nToday, the estate lives entirely inside a self-managed Hyper-V fabric: 620 virtual machines carrying the full weight of the business, with 28 SQL Server instances embedded among them as the systems of record. Every patch cycle, every capacity forecast, every failover drill is a manual exercise against physical hardware the organization owns and must plan years ahead to refresh. The database layer and the compute layer are entangled by design — SQL Server licensing, clustering, and backup jobs are configured VM by VM, and the hypervisor itself becomes a single point of operational risk that has to be managed, not just used.\n\nThe migration begins by loosening that entanglement. Rather than lifting the Hyper-V estate wholesale into a new data center, we re-platform the compute tier onto Google Compute Engine, giving the 620 workloads a home that scales on demand and removes the hardware refresh cycle entirely. This is the estate's first inflection point: infrastructure stops being something the organization provisions and depreciates, and becomes something it consumes.\n\nThe second, more consequential move happens at the data layer. The 28 SQL Server instances do not simply move to VMs in the new environment — they move off the instance model altogether. By migrating to Cloud SQL for PostgreSQL, the databases shed the operational burden that came bundled with SQL Server on Hyper-V: manual patching, storage sizing, backup scheduling, and licensing renewals give way to a managed service that handles high availability, automated backups, and point-in-time recovery natively. This is where the narrative turns from \"moving machines\" to \"changing how data is operated\" — the databases arrive at their destination lighter, not just relocated.\n\nThe third movement establishes where this new estate lives and who can reach it. Rather than reproducing the perimeter-by-firewall-rule model of the on-premises network, the target Google Cloud project is wrapped in VPC Service Controls, defining a hard governance boundary around the migrated compute and data services. Where the Hyper-V estate relied on physical and network isolation to contain risk, the new estate relies on an explicit, auditable perimeter — data exfiltration paths are closed by policy rather than by hoping the network topology holds.\n\nTaken together, the journey is not a re-hosting of 620 VMs and 28 databases — it is a transition from an estate defined by hardware ownership and manual database administration to one defined by elastic compute, managed data services, and policy-enforced governance. Compute Engine gives the workloads room to grow without a hardware ceiling; Cloud SQL for PostgreSQL gives the data layer resilience without operational overhead; VPC Service Controls gives the whole environment a boundary that scales with intent rather than with switches and cables. The buyer arrives not just on a new platform, but with the operational risk of the legacy estate systematically retired at each layer of the migration.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19252,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 974,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19252,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 974,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19252,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19252
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0898998,
+  "duration_ms": 16713,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

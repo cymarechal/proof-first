@@ -1,0 +1,52 @@
+{
+  "run_id": "07a4d0cd-762a-4758-ab85-4705da49b7fb",
+  "timestamp": "2026-09-18T10:16:30.483515+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "## Architecture\n\nToday the estate runs as a single, tightly coupled block. Six hundred and twenty virtual machines sit on Hyper-V, and twenty-eight Microsoft SQL Server instances sit among them — some on dedicated hosts, most sharing hypervisor resources with the applications that call them. Capacity is bought in host-sized increments, storage is provisioned against peak rather than actual demand, and the blast radius of any single host failure is drawn by hypervisor placement rather than by service boundaries. The architecture that follows is the story of unpicking that block: first moving the workload to a platform where compute and data scale independently, then re-drawing the trust boundaries around it so that the new estate is governed by policy rather than by network topology.\n\nThe journey begins with the compute tier, because it is the part of the estate that can move with the least change to the applications themselves. The 620 virtual machines are assessed and sorted into waves — not by size, but by dependency depth: edge and stateless tiers first, shared services next, and the tightly database-coupled application servers last, so that every wave lands on a foundation that is already stable. Each wave is migrated onto Google Compute Engine, where the machine types are right-sized to observed utilisation rather than to the Hyper-V allocation they inherited. This is deliberately a lift-and-improve, not a lift-and-shift: the guest operating systems and application binaries carry across largely intact, but the surrounding envelope changes. Instance groups replace hand-placed VMs for the tiers that can tolerate it, persistent disks replace host-attached storage, and images are baked so that a rebuild is a pipeline run rather than a restore. By the close of this stage, the estate is running on Google Cloud, but it is still recognisably the estate the business knows — which is precisely the point, because the data tier has not yet moved.\n\nThe data tier is where the migration stops being a relocation and becomes a modernisation. The twenty-eight SQL Server instances are consolidated onto Cloud SQL for PostgreSQL, a managed service that absorbs the patching, backup, high-availability failover and read-replica management that currently consume operational attention across twenty-eight separate footprints. This is the most consequential transition in the programme and it is treated as such. It is a heterogeneous migration: schema, data types, stored procedures, T-SQL logic and application data-access code are converted rather than copied, and the conversion is the dominant source of effort and risk in the plan. Each of the twenty-eight instances is assessed for conversion complexity and grouped accordingly — instances that are largely relational storage with thin logic convert early and prove the pattern; instances carrying heavy procedural logic, SQL Server-specific features or CLR dependencies are scheduled late, with remediation time budgeted explicitly. Migration runs through change data capture so that source and target stay in step while application testing proceeds against the PostgreSQL target, and cutover for each group is a short, reversible switch rather than a long outage. Where an instance proves genuinely unsuitable for conversion within the programme window, it remains on SQL Server on Compute Engine as a deliberate, documented exception rather than a failure — the target architecture accommodates a tail.\n\nWhat holds the finished platform together is not the network diagram but the governance perimeter. The new project is enclosed by VPC Service Controls, which draws a boundary around the Google Cloud managed services the estate depends on — Cloud SQL foremost among them — and prevents data leaving that boundary even in the presence of stolen credentials or a misconfigured IAM grant. This inverts the current control model. Today, data is protected because it sits inside a network that is hard to reach; tomorrow, it is protected because the services holding it will not serve it to callers outside a declared perimeter, regardless of how those callers authenticate. Access from administrative endpoints and from any remaining on-premises estate is admitted through explicit ingress rules and access levels, so every path into the data is enumerated rather than assumed. The perimeter is established before the first production dataset lands, not retrofitted after, so that the data tier is never exposed in an ungoverned state.\n\nThe result is an estate whose three concerns have been separated. Compute scales and is replaced on Compute Engine without touching data. Data is managed, replicated and recovered by Cloud SQL without operational labour. Access is governed by a perimeter that is declared, auditable and independent of both. The block has become three layers, each of which can now change on its own schedule.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16356,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 1565,
+    "output_tokens_details": {
+      "thinking_tokens": 103
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16356,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1565,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16356,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16356
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.2079415,
+  "duration_ms": 28598,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

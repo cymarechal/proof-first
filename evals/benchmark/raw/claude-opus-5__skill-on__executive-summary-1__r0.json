@@ -1,0 +1,52 @@
+{
+  "run_id": "525d8c23-b2aa-4721-a7e5-55defcbb19c4",
+  "timestamp": "2026-09-18T10:21:58.192677+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Artifact family: Executive summary.**\n\nCustomer source material for this task means your own words — RFP question text, discovery notes, or written requirements. None was supplied here beyond the brief, so the `PF-3.3` provenance override cannot fire and every term below is judged by the deletion test alone.\n\nYou are measured on two things: reducing a $1,850,000 annual technology spend, and a clean DOT compliance audit that opens in six months. Today that spend carries 28 Microsoft SQL Server instances and 620 Hyper-V virtual machines underneath your load-matching and carrier-settlement systems [PF-2.4 GAP: the split of the $1,850,000 between these systems and the rest of the estate was not supplied — it decides how much of your run-rate this programme can actually touch]. We recommend moving that estate to Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over two years at $4,200,000. Two facts about that shape belong in front of you before anything else. The programme costs more per year than your current run-rate, so it reduces spend only after it completes, not during [PF-2.11 GAP: no post-migration run-rate has been modelled — the savings figure that would make this case does not exist yet]. And a two-year programme does not close in six months, so it cannot be what carries you through the DOT audit that opens next quarter.\n\nWhat you should expect, then, is a programme that serves your audit obligation before it serves your run-rate. The carrier-settlement data that a DOT examiner asks for sits today across 28 SQL Server instances; after migration it sits in Cloud SQL for PostgreSQL, where retention and access are administered in one place rather than 28 [PF-2.14 REVIEW (commitment): confirm this phrasing before it ships — it reads as a statement about audit outcome]. For the examination opening in six months, you should expect the current estate to be what is audited, and the first year of this programme to be sequenced around that fact rather than through it. Ask us for two things before you sign: a modelled post-migration run-rate you can hold us to, and evidence from a comparable brokerage migration [PF-1.17 GAP: no comparable customer engagement was supplied for this task, and this catalog will not name one that was not] [PF-2.13 GAP: the additive sweep found no differentiator — nothing here states what this vendor does that another bidder's GCE and Cloud SQL proposal would not].\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Split of the $1,850,000 across the estate | PF-2.4 | The portion of annual spend attributable to load-matching and carrier-settlement |\n| No modelled post-migration run-rate | PF-2.11 | A costed steady-state GCE and Cloud SQL run-rate, sourced and dated |\n| Audit-outcome phrasing | PF-2.14 | Human confirmation that the Cloud SQL administration claim is not a warranty |\n| No comparable proof point | PF-1.17 | A named, disclosure-cleared freight or logistics migration reference |\n| No differentiator present | PF-2.13 | What this vendor delivers that a rival proposing the same GCE and Cloud SQL target does not |",
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 32147,
+    "cache_read_input_tokens": 72602,
+    "output_tokens": 2032,
+    "output_tokens_details": {
+      "thinking_tokens": 608
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 32147,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1367,
+        "cache_read_input_tokens": 35006,
+        "cache_creation_input_tokens": 7634,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 7634
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.408601,
+  "duration_ms": 32576,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

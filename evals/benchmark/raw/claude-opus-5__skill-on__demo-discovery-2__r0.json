@@ -1,0 +1,52 @@
+{
+  "run_id": "ff5fb401-8b06-4c6f-8fff-688d444b1456",
+  "timestamp": "2026-09-18T10:32:22.079178+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Artifact family: demo or discovery material.**\n\nCustomer source material for this task is the discovery record: the VP of Infrastructure's own words, the 620-VM on-premises estate, and the manual failover process. I am treating those as supplied. Anything not in that record — platform name, failover timings, reference accounts — is judged by the deletion test alone and marked where it is missing.\n\n---\n\n# Live demo script — governed project perimeter on one representative workload\n\n**Audience:** VP of Infrastructure and team. **Length:** 20 minutes. **Format:** one workload, one perimeter, live.\n\n---\n\n## 1. Open — restate their words, before anything is shown (2 min)\n\n> \"You told us you want *a perimeter you can actually govern* [PF-3.3: customer's term, retained — VP of Infrastructure, discovery session]. Today, failover across your 620 virtual machines is manual. Every failover depends on a person doing the right steps in the right order. You cannot prove afterwards which controls held.\n>\n> I am not going to tour a product. I am going to take one workload from your estate, put a governed perimeter around it, and then try to break out of it while you watch.\n>\n> [PF-2.11 GAP: the current manual failover time and error rate were never captured — no baseline supplied, so no before-figure can be stated here]\"\n\n**Do not** open a slide. Open a terminal and a console, side by side.\n\n---\n\n## 2. Name the workload — use theirs, not a sample (2 min)\n\nAsk them to pick one workload from the 620 before you start. Write its name on screen.\n\n> \"Pick one. I will use yours, not a demo tenant.\"\n\nIf they decline, use the pre-staged stand-in and say so out loud.\n\n---\n\n## 3. Show the ungoverned state first (3 min)\n\nDeploy the workload into a project with no perimeter. Then, from a machine outside the project, reach its data store and read from it.\n\n> \"Nothing here is misconfigured. The controls are correct. The boundary is the problem: the project is open to anything holding a valid credential. This is what you cannot govern today.\"\n\n---\n\n## 4. Apply the perimeter — live, in one change (6 min)\n\nApply the perimeter policy to that project. Narrate three things as you do:\n\n1. **What is inside** — the project, its data store, its service accounts.\n2. **What crosses** — the named ingress and egress rules, and who authored each one.\n3. **Where the rule lives** — in version control, not in a console field.\n\nThen re-run the exact command from step 3. It fails at the boundary.\n\n> \"Same credential. Same command. The credential was never the control. The perimeter is.\"\n\nShow the denial in the audit log. Point at the rule ID that produced it.\n\n> \"That line is the thing you asked for. The boundary made a decision, it logged which rule decided, and you can read it without asking anyone.\"\n\n[PF-2.11 GAP: policy propagation time is not stated here — no measured figure supplied for this platform and configuration]\n\n---\n\n## 5. Tie it to failover — their actual problem (4 min)\n\nTrigger failover for that workload to a second project inside the same perimeter.\n\n> \"Before: a person runs failover across 620 virtual machines by hand, and the controls are re-established afterwards by memory. After: the workload moves, and it lands inside the same perimeter it left. The boundary did not move with the human.\n>\n> You asked for a perimeter you can govern. Governing it means this: the rule is written once, it is enforced on both sides of a failover, and every denial names the rule that caused it.\"\n\nThen change one rule, commit it, and show both projects picking it up.\n\n> \"One change. Both sides. That is the difference between a boundary you own and a runbook you hope someone follows.\"\n\n---\n\n## 6. Close — hand them the next test (3 min)\n\nDo not summarize. Ask:\n\n> \"Which workload in the 620 would make you believe this? Name it, and we run this again on that one, with your team driving.\"\n\nThen state plainly what today did not show:\n\n- This ran on one workload, not 620. Scale behaviour at your estate size was not demonstrated.\n- Migration of the workloads themselves is a separate exercise from the perimeter.\n- [PF-1.17 GAP: no comparable customer engagement at a 620-VM scale was supplied for this task, so no proof point is attached to the scale claim]\n- [PF-2.13 GAP: differentiator absent — no named alternative and no evidenced vendor-only capability were supplied, so none is claimed]\n\n---\n\n## Presenter notes\n\n- Target platform: [PF-2.11 GAP: the target cloud platform was not named in the discovery record — confirm before staging, since perimeter service names and console paths differ by platform]\n- Rehearse step 4's denial. A demo where the denial does not appear in the log loses the whole argument.\n- Say \"you,\" not \"the organization,\" throughout. The VP stated this priority in their own words.\n- Do not promise a failover time. No baseline exists to compare against.\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| `[PF-3.3: customer's term, retained — VP of Infrastructure, discovery session]` | PF-3.3 | Confirm the quote \"a perimeter we can actually govern\" is recorded verbatim in the discovery notes |\n| `[PF-2.11 GAP: current manual failover time and error rate never captured]` | PF-2.11 | A measured or buyer-stated figure for current manual failover duration and failure rate |\n| `[PF-2.11 GAP: policy propagation time not stated]` | PF-2.11 | A measured propagation time from a staged rehearsal on the target platform |\n| `[PF-2.11 GAP: target cloud platform not named]` | PF-2.11 | The platform named in discovery, so perimeter service names and console paths are correct |\n| `[PF-1.17 GAP: no comparable engagement at 620-VM scale supplied]` | PF-1.17 | A comparable this vendor can produce, with disclosure permission confirmed |\n| `[PF-2.13 GAP: differentiator absent]` | PF-2.13 | An evidenced statement of vendor capability that a named alternative does not deliver |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26343,
+    "cache_read_input_tokens": 37470,
+    "output_tokens": 3090,
+    "output_tokens_details": {
+      "thinking_tokens": 958
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26343,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2635,
+        "cache_read_input_tokens": 26977,
+        "cache_creation_input_tokens": 9859,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9859
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.35943499999999995,
+  "duration_ms": 47896,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

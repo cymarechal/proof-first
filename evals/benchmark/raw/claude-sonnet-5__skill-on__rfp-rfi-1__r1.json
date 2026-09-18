@@ -1,0 +1,52 @@
+{
+  "run_id": "3776d83f-fe06-447d-8ff9-8ead730d2e30",
+  "timestamp": "2026-09-18T10:06:26.326636+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**RFP answer**\n\nYour load-matching and carrier-settlement systems run today on 28 on-premises Microsoft SQL Server instances across 620 Hyper-V virtual machines. Every schema change, capacity add, or patch cycle competes with the fixed footprint of that estate. This proposal replaces it with load-matching and carrier-settlement running on Google Compute Engine with data on Cloud SQL for PostgreSQL, cut over inside your 2-year, $4,200,000 programme.\n\nYou need to migrate 28 SQL Server instances and their dependent workloads without a load-matching or settlement outage your carriers would notice. We deliver this through Google Compute Engine, sized to replace the 620 Hyper-V VMs, and Cloud SQL for PostgreSQL as the managed data layer.\n\nThe migration proceeds instance-by-instance, in waves grouped by data dependency between load-matching and settlement, not as a single 620-VM cutover. Each wave: (1) schema and data-type conversion from SQL Server to PostgreSQL, validated against the source instance; (2) parallel-run with continuous replication, source and target processing live traffic side by side; (3) reconciliation of settlement outputs between source and target before cutover; (4) traffic cutover for that wave, with the SQL Server source held read-only as rollback for a defined bake-in period before decommission. [PF-2.4 GAP: parallel-run and bake-in durations per wave — not yet sized against your change windows]\n\nRollback within a wave means routing traffic back to the still-live SQL Server source, since it is not decommissioned until the bake-in period closes without incident. [PF-2.14 REVIEW (commitment): stated as an operational capability, not a contractual recovery-time commitment, until your team confirms acceptable rollback windows]\n\nYou have a compliance audit opening in 6 months. We sequence the wave plan so that instances in scope for that audit are migrated and reconciled first, with source-system evidence preserved unchanged until the audit closes. [PF-2.4 GAP: which of the 28 instances fall in the 6-month audit's scope — needed from your compliance team to fix wave order]\n\nCutover for each wave is a controlled traffic switch, not a rebuild: load-matching and settlement requests are redirected from the Hyper-V-hosted SQL Server instance to the corresponding Compute Engine and Cloud SQL for PostgreSQL target once reconciliation passes and your team signs off. [PF-2.4 GAP: named sign-off role/owner on your side — not yet identified]\n\n**Metrics.** [PF-2.13 GAP: no current cutover downtime, replication lag, or reconciliation-accuracy baseline was supplied for the 28-instance estate — needed to define wave-level acceptance thresholds]\n\n**Differentiators.** Cloud SQL for PostgreSQL removes the instance-by-instance patch and capacity work your team performs across the 28 SQL Server instances today, since patching and storage scaling become a managed operation on Cloud SQL rather than 28 separate maintenance windows. [PF-1.17 GAP: no comparable customer migration of this size to cite as evidence — GCP reference migrations of similar SQL Server-to-Cloud SQL scope would need to be supplied]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Parallel-run and bake-in durations per wave | PF-2.4 | Acceptable change-window/downtime tolerance per wave, from your operations team |\n| Rollback capability framed as operational, not contractual | PF-2.14 | Confirmation this can be stated as a firm commitment, or must stay a described capability |\n| Which of the 28 instances are in scope for the 6-month audit | PF-2.4 | Compliance team's audit scope, to fix wave sequencing |\n| Named sign-off owner for cutover per wave | PF-2.4 | Your governance/RACI for cutover approval |\n| Cutover downtime / replication-lag / reconciliation-accuracy baseline | PF-2.13 | Current measured figures for the 28-instance estate, or confirmation none exist |\n| Comparable migration reference | PF-1.17 | A named, permissible reference migration of similar scope (SQL Server → Cloud SQL for PostgreSQL, VM count comparable to 620) |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 27324,
+    "cache_read_input_tokens": 50934,
+    "output_tokens": 1712,
+    "output_tokens_details": {
+      "thinking_tokens": 193
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 27324,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1631,
+        "cache_read_input_tokens": 35195,
+        "cache_creation_input_tokens": 7868,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 7868
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1366108,
+  "duration_ms": 23497,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

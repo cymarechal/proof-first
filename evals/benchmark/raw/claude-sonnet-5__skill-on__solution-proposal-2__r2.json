@@ -1,0 +1,52 @@
+{
+  "run_id": "02cfd108-9360-4864-bd3b-5a270e46f12e",
+  "timestamp": "2026-09-18T10:10:18.396372+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-2",
+  "scenario_prompt": "Write the risk section of a solution proposal, naming each material risk and what is done about it, and stating plainly any risk that cannot be fully retired rather than omitting it. Context: the buyer's RFP requires a SOC 2 Type II report and the bidder holds only a SOC 2 Type I report today, with the Type II observation window closing after the RFP's submission date; separately, the bidder's own most comparable prior migration took 11 months, close to the buyer's 6-month compliance-audit deadline. Return only the risk section text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "**Artifact family: a proposal section.**\n\nNo customer source material (RFP question text, discovery notes, stated requirements) was supplied for this task beyond the two facts given, so `PF-3.3` cannot fire on any term below — every term is judged by the deletion test alone.\n\n## Risks\n\n**SOC 2 Type II gap.** The RFP requires a SOC 2 Type II report. We hold a SOC 2 Type I report today. A Type II report requires an observation period, and our current observation window closes after the RFP's submission date. We cannot deliver a Type II report by that date, and this risk is not retired. `[PF-2.17 REVIEW (compliance): confirm current SOC 2 Type I scope, coverage period, and the exact date our Type II observation window closes, before this section ships]` To reduce exposure, we propose: sharing our Type I report and the Type II audit engagement letter at submission, so the buyer can see the control scope now; and delivering the completed Type II report on the first date the observation window allows. `[PF-1.13 GAP: the exact date the Type II report will be available is not yet fixed — needs confirmation from our audit firm]`\n\n**Migration schedule risk.** The buyer's compliance-audit deadline is 6 months from contract start. `[PF-1.14: buyer's stated compliance-audit deadline]` Our most comparable prior migration took 11 months. `[PF-2.2: internal delivery record for that migration]` An 11-month comparable against a 6-month deadline is a gap we cannot close by assertion, and this risk is not retired. `[PF-2.14 REVIEW (commitment): confirm before this ships whether we are prepared to commit to the 6-month date, or must propose a revised milestone to the buyer]` We propose narrowing the gap by: sequencing the buyer's compliance-critical systems first, so the components the audit depends on complete inside the 6-month window even where the full migration continues beyond it; and reviewing the specific differences between the prior 11-month engagement and this one — scope, data volume, buyer-side resourcing — in discovery, so the plan reflects this migration and not the average of the last one. `[PF-1.17 GAP: the discovery findings that would show this migration's scope is smaller or larger than the 11-month comparable are not yet available]`\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| SOC 2 Type II scope/coverage/window-close date | PF-2.17 | Confirmation from our audit firm of Type I scope, coverage period, and the exact date the Type II observation window closes |\n| Type II report availability date | PF-1.13 | A fixed date for Type II report delivery, once the observation window is known |\n| Commitment to the 6-month deadline | PF-2.14 | A decision on whether to commit to 6 months or propose a revised milestone to the buyer |\n| Discovery comparison to the 11-month engagement | PF-1.17 | Discovery findings on scope, data volume, and buyer-side resourcing versus the prior comparable migration |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28158,
+    "cache_read_input_tokens": 50883,
+    "output_tokens": 1364,
+    "output_tokens_details": {
+      "thinking_tokens": 292
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28158,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1265,
+        "cache_read_input_tokens": 35144,
+        "cache_creation_input_tokens": 8753,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8753
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.13645659999999998,
+  "duration_ms": 19740,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

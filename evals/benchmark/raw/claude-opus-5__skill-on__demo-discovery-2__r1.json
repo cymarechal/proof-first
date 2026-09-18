@@ -1,0 +1,52 @@
+{
+  "run_id": "fad4255b-b5ea-4582-9582-34f2a3061c77",
+  "timestamp": "2026-09-18T10:33:01.987424+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**Artifact family: demo and discovery material.**\n\nCustomer source material for this task: your discovery note quoting the VP of Infrastructure, and the 620-virtual-machine estate figure. Nothing else was supplied, so `PF-3.3` fires only against those two items; every other term is judged by the deletion test alone.\n\n---\n\n## Demo script — governed perimeter on one representative workload\n\n**Discovery note this script answers (buyer's own words)**\n\n> \"A perimeter we can actually govern.\" — VP of Infrastructure, discovery call\n\nThe VP said the goal is a perimeter [PF-3.3: customer's term, retained — VP of Infrastructure, discovery] they can actually govern. He said it while describing manual failover across 620 virtual machines on-premises.\n\n**Open — 60 seconds, no screen share**\n\n\"You told us you want a perimeter you can actually govern. Today an engineer runs failover by hand across 620 virtual machines. In the next fifteen minutes you watch that control move from a person to a policy.\"\n\nDo not open a product tour. Do not name the platform before this sentence lands.\n\n\"Before we start: how long does one failover take you today, and who times it?\" [PF-1.13 GAP: the current manual failover duration was never supplied — capture it live and write it on the board]\n\n**Segment 1 — Pick the representative workload together (2 minutes)**\n\n\"Name one workload from the 620 that you would be asked about first in an incident review.\"\n\nTake their workload, not a prepared sample. Screen share starts here.\n\n**Segment 2 — Show the perimeter before anything runs (5 minutes)**\n\nShow the empty governed project perimeter first, then the workload inside it.\n\nSay what each control does, and click it: who may deploy into the perimeter, which regions the perimeter permits, and which network paths leave it.\n\n\"Every one of your 620 virtual machines lands inside a perimeter carrying these same controls. No machine becomes a one-off.\"\n\n[PF-2.4 GAP: the target cloud platform was not named in this brief — insert the platform's governed-perimeter control names before rehearsal, or this segment cannot be demonstrated]\n\n**Segment 3 — Trigger failover under the perimeter (5 minutes)**\n\nBreak the primary instance in front of them. Do not narrate around it.\n\nPoint at the policy that moves the workload, not at a runbook.\n\n\"No engineer typed anything. The perimeter decided, and it logged the decision.\"\n\nOpen the audit record and read one line aloud.\n\n**Segment 4 — Show the governance evidence (2 minutes)**\n\n\"You asked to govern the perimeter. This is what governing looks like on paper: who changed what, when, and under which policy.\"\n\nAsk directly: \"Is that the artefact your auditors ask you for?\"\n\n**Close — hand the criteria over (1 minute)**\n\n\"We are not asking you to believe the demo. We are asking you to write the test.\"\n\nPropose three proof-of-concept criteria and agree them on the call:\n\n1. One named workload from the 620 fails over with zero manual steps. The VP's own engineer judges it.\n2. Failover completes inside a time the VP names today. [PF-1.13 GAP: the acceptance threshold depends on the baseline captured in the opening — leave blank until he states it]\n3. The audit record satisfies the VP's named auditor, judged by that auditor.\n\n**Follow-up**\n\n[PF-2.4 GAP: the vendor-side owner and date for the proof-of-concept were not supplied — name both before this script is used, or the follow-up has no owner]\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| `[PF-3.3: customer's term, retained — VP of Infrastructure, discovery]` | PF-3.3 | Confirm the quote wording and attribute it to the VP by name |\n| `[PF-1.13 GAP: the current manual failover duration was never supplied]` | PF-1.13 | Capture the buyer's own failover time during the session |\n| `[PF-2.4 GAP: the target cloud platform was not named in this brief]` | PF-2.4 | Name the platform and its actual perimeter control names before rehearsal |\n| `[PF-1.13 GAP: the acceptance threshold depends on the baseline]` | PF-1.13 | The VP states the threshold on the call |\n| `[PF-2.4 GAP: the vendor-side owner and date for the proof-of-concept were not supplied]` | PF-2.4 | Name the owner and the date |",
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 31621,
+    "cache_read_input_tokens": 74066,
+    "output_tokens": 2412,
+    "output_tokens_details": {
+      "thinking_tokens": 548
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 31621,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1822,
+        "cache_read_input_tokens": 36597,
+        "cache_creation_input_tokens": 5517,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 5517
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.41357299999999997,
+  "duration_ms": 38564,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

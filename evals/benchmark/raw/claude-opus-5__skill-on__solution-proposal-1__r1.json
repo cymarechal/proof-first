@@ -1,0 +1,52 @@
+{
+  "run_id": "36885a94-72c8-451a-8a90-a5d312c134be",
+  "timestamp": "2026-09-18T10:28:31.938704+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**Artifact family: a proposal section.**\n\nCustomer source material for this section would be your RFP question text, discovery notes, or stated requirements. None was supplied for this task, so the `PF-3.3` provenance override cannot fire here, and every term below is judged by the deletion test alone.\n\n---\n\n## Architecture\n\nYou run 620 virtual machines on Hyper-V, and 28 SQL Server instances live inside that estate. [PF-2.4 GAP: what that estate costs you each year — hypervisor licensing, SQL Server licensing, hardware refresh — was not supplied.] This section describes one movement, not a component list: every workload leaves the Hyper-V estate, the servers land on Google Compute Engine, and the data layer leaves SQL Server for Cloud SQL for PostgreSQL.\n\nThe movement starts with the servers, because they are the larger count and the simpler change. Each of the 620 virtual machines is assessed, grouped into a migration wave, and replatformed onto Compute Engine. A machine's operating system and application binaries cross unchanged; only its hypervisor changes. [PF-1.13 GAP: the current baseline for these machines — utilisation, instance sizing, and how many are dormant — has never been captured in material supplied here, so no target machine shapes are stated.] We size the target instances after the assessment, from measured data, not before it.\n\nThe data layer moves second, and it moves differently. The 28 SQL Server instances do not lift across. Each one is converted to Cloud SQL for PostgreSQL, so the schema, the stored procedures, and the client connection strings all change. [PF-2.4 GAP: the count of stored procedures, SSIS packages, and CLR assemblies across the 28 instances was not supplied, so the conversion effort is not stated here.] We sequence the 28 instances so the applications with the fewest T-SQL dependencies convert first. That sequencing is a finding of the assessment, not an assumption we bring to it. [PF-1.17 GAP: a comparable SQL Server to Cloud SQL for PostgreSQL conversion this team has delivered, at a count the reader could check, was not supplied.]\n\nThe governance perimeter is built before either movement begins, not retrofitted after. We create the new Google Cloud project, and we place VPC Service Controls around it at creation. The perimeter defines which services the project's data may reach and which identities may reach it. A machine arriving from Hyper-V therefore arrives inside a boundary that already exists. [PF-2.17 REVIEW (compliance): whether this perimeter configuration satisfies the specific controls you are audited against is a claim we cannot verify from the material supplied.]\n\nThe contrast is this. Today you operate two layers yourself: the Hyper-V hypervisor under 620 machines, and 28 SQL Server instances you patch, back up, and license. After the migration you operate neither. Compute Engine carries the hypervisor layer, and Cloud SQL carries patching, backup, and failover for the converted data layer. Your team's remaining work is the application, the schema, and the perimeter policy. [PF-1.2 GAP: the staff effort those two layers consume today was not supplied, so the size of that reduction is not stated.]\n\n[PF-2.14 REVIEW (commitment): any migration date, wave duration, or cutover window stated in the surrounding proposal reads as a commitment and needs confirmation before this document ships.]\n\n[PF-2.13 GAP: no differentiator is stated in this section — nothing here names a capability another bidder could not also propose, because no evidenced point of difference was supplied.]\n\n[PF-2.13 GAP: no metric in this section carries a baseline, because no measurement of the current estate beyond the two counts — 28 instances, 620 machines — was supplied.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Annual cost of the current Hyper-V and SQL Server estate | PF-2.4 | Licensing, support, and refresh figures from the buyer |\n| Current baseline for the 620 machines | PF-1.13 | Utilisation, sizing, and dormant-machine counts from an assessment |\n| Conversion surface across the 28 instances | PF-2.4 | Counts of stored procedures, SSIS packages, and CLR assemblies |\n| Comparable SQL Server to PostgreSQL conversion | PF-1.17 | A named, checkable engagement this team delivered |\n| VPC Service Controls against audited controls | PF-2.17 | Confirmation of which control framework applies, and who verifies it |\n| Migration dates, wave durations, cutover windows | PF-2.14 | Legal or bid-team confirmation before any date is stated |\n| No differentiator stated | PF-2.13 | An evidenced capability a named alternative approach does not offer |\n| No metric carries a baseline | PF-2.13 | Measured current-state figures from discovery |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26182,
+    "cache_read_input_tokens": 37487,
+    "output_tokens": 2642,
+    "output_tokens_details": {
+      "thinking_tokens": 846
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26182,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2420,
+        "cache_read_input_tokens": 26994,
+        "cache_creation_input_tokens": 9681,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9681
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.3466335,
+  "duration_ms": 39980,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

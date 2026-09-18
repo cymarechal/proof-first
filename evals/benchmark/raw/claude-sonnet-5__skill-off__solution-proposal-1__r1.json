@@ -1,0 +1,52 @@
+{
+  "run_id": "c9111838-b4dc-4fd0-bb74-2c43b45be12e",
+  "timestamp": "2026-09-18T10:01:09.117628+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "## Architecture\n\nToday, the estate lives entirely inside a single Hyper-V footprint: 620 virtual machines carrying the full weight of the business, with 28 SQL Server instances holding the data that those workloads depend on. It is a self-contained world — every layer of compute, storage, and database administration owned, patched, licensed, and capacity-planned in-house, with the operational overhead that comes with running Windows Server clustering, SQL Server licensing, and Hyper-V host maintenance as a permanent line item rather than a one-time cost.\n\nThe migration moves this estate to Google Cloud in two coordinated motions, not a single lift.\n\nThe first motion carries the compute layer. The 620 virtual machines currently hosted on Hyper-V are migrated to Google Compute Engine, preserving the operating systems, application logic, and network topology the workloads already rely on. This is deliberately the least disruptive path for the applications sitting above the database tier: they continue to run largely as they do today, on virtual machines sized and configured to match their current Hyper-V footprint, but now on infrastructure Google manages, scales, and secures at the hardware and hypervisor level. The buyer stops maintaining physical or virtualized capacity and starts consuming it.\n\nThe second motion is the one with real transformation in it. The 28 SQL Server instances are not simply moved — they are migrated to Cloud SQL for PostgreSQL, a change of database engine as much as a change of address. This is where the estate sheds the licensing burden and administrative overhead of SQL Server and adopts a managed, open-source-based data layer instead. It is the point in the journey requiring the most care: schema conversion, query and stored-procedure translation, and validation that application behavior is preserved across the engine change. Once complete, though, it is also where the buyer gains the most — automated backups, patching, high availability, and scaling are absorbed by the platform rather than by a DBA team, and the recurring cost of SQL Server licensing disappears from the estate entirely.\n\nThese two motions land inside a single boundary rather than an open, unbounded cloud project. VPC Service Controls establish a governance perimeter around the new Google Cloud project from day one, so that the moment workloads and data arrive on Compute Engine and Cloud SQL, they are already contained within a defined security boundary — one that restricts data movement to authorized paths and closes off the kind of exfiltration risk that an unconstrained cloud project would otherwise carry. In effect, the perimeter is not bolted on after migration; it is the container the migration moves into.\n\nThe result is an estate that trades a self-managed, license-heavy, single-site footprint for a managed, perimeter-bound platform: compute rehosted with minimal disruption on Compute Engine, data re-platformed onto Cloud SQL for PostgreSQL with the operational and licensing burden of SQL Server retired, and the whole environment governed from the outset by VPC Service Controls rather than governance being retrofitted once workloads are already in place.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19252,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 1022,
+    "output_tokens_details": {
+      "thinking_tokens": 38
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19252,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1022,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19252,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19252
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0903798,
+  "duration_ms": 16705,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "7de9b3f8-4bf9-4d2c-9088-86b0bbf1e60d",
+  "timestamp": "2026-09-18T10:20:07.181673+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "**Demo Script — \"A Perimeter You Can Actually Govern\"**\n*Live discovery session · 18 minutes · Audience: VP of Infrastructure + infra leads*\n*Target platform: Google Cloud*\n\n---\n\n**[0:00 – 1:30] Frame it back to them**\n\n\"Last time we spoke, you said you want *a perimeter you can actually govern*. I took that literally. So today I'm not going to tour the console. I'm going to take one workload that looks like the ones you're failing over by hand today, put it inside a governed project perimeter, and then try to break the rules in front of you — and let the perimeter stop me.\n\nThree things I want you to judge me on:\n1. Can the boundary be stated as code, not as a runbook?\n2. Does it hold when a well-meaning engineer does the wrong thing?\n3. Does it scale from this one workload to all 620 without re-deciding anything?\n\nStop me the moment it stops looking like your estate.\"\n\n---\n\n**[1:30 – 4:00] The representative workload — pick it live**\n\n\"Let's not use my demo app. Describe the workload you'd most hate to fail over manually at 2 a.m.\"\n\n*[Let them name it. Expect a 3-tier line-of-business app: web tier, app tier, licensed database, shared file dependency.]*\n\n\"Good — I've staged a stand-in that matches that shape: 6 VMs, web/app/DB tiers, one licensed database node, VLAN-attached storage. That's my proxy for a slice of your 620.\"\n\n*[Show the source inventory view — grouped VMs, dependency map, current manual failover runbook PDF open beside it.]*\n\n\"This PDF is the thing we're replacing. 40 pages, 30 steps, one person who really understands step 22.\"\n\n---\n\n**[4:00 – 8:00] Apply the perimeter — this is the core**\n\n\"Here's the governed perimeter. It's four layers, and all four are declarative.\"\n\n*[Screen: the Terraform/IaC definition, then the resource hierarchy.]*\n\n1. **Placement.** \"The workload lands in its own project, under a folder that carries your regulatory tier. It cannot be created anywhere else — the factory only knows how to make projects here.\"\n2. **Org policy constraints.** \"Inherited, not chosen: no external IPs, no public IP forwarding, disk encryption with your keys, approved regions only, no service account key creation. The project owner cannot turn these off.\"\n3. **VPC Service Controls.** \"This is the perimeter your VP asked for. Data in these services cannot be read or copied to anything outside the boundary — not to a personal project, not to an unmanaged endpoint, not by a stolen credential.\"\n4. **Failover posture as config.** \"Replication target, RPO/RTO objective, boot order, and test cadence are attributes of the project — not tribal knowledge.\"\n\n*[Run the apply. Narrate the hierarchy filling in.]*\n\n\"That took 90 seconds. Nothing about it was specific to this workload — it's the same template for all 620.\"\n\n---\n\n**[8:00 – 12:00] Now break it — the proof**\n\n\"A perimeter you can't test isn't governance, it's a diagram. Let me be your worst-case engineer.\"\n\n- **Attempt 1:** Attach an external IP to the app-tier VM. → *Blocked at the API by org policy.* \"Not a scan finding three days later. A denial at the moment of the mistake.\"\n- **Attempt 2:** Copy data from inside the perimeter to a project outside it, using valid credentials with full permissions. → *Blocked by VPC Service Controls.* \"Correct credentials, correct IAM role, still denied. IAM says who you are. The perimeter says where data may go.\"\n- **Attempt 3:** Deploy the same workload into an unapproved region. → *Blocked at deploy.*\n\n\"Every one of those denials writes an audit record with the principal, the resource, and the policy that denied it. That's your evidence pack.\"\n\n---\n\n**[12:00 – 16:00] Failover, governed**\n\n\"Now the part that replaces the 40-page PDF.\"\n\n*[Trigger a non-disruptive failover test of the same workload.]*\n\n\"Boot order is honored. The DR copy comes up inside the *same* perimeter — same constraints, same encryption keys, same egress rules. The failure mode you have today, where the DR environment is the loosely governed one, doesn't exist here structurally.\"\n\n*[Show the generated test report.]*\n\n\"Objective declared, objective measured, result recorded. Run it monthly, unattended, across every project in the folder. When your auditor asks whether DR was tested, the answer is a query, not a project.\"\n\n---\n\n**[16:00 – 18:00] Close — scale and the honest caveat**\n\n\"What you just saw applied to 6 VMs. The reason it scales to 620 is that nothing I did was per-VM — it was per-project, inherited from the folder.\n\nThe honest part: the perimeter is the easy half. The work is deciding your project boundaries — which of your 620 belong together, and where the data lines actually fall. That's a few weeks of joint design, and it's the thing I'd want us to start on, because every other decision hangs off it.\n\nTwo questions before we go:\n- Which workload should we do this to next — ideally the one you're least comfortable moving?\n- Who else needs to see the denial demo? Usually it's security and audit, and usually they're the ones who unblock the budget.\"\n\n---\n*Backup material if asked: cost model for the 620-VM estate, licensed-DB migration path, landing-zone reference architecture, per-policy audit log samples.*",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16335,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 1989,
+    "output_tokens_details": {
+      "thinking_tokens": 160
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16335,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1989,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16335,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16335
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.2183315,
+  "duration_ms": 37088,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

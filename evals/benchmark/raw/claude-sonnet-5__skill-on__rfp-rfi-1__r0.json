@@ -1,0 +1,52 @@
+{
+  "run_id": "24b5e313-0a9b-41dc-a195-841c52138711",
+  "timestamp": "2026-09-18T10:06:01.200707+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "What counts as customer source material here: the RFP question text and the context you gave me (28 SQL Server instances, 620 Hyper-V VMs, GCE + Cloud SQL for PostgreSQL, 2-year/$4.2M programme, proposals due 2026-11-15, next compliance audit opening in 6 months). I'll treat that as the only supplied customer material — nothing else. No other source material was supplied, so PF-3.3 cannot fire beyond these facts, and every other term is judged by the deletion test alone.\n\n**An RFP answer**\n\nToday load-matching and carrier-settlement run on 28 on-premises SQL Server instances spread across 620 Hyper-V virtual machines — an estate your compliance audit must cover again in 6 months, before this migration can plausibly be complete under any but the most compressed timeline. [PF-1.2 GAP: no stated cost of running this estate today — dollar run-rate, incident count, or capacity constraint was not supplied] We propose moving this estate to Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 24-month, $4,200,000 programme, cutting over before your audit boundary where the plan allows and treating the remaining scope as a defined post-audit phase rather than a forced compression.\n\n**Migration approach**\n\nYou need a phased, application-boundary-led migration: load-matching and carrier-settlement move as separate workstreams, each re-platformed from SQL Server to Cloud SQL for PostgreSQL and re-hosted from Hyper-V VMs to Compute Engine, so a failure in one workstream never blocks or rolls back the other. [PF-1.9] Sequencing is discovery-first: every one of the 28 SQL Server instances is inventoried for schema, stored-procedure logic, and cross-instance dependency before any wave is assigned a cutover date, because T-SQL-to-PostgreSQL conversion risk — not raw VM count — is what should set the pace. [PF-2.14 REVIEW (commitment): wave sequencing and count depend on discovery findings not yet in hand; treat any wave schedule in the SOW as provisional until discovery closes]\n\nWithin each wave, data migration runs continuous replication from the source SQL Server instance into Cloud SQL for PostgreSQL, validated row-by-row against the source before that wave is scheduled to cut over. [PF-1.17 GAP: no named validation tooling or reconciliation method supplied — a specific replication/CDC product and row-comparison method needs to be named before this becomes a checkable proof point] Compute for each workstream is rebuilt natively on Compute Engine rather than lifted-and-shifted as Hyper-V images, since load-matching and carrier-settlement logic tied to SQL Server-specific behavior needs re-validation against PostgreSQL semantics regardless of how the VM layer moves. [PF-2.14 REVIEW (commitment): \"rebuilt natively\" implies a specific re-platforming commitment per workstream; confirm this holds for all 28 instances or scope the exceptions before the proposal ships]\n\n**Cutover plan**\n\nBefore: settlement and load-matching transactions write to on-premises SQL Server today. After: the same transactions write to Cloud SQL for PostgreSQL on Google Cloud, with the source instance decommissioned only after a defined parallel-run period confirms output parity. [PF-1.5] Each wave's cutover follows the same four steps: freeze writes to the source instance, complete final delta replication, run reconciliation checks against source, then redirect application traffic to the Compute Engine/Cloud SQL target — with rollback to the SQL Server source available until reconciliation passes. [PF-2.14 REVIEW (commitment): the write-freeze window and rollback threshold are commitments to specific downtime and reversibility; confirm the acceptable freeze duration with the buyer before this is stated as a fixed procedure]\n\nYour next compliance audit opens in 6 months, inside a 24-month programme — so the cutover plan sequences the earliest waves to land before that audit window opens, and explicitly carries any workstream that cannot complete discovery, migration, and a validated parallel run in time into a post-audit wave rather than compressing validation to hit the date. [PF-1.25 GAP: no named audit owner or role supplied — the person accountable for audit readiness was not identified, so this outcome cannot yet be addressed to them by name] [PF-2.17 REVIEW (compliance): which compliance framework governs this audit, and whether Cloud SQL for PostgreSQL and Compute Engine already meet its specific controls, was not supplied and is not asserted here]\n\n**Metrics and baseline**\n\nMigration scope is 28 SQL Server instances and 620 Hyper-V VMs, both stated by the buyer. [PF-1.13, PF-1.14 — source: buyer-supplied RFP context] [PF-2.11 GAP: no current downtime, transaction-volume, or performance baseline for load-matching or carrier-settlement was supplied; these would need to be captured during discovery before a target SLA or performance-parity metric can be set]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| No stated cost of the current estate | PF-1.2 | Dollar run-rate, incident frequency, or capacity constraint tied to the current SQL Server/Hyper-V footprint |\n| Wave sequencing depends on discovery not yet done | PF-2.14 (commitment) | Confirmation that the SOW's wave schedule is marked provisional pending discovery |\n| No named validation/reconciliation tooling | PF-1.17 | A specific replication or CDC product and row-comparison method |\n| \"Rebuilt natively\" claimed for all 28 instances | PF-2.14 (commitment) | Confirmation this holds across all instances, or named exceptions |\n| Freeze window and rollback threshold unspecified | PF-2.14 (commitment) | Agreed acceptable downtime window and rollback pass/fail criteria |\n| No named audit owner | PF-1.25 | The role or person accountable for audit readiness |\n| Compliance framework and current control status unstated | PF-2.17 (compliance) | Which framework governs the audit, and confirmation Cloud SQL/Compute Engine meet its specific controls today |\n| No current performance/downtime baseline | PF-2.11 | Baseline transaction volume, downtime tolerance, or performance figures for load-matching and carrier-settlement |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 27318,
+    "cache_read_input_tokens": 50930,
+    "output_tokens": 2271,
+    "output_tokens_details": {
+      "thinking_tokens": 28
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 27318,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2190,
+        "cache_read_input_tokens": 35191,
+        "cache_creation_input_tokens": 7866,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 7866
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.14217600000000002,
+  "duration_ms": 25833,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "a29fc476-f479-461b-8711-336a219e236d",
+  "timestamp": "2026-09-18T10:09:39.867311+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-2",
+  "scenario_prompt": "Write the risk section of a solution proposal, naming each material risk and what is done about it, and stating plainly any risk that cannot be fully retired rather than omitting it. Context: the buyer's RFP requires a SOC 2 Type II report and the bidder holds only a SOC 2 Type I report today, with the Type II observation window closing after the RFP's submission date; separately, the bidder's own most comparable prior migration took 11 months, close to the buyer's 6-month compliance-audit deadline. Return only the risk section text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Artifact family: a proposal section**\n\nNo customer source material (RFP question text, discovery notes, stated requirements) has been supplied for this task. The provenance override for retaining a buyer's own term ([PF-3.3]) cannot fire here — every term below is judged by the deletion test alone.\n\n## Risks\n\n**SOC 2 Type II report.** The RFP requires a SOC 2 Type II report. The bidder holds a SOC 2 Type I report today; the Type II observation window closes after the RFP's submission date. This risk cannot be fully retired within the RFP timeline: a Type II report covering the required observation period will not exist by the date the buyer needs it. [PF-2.17 REVIEW (compliance): confirm current SOC 2 status, observation window end date, and whether an interim attestation or bridge letter from the auditor can be offered in place of the completed Type II report before submission.]\n\n**Migration schedule against the compliance-audit deadline.** The buyer's compliance-audit deadline is 6 months from contract start. The bidder's most comparable prior migration took 11 months. [PF-1.17: this is the nearest available comparable; no closer match has been supplied.] This gap is material and is not fully closed by planning alone — a schedule roughly double the deadline is the honest starting point, not a target the bidder is committing to meet. [PF-2.14 REVIEW (commitment): confirm what scope reduction, phased go-live, or parallel workstream plan (if any) the bidder is prepared to commit to in order to narrow this gap, and whether that commitment should appear here as a promise or be left as a disclosed risk.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| SOC 2 Type II compliance status and window | PF-2.17 REVIEW (compliance) | Confirmation of current attestation status and whether an interim bridge letter is available before the RFP submission date |\n| 11-month vs 6-month migration timeline | PF-2.14 REVIEW (commitment) | Confirmation of whether a scope/phasing plan will be committed to in writing, or the gap left as a disclosed risk |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28127,
+    "cache_read_input_tokens": 50885,
+    "output_tokens": 1264,
+    "output_tokens_details": {
+      "thinking_tokens": 492
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28127,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1199,
+        "cache_read_input_tokens": 35146,
+        "cache_creation_input_tokens": 8720,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8720
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.13533299999999998,
+  "duration_ms": 19364,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "3d9874d5-b56b-4aa7-b590-b7b48d4f2b51",
+  "timestamp": "2026-09-18T10:18:14.228466+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-2",
+  "scenario_prompt": "Write the risk section of a solution proposal, naming each material risk and what is done about it, and stating plainly any risk that cannot be fully retired rather than omitting it. Context: the buyer's RFP requires a SOC 2 Type II report and the bidder holds only a SOC 2 Type I report today, with the Type II observation window closing after the RFP's submission date; separately, the bidder's own most comparable prior migration took 11 months, close to the buyer's 6-month compliance-audit deadline. Return only the risk section text.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "## 7. Risk Assessment\n\nWe have set out below the risks we judge material to this engagement, including those that reflect gaps in our own current position. Where a risk can be mitigated, we describe the mitigation and the residual exposure that remains. Where a risk cannot be fully retired, we say so.\n\n### 7.1 Certification status: SOC 2 Type II not held at submission (cannot be fully retired)\n\n**The risk.** The RFP requires a SOC 2 Type II report. We hold a SOC 2 Type I report, issued [date] by [auditor], covering [Security / Availability / Confidentiality] for the systems in scope of this proposal. Our Type II observation window runs to [end date], with the report expected from [auditor] approximately [6–8] weeks thereafter — that is, after the submission date for this RFP and after any anticipated award date.\n\nWe are not able to close this gap before submission. No mitigation changes that fact, and we are not proposing an equivalence argument: a Type I report attests to the suitability of control design at a point in time, while a Type II attests to operating effectiveness across a period. They are not interchangeable, and the buyer's requirement is for the latter.\n\n**What we are doing about it.**\n- Our Type II observation window is already open and running under [auditor], with [N] months of the period elapsed as at submission. We can provide the auditor's engagement letter and confirmation of the period under observation as evidence that the work is genuinely in progress rather than merely planned.\n- We will share the Type I report, the scoping documents, and our control matrix under NDA during evaluation, so the buyer's security function can assess control design now rather than waiting.\n- We offer a contractual commitment to deliver the Type II report by [target date], with an agreed remedy — [service credits / a defined termination-for-convenience right / a holdback against the first milestone payment] — if we fail to do so or if the report contains qualified opinions or material exceptions relevant to this engagement.\n- During the interim period we will accept the buyer's own security assessment, including a right-to-audit clause and evidence requests at the buyer's discretion.\n\n**Residual risk.** If the buyer's procurement rules treat a Type II report as a mandatory eligibility condition rather than a scored criterion, this bid is non-compliant and no mitigation we can offer resolves it. We would rather state that plainly than have it emerge during evaluation. If the requirement is scored or waivable subject to a remediation commitment, the residual risk is the possibility that our report is delayed or qualified — which the contractual remedy above prices but does not eliminate. The buyer should also note that an adverse finding in our Type II report is possible; we commit to disclosing any such finding within [5] business days of receipt, whether or not the contract has been awarded by then.\n\n### 7.2 Schedule: migration duration against the 6-month compliance-audit deadline\n\n**The risk.** The buyer requires the migration complete in time to support a compliance audit 6 months from contract start. Our most comparable prior migration — [client / sector], [scale and scope descriptors] — took 11 months end to end. We are not presenting that as an outlier or a project we would now do differently in every respect. It is our closest reference point, and it ran materially longer than the window available here.\n\nWe believe a shorter delivery is achievable, but we want the buyer to see the basis for that belief rather than take the number on trust.\n\n**Where the difference comes from.** Of the 11 months on the prior engagement, approximately [N] months were attributable to factors we expect not to recur, and approximately [N] months to work that will recur here at similar duration:\n- [~X months] spent on discovery and data-quality remediation in an environment with no existing system-of-record documentation. Your [pre-existing CMDB / data catalogue / prior assessment] removes much of this, subject to confirmation during our validation sprint.\n- [~X months] of tooling build that is now productised in our [named accelerator] and reusable here.\n- [~X months] of client-side decision latency arising from an undefined approval path — recurrence depends on the governance arrangements at 7.2(b) below, not on us.\n- The remaining [~X months] of core migration, testing, and cutover work is genuinely comparable and we have not discounted it.\n\nThat analysis supports a [7]-month plan for full scope, not a 6-month one.\n\n**What we are doing about it.**\n- **Scope sequencing against the audit, not against completion.** We propose sequencing delivery so that the systems and data in the audit's scope are migrated, reconciled, and evidence-ready by month [5], with the remaining [non-audit-scope workloads] completing by month [7]. This protects the deadline that carries consequence rather than optimising a completion date that does not.\n- **A go/no-go checkpoint at week 6.** By the end of the validation sprint we will have tested the discovery and data-quality assumptions above. If they do not hold, we will tell the buyer at week 6 — while there is still time to descope, add resource, or adjust the audit plan — rather than at month 4.\n- **Parallelisation and staffing.** [Describe the workstream structure, named leads, and the surge capacity available.]\n- **Named dependencies.** The plan assumes [buyer-side decisions within N business days, access to X by date, availability of Y SMEs at Z% allocation]. We have listed these in Annex [C] with the schedule impact of each slipping.\n\n**Residual risk.** Full-scope completion within 6 months is not something we are willing to commit to on the evidence we have. Our commitment is to audit-scope readiness at month [5] and full completion at month [7]. If the buyer requires full scope within 6 months as a firm obligation, we would need either a reduction in scope or an acceptance that the date carries genuine delivery risk — and we would want that discussed before award rather than managed afterwards.\n\n### 7.3 Interaction between the two risks\n\nThese risks compound in one specific way the buyer should consider. If the Type II report is delayed and the migration schedule slips concurrently, the buyer could face an audit in month 6 in which neither our attestation nor the migrated environment is in the expected state. We propose a joint checkpoint at month [3] reviewing both tracks against the audit date, with an agreed contingency — [continued operation of the legacy environment for audit purposes / a defined partial-scope audit position] — activated at that point if either track is off plan.\n\n### 7.4 Further risks\n\n| Risk | Mitigation | Residual position |\n|---|---|---|\n| Data integrity during cutover | [Reconciliation approach, rollback plan, parallel-run period] | [State honestly] |\n| Key-person dependency on [role] | [Named deputy, handover documentation, notice commitments] | [State honestly] |\n| [Third-party / subcontractor dependency] | [Contractual flow-down, alternative supplier identified] | [State honestly] |\n| Buyer-side resource availability | [Named dependencies in Annex C, escalation path] | Outside our control; managed jointly |\n| [Regulatory change in scope period] | [Monitoring approach, change-control provision] | Cannot be eliminated |\n\n---\n\n*We have chosen to state the certification and schedule risks in full rather than present them favourably. Both are matters the buyer would identify during due diligence, and we would prefer to be assessed on how we propose to manage them.*",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16356,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 2482,
+    "output_tokens_details": {
+      "thinking_tokens": 76
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16356,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2482,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16356,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16356
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.23086649999999997,
+  "duration_ms": 42880,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "cfac6d13-ff61-4a4c-955a-f52c023adf26",
+  "timestamp": "2026-09-18T10:13:57.577055+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "Our migration follows a wave-based, reversible pattern: nothing moves until its rollback has been rehearsed, and no wave cuts over without a tested path back to the on-premises estate. The programme is sequenced so that the lowest-risk, highest-learning workloads move first, the compliance-audit evidence set is complete before the audit window opens, and the two revenue-critical systems — load matching and carrier settlement — cut over only after the platform beneath them has been proven by less critical traffic.\n\n**Phase 0 — Discovery and landing zone (months 1–3).** We begin with automated discovery across the 620 Hyper-V virtual machines and 28 SQL Server instances using Migration Center (formerly StratoZone) for right-sizing, dependency mapping, and total-cost modelling, supplemented by SQL Server-specific assessment (Database Migration Assessment, `pglogical`-compatibility scanning, and schema conversion analysis against Cloud SQL for PostgreSQL). The output is a signed-off application dependency map and a wave plan that groups VMs and databases into migration waves by shared data coupling — not by team ownership, which is the most common cause of mid-migration surprises. In parallel we stand up the landing zone: organisation and folder hierarchy, Shared VPC with Cloud Interconnect (dual redundant circuits) back to your data centres, Cloud Identity federation to your existing directory, CMEK-encrypted defaults, Organisation Policy constraints, VPC Service Controls around the settlement data perimeter, and a Terraform-managed IaC baseline. Landing zone controls are mapped line-by-line to your control framework at this stage, so the audit evidence is a by-product of the build rather than a retrofit.\n\n**The compliance audit constraint.** Your next audit opens approximately six months after contract award. We treat that as a hard gate: by month 5 we deliver a complete control-evidence pack covering the landing zone, the data-protection posture (CMEK, Cloud KMS key custody, Cloud SQL encryption at rest and in transit, IAM least-privilege role design), audit logging (Cloud Audit Logs exported to a write-once log sink with retention matched to your policy), and the change-management trail for every migrated asset. Critically, we schedule **no cutover of carrier-settlement data during the audit window**. Settlement is the workload with the greatest regulatory exposure; migrating it while auditors are examining it creates two simultaneous sources of change. Waves 1 and 2 complete before the window; settlement cutover follows it.\n\n**Phase 1 — Compute migration, waves 1–2 (months 4–10).** VM migration uses Migrate to Virtual Machines, which performs agentless, continuous block-level replication from Hyper-V into Compute Engine while the source VM remains in production. This is the mechanism that makes cutover cheap: replication runs for days or weeks, test clones are launched into an isolated VPC as often as needed, and the actual cutover is a final delta sync plus a boot — typically 15–30 minutes per VM, executed in batches. Wave 1 is 60–80 non-production and internal-tooling VMs, which proves the pipeline, the runbooks, and the cost model. Wave 2 covers the remaining non-production estate and the production VMs with no direct settlement dependency. Right-sizing decisions from discovery are applied at cutover, not deferred; we expect meaningful consolidation from the 620-VM baseline, and we report the realised figure against the discovery projection each wave.\n\n**Phase 2 — Data layer migration (months 8–20, overlapping Phase 1).** This is the substantive engineering work, because SQL Server to PostgreSQL is a heterogeneous migration, not a lift. Our sequence per database is: automated schema conversion, then manual remediation of what automation cannot safely convert — T-SQL stored procedures, SQL Server-specific functions, `MERGE` semantics, identity/sequence behaviour, collation and case-sensitivity differences, and any CLR or linked-server dependencies. Converted logic is validated against a generated test corpus before any data moves. We then use Database Migration Service for continuous change data capture from each SQL Server instance into Cloud SQL for PostgreSQL, running the source and target in parallel with ongoing replication.\n\nThe validation gate before any database cutover has four parts, all of which must pass: (1) **row- and checksum-level reconciliation** between source and target, automated and re-runnable; (2) **query-result equivalence** — the application's actual query set executed against both, with results diffed, which catches collation and null-ordering defects that row counts miss; (3) **performance validation** under replayed production load, with p95 and p99 latency compared against the on-premises baseline captured in Phase 0; and (4) **financial reconciliation** for settlement — carrier balances, accrual positions, and period totals reconciled to the cent, signed off by your finance controller, not by us.\n\n**Phase 3 — Cutover (months 14–22).** Cutovers are executed in maintenance windows agreed with you, with load matching and settlement handled differently because their tolerances differ.\n\n*Load matching* cuts over using a read-traffic shift first: read replicas in Cloud SQL serve a progressively increasing share of read queries (10% → 50% → 100%) over roughly two weeks, with automatic rollback triggers on latency or error-rate breach. Write cutover is then a single short window — replication halted, final delta applied, application connection strings repointed via configuration (not redeployment), traffic resumed. Expected write-unavailability: under 30 minutes. Reverse replication from Cloud SQL back to SQL Server is configured and running for 14 days after cutover, so rollback remains a repoint rather than a restore.\n\n*Carrier settlement* cuts over on a settlement-cycle boundary — never mid-cycle — after a full parallel run in which both systems process an entire live settlement cycle independently and their outputs are reconciled before the legacy system is retired. This is the single most important risk control in the plan: it means the first production settlement cycle on Google Cloud has already been proven correct against the incumbent on identical inputs.\n\n**Rollback.** Every wave has a documented, rehearsed rollback with a named decision-maker, a decision deadline inside the window, and objective trigger conditions defined in advance rather than judged under pressure. Source environments are retained and replication-capable for 30 days post-cutover for compute and 60 days for settlement data.\n\n**Phase 4 — Stabilisation and decommission (months 20–24).** Hypercare at 24×7 for 30 days after each production cutover, stepping down to business hours. Decommission of on-premises assets is staged and only on your written confirmation per wave — this protects both your rollback position and the audit trail. The phase closes with FinOps optimisation (committed use discounts sized against three months of observed steady-state consumption, rather than against forecasts), operational runbook handover, and knowledge transfer to your teams, whose engineers are embedded in the migration squads from Phase 1 so that operational capability transfers continuously rather than in a single handover event at the end.\n\n**Contingency.** The plan reserves approximately 15% of the schedule and budget as explicit contingency, held against the two risks we judge most likely to materialise: stored-procedure conversion complexity exceeding the discovery estimate, and settlement reconciliation requiring additional parallel-run cycles. Contingency is released only against these named risks, with your approval, and unused contingency returns to you.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16407,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 2677,
+    "output_tokens_details": {
+      "thinking_tokens": 174
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16407,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2677,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16407,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16407
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.2362515,
+  "duration_ms": 45458,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

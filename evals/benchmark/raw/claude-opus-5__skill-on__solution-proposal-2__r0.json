@@ -1,0 +1,52 @@
+{
+  "run_id": "e437c4e5-8509-44eb-ac24-07d4f81dea59",
+  "timestamp": "2026-09-18T10:29:28.077914+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-2",
+  "scenario_prompt": "Write the risk section of a solution proposal, naming each material risk and what is done about it, and stating plainly any risk that cannot be fully retired rather than omitting it. Context: the buyer's RFP requires a SOC 2 Type II report and the bidder holds only a SOC 2 Type I report today, with the Type II observation window closing after the RFP's submission date; separately, the bidder's own most comparable prior migration took 11 months, close to the buyer's 6-month compliance-audit deadline. Return only the risk section text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "Artifact family: **a proposal section**.\n\nNo customer source material was supplied for this task, so the PF-3.3 provenance override cannot fire and every term is judged by the deletion test alone.\n\n---\n\n## Risks and how we manage them\n\nYou have set two conditions this programme must meet: a SOC 2 Type II report at submission, and a completed migration inside your six-month compliance-audit deadline. We hold a SOC 2 Type I report today, and our closest comparable migration ran eleven months. Both gaps are stated below with what we do about them, and neither is fully retired by anything in this proposal.\n\n**Risk 1 — We do not hold the SOC 2 Type II report your RFP requires.** We hold a SOC 2 Type I report today. Our Type II observation window closes after your submission date, so no Type II report exists for us to submit with this bid. [PF-2.17 REVIEW (compliance): confirm the Type I report date, auditor, and the exact observation-window close date before this ships.] What we do: we submit the Type I report and the auditor's observation-window dates, so you can see precisely what is covered and what is not. We will provide the Type II report as soon as our auditor issues it. [PF-2.14 REVIEW (commitment): confirm whether this delivery undertaking may be given, and on what precondition.]\n\n**This risk cannot be fully retired.** No control we operate and no evidence we supply makes a Type II report exist before its window closes. If a Type II report at submission is a pass/fail gate for you, we do not meet it, and you should weigh this bid knowing that.\n\n**Risk 2 — Our comparable prior migration took longer than your deadline allows.** Our most comparable prior migration took eleven months. Your compliance-audit deadline is six months. [PF-2.15 REVIEW (reference): confirm we may describe this prior migration to this buyer, and at what level of detail.] [PF-1.17 GAP: the scope comparison between that eleven-month migration and your estate — data volumes, system count, cutover model — is missing, because we have not yet been given your estate inventory.] What we do: we will run a scoping workshop in the first two weeks to compare that prior estate against yours line by line, and we will report the delta to you before any schedule is fixed.\n\n**This risk cannot be fully retired at proposal stage.** We can tell you what our own history shows and where your estate differs from it. We cannot tell you today that six months is achievable, and we will not state a date we have no measured basis for. [PF-2.11 GAP: a delivery estimate for your estate is absent because your estate has not been sized; the scoping workshop is what would produce it.]\n\n**Risk 3 — The two risks compound.** The compliance gap and the schedule gap share one deadline. [PF-2.4 GAP: the dependency between Type II issuance and your audit date is not stated here, because we do not know whether your audit accepts a Type II report issued mid-programme.] What we do: we ask you to tell us which of the two conditions is the binding one, and we will plan to it.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| REVIEW (compliance): Type I report date, auditor, observation-window close date | PF-2.17 | Confirmation of certification status and dates from the audit record |\n| REVIEW (commitment): undertaking to provide the Type II report on issuance | PF-2.14 | Confirmation that this undertaking may be given, and its precondition |\n| REVIEW (reference): describing the prior eleven-month migration to this buyer | PF-2.15 | Disclosure permission from that prior client |\n| GAP: scope comparison between the prior migration and this buyer's estate | PF-1.17 | The buyer's estate inventory |\n| GAP: delivery estimate for this estate | PF-2.11 | Output of the scoping workshop; no figure may be stated before it |\n| GAP: dependency between Type II issuance and the buyer's audit date | PF-2.4 | Confirmation of whether the buyer's audit accepts a mid-programme Type II report |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26086,
+    "cache_read_input_tokens": 37493,
+    "output_tokens": 1500,
+    "output_tokens_details": {
+      "thinking_tokens": 32
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26086,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1347,
+        "cache_read_input_tokens": 27000,
+        "cache_creation_input_tokens": 9579,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9579
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.3171265,
+  "duration_ms": 23987,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

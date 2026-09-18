@@ -1,0 +1,52 @@
+{
+  "run_id": "e9953d3a-d0e1-4036-a7ad-e49a88956b55",
+  "timestamp": "2026-09-18T10:12:08.793408+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "Moving your load-matching and carrier-settlement platform off 28 on-premises SQL Server instances and 620 Hyper-V virtual machines onto Google Compute Engine and Cloud SQL for PostgreSQL addresses two pressures you are already carrying, but on different clocks. The DOT compliance audit that opens in six months is the nearer one: today your settlement and load records sit across an estate where evidence of access control, retention, and change history has to be assembled instance by instance, by hand. The first year of this programme should give you a single, queryable audit position with managed backups, point-in-time recovery, and centralised identity and logging — and the sequencing should be set so that the systems carrying DOT-relevant records land first, well inside the audit window. The cost picture runs longer. The $1,850,000 you are measured on is largely hardware refresh, Hyper-V and SQL Server licensing, datacentre facilities, and the staff time absorbed by patching and capacity management; retiring the SQL Server licence base in favour of PostgreSQL is the single largest lever, and it is structural rather than negotiated.\n\nYou should expect this programme to raise your technology spend before it lowers it. The $4,200,000 over two years is largely one-time — migration engineering, the SQL Server to PostgreSQL conversion, and a period of parallel running where both estates are live — and during that overlap you will be paying for the old environment and the new one at the same time. On a straightforward reading, spend peaks in year one and the run-rate reduction lands from year two onward, meaning the savings you are measured on will not be visible in this fiscal year's numbers; I would recommend we agree now on how that transition period is presented to your board, so the programme is not judged against a target it is not yet in a position to meet. The main execution risk is the data layer: SQL Server to PostgreSQL is a re-platform, not a lift-and-shift, and stored procedures and settlement logic embedded in T-SQL must be rewritten and reconciled penny-for-penny against carrier payment history before cutover. That reconciliation work is where schedule and cost overruns concentrate in programmes of this shape, and it is where we would ask for your finance team's involvement rather than IT's alone. In return, we commit to a fixed set of stage gates — audit-critical systems first, settlement cutover only after a clean parallel-run reconciliation — so you retain the option to pause between stages rather than being carried through to the end of a two-year commitment.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 26952,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 996,
+    "output_tokens_details": {
+      "thinking_tokens": 192
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26952,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 996,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 26952,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 26952
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.29442999999999997,
+  "duration_ms": 18373,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

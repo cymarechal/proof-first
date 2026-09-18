@@ -1,0 +1,52 @@
+{
+  "run_id": "7a7dc60b-dea8-4ce8-904b-b3086f4a6c31",
+  "timestamp": "2026-09-18T10:11:49.018273+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "I don't have discovery notes or transcript beyond the quoted line — treating \"a perimeter we can actually govern\" and \"620 virtual machines\" and \"manual failover\" as the only customer-supplied terms; nothing else is customer source material, so everything else is judged by the deletion test alone. Proceeding with the draft now.\n\n**Artifact family: demo or discovery material**\n\n---\n\n**Opening reframe**\n\nToday, failover across your 620-VM on-premises estate is a manual process — someone has to notice, decide, and act before a workload comes back up. You told us you want a perimeter you can actually govern. This demo shows one project boundary, applied to one representative workload, doing that governance and that failover without a person in the loop.\n\n**Scene 1 — Before: the ungoverned state**\n\nWe start with a workload that mirrors a typical VM in your estate: [PF-2.4 GAP: which representative VM class or workload profile from your estate this demo instance mirrors — not yet named]. Right now, moving or recovering it depends on a person following a runbook. There is no single boundary that says what this workload is allowed to do, where it can run, or who can touch it.\n\n**Scene 2 — Applying the governed perimeter**\n\nWe define a project-level perimeter around this one workload: identity, network, and policy rules attached to the project, not to the VM. On screen, you'll see the perimeter's rules — who can deploy into it, what regions it can fail into, what it can never reach. [PF-1.17 GAP: a named, checkable comparable — a prior deployment, benchmark, or reference architecture — showing this perimeter model applied at comparable scale has not been supplied]\n\n**Scene 3 — After: governed failover, demonstrated live**\n\nYou will watch the platform detect a simulated zone failure and move the workload to its designated failover target inside the same perimeter — no manual step, no separate approval outside the policy already defined. [PF-2.14 REVIEW (commitment): confirm before this ships that \"no manual step\" is accurate for the demo's actual failover path, not just the happy-path scenario shown live] Compare that to today: a person notices, a person decides, a person acts, once per VM.\n\n**Scene 4 — Tie it back to your estate**\n\nThis is one workload out of 620. [PF-1.13 GAP: your current mean-time-to-recover or failover-completion figure for the on-prem estate has not been stated — without it we cannot show the before/after time comparison quantified] The perimeter model you just saw is what would be replicated across the estate, project by project, so the boundary — not a person — is what governs failover.\n\n**Close, addressed to the VP of Infrastructure**\n\nYou said you want a perimeter you can actually govern. What you just saw was that perimeter enforcing itself — the rule set, not a runbook, deciding what happens when something fails.\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-2.4 GAP] | PF-2.4 | Which VM class/workload profile in the demo mirrors the buyer's actual estate |\n| [PF-1.17 GAP] | PF-1.17 | A named, checkable comparable deployment at similar scale |\n| [PF-2.14 REVIEW (commitment)] | PF-2.14 | Confirmation that failover is fully manual-step-free in the actual demo path, not just the scripted scenario |\n| [PF-1.13 GAP] | PF-1.13 | The buyer's current MTTR/failover-time baseline, to quantify the before/after |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28320,
+    "cache_read_input_tokens": 50862,
+    "output_tokens": 1390,
+    "output_tokens_details": {
+      "thinking_tokens": 61
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28320,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1215,
+        "cache_read_input_tokens": 35123,
+        "cache_creation_input_tokens": 8936,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8936
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1373604,
+  "duration_ms": 21223,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

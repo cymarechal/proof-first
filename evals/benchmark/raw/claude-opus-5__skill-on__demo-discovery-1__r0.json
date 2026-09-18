@@ -1,0 +1,52 @@
+{
+  "run_id": "2e8f6089-f33a-4015-82ae-a6b4b9aa3b12",
+  "timestamp": "2026-09-18T10:30:55.455096+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-1",
+  "scenario_prompt": "Write a set of discovery call notes, in the buyer's own words, attributed to the specific people who said them, so a later document can cite this material directly. Context, from a fictional discovery call: the VP of Infrastructure said, 'We need a perimeter we can actually govern -- right now every VM is a snowflake.' The Chief Architect said, 'Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.' The CFO said, 'I'm measured on cost-per-load and a clean audit, not on architecture elegance.' Write these up as discovery notes attributed by role, with a one-line context note for each. Return only the discovery notes text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Artifact family: demo or discovery material.**\n\nCustomer source material for this task = the three verbatim quotes supplied from the discovery call. Nothing else was supplied — no call recording, transcript, attendee list, date, or account name — so `PF-3.3` fires only against those three quotes, and every other term is judged by the deletion test alone.\n\n---\n\n## Discovery notes — verbatim, attributed by role\n\n**VP of Infrastructure**\n> \"We need a perimeter we can actually govern — right now every VM is a snowflake.\"\n\nContext: the VP owns the estate and describes its current state as ungoverned at the VM level. [PF-3.3: \"snowflake\", customer's term, retained — VP of Infrastructure, discovery call] [PF-2.11 GAP: no VM count, no drift rate, and no governance baseline were stated on the call — the cost of \"every VM is a snowflake\" is unquantified]\n\n**Chief Architect**\n> \"Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.\"\n\nContext: the Chief Architect states a preference for extending the incumbent rather than migrating, and gives the audit year as the reason. [PF-3.3: \"audit year\", customer's term, retained — Chief Architect, discovery call] [PF-2.16 REVIEW (competitor): the quote names an incumbent; any use of this quote that characterises the incumbent's capability needs confirmation before it ships] [PF-2.4 GAP: the incumbent is not named and the contract end date was not stated]\n\n**CFO**\n> \"I'm measured on cost-per-load and a clean audit, not on architecture elegance.\"\n\nContext: the CFO names the two measures they are held to — cost-per-load and a clean audit. [PF-3.3: \"cost-per-load\", customer's term, retained — CFO, discovery call] [PF-1.13 GAP: the CFO stated the measure but gave no current cost-per-load figure and no baseline]\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP: no VM count, drift rate, or governance baseline | PF-2.11 | Ask the VP of Infrastructure for the VM count and a stated measure of configuration drift |\n| REVIEW (competitor): quote names the incumbent | PF-2.16 | Confirm before any downstream document characterises the incumbent |\n| GAP: incumbent not named, contract end date not stated | PF-2.4 | Ask the Chief Architect for the incumbent name and the contract renewal date |\n| GAP: no current cost-per-load figure | PF-1.13 | Ask the CFO for the current cost-per-load figure and how it is calculated |\n| GAP: audit year dates not captured | PF-2.13 | Ask which audit, which standard, and the audit window dates |\n| GAP: no before/after contrast present | PF-2.13 | Discovery notes record the before state only; the after state is not yet established with the buyer |\n| GAP: no differentiator present | PF-2.13 | Not established on this call; belongs in a later document, evidenced |\n| GAP: no opening reframe present | PF-2.13 | Not applicable to raw notes; the reframe is owed by the document that cites this material |\n| GAP: call date, attendee list, and account name not supplied | PF-2.12 | Capture from the call organiser before any quote is cited externally |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26164,
+    "cache_read_input_tokens": 37542,
+    "output_tokens": 1636,
+    "output_tokens_details": {
+      "thinking_tokens": 400
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26164,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1439,
+        "cache_read_input_tokens": 27049,
+        "cache_creation_input_tokens": 9608,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9608
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.32133100000000003,
+  "duration_ms": 23866,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

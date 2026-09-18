@@ -1,0 +1,52 @@
+{
+  "run_id": "6e40e200-5217-4b7d-b511-478731cec8e6",
+  "timestamp": "2026-09-18T10:24:52.784044+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Artifact family: an RFP answer.**\n\n*Customer source material for this task is the RFP question text and the estate/programme facts you supplied (28 SQL Server instances, 620 Hyper-V virtual machines, Google Compute Engine and Cloud SQL for PostgreSQL as targets, two years, $4,200,000, proposals due 2026-11-15, compliance audit opening in six months). No discovery notes, runbooks, or performance baselines were supplied, so terms are judged by the deletion test alone and unmeasured figures are marked rather than estimated.*\n\n---\n\nYou run load matching and carrier settlement on 28 Microsoft SQL Server instances across 620 Hyper-V virtual machines, and your next compliance audit opens in six months. Two clocks therefore govern this programme, not one. The audit clock is shorter than the migration clock, so our approach sequences the estate to put auditable systems on Google Cloud first, rather than migrating in order of technical convenience. Today your evidence for a control sits in whatever each of the 28 instances happens to record; after the first wave, the systems in audit scope report through one Google Cloud control plane. That is the shift this plan proposes.\n\n**Assessment and proving, months 0–4.** We inventory all 620 virtual machines and all 28 instances into Google Cloud Migration Center, and we capture the baselines your programme has not yet measured. [PF-1.13 GAP: current transaction throughput, peak concurrency, and settlement batch-window duration per instance — no baselines were supplied, and we will not state a figure we have not measured.] We then run a schema and code assessment of every SQL Server database against Cloud SQL for PostgreSQL. This assessment produces a per-database conversion class: automatic, assisted, or rewrite. The rewrite class is where migration budgets fail, so we size it before you commit to a wave plan, not after.\n\nIn parallel, we build one vertical proving slice end to end: one non-production load-matching database, its dependent application tier on Google Compute Engine, and its reporting path. The slice tests the two things that decide this programme — T-SQL to PL/pgSQL conversion fidelity, and replication lag under your real write pattern. [PF-2.4 GAP: expected conversion coverage rate for your specific T-SQL estate — this depends on your stored-procedure and CLR usage, which we will report from the assessment rather than assert now.]\n\n**Audit-first wave, months 4–7.** We migrate the carrier-settlement systems in audit scope ahead of everything else. You address the auditor from a single Google Cloud environment with Cloud SQL automated backups, point-in-time recovery, Cloud Audit Logs, and CMEK-managed encryption, instead of assembling evidence from separate on-premises instances. [PF-2.17 REVIEW (compliance): the specific control framework your audit tests, and which of its controls we assert are met by this target architecture, must be confirmed against the audit scope before this response ships.]\n\n**Data layer approach.** For each database we use continuous replication from SQL Server into Cloud SQL for PostgreSQL rather than a dump-and-load. Continuous replication keeps the source authoritative until you decide to switch, which is what makes reversal possible. The source stays running and writable throughout, so a failed cutover is a routing change, not a restore. [PF-2.4 GAP: confirmation that Google's Database Migration Service covers each source SQL Server version and feature in your estate — we will validate version-by-version in assessment and name the fallback replication path for any database it does not cover.]\n\n**Compute layer approach.** We move the 620 Hyper-V virtual machines in two streams. Machines carrying stateless application and matching-engine tiers we rebuild on Google Compute Engine from images, because a rebuilt machine carries no drift from its Hyper-V host. Machines we cannot rebuild inside the programme window we lift with block-level replication and cut over with the wave they serve. We classify every machine into one of the two streams during assessment and publish the split as a deliverable, so you see the rebuild-versus-lift ratio before wave planning locks.\n\n**Cutover mechanics.** Each wave cuts over the same way. We reduce replication lag to a steady state, quiesce writes at the application tier, drain in-flight settlement batches, verify row counts and financial control totals between source and target, then repoint the application connection strings. Load matching cuts over during your lowest-volume window; carrier settlement cuts over between settlement cycles, never mid-cycle. [PF-1.13 GAP: your lowest-volume window and your settlement cycle boundaries — these come from your operations team and will be fixed in the wave plan.]\n\nWe define the reversal path before each cutover, not as a contingency after it. Reverse replication from Cloud SQL back to the source SQL Server instance runs from the moment of switch until you sign wave acceptance. During that period, reversal is a connection-string change back to the on-premises instance, with writes accumulated on Google Cloud replayed to the source. A wave is only irreversible once you have signed its acceptance and we have stopped reverse replication.\n\n**Verification you can check.** Each wave carries three gates, and we do not proceed to the next wave until all three pass. The data gate compares row counts and financial control totals across every settlement table. The functional gate replays recorded production load-matching requests against both environments and compares results. The performance gate compares the target against the baseline we captured in assessment for that specific system — against your measured figure, not a generic target. [PF-2.14 REVIEW (commitment): the performance gate as written reads as a warranty that target performance will meet or exceed the on-premises baseline; confirm whether your bid team intends to commit to that, and on what precondition.]\n\n**Waves 2–4, months 7–22.** Remaining load-matching and supporting systems migrate in waves grouped by data dependency, so no wave splits a transactional boundary across two environments. We reserve the final two months of the 24-month programme for decommissioning the source estate, transferring operational knowledge to your team, and closing the dual-running cost. Dual-running is the largest avoidable cost in a migration of this shape, and every month a wave stays in dual-run consumes programme budget that the $4,200,000 has to cover. The wave plan therefore optimises for shortest total dual-run time, not for lowest per-wave risk.\n\n**What we need from you.** We ask for the settlement cycle calendar, the operations team's stated low-volume windows, and read access to the 28 instances for assessment within the first four weeks. [PF-1.17 GAP: a comparable prior SQL Server–to–Cloud SQL migration of similar estate size that this bid team can name and evidence — no reference was supplied for this response, and we will not name one we cannot produce on request.] [PF-1.21 GAP: a stated differentiator — no competitive positioning material was supplied, so no differentiator is claimed here rather than one asserted that every bidder could also claim.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Missing throughput, concurrency, and batch-window baselines | PF-1.13 | Measured per-instance figures from assessment, or an explicit statement that they were never captured |\n| T-SQL conversion coverage rate unstated | PF-2.4 | Assessment output on stored-procedure and CLR usage across the 28 instances |\n| Compliance control framework and controls met | PF-2.17 | Named audit framework and scope; legal/compliance confirmation of which controls the target architecture satisfies |\n| Database Migration Service source coverage unconfirmed | PF-2.4 | Version and feature validation per instance, plus a named fallback replication path |\n| Low-volume window and settlement cycle boundaries unknown | PF-1.13 | Operations team input before wave planning locks |\n| Performance gate reads as a warranty | PF-2.14 | Bid team decision on whether to commit, and on what precondition |\n| No comparable reference migration named | PF-1.17 | A prior engagement this team can evidence, with client disclosure permission |\n| No differentiator claimed | PF-1.21 | Competitive positioning input, restated as evidenced vendor capability |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26154,
+    "cache_read_input_tokens": 37540,
+    "output_tokens": 3560,
+    "output_tokens_details": {
+      "thinking_tokens": 667
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26154,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3402,
+        "cache_read_input_tokens": 27047,
+        "cache_creation_input_tokens": 9600,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9600
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.36932999999999994,
+  "duration_ms": 56002,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

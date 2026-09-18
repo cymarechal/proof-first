@@ -1,0 +1,52 @@
+{
+  "run_id": "18db6fc5-d104-4608-98aa-0cf3b2a1a58c",
+  "timestamp": "2026-09-18T10:02:35.255346+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "**Demo: Governed Project Perimeter for a Representative Workload**\n\n*[Screen: cloud console, blank project list]*\n\n\"You told us the goal isn't more automation scripts — it's a perimeter you can actually govern instead of 620 VMs failing over by hand. Let me show you exactly that, on one representative workload.\"\n\n**1. Define the perimeter (2 min)**\n- Create a project scoped to a single application tier (e.g., the ERP app-server tier).\n- Apply an org policy constraint set live: restrict resource locations to the two target regions, block public IP creation, enforce shared VPC only.\n- \"This project can only ever exist inside these boundaries — not because someone remembered to configure it that way, but because the platform enforces it.\"\n\n**2. Attach IAM and guardrails (2 min)**\n- Bind a custom IAM role scoped to this project only (no org-wide admin).\n- Show the policy simulator confirming a broader \"editor\" grant attempt gets denied.\n- \"Access is bounded to the perimeter, not the person.\"\n\n**3. Deploy the representative workload (3 min)**\n- Deploy the app-tier workload from a pre-built template into the governed project.\n- Show it inheriting the constraints automatically — correct region, private networking, tagged for the failover group — with zero manual steps.\n\n**4. Trigger governed failover (4 min)**\n- Simulate a zone failure.\n- Show the workload failing over to the paired zone *within the same governed perimeter* — same policies, same IAM, same network boundary — no re-provisioning, no manual runbook.\n- Pull up the audit log: every action attributable, timestamped, policy-checked.\n\n**5. Close the loop (2 min)**\n- Show the Policy Insights dashboard: this project's compliance state at a glance, plus a second (intentionally misconfigured) project flagged as non-compliant for contrast.\n- \"This is the difference: today, failover is a person following a runbook across 620 VMs. Here, failover happens inside a perimeter that enforces itself — and you can prove it, project by project, at any moment.\"\n\n**Close:**\n\"What you just saw on one tier is the same model that scales to the full estate — one governed perimeter per workload group, not one giant flat network you're hoping stays consistent.\"",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19233,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 745,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19233,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 745,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19233,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19233
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0875338,
+  "duration_ms": 14395,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

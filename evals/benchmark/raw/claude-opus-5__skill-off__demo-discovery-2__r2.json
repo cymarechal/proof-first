@@ -1,0 +1,52 @@
+{
+  "run_id": "c61b13d6-c7ea-4ed7-b2af-3f8d60fa0761",
+  "timestamp": "2026-09-18T10:21:24.228699+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": null,
+  "repeat": 2,
+  "text": "**DEMO SCRIPT — \"A Perimeter You Can Actually Govern\"**\n*Live discovery session · 12–15 minutes · Presenter-facing*\n\n*[Setup note: script is written for Google Cloud — project/folder hierarchy, Org Policy, VPC Service Controls. Swap the control names if the target platform is different; the demo beats hold either way.]*\n\n---\n\n**1. Frame it back to him (60 seconds)**\n\n\"Last time we spoke, you said you wanted a perimeter you can actually govern. I want to be precise about what I heard, because it's not the same as 'move 620 VMs.' You have failover today — it works, but it works because people remember to do it. The thing you can't govern is the gap between what your runbook says and what's actually true at 2 a.m.\n\nSo I'm not going to tour the product. I'm going to take one workload that looks like yours, put a governed perimeter around it, and then try to break the rules in front of you. What I want you to watch is what happens when I do the wrong thing.\"\n\n**2. Show the representative workload, not a toy (90 seconds)**\n\nPull up the pre-staged environment. On screen: a three-tier app — 4 web VMs, 3 app VMs, a database with a replica in a second region.\n\n\"This is deliberately unglamorous. It's the shape of maybe forty of your 620. Same pattern: front end, middle tier, stateful back end with a manual failover step somebody owns in a runbook.\"\n\nAsk: *\"Before I go further — is this the shape that matters to you, or is the harder case something else in the estate?\"*\n\nLet him redirect. If he names a different workload type, say so and adapt rather than pushing through the prepared one.\n\n**3. Apply the perimeter (4 minutes — the core beat)**\n\n\"Governance here isn't a dashboard. It's three things that are true whether or not anyone is watching.\"\n\n**a. The boundary.** Show the folder and project structure. This workload lives in its own project, under a folder that inherits policy from the org.\n\n\"The project *is* the perimeter. Not a tag, not a naming convention — a hard boundary with its own IAM, its own quota, its own billing line. If you kill this project, this workload is gone and nothing else is touched. That's your blast radius, defined structurally.\"\n\n**b. The constraints.** Show the Org Policy constraints inherited onto the folder — no external IPs, approved regions only, no service account key creation.\n\n\"These are inherited, not applied. Nobody chose them for this project. Somebody chose them once, at the folder, and every project born under it gets them. That's the difference between a policy and a governed policy.\"\n\n**c. The data boundary.** Show the VPC Service Controls perimeter around the project.\n\n\"This is the one that matters for your failover conversation. The replica in region two is *inside* the perimeter. The data can move between regions because that's a sanctioned path. It cannot move out to an unmanaged project, and it cannot be pulled by a credential that isn't in the access level — even a valid, legitimately-issued credential.\"\n\n**4. Break it on purpose (3 minutes — the beat that earns trust)**\n\n\"Here's what I actually want you to see.\"\n\n- Attempt to assign an external IP to the web tier → denied. Show the denial, and show which policy at which level caused it.\n- Attempt to copy data from the database's storage bucket into an out-of-perimeter project, using a credential with full IAM rights to both sides → denied by the perimeter.\n\n\"That second one is the important failure. That identity had permission. IAM said yes. The perimeter said no. If your governance story depends only on who has which role, you don't have a perimeter — you have a policy you hope nobody has an exception to.\"\n\n**5. Connect it to the 620 (2 minutes)**\n\n\"Now the honest part. What I just showed you is one project. You have an estate.\n\nThe perimeter pattern is the unit of migration — not the VM. Which means the real question in front of you isn't 'how do we move 620 machines,' it's 'how many perimeters do you actually have?' Most estates that size land somewhere between fifteen and forty. Some of that is obvious from the network. Some of it only shows up when you ask who gets paged.\n\nI don't know your number. Nobody does yet.\"\n\n**6. Close on the next step, not the close (60 seconds)**\n\n\"Two things I'd want before talking about scope or timeline:\n\nFirst, I'd like to run this same exercise against one of your real workloads — not a representative one. Pick the one where manual failover scares you most. We'll map it to a perimeter on paper, and you'll see quickly whether this shape fits or whether your environment breaks the assumption.\n\nSecond — and be blunt with me — is the thing you actually need to govern the *infrastructure*, or is it the *change process* around it? Because if it's the second one, the perimeter is necessary but it isn't sufficient, and I'd rather tell you that now than in month four.\"\n\n---\n\n**Presenter notes**\n\n- Do not demo backup, cost management, or the migration tooling unless he asks. He asked about governance. Everything else dilutes it.\n- The denial in step 4 must be live. A screenshot of a denial proves nothing, and he will know.\n- If he asks \"can we override the policy in an emergency\" — yes, and show where the exception lives and who approves it. That question is a buying signal; treat it as the most important moment in the call.\n- If the environment misbehaves, say so out loud and keep going. A recovered demo is more persuasive than a flawless one.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16337,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 1953,
+    "output_tokens_details": {
+      "thinking_tokens": 172
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16337,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1953,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16337,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16337
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.21745150000000002,
+  "duration_ms": 35732,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

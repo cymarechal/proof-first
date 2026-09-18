@@ -1,0 +1,52 @@
+{
+  "run_id": "50cd05ce-40c0-44a7-b5b1-85ff08ba42a3",
+  "timestamp": "2026-09-18T10:14:45.446260+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "**Migration approach and cutover plan**\n\n**Guiding principle.** We separate the two halves of this estate deliberately: the 620 Hyper-V virtual machines are a *homogeneous relocation* problem, while the 28 SQL Server instances moving to Cloud SQL for PostgreSQL are a *heterogeneous conversion* problem with materially different risk, effort and rollback characteristics. Treating them as one workstream is the most common cause of schedule failure in programmes of this shape. We run them as two coupled but independently gated streams under a single integrated plan, with application-level \"move groups\" as the unit of cutover so that no load-matching or carrier-settlement transaction ever spans the on-premises and Google Cloud estates in steady state.\n\n**Phase 0 — Discovery and landing zone (months 0–3).** We run Google Cloud Migration Center with the mcollect/StratoZone collectors against the Hyper-V estate and the SQL Server instances to produce a dependency-mapped inventory: per-VM utilisation, network flows, storage IOPS profiles, SQL Server edition and feature usage, and per-database T-SQL surface area. In parallel, our database engineers run automated schema-and-code assessment against all 28 instances to classify every object as auto-convertible, convertible-with-rewrite, or requiring redesign. The known high-friction areas we expect to find in settlement workloads — CLR assemblies, SQL Agent job chains, linked servers, `MERGE` patterns, temporal tables, `IDENTITY`/sequence semantics, collation and case-sensitivity differences, and any Service Broker usage — are enumerated with named owners and remediation estimates before a single workload moves. Concurrently we stand up the landing zone: organisation and folder hierarchy, Shared VPC, Interconnect or HA VPN to the data centres, CMEK key hierarchy, Cloud Identity federation, VPC Service Controls perimeter around the settlement data, org policy constraints, Cloud Logging/Monitoring, and Assured Workloads or equivalent control mapping if the buyer's regime requires it.\n\n**Compliance audit alignment.** The buyer's next compliance audit opens six months from contract start, which falls inside Phase 0/1. We therefore deliberately schedule **no production settlement cutover inside the audit window**. What we deliver before the audit opens is the fully evidenced landing zone — control mappings, IAM model, encryption posture, audit-log retention and immutability, network segmentation evidence, and a documented data-residency position — plus one or two low-criticality non-settlement move groups migrated end-to-end as proof the controls operate rather than merely exist. This gives the auditor a working, evidenced control environment to examine and avoids a mid-audit change freeze colliding with a settlement cutover. We will provide the audit evidence pack and support auditor walkthroughs at no additional charge as part of this engagement.\n\n**Phase 1 — Compute relocation (months 3–14).** The 620 VMs are grouped into roughly 35–45 move groups by application affinity and dependency edges, sequenced lowest-risk-first: non-production, then internal tooling, then load-matching read paths, then transactional and settlement-adjacent tiers. One caveat we state plainly: Google's Migrate to Virtual Machines does not natively source from Hyper-V as it does from VMware, AWS and Azure. Our approach for this estate is therefore per-VM classified into three routes — (a) rebuild-from-image for stateless and horizontally scaled tiers, which is our default and the preferred end-state because it produces clean, patched, Terraform-managed instances rather than migrated technical debt; (b) VHDX export and virtual-disk import to Compute Engine images for VMs with embedded configuration that cannot be economically rebuilt; and (c) block-level replication tooling (Cirrus Migrate Cloud or equivalent, costed in the programme) for the minority of stateful VMs requiring near-zero-downtime relocation. We expect roughly 60–70% of the estate to fall into route (a) after discovery, and we will report the actual split as a Phase 0 deliverable. Each move group follows the same cycle: replicate, test-clone in an isolated VPC, functional and performance test, remediate, schedule, cut over, hypercare, decommission source.\n\n**Phase 2 — Data layer conversion (months 6–20, overlapping Phase 1).** Schema conversion is automated first and hand-finished second; we do not accept machine-converted schema into production without engineer review. Converted schemas are version-controlled and deployed via migration tooling, never by hand. Application data-access code is remediated against the conversion findings, and we introduce a continuous dual-verification harness: the same query workload replayed against SQL Server and PostgreSQL with row-level and aggregate reconciliation, run nightly from the moment the target schema stabilises. For bulk movement and ongoing sync we use Database Migration Service for SQL Server to PostgreSQL where the source configuration supports it, with a CDC-based fallback for instances where it does not. Every settlement database additionally carries a financial reconciliation gate: control totals, ledger balances and a defined number of prior settlement cycles re-run on the target and matched to the penny before cutover is authorised.\n\n**Cutover mechanics.** Each move group has a named cutover runbook rehearsed at least twice in full — including the rollback path — before the production attempt. The production pattern is: freeze writes at a scheduled low-volume window (for carrier settlement, between settlement runs, not during), drain in-flight work, allow final CDC lag to reach zero, run the reconciliation gate, flip the application connection layer via DNS/service endpoint, run a scripted smoke and financial verification suite, then release writes. Source systems remain live and replication-capable in reverse where technically feasible for a defined fallback window — 72 hours for load-matching, one full settlement cycle for settlement — during which rollback is a runbook step, not a project. Go/no-go is a documented decision with named buyer and supplier authorities; the default at any failed gate is no-go, and no-go is not treated as a programme failure.\n\n**Phases 3–4 — Stabilisation and decommission (months 18–24).** Post-cutover we run hypercare per move group, tune Cloud SQL sizing and Compute Engine machine types against observed rather than assumed load (a material source of the run-rate savings), complete DR and backup-restore proving on the target, transfer operational ownership with documented runbooks and joint shadowing, and only then decommission source infrastructure. Decommission is a gated milestone requiring buyer sign-off and retention of forensic images per the buyer's record-retention obligations. We deliberately hold roughly 15% of programme contingency against the data-layer stream, where heterogeneous conversion risk is concentrated, rather than spreading it evenly.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16409,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 2799,
+    "output_tokens_details": {
+      "thinking_tokens": 497
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16409,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2799,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16409,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16409
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.23932150000000002,
+  "duration_ms": 46522,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

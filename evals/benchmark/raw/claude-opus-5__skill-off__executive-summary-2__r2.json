@@ -1,0 +1,52 @@
+{
+  "run_id": "58ed7542-e7d0-443a-a690-19e9f6e389a1",
+  "timestamp": "2026-09-18T10:13:10.792735+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-2",
+  "scenario_prompt": "Write only the opening paragraph of an executive summary, addressed to a fictional buyer's Chief Financial Officer. The opening paragraph must restate the buyer's own situation, in the buyer's own terms, before naming any vendor, product, or capability. Context: the buyer is spending $1,850,000 a year running an on-premises Microsoft SQL Server and Hyper-V estate, and its next compliance audit opens in 6 months. Return only that one opening paragraph.",
+  "skill_sha": null,
+  "repeat": 2,
+  "text": "Your organization is carrying roughly $1.85 million a year in cost to keep its SQL Server databases and Hyper-V hosts running in your own data centers — a figure that covers hardware refresh cycles, licensing, floor space, power, and the staff hours absorbed by patching and capacity planning rather than by work your business actually sells. That spend is fixed whether utilization is high or low, and it grows with every server you add. Meanwhile, your next compliance audit opens in six months, which means the evidence you will need — controls, logging, access records, and documented recoverability across that same estate — has to be assembled from infrastructure you maintain by hand. The question in front of you is not simply how to spend less; it is whether the next audit cycle, and the ones that follow it, should continue to be an exercise your team funds and staffs entirely on its own.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16344,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 270,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16344,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 270,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16344,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16344
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1754465,
+  "duration_ms": 6550,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

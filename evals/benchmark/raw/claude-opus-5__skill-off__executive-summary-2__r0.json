@@ -1,0 +1,52 @@
+{
+  "run_id": "ecdc9fbc-d1a9-4467-87ba-84a7a48c717d",
+  "timestamp": "2026-09-18T10:12:53.527169+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-2",
+  "scenario_prompt": "Write only the opening paragraph of an executive summary, addressed to a fictional buyer's Chief Financial Officer. The opening paragraph must restate the buyer's own situation, in the buyer's own terms, before naming any vendor, product, or capability. Context: the buyer is spending $1,850,000 a year running an on-premises Microsoft SQL Server and Hyper-V estate, and its next compliance audit opens in 6 months. Return only that one opening paragraph.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "Your organization currently carries roughly $1.85 million a year to keep an on-premises Microsoft SQL Server and Hyper-V estate running — a figure that covers hardware refresh cycles, licensing, datacenter overhead, and the staff hours absorbed by patching, backup verification, and capacity planning rather than by work your business actually asks of them. That spend is largely fixed regardless of how much of the capacity you use, and it grows on a schedule set by your hardware vendors rather than by your own demand. Compounding the timing, your next compliance audit opens in six months, which means the evidence you will need — access controls, patch currency, backup and recovery proof, data residency documentation — has to be assembled from the same estate and the same team already consuming that budget. The practical question in front of you is not whether the current environment works; it is whether continuing to fund it at this level is the best available use of $1.85 million when the audit window is already closing.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16340,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 311,
+    "output_tokens_details": {
+      "thinking_tokens": 11
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16340,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 311,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16340,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16340
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1764315,
+  "duration_ms": 8637,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

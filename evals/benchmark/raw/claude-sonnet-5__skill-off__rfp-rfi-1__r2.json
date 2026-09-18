@@ -1,0 +1,52 @@
+{
+  "run_id": "8154e702-b441-4afd-8b8b-e86ecc6114f4",
+  "timestamp": "2026-09-18T10:00:13.057006+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": null,
+  "repeat": 2,
+  "text": "Our migration approach follows a phased, wave-based cutover designed to protect load-matching and carrier-settlement operations throughout the 24-month, $4.2M programme, with the compliance audit window (opening March 2027) treated as a hard constraint on sequencing rather than an afterthought.\n\n**Phase 1 — Assessment and landing zone (Months 1–3).** We inventory all 28 SQL Server instances and 620 Hyper-V VMs, classifying workloads by criticality, data volume, inter-dependency, and schema complexity. In parallel we build the target Google Cloud landing zone: VPC design, IAM, Cloud SQL for PostgreSQL instances sized per workload tier, GCE machine templates, and monitoring/alerting baselines. Every environment is defined as code (Terraform) so lower environments and production are provisioned identically, which also gives the audit trail the compliance review will expect.\n\n**Phase 2 — Schema conversion and dual-run validation (Months 3–9).** SQL Server schemas and stored procedures for load-matching and carrier-settlement are converted to PostgreSQL using automated conversion tooling followed by manual remediation of incompatible constructs (T-SQL specifics, proprietary functions, isolation-level differences). We stand up a continuous replication pipeline (CDC-based) so Cloud SQL stays in near-real-time sync with on-prem SQL Server throughout this phase, enabling side-by-side validation: identical transactions run against both systems and results are automatically diffed. This dual-run period is where we build the confidence needed to certify data integrity ahead of the audit.\n\n**Phase 3 — Non-critical workload migration (Months 9–14).** We migrate lower-risk, non-customer-facing VMs and databases first — reporting, historical archives, and internal tooling — using this wave to validate our runbooks, rollback procedures, and performance baselines on GCE/Cloud SQL under real load before touching revenue-critical systems.\n\n**Phase 4 — Core system cutover: load-matching and carrier-settlement (Months 14–20).** These systems migrate in a scheduled, low-traffic cutover window per instance group, not a single big-bang event. For each group: (1) freeze schema changes, (2) run final CDC sync to close replication lag to seconds, (3) execute a verification checklist comparing row counts, checksums, and transaction totals between source and target, (4) redirect application traffic to Cloud SQL/GCE via DNS or connection-string switch, (5) hold the on-prem environment in warm-standby for a defined bake period (72 hours minimum) with automated reconciliation jobs comparing new transactions against a shadow feed. Each cutover has a pre-defined rollback trigger (error-rate or latency threshold) and a rollback procedure tested in Phase 3, so a failed cutover reverts traffic to on-prem within the same maintenance window rather than becoming a multi-day incident.\n\n**Phase 5 — Decommissioning and audit readiness (Months 20–24).** Once all 28 instances are cut over and the bake period is clean, on-prem Hyper-V VMs are decommissioned in reverse order of criticality, with data retained per compliance requirements before deletion. Because the buyer's compliance audit opens six months into the programme, we sequence Phase 1's landing zone and access-control work to be audit-ready early — IAM policies, encryption-at-rest/in-transit configuration, and audit logging on Cloud SQL and GCE are live from day one, not bolted on before cutover, so the audit can review a system that is either fully on-prem (unchanged, already compliant) or partially migrated onto an already-hardened target environment, with no window where either environment is in an undocumented or non-compliant transitional state.\n\nThroughout all phases, cutover decisions are gated by a joint go/no-go review with the buyer's operations and compliance stakeholders, and every cutover step is logged to produce the change-management evidence trail the audit will require.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19305,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 1329,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19305,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1329,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19305,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19305
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0936618,
+  "duration_ms": 18233,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "4fd46261-fb77-4aa3-835d-2b74e63d1f96",
+  "timestamp": "2026-09-18T09:59:05.536787+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-2",
+  "scenario_prompt": "Write only the opening paragraph of an executive summary, addressed to a fictional buyer's Chief Financial Officer. The opening paragraph must restate the buyer's own situation, in the buyer's own terms, before naming any vendor, product, or capability. Context: the buyer is spending $1,850,000 a year running an on-premises Microsoft SQL Server and Hyper-V estate, and its next compliance audit opens in 6 months. Return only that one opening paragraph.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "Dear CFO,\n\nToday your organization commits $1,850,000 annually to sustain an on-premises Microsoft SQL Server and Hyper-V estate, a fixed cost that recurs whether the environment sits idle or under peak load, and this expense continues to accrue against your budget as your next compliance audit approaches in six months, a deadline that will require you to demonstrate the security, availability, and data-governance posture of that same infrastructure under close scrutiny.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19240,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 152,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19240,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 152,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19240,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19240
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0816318,
+  "duration_ms": 4965,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

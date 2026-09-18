@@ -1,0 +1,52 @@
+{
+  "run_id": "242933cb-8f42-4dd6-babf-2af3dbd4e05e",
+  "timestamp": "2026-09-18T10:09:18.922821+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "**Artifact family: a proposal section**\n\nNo customer source material was supplied for this task beyond the stated estate facts (28 SQL Server instances, 620 Hyper-V VMs, and the target Google Cloud services), so the retention override in PF-3.3 cannot fire here — every term below is judged by the deletion test alone.\n\n## Architecture\n\nToday, your estate runs 620 virtual machines on Hyper-V, hosting 28 Microsoft SQL Server instances. Each instance ties its data layer to the hypervisor beneath it, so capacity, patching, and failover are host-level operations, not database-level ones. [PF-2.13 GAP: the cost this coupling imposes in engineering time or downtime was not supplied and is not estimated here]\n\nThe migration moves this estate to Google Cloud in two coordinated motions rather than one lift. The 620 virtual machines move to Google Compute Engine, preserving the operating-system and application layer as running instances rather than rebuilding them. In parallel, the 28 SQL Server instances move to Cloud SQL for PostgreSQL, so the data layer becomes a managed service rather than a set of VMs you patch and fail over yourself. Today, a database failover means restarting or migrating the underlying VM; after the move, Cloud SQL for PostgreSQL manages failover as a database-level operation, decoupled from the compute layer that hosts it.\n\nThis split reflects that compute and data have different migration paths here: compute moves largely as-is, while the data layer changes engine and management model at the same time it changes provider. [PF-1.9] You need the ability to run your existing virtual machine workloads without a parallel rebuild effort, and Compute Engine is the means chosen to deliver that. You also need your database administration effort to shift from infrastructure operations to schema and query work, and Cloud SQL for PostgreSQL is the means chosen to deliver that.\n\nGovernance is established once, at the perimeter, rather than instance by instance. The target Google Cloud project is enclosed in a VPC Service Controls perimeter, so data exfiltration paths that exist implicitly across 28 separately administered SQL Server instances today become a single, explicitly defined boundary around the migrated estate. [PF-2.17 REVIEW (compliance): whether VPC Service Controls alone satisfies your specific regulatory or data-residency obligations for these 28 instances needs confirming against your compliance requirements, not assumed here]\n\n[PF-2.13 GAP: no metric or baseline for current downtime, patching cadence, or licensing cost was supplied, so no quantified before/after figure is stated for this migration]\n\n[PF-1.21 GAP: no comparable, verifiable proof point (a prior migration of similar scale, or a named benchmark) was supplied to attach to the Compute Engine or Cloud SQL for PostgreSQL capability claims above]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Cost of current Hyper-V/SQL Server coupling | PF-2.13 | A stated figure for engineering time, downtime, or licensing cost tied to the current estate |\n| VPC Service Controls vs. compliance obligations | PF-2.17 | Confirmation that the perimeter satisfies the buyer's specific regulatory/data-residency requirements for these instances |\n| No quantified before/after metric | PF-2.13 | A baseline figure (downtime, patch cadence, cost) the buyer has stated, or confirmation none exists yet |\n| No comparable proof point for the migration approach | PF-1.21 | A named prior migration or benchmark this vendor can produce as evidence |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28152,
+    "cache_read_input_tokens": 50879,
+    "output_tokens": 1560,
+    "output_tokens_details": {
+      "thinking_tokens": 288
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28152,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1476,
+        "cache_read_input_tokens": 35140,
+        "cache_creation_input_tokens": 8751,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8751
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1383918,
+  "duration_ms": 23979,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

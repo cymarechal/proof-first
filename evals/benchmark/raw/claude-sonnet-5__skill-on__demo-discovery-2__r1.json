@@ -1,0 +1,52 @@
+{
+  "run_id": "47d7f092-e3ab-4872-95e7-7f0311c5c2fc",
+  "timestamp": "2026-09-18T10:11:26.392774+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "Before I draft, what counts as customer source material here — is the VP's quote (\"a perimeter we can actually govern\") and the 620-VM/manual-failover detail the full extent of what was supplied, or is there additional discovery material (target cloud platform name, current failover process, RTO/RPO figures, etc.)? I'll draft now with what's given and mark gaps for anything unsupplied.\n\ndemo or discovery material\n\n# Live Discovery Demo Script — Governed Project Perimeter for Failover\n\n## Opening reframe\nToday, failover across your 620-VM on-premises estate is a manual process. [PF-2.13 GAP: cost of the manual failover process — no duration, error rate, or staffing cost was supplied] Your VP of Infrastructure stated the goal directly: \"a perimeter we can actually govern.\" This session shows that perimeter applied to a representative workload, live.\n\n## Before / after\nBefore: failover is executed manually, VM by VM, across the 620-VM estate, with no single governed boundary controlling who can act on which workload. After: a defined project perimeter governs a representative workload's placement, access, and failover behavior as one policy object, visible and auditable on screen.\n\n## Demo flow\n\n1. **Name the workload.** Select one representative workload from the 620-VM estate — [PF-2.13 GAP: which specific workload/application will represent the estate — not named in the discovery notes provided] — and state why it stands in for the broader estate.\n\n2. **Show the perimeter as policy, not paperwork.** Open the target project's perimeter configuration and walk through the boundary controls in place: which identities can act inside it, which resources sit inside vs. outside it, and which actions are logged. [PF-1.9] The capability you're showing is \"govern who can act on this workload and see every action taken\" — the platform's perimeter construct is the means, named second.\n\n3. **Trigger governed failover on the representative workload.** Initiate failover for that single workload from inside the governed perimeter. Narrate what the VP's team gains that manual failover does not: a single control boundary, one audit trail, and no ad hoc access granted mid-incident.\n\n4. **Show the audit trail.** Pull the log of the failover action just executed — who initiated it, what boundary it stayed inside, what it touched. This is the artifact an auditor or the VP's team could request after any real incident.\n\n5. **Extrapolate to scale.** State plainly: this session demonstrates the governed perimeter pattern on one workload; applying it across the full 620-VM estate is a rollout exercise, not a new capability. [PF-2.14 REVIEW (commitment): any statement about rollout timeline, effort, or how many workloads can be migrated per week should be confirmed before stating to the buyer]\n\n## Close — tie to the VP's own priority\nYou told us you want \"a perimeter we can actually govern.\" What you just watched was that perimeter — defined once, applied to a real workload, and producing an audit trail your team didn't have to build by hand. Extending it to the remaining workloads in your estate is the next conversation.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Cost of manual failover process not stated | PF-2.13 | Duration, error rate, staffing cost, or other quantified impact of current manual failover, from discovery notes |\n| Representative workload not named | PF-2.13 | Which specific VM/application will be used as the demo's representative workload |\n| Rollout timeline/effort language | PF-2.14 | Confirmation before stating any claim about how fast or how many workloads can be migrated across the 620-VM estate |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 27254,
+    "cache_read_input_tokens": 50860,
+    "output_tokens": 1278,
+    "output_tokens_details": {
+      "thinking_tokens": 33
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 27254,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1192,
+        "cache_read_input_tokens": 35121,
+        "cache_creation_input_tokens": 7872,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 7872
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.13197599999999998,
+  "duration_ms": 17307,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

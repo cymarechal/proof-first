@@ -1,0 +1,52 @@
+{
+  "run_id": "c67b507e-632c-4352-9d43-dec78148939a",
+  "timestamp": "2026-09-18T10:20:47.184167+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "**Demo script — \"A perimeter we can actually govern\"**\n*Live discovery session, ~12 minutes. One workload, start to finish.*\n\n---\n\n**Frame (60 seconds)**\n\n\"You said you want a perimeter you can actually govern. So I'm not going to tour the product. I'm going to take one workload out of your 620-VM estate, put it inside a governed perimeter, and then try to break that perimeter in front of you. If the controls hold when I attack them, they'll hold at 620. If they don't, you've learned that in twelve minutes instead of six months.\"\n\n\"I'll use a representative workload — a three-tier line-of-business app: two app servers, a database, shared storage. Tell me if that's not representative of what's hardest in your estate, and I'll pick something else.\"\n\n*[Pause. Let him name the workload. Use his answer.]*\n\n---\n\n**Beat 1 — The perimeter exists before the workload does (2 min)**\n\n*[Show the resource hierarchy: Organization → Folder → landing project.]*\n\n\"This is the part that's different from what you have today. The perimeter isn't something we configure on the VMs after they land. It's a project that already has the rules attached before anything is inside it.\"\n\n*[Show org policy constraints on the folder: restricted external IPs, required OS Login, allowed regions, restricted shared VPC subnets.]*\n\n\"Four constraints, inherited. Nothing that lands in this folder can get a public IP. Nothing can be created outside your approved regions. Every VM gets identity-based SSH — no key files floating in a share. A migration engineer cannot violate these by accident, and cannot violate them on purpose either.\"\n\n**The governance point:** \"Today, your failover runbook depends on someone doing the right thing at 3 a.m. This depends on nobody being able to do the wrong thing at any hour.\"\n\n---\n\n**Beat 2 — The workload lands inside it (3 min)**\n\n*[Show Migrate to Virtual Machines: the source group already replicating, cut over the app tier.]*\n\n\"Replication has been running against the source. I'm cutting over now.\"\n\n*[Cut over. While it runs, keep talking — don't narrate the spinner.]*\n\n\"Two things worth watching. First, this is a cutover, not a rebuild — the disk image is the one your team already patches. Second, watch where it lands.\"\n\n*[VM appears. Show: no external IP. OS Login enforced. Correct subnet. Labels applied automatically.]*\n\n\"I didn't configure any of that. The perimeter did. At 620 VMs, that's the difference between governance and 620 opportunities to get it wrong.\"\n\n---\n\n**Beat 3 — Break it, on camera (3 min)**\n\n*[This is the beat that closes. Do it live, do not pre-record it.]*\n\n\"Now let me try to do what a hurried engineer does during a failover.\"\n\n1. *[Attempt to assign an external IP to the migrated VM.]* → **Denied.** Show the policy violation message naming the constraint.\n2. *[Attempt to create a VM in a non-approved region.]* → **Denied.**\n3. *[Attempt to pull data from the database into a project outside the perimeter — VPC Service Controls.]* → **Denied.** Show the audit log entry: who, what, when, which control stopped it.\n\n\"That third one matters most. The perimeter isn't a network boundary — it's a data boundary. Even a caller with valid credentials can't move that data out.\"\n\n**The governance point:** \"Your question was whether you can govern it. Governing means two things: the wrong thing is blocked, and you can prove it was blocked. That's the log line. It goes to your SIEM, unedited, automatically.\"\n\n---\n\n**Beat 4 — Failover, without the runbook (2 min)**\n\n*[Show the managed instance group / regional configuration for the app tier. Trigger a failure.]*\n\n\"This is the manual step you're trying to remove. I'm killing the primary.\"\n\n*[Show recovery. Show that the replacement instance inherited every constraint from Beat 1.]*\n\n\"The recovered instance is governed identically to the one that died. That's the property that doesn't exist in a manual process — your failover target drifts from your primary, and the drift is invisible until an auditor finds it.\"\n\n---\n\n**Close (60 seconds) — hand it back to him**\n\n\"So: one workload, inside a perimeter that blocked three violations and self-healed once, with an audit trail for all of it.\"\n\n\"Two honest caveats before you decide anything. Not all 620 will cut over this cleanly — you'll have a tail of appliances, licensed workloads, and things with hardware dependencies, and we should find that tail early rather than late. And the org policies I showed are mine, not yours; the real work is translating your actual control requirements into those constraints.\"\n\n**Then ask — and stop talking:**\n\n\"Which of the three blocks I just showed you is the one your auditors would care about most? And what's in your estate that you think *wouldn't* survive this?\"\n\n*[His answer to the second question is the scoping conversation. Don't fill the silence.]*\n\n---\n\n**Notes for the presenter**\n\n- If asked \"can you do this for all 620 today\" — **no.** The answer is: we do a wave-based assessment first, and the first wave is roughly this workload. Overpromising here loses the VP.\n- If the live policy-violation demo fails to trigger, say so out loud and show the audit log instead. Do not pretend it worked.\n- The demo runs on a pre-staged environment with replication already warm; cutover from cold would exceed the session window. Say this if asked — it is a demo convenience, not a product claim.\n- Cloud platform assumed to be Google Cloud. If the target is AWS or Azure, the beats map to Control Tower/SCPs or Management Groups/Azure Policy respectively — the structure of the script holds, the control names change.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16334,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 2102,
+    "output_tokens_details": {
+      "thinking_tokens": 208
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16334,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2102,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16334,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16334
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.22114650000000002,
+  "duration_ms": 38593,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

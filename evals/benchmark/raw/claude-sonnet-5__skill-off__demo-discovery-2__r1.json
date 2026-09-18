@@ -1,0 +1,52 @@
+{
+  "run_id": "2d6b19e0-aea1-48dd-8535-8f45c58c4cbb",
+  "timestamp": "2026-09-18T10:02:52.138635+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "**Live Demo Script: \"Governable Perimeter\" (12–15 min)**\n\n**Setup framing (30 sec)**\n\"You told us the goal isn't automation for its own sake — it's a perimeter you can actually govern. So instead of a tour, I'm going to show you exactly that: one project boundary, applied to a workload representative of your 620-VM estate, with the controls your team would actually rely on during a failover event.\"\n\n**Step 1 — Define the governed perimeter (2 min)**\n- Open the target cloud console/IaC repo, show a single project/landing-zone scoped to this workload.\n- Point out: IAM bindings scoped to the project (not org-wide), network boundary (VPC/subnet), and policy guardrails (org policy / SCP equivalents) attached at this perimeter — not per-VM.\n- Say: \"Everything downstream — compute, failover, access — inherits this boundary. This is the unit you'd govern, not 620 individual machines.\"\n\n**Step 2 — Show the representative workload inside it (2 min)**\n- Deploy/point to a workload (VM or managed instance group) already provisioned inside that perimeter.\n- Show its config is inherited, not hand-set: tags, service account, network rules all come from the project, not the instance.\n\n**Step 3 — Trigger a failover event live (4–5 min)**\n- Simulate the failure condition (kill primary instance / force health-check failure).\n- Show automated failover kicking in *within the same governed perimeter* — new instance comes up with identical IAM, network, and policy posture automatically, no manual reconfiguration.\n- Call out explicitly: \"Notice nothing crossed the perimeter boundary — no new IAM grant, no ad hoc network rule, no drift. That's the difference between automating failover and automating failover *inside governance*.\"\n\n**Step 4 — Show the audit trail (2 min)**\n- Pull up the log/policy compliance view showing the failover event, who/what triggered it, and confirmation the perimeter policies were enforced throughout.\n- Say: \"This is what you'd hand to your security or audit team after an incident — not a runbook someone followed, but a system-generated record that the perimeter held.\"\n\n**Step 5 — Scale framing, no live action (1 min)**\n- Show the same project construct as a template/module.\n- Say: \"This is one workload. The pattern is: define the perimeter once, and every workload — whether it's 1 or 600 — inherits the same governance and the same failover behavior. That's how this replaces manual failover across your estate without replacing it with 620 individual configurations to maintain.\"\n\n**Close (30 sec)**\n\"That's the perimeter you asked for — not a policy document, a working boundary that survives a failover event intact. Where would you want to see this stress-tested first — network isolation, IAM drift, or scale of rollout?\"",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19233,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 930,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19233,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 930,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19233,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19233
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0893838,
+  "duration_ms": 15443,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

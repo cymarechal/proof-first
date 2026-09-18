@@ -1,0 +1,52 @@
+{
+  "run_id": "5c3ff626-26e1-4a86-be8f-4f114b9ce8c0",
+  "timestamp": "2026-09-18T10:25:47.213663+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**Artifact family: an RFP answer.**\n\nBefore drafting I ask once for the customer source material for this response: the full RFP question text and its sub-clauses, any discovery or architecture notes, and the stated requirements or evaluation criteria. None was supplied for this task, so the customer-vocabulary retention rule cannot fire and every term below is judged by the deletion test alone. The draft follows regardless.\n\n---\n\nToday your load-matching and carrier-settlement systems run on 28 Microsoft SQL Server instances across 620 Hyper-V virtual machines, and your next compliance audit opens in six months. That audit will examine an estate that is still on-premises unless migration evidence exists by then. We propose a wave-based migration that puts auditable control evidence in your hands before the audit opens, and moves the settlement path last, not first.\n\n**Sequencing principle.** We migrate in the order of blast radius, lowest first. Wave 0 is non-production and internal tooling. Waves 1 to n are load-matching services. The carrier-settlement path migrates last, because a settlement error is a cash error [PF-2.1 GAP: the cost of a mis-settled carrier payment run — you have not stated a figure and we will not estimate one].\n\n**Phase 1 — Discovery and dependency mapping (months 1–3).** We inventory all 620 virtual machines and all 28 SQL Server instances using Google Cloud Migration Center and StratoZone-class assessment. The output is a dependency graph, a wave plan, and a per-database compatibility report. You need to be able to prove that every workload has a named owner and a named target before any workload moves; Migration Center's assessment export is the means of proving it.\n\n**Phase 2 — Landing zone and audit evidence (months 2–6).** We build the Google Cloud landing zone: VPC design, IAM, org policy, Cloud KMS, logging and Cloud SQL for PostgreSQL instances. We deliver the control evidence pack for your audit window in this phase, ahead of the audit opening [PF-2.17 REVIEW (compliance): the specific control framework and clauses your audit tests — name them and we will map evidence clause by clause rather than claiming coverage].\n\n**Phase 3 — Data layer conversion (months 4–14).** SQL Server to PostgreSQL is a heterogeneous conversion, not a lift. We convert schema and stored procedures with an automated converter plus manual remediation, then run Google Cloud Database Migration Service for continuous change data capture from each source instance. Each converted database runs in parallel against production traffic shadow reads before any cutover. Conversion effort is driven by stored-procedure and T-SQL surface area [PF-1.13 GAP: procedure count, T-SQL line count and CLR/Service Broker usage per instance — not supplied, and these drive the conversion estimate inside the $4,200,000 envelope].\n\n**Phase 4 — Compute migration (months 6–20).** We move virtual machines to Google Compute Engine in waves using Migrate to Virtual Machines, with agentless replication from Hyper-V. Each wave runs a test clone in Google Cloud before the production wave is scheduled.\n\n**Cutover plan.** Every wave follows the same five gates.\n\n1. *Dress rehearsal.* We execute the full cutover against a test clone and record the elapsed time. That measured time, not an estimate, sets the production window.\n2. *Go/no-go.* We hold a go/no-go review against written exit criteria: replication lag at zero, reconciliation queries matched, rollback tested, owners on the bridge.\n3. *Freeze and drain.* You freeze writes for the wave. Database Migration Service drains outstanding change data capture, and we verify row counts and checksums between source and target.\n4. *Flip.* We repoint application connection strings and DNS to the Google Cloud endpoint. Traffic moves; the source stays running and intact.\n5. *Rollback window.* The on-premises instance remains the standby for a defined hold period after each flip, with reverse replication in place [PF-2.14 REVIEW (commitment): the hold-period duration and any recovery point or recovery time target — we will not state a number you could hold us to before we have measured your replication lag].\n\nThe settlement cutover is scheduled outside any settlement run, agreed with your settlement operations owner [PF-1.25 GAP: the role accountable for settlement runs and their stated cycle calendar — not supplied].\n\n**Phase 5 — Hypercare and decommission (months 20–24).** We run hypercare per wave, then decommission Hyper-V capacity only after you sign wave acceptance. Decommissioning on your signature, not ours, is what releases the on-premises run-rate saving [PF-1.2 GAP: current annual run-rate for the 620-VM Hyper-V estate and SQL Server licensing — you have not stated it, so we cannot state the saving].\n\n[PF-1.17 GAP: a named, comparable SQL Server–to–Cloud SQL for PostgreSQL migration of similar scale that this vendor can produce as a reference — none supplied for this response.]\n\n[PF-2.13 GAP: a differentiator — no evidence was supplied of anything this vendor does that another bidder answering this question could not also claim.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Cost of a mis-settled carrier payment run | PF-2.1 | Buyer's stated financial exposure per settlement error |\n| Audit control framework and clauses | PF-2.17 | Named framework and clause list, so evidence is mapped not asserted |\n| Stored-procedure and T-SQL surface area | PF-1.13 | Per-instance procedure count, T-SQL volume, CLR/Service Broker usage |\n| Rollback hold period, RPO/RTO | PF-2.14 | Measured replication lag before any committed number is offered |\n| Settlement owner and cycle calendar | PF-1.25 | Accountable role and settlement run schedule |\n| On-premises run-rate baseline | PF-1.2 | Annual Hyper-V and SQL Server licensing/run cost |\n| Comparable migration reference | PF-1.17 | A real, nameable prior engagement plus disclosure permission |\n| Differentiator | PF-2.13 | Evidence of a capability a competing bidder could not also claim |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26244,
+    "cache_read_input_tokens": 37540,
+    "output_tokens": 3379,
+    "output_tokens_details": {
+      "thinking_tokens": 1046
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26244,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3176,
+        "cache_read_input_tokens": 27047,
+        "cache_creation_input_tokens": 9690,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9690
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.365705,
+  "duration_ms": 52995,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

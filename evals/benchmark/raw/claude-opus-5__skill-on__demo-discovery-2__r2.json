@@ -1,0 +1,52 @@
+{
+  "run_id": "0120720c-b5e4-4925-a5c4-1909ea71276e",
+  "timestamp": "2026-09-18T10:34:00.215421+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "**Artifact family: Demo and discovery material.** Scope note: you asked for the script only, so the discovery notes, proof-of-concept success criteria, and follow-up that this family normally carries before and after a script are not included here.\n\nCustomer source material used for this task: the VP of Infrastructure's discovery words, the 620-virtual-machine count, and the manual failover process. Nothing else was supplied, so every other term is judged by the deletion test alone. Send me the discovery notes and the workload inventory and I will tighten the gaps below.\n\n---\n\n# Live demo script — governed project perimeter\n\n## Opening, no screen (90 seconds)\n\n\"In discovery you said you want a perimeter we can actually govern [PF-3.3: customer's term, retained — VP of Infrastructure, discovery]. Today you govern 620 virtual machines by hand. Failover is a runbook a person runs under pressure. [PF-2.11 GAP: the current failover duration and the staff hours per failover event were never captured — we need both before we quantify the change.]\n\nSo I am not going to tour the product. I am going to take one of your workloads, put a perimeter around it, and then try to break the rules in front of you.\n\nHere is the contrast I want you to hold. Today a person decides whether a failover follows your standard. After this demo, the perimeter decides, and the person cannot override it silently.\"\n\n## Step 1 — You choose the workload (2 minutes)\n\n\"Name one workload from the 620 that fails over manually today.\"\n\n[PF-2.13 GAP: no representative workload was identified in discovery, so this script cannot name the application, its virtual-machine count, or its recovery objective.]\n\nI build the perimeter against your named workload live. I do not switch to a prepared sample.\n\n## Step 2 — Define the perimeter in your own terms (5 minutes)\n\nOn screen I create the project perimeter on the target platform [PF-2.13 GAP: the target cloud platform was never named in discovery — confirm it before this demo runs].\n\nI set four controls, and I read each one aloud as I set it:\n\n1. Which regions this workload may run in.\n2. Who may create compute inside the perimeter.\n3. Whether failover runs automatically or waits for an approval.\n4. Where the audit record of every failover lands.\n\nYou tell me if those four are the right four. If one is wrong, I change it on screen.\n\n## Step 3 — Break it deliberately (6 minutes)\n\nThis is the part that matters to you.\n\nI attempt three changes your current process allows a person to make:\n\n- I deploy a virtual machine into an unapproved region. The perimeter refuses it. You see the denial and the reason.\n- I remove the failover policy from the workload. The perimeter refuses it.\n- I fail the workload over. The perimeter executes it and writes the audit record.\n\n\"Point at the screen when something differs from how your estate behaves today.\"\n\n## Step 4 — Show the record, not the dashboard (4 minutes)\n\nI open the audit trail for what we just did. Every attempt appears, allowed and denied alike, with the actor and the timestamp.\n\n\"This is the evidence a governed perimeter produces. Tell me who in your organisation asks you for it, and how often.\"\n\n## Step 5 — Scale question, answered honestly (3 minutes)\n\n\"You have 620 virtual machines. This demo governed one workload.\"\n\nI will not claim the pattern scales to your full estate on the strength of one workload. [PF-2.13 GAP: no comparable governed-perimeter rollout at 620-virtual-machine scale is attached to this script — the proof point does not exist in the material supplied.] [PF-2.13 GAP: no differentiator is stated in this script, because nothing supplied distinguishes this approach from an alternative bidder's.]\n\nWhat I will do is propose a proof of concept on three of your workloads, with success criteria we write down and you judge.\n\n## Close (2 minutes)\n\n\"Two questions before we finish.\n\nFirst: is a perimeter you can actually govern what you saw, or did it govern the wrong things?\n\nSecond: which three workloads go into the proof of concept?\"\n\n[PF-2.14 REVIEW (commitment): the proof-of-concept offer reads as a commitment to scope and timing — confirm both before this script is used live.]\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| `[PF-3.3: customer's term, retained — VP of Infrastructure, discovery]` | PF-3.3 | Confirm the quote is verbatim, and get the speaker's name for attribution. |\n| `[PF-2.11 GAP: current failover duration and staff hours per event]` | PF-2.11 | Measure or obtain the buyer's own figures for manual failover time and effort. |\n| `[PF-2.13 GAP: representative workload not identified]` | PF-2.13 | Pick the workload with the buyer before the session, including its virtual-machine count and recovery objective. |\n| `[PF-2.13 GAP: target cloud platform not named]` | PF-2.13 | Confirm which platform the demo runs on. |\n| `[PF-2.13 GAP: no comparable governed-perimeter rollout at 620-VM scale]` | PF-2.13 | Supply a named, checkable comparable, or keep the honest limit in Step 5. |\n| `[PF-2.13 GAP: no differentiator stated]` | PF-2.13 | Supply evidence of what this approach does that a named alternative does not. |\n| `[PF-2.14 REVIEW (commitment): proof-of-concept scope and timing]` | PF-2.14 | Confirm the offer with whoever owns delivery scope before the session. |",
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 31628,
+    "cache_read_input_tokens": 74107,
+    "output_tokens": 3791,
+    "output_tokens_details": {
+      "thinking_tokens": 1515
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 31628,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3200,
+        "cache_read_input_tokens": 36635,
+        "cache_creation_input_tokens": 5486,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 5486
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.4481385,
+  "duration_ms": 56887,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

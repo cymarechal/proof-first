@@ -1,0 +1,52 @@
+{
+  "run_id": "c93000d7-e09b-4b2a-8cfe-809aeeda6c82",
+  "timestamp": "2026-09-18T09:58:22.426432+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "Sarah, the technology cost pressure and the DOT audit clock are converging into a single decision point, and this migration is designed to resolve both at once. Retiring 28 on-premises SQL Server instances and 620 Hyper-V virtual machines in favor of Google Compute Engine and Cloud SQL for PostgreSQL removes the fixed costs of hardware refresh, data center footprint, licensing, and the staffing overhead required to keep that environment patched and available — costs that sit inside your current $1,850,000 annual technology spend regardless of load volume. Over the two-year, $4,200,000 programme, expect the savings to build gradually rather than arrive immediately: year one carries parallel-running costs as workloads migrate in waves, with the steeper reduction in run-rate spend materializing in year two once legacy infrastructure is decommissioned and Cloud SQL's managed operations replace in-house database administration. You should treat the programme's total cost against the $3,700,000 you'd otherwise spend over the same two years as the honest baseline, with full-year savings becoming visible from year three onward.\n\nOn the compliance side, this migration works in your favor only if sequencing is handled deliberately, given your six-month audit window. The load-matching and carrier-settlement systems most relevant to DOT scrutiny — records retention, access controls, audit logging — should be prioritized early in the migration order, not left for later waves, so that by the time auditors arrive you're demonstrating a stable, well-documented environment rather than a system mid-transition. Google Cloud's built-in audit logging, IAM controls, and Cloud SQL's automated backup and encryption posture can strengthen your compliance evidence, but only if the relevant workloads are already migrated and stabilized before the audit opens, not still in flight. Expect the programme plan to name which systems move in which order and to flag any point where migration activity could overlap with the audit window; if that overlap can't be avoided for a given system, we recommend delaying its migration rather than risking an audit finding of a system in transition.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19361,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 669,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19361,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 669,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19361,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19361
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0872858,
+  "duration_ms": 12741,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

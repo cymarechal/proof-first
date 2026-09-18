@@ -1,0 +1,52 @@
+{
+  "run_id": "c2bb41c5-007f-4e09-a9e3-cd0375a3513a",
+  "timestamp": "2026-09-18T10:01:45.729289+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-2",
+  "scenario_prompt": "Write the risk section of a solution proposal, naming each material risk and what is done about it, and stating plainly any risk that cannot be fully retired rather than omitting it. Context: the buyer's RFP requires a SOC 2 Type II report and the bidder holds only a SOC 2 Type I report today, with the Type II observation window closing after the RFP's submission date; separately, the bidder's own most comparable prior migration took 11 months, close to the buyer's 6-month compliance-audit deadline. Return only the risk section text.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "## Risks and Mitigations\n\n**SOC 2 Type II gap.** The RFP requires a SOC 2 Type II report; we currently hold only a SOC 2 Type I report. Our Type II observation window closes after the RFP's submission date, meaning we cannot produce a Type II report by submission. To address this, we will submit our current Type I report together with evidence of the active Type II observation period (start date, scope, and auditor engagement letter) and commit to delivering the completed Type II report on [date]. We will also make our auditor available to the buyer's compliance team for direct verification of the observation period's progress and expected completion. We state plainly: this risk cannot be fully retired before submission — a compliant Type II report will not exist until the observation window closes and the audit is completed, and this remains contingent on the auditor's timeline, which is outside our direct control.\n\n**Migration timeline vs. compliance-audit deadline.** The buyer's 6-month compliance-audit deadline is tight against our track record: our most comparable prior migration took 11 months. To reduce this risk, we will front-load the highest-risk migration steps, run compliance-audit preparation in parallel with migration rather than after it, and add dedicated senior migration staff beyond our standard team allocation. We will also propose a phased delivery plan so the compliance-relevant scope is completed and audit-ready before the full migration finishes. We state plainly: even with these mitigations, our own delivery history suggests a material risk of exceeding the 6-month deadline, and we cannot commit to full completion within that window with high confidence based on past performance.\n\n**Residual exposure.** Both risks above stem from constraints substantially outside our control — the auditor's observation-period timeline and the inherent complexity of large-scale migrations. We recommend the buyer weigh these risks explicitly in evaluation rather than treat them as fully mitigated, and we are open to structuring contractual milestones, holdbacks, or phased acceptance criteria tied to Type II delivery and migration completion to align incentives around these specific risks.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19258,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 670,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19258,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 670,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19258,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19258
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.08688380000000001,
+  "duration_ms": 10566,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

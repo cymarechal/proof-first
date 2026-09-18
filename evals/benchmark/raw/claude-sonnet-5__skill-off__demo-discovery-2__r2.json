@@ -1,0 +1,52 @@
+{
+  "run_id": "f4755072-00bd-4b22-8aaa-18131bb5c044",
+  "timestamp": "2026-09-18T10:03:10.973746+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": null,
+  "repeat": 2,
+  "text": "**Live Demo Script: Governed Project Perimeter for Failover**\n\n---\n\n**Setup line (before you start):**\n\"You told us you want a perimeter you can actually govern — not a spreadsheet of manual failover runbooks across 620 VMs. I'm going to show you exactly that: one governed project boundary, applied to a workload that looks like one of yours, with policy enforced automatically instead of by hand.\"\n\n---\n\n**Step 1 — Show the ungoverned baseline (30 sec)**\n- Pull up a representative workload (e.g., a 3-tier app: web, app, DB tier) sitting in a generic, unbounded project/subscription.\n- \"This is roughly what manual failover looks like today: no enforced boundary, no consistent policy, someone has to remember which rules apply during a failover event.\"\n\n**Step 2 — Apply the governed perimeter (2 min)**\n- Create/select a project-level policy perimeter (org policy / landing zone construct) scoped to this workload.\n- Apply, live, in front of them:\n  - **Identity & access boundary** — show the perimeter blocking an out-of-scope identity from touching the workload.\n  - **Network boundary** — show egress/ingress restricted to only what's declared for this project.\n  - **Resource location/type constraints** — show a policy that would reject a resource created outside approved region/type (attempt to spin one up outside the boundary, show it denied).\n- \"This isn't a firewall rule someone wrote once — it's a perimeter enforced by policy, attached to the project itself. It travels with the workload.\"\n\n**Step 3 — Trigger the failover scenario (1–2 min)**\n- Simulate a zone/region failure on the primary instance of the representative workload.\n- Show the failover executing to the secondary — and critically, show the governed perimeter automatically applying to the failover target too (same IAM boundary, same network policy, same constraints) without anyone manually re-applying rules.\n- \"In your current environment, this step is where a human has to remember to re-apply every control by hand, on 620 VMs, under pressure. Here, the perimeter is already there — failover just moves inside it.\"\n\n**Step 4 — Prove governance, not just failover (1 min)**\n- Pull up the policy/audit view: show a single pane listing what's enforced on this project, and an attempted violation logged (from Step 2) as evidence of enforcement, not just intent.\n- \"This is the artifact you'd hand to security or audit: one perimeter, one policy set, one place to prove control — instead of 620 individual configurations to trust.\"\n\n---\n\n**Closing line:**\n\"That's the core of what you asked for: a perimeter that's governed by policy, not by memory — and it holds through the exact event that's causing you pain today, failover. The next step is mapping this same perimeter model across your actual estate segmentation, which we can scope together.\"",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19231,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 930,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19231,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 930,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19231,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19231
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0893758,
+  "duration_ms": 17305,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "a201cbf3-0fc3-4467-9d04-f9aa31809c77",
+  "timestamp": "2026-09-18T10:19:11.260795+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-1",
+  "scenario_prompt": "Write a set of discovery call notes, in the buyer's own words, attributed to the specific people who said them, so a later document can cite this material directly. Context, from a fictional discovery call: the VP of Infrastructure said, 'We need a perimeter we can actually govern -- right now every VM is a snowflake.' The Chief Architect said, 'Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.' The CFO said, 'I'm measured on cost-per-load and a clean audit, not on architecture elegance.' Write these up as discovery notes attributed by role, with a one-line context note for each. Return only the discovery notes text.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "# Discovery Call Notes\n\n**Date:** 2026-09-18\n**Source:** Discovery call, verbatim quotes captured in the buyer's own words\n\n---\n\n### VP of Infrastructure\n\n> \"We need a perimeter we can actually govern — right now every VM is a snowflake.\"\n\n*Context: Raised when describing the current state of the estate; frames the problem as governability and configuration drift rather than capacity or cost.*\n\n---\n\n### Chief Architect\n\n> \"Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.\"\n\n*Context: Offered as a stated preference for the near term; the objection is migration risk and timing against the audit cycle, not the incumbent's technical merits.*\n\n---\n\n### CFO\n\n> \"I'm measured on cost-per-load and a clean audit, not on architecture elegance.\"\n\n*Context: Given when explaining how the decision will be evaluated; names the two metrics the CFO is personally accountable for and rules out architectural argument as a deciding factor.*",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16408,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 333,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16408,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 333,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16408,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16408
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1776615,
+  "duration_ms": 6650,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

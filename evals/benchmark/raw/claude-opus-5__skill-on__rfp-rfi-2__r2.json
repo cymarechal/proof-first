@@ -1,0 +1,52 @@
+{
+  "run_id": "c0c07229-f8b5-4c3d-aa21-3c2cde748afc",
+  "timestamp": "2026-09-18T10:27:21.044380+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-2",
+  "scenario_prompt": "Write the compliance statement section of an RFP response, stating plainly and separately from any persuasive argument whether the proposed approach meets or does not meet a stated buyer requirement. Context: the buyer's RFP requires a SOC 2 Type II report; the bidder currently holds only a SOC 2 Type I report, and its Type II observation window closes after the RFP's 2026-11-15 submission date. State the compliance answer (met or not met, and why) on its own, apart from any argument for why the bidder should still be selected. Return only the compliance statement text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "**Artifact family: an RFP answer.**\n\nCustomer source material for this task means the RFP's requirement text, any security-questionnaire wording, and the bidder's audit documentation. None was supplied here, so the `PF-3.3` provenance override cannot fire and every term is judged by the deletion test alone.\n\n---\n\n## Compliance statement — Security certification requirement\n\n**Requirement:** a SOC 2 Type II report.\n\n**Compliance answer: not met at submission.**\n\nWe hold a SOC 2 Type I report [PF-2.17 REVIEW (compliance): confirm the Type I report's auditor, scope, and report date before this ships]. A Type I report attests to control design at a point in time. The requirement asks for Type II, which attests to operating effectiveness across an observation window.\n\nOur Type II observation window closes after your submission date of 2026-11-15 [PF-2.17 REVIEW (compliance): confirm the window's close date and the expected report issuance date]. We therefore cannot furnish a SOC 2 Type II report with this response, and we do not claim one.\n\n[PF-2.4 GAP: no audit-completion date is stated here, because none was supplied for this task. A committed date would need the auditor's confirmation and would carry a commitment flag under PF-2.14.]\n\nWe make no other representation about this requirement.\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| REVIEW (compliance) — Type I report details | PF-2.17 | Auditor name, report scope, and report date for the held SOC 2 Type I |\n| REVIEW (compliance) — Type II window | PF-2.17 | Confirmed observation-window close date and expected report issuance date |\n| GAP — no audit-completion date | PF-2.4 | Auditor-confirmed completion date, or a decision to state none; any date given becomes a PF-2.14 commitment flag |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26113,
+    "cache_read_input_tokens": 37502,
+    "output_tokens": 790,
+    "output_tokens_details": {
+      "thinking_tokens": 20
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26113,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 634,
+        "cache_read_input_tokens": 27009,
+        "cache_creation_input_tokens": 9597,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9597
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.299651,
+  "duration_ms": 14310,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

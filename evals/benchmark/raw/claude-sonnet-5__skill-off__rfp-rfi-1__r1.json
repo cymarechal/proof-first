@@ -1,0 +1,52 @@
+{
+  "run_id": "7d245926-958e-4f32-b6b2-afcd2843b138",
+  "timestamp": "2026-09-18T09:59:53.239600+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "Migration Approach and Cutover Plan\n\nOur approach follows a phased, risk-managed pattern designed to protect load-matching and carrier-settlement operations — both revenue-critical, transaction-heavy systems — while retiring the 28-instance/620-VM Hyper-V estate within the 24-month, $4.2M programme window, and clearing the compliance audit opening in Q1 2027 with evidence in hand rather than in progress.\n\nPhase 1 — Discovery and Landing Zone (Months 1–3)\nWe inventory all 28 SQL Server instances for schema complexity, cross-database dependencies, T-SQL-specific constructs (CLR, linked servers, proprietary stored procedures), and data volumes, classifying each instance into migration waves by business criticality and technical complexity. In parallel, we stand up the target Google Cloud landing zone: VPC design, IAM, Cloud SQL for PostgreSQL instances sized per workload, GCE compute pools for application tiers, and monitoring/logging baselines. This phase also produces the compliance mapping needed for the upcoming audit — control ownership, data residency, and encryption-at-rest/in-transit configurations validated against current requirements before any production data moves.\n\nPhase 2 — Non-Critical Wave Migration and Pattern Validation (Months 4–9)\nWe migrate lower-risk instances first (reporting, historical/archival data, non-customer-facing services) to validate our schema conversion tooling and ETL pipelines under real conditions. Each instance follows: schema conversion and remediation, dual-write or CDC-based replication to Cloud SQL for PostgreSQL, data validation (row counts, checksums, referential integrity), and application-tier smoke testing on GCE. Lessons from this wave — conversion edge cases, performance tuning for PostgreSQL equivalents of SQL Server-specific behavior — are codified into runbooks before touching load-matching or settlement systems.\n\nPhase 3 — Core System Migration: Load-Matching and Carrier-Settlement (Months 10–18)\nThese systems move under a parallel-run strategy, not a big-bang cutover. Change Data Capture replication keeps the new Cloud SQL environment continuously synchronized with on-premises SQL Server. We run the GCE/Cloud SQL environment in shadow mode — processing live traffic in parallel without serving production decisions — for a minimum validation period per instance (typically 2–4 weeks depending on transaction volume), comparing outputs between old and new systems to catch discrepancies in settlement calculations or match logic before they reach production.\n\nCutover Plan\nCutover for each core instance follows a scripted, reversible sequence:\n1. Freeze window announced; final transactions drained from on-premises.\n2. Final delta sync via CDC to close the replication gap.\n3. Automated validation suite runs (record counts, financial reconciliation totals for settlement data, referential integrity checks) with sign-off gates before traffic redirect.\n4. DNS/connection-string cutover routes application traffic to GCE/Cloud SQL.\n5. On-premises SQL Server instance kept in read-only standby for a defined rollback window (typically 5 business days) — if validation post-cutover surfaces an issue, we reverse traffic routing rather than attempting forward fixes under pressure.\n6. Rollback window closes only after joint sign-off from operations and compliance stakeholders.\n\nWe stagger core-system cutovers rather than migrating load-matching and settlement simultaneously, so that a rollback on one never blocks the other, and so operational teams are never managing two live cutovers at once.\n\nPhase 4 — Decommission, Optimization, and Compliance Close-Out (Months 19–24)\nOnce all 28 instances are validated in production on Cloud SQL for PostgreSQL, we decommission the Hyper-V estate in a controlled sequence, retaining encrypted backups per retention policy. Remaining months are reserved for performance tuning, cost optimization on GCE sizing, and finalizing the compliance evidence package (audit trails, access logs, data lineage documentation) ahead of the audit.\n\nRisk Controls Throughout\n- No core system cutover proceeds without a rehearsed dry run in a non-production environment.\n- Every cutover has a pre-agreed rollback trigger and owner, decided before the freeze window, not during it.\n- Compliance requirements are treated as a Phase 1 design input, not a Phase 4 checklist, so the audit finds a migration already built to standard rather than retrofitted to it.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19303,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 1520,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19303,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1520,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19303,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19303
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0955638,
+  "duration_ms": 21986,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

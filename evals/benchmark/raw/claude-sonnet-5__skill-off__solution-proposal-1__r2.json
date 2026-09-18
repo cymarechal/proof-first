@@ -1,0 +1,52 @@
+{
+  "run_id": "02f53a25-be16-4b6b-ac2b-7cc9a95dd52c",
+  "timestamp": "2026-09-18T10:01:25.014607+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": null,
+  "repeat": 2,
+  "text": "Migrating the current SQL Server estate on Hyper-V to Google Cloud\n\nThe current estate is a Hyper-V farm running 620 virtual machines, of which 28 host Microsoft SQL Server instances. This concentration is the crux of the migration: while most of the 620 VMs represent portable, largely stateless compute that can be re-platformed with limited disruption, the 28 SQL Server instances carry the data gravity, licensing weight, and operational risk that will shape the pace and sequencing of the entire migration.\n\nThe migration proceeds along two coupled tracks rather than a single lift. The first track moves compute out of Hyper-V and onto Google Compute Engine, re-hosting the bulk of the VM estate as GCE instances sized to match existing workload profiles. This track is largely mechanical: it preserves the current architecture, applications, and network relationships, and buys time and confidence before touching the harder problem of the data layer. The second, more consequential track re-platforms the 28 SQL Server instances onto Cloud SQL for PostgreSQL. This is not a rehost but a re-platform: schemas, stored procedures, and application data-access code are assessed instance by instance, converted where compatible, and validated against production workloads before cutover. Each SQL Server instance is migrated on its own timeline, sequenced by application criticality and schema complexity, so that the highest-risk databases are proven out early rather than left for last.\n\nAs these two tracks converge, the target environment takes shape as a single governed GCP project rather than an open extension of the current network. Because the migrated estate will hold data that previously lived inside a Hyper-V perimeter with its own access controls, the new project is enclosed from day one by VPC Service Controls, establishing a service perimeter around the GCE instances and Cloud SQL databases. This perimeter becomes the governance boundary that the old Hyper-V network implicitly provided through physical and network isolation — except now it is explicit, auditable, and enforced at the API layer rather than assumed from infrastructure topology.\n\nThe narrative arc, then, is one of substitution followed by containment: Hyper-V's virtualization layer is substituted by Compute Engine, SQL Server's licensed engine is substituted by managed, open-source-compatible Cloud SQL for PostgreSQL, and the implicit isolation of an on-premises estate is substituted by an explicit, policy-enforced perimeter. The buyer ends the migration not simply with equivalent infrastructure in a different data center, but with a smaller operational surface, a modernized data layer free of SQL Server licensing exposure, and a governance model that is stronger and more legible than the one it replaces.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19252,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 874,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19252,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 874,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19252,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19252
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0888998,
+  "duration_ms": 14333,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

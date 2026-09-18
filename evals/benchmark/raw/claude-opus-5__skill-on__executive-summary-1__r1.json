@@ -1,0 +1,52 @@
+{
+  "run_id": "b79ec17d-55bb-4896-b82c-06adc4351325",
+  "timestamp": "2026-09-18T10:22:35.598429+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**Artifact family: executive summary.**\n\nCustomer source material for this task means the RFP question text, discovery notes, or stated requirements from the brokerage. Please send it; none was supplied here, so the provenance override cannot fire and every term is judged by the deletion test alone.\n\nYou are measured on two numbers: a $1,850,000 annual technology spend you must reduce, and a clean DOT compliance audit that opens in six months. Both run through the same estate. Your load-matching and carrier-settlement systems sit on 28 Microsoft SQL Server instances across 620 Hyper-V virtual machines. Today you fund that hardware and those licences whether the freight moves or not. After migration to Google Compute Engine, with the data layer on Cloud SQL for PostgreSQL, you fund capacity you consume and Google operates the database platform. The capability you need is the ability to retire fixed infrastructure cost without pausing settlement operations. Compute Engine and Cloud SQL are the means of delivering it. `[PF-2.11 GAP: no run-rate breakdown of the $1,850,000 was supplied, so the addressable portion and the post-migration figure are unmeasured — a spend baseline by workload is needed before any saving is stated.]`\n\nWe recommend a two-year programme at $4,200,000. That figure exceeds your current annual technology spend, so the case rests on run-rate reduction after cutover, not during the programme. The DOT audit opens in six months, inside year one, and your systems will still be mid-migration then. We will sequence carrier-settlement records first so the audit reads one system of record, not two. `[PF-2.14 REVIEW (commitment): the settlement-first sequencing and the six-month readiness date read as a delivery commitment and need confirmation against a signed plan.]` `[PF-2.17 REVIEW (compliance): any statement that this programme satisfies DOT record-retention or audit controls is external state we have not verified.]` `[PF-1.17 GAP: no comparable freight-brokerage migration of this size is attached to the capability claim above — a named, checkable reference is needed.]` `[PF-2.13 GAP: the additive sweep found no differentiator — nothing here states what this vendor does that another bidder could not also propose.]`\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP: no run-rate breakdown of the $1,850,000 | PF-2.11 | Spend baseline by workload, and the measured post-migration figure |\n| REVIEW (commitment): settlement-first sequencing, six-month readiness | PF-2.14 | Confirmation against a signed delivery plan |\n| REVIEW (compliance): DOT audit readiness | PF-2.17 | Verification of which DOT controls the target architecture actually meets |\n| GAP: no comparable migration attached | PF-1.17 | A named freight-brokerage reference of comparable scale, with disclosure permission |\n| GAP: no differentiator present | PF-2.13 | An evidenced statement of vendor capability no other bidder could claim |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26179,
+    "cache_read_input_tokens": 37598,
+    "output_tokens": 2108,
+    "output_tokens_details": {
+      "thinking_tokens": 967
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26179,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1958,
+        "cache_read_input_tokens": 27105,
+        "cache_creation_input_tokens": 9567,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9567
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.33330899999999997,
+  "duration_ms": 35792,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

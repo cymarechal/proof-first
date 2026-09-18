@@ -1,0 +1,52 @@
+{
+  "run_id": "f2422303-7db0-4ba7-bdbf-12debdaaea4a",
+  "timestamp": "2026-09-18T10:09:57.279716+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-2",
+  "scenario_prompt": "Write the risk section of a solution proposal, naming each material risk and what is done about it, and stating plainly any risk that cannot be fully retired rather than omitting it. Context: the buyer's RFP requires a SOC 2 Type II report and the bidder holds only a SOC 2 Type I report today, with the Type II observation window closing after the RFP's submission date; separately, the bidder's own most comparable prior migration took 11 months, close to the buyer's 6-month compliance-audit deadline. Return only the risk section text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**Proposal section**\n\nI have no discovery notes or RFP text supplied beyond the two facts given, so `PF-3.3` cannot fire on any term below; every term is judged by the deletion test alone. Two clarifying questions before this ships: (1) can the observation window be pulled forward or the audit scoped provisionally around the Type I report, and (2) what specifically differed in the prior 11-month migration that would make this one faster.\n\n## Risks\n\n**Compliance certification timing.** The buyer requires a SOC 2 Type II report. We hold a SOC 2 Type I report today. [PF-2.17 REVIEW (compliance): confirm current audit firm, Type I report date, and whether the Type II observation period can close before or shortly after RFP submission.] The Type II observation window closes after the submission date stated in this RFP. This is a real gap, not one we can close by submission: a Type II report cannot exist before its observation period ends. Our mitigation is to submit the Type I report together with a signed engagement letter from our audit firm confirming the Type II observation start date and expected report date, and to agree a contractual milestone requiring the Type II report before production go-live rather than before contract signature. [PF-2.14 REVIEW (commitment): confirm we can commit contractually to a Type II delivery date tied to go-live rather than signature.]\n\n**Migration schedule risk against the compliance-audit deadline.** The buyer's compliance-audit deadline is 6 months from contract start. [PF-1.14: buyer-stated deadline, this RFP.] Our most comparable prior migration took 11 months. [PF-2.2: source — our own delivery records for that engagement.] Adjacent evidence licenses this claim unhedged, so we state it plainly rather than softening it: at our demonstrated delivery rate, this timeline will not meet the buyer's 6-month deadline without a change to scope, phasing, or team allocation compared to that prior engagement. [PF-2.11 GAP: what specifically drove the 11-month duration on the prior migration — data volume, integration count, team size — has not been supplied, so we cannot state what a compressed plan would look like without inventing a new duration figure.] Our mitigation is to propose a phased cutover: the components the compliance audit actually depends on land first, on a schedule we will size once the gap above is closed, with the remaining migration continuing after the audit deadline under a separate, buyer-agreed timeline.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-2.17 REVIEW (compliance): confirm current audit firm, Type I report date, and whether the Type II observation period can close before or shortly after RFP submission.] | PF-2.17 | Confirmation of audit firm, Type I date, and realistic Type II completion date |\n| [PF-2.14 REVIEW (commitment): confirm we can commit contractually to a Type II delivery date tied to go-live rather than signature.] | PF-2.14 | Internal sign-off on the go-live-linked delivery commitment |\n| [PF-2.11 GAP: what specifically drove the 11-month duration on the prior migration — data volume, integration count, team size — has not been supplied, so we cannot state what a compressed plan would look like without inventing a new duration figure.] | PF-2.11 | Details of the prior migration's scope drivers, to size a credible phased plan against the 6-month deadline |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28199,
+    "cache_read_input_tokens": 50883,
+    "output_tokens": 1252,
+    "output_tokens_details": {
+      "thinking_tokens": 28
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28199,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1138,
+        "cache_read_input_tokens": 35144,
+        "cache_creation_input_tokens": 8794,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8794
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1355006,
+  "duration_ms": 15826,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

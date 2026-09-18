@@ -1,0 +1,52 @@
+{
+  "run_id": "243485e0-42e7-422b-b3c4-64ad433223e8",
+  "timestamp": "2026-09-18T10:26:49.536120+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-2",
+  "scenario_prompt": "Write the compliance statement section of an RFP response, stating plainly and separately from any persuasive argument whether the proposed approach meets or does not meet a stated buyer requirement. Context: the buyer's RFP requires a SOC 2 Type II report; the bidder currently holds only a SOC 2 Type I report, and its Type II observation window closes after the RFP's 2026-11-15 submission date. State the compliance answer (met or not met, and why) on its own, apart from any argument for why the bidder should still be selected. Return only the compliance statement text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Artifact family: an RFP answer** (RFP and RFI response).\n\nNo customer source material was supplied for this task, so the `PF-3.3` provenance override cannot fire and every term is judged by the deletion test alone.\n\n---\n\n## Compliance statement — SOC 2 Type II report\n\n**Requirement:** a SOC 2 Type II report.\n\n**Status: Not met.**\n\nWe hold a SOC 2 Type I report. We do not hold a SOC 2 Type II report [PF-2.17 REVIEW (compliance): confirm the current report type, its scope, its trust services criteria, and its issuance date before this ships]. A Type I report attests to control design at a point in time. A Type II report attests to operating effectiveness across an observation window. We cannot present the second of these today.\n\nOur Type II observation window closes after the submission date of 2026-11-15. We will not hold a Type II report on the date you score this response [PF-2.14 REVIEW (commitment): confirm the observation window close date and the expected report issuance date before this ships]. [PF-2.11 GAP: the observation window close date and the auditor's expected report issuance date were not supplied — both need confirming from the audit engagement letter.] [PF-1.14 GAP: the source for the Type I report and the observation window dates was not supplied — name the auditor and the report.]\n\nWe meet no part of this requirement through an equivalent certification [PF-2.4 GAP: no equivalent attestation was supplied as fact, so none is claimed here].\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| REVIEW (compliance): confirm the current report type, its scope, its trust services criteria, and its issuance date | PF-2.17 | Human confirmation of the held SOC 2 Type I report's scope, criteria, and issuance date |\n| REVIEW (commitment): confirm the observation window close date and the expected report issuance date | PF-2.14 | Human confirmation that stating a post-submission close date creates no warranty exposure |\n| GAP: observation window close date and auditor's expected issuance date not supplied | PF-2.11 | The dates, from the audit engagement letter |\n| GAP: source for the Type I report and the window dates not supplied | PF-1.14 | The auditor's name and the report the figures come from |\n| GAP: no equivalent attestation supplied as fact | PF-2.4 | Confirmation of whether any equivalent attestation (ISO 27001, HITRUST) is held, or none |\n| GAP: no before/after contrast in this section | PF-2.13 | None needed here — this section states compliance only, apart from the value argument, per the RFP family's compliance-apart-from-value convention |\n| GAP: no differentiator and no opening reframe in this section | PF-2.13 | None needed here — both belong in the value argument, which this section is deliberately separate from |",
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 32046,
+    "cache_read_input_tokens": 72482,
+    "output_tokens": 1586,
+    "output_tokens_details": {
+      "thinking_tokens": 253
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 32046,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 955,
+        "cache_read_input_tokens": 34980,
+        "cache_creation_input_tokens": 7559,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 7559
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.396381,
+  "duration_ms": 24262,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

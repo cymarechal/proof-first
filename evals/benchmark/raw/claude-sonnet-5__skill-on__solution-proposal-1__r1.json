@@ -1,0 +1,52 @@
+{
+  "run_id": "10425e5c-39a5-4fda-ace8-812999854c4d",
+  "timestamp": "2026-09-18T10:08:53.358096+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**Artifact family: a proposal section**\n\nBefore drafting, I should flag: no customer source material (RFP text, discovery notes, buyer's own quoted requirements) was supplied for this task beyond the scale figures given in your prompt. The provenance override (PF-3.3) cannot fire — I have nothing to check a term against — so every term below is judged by the deletion test alone, and the two scale figures (28, 620) are treated as buyer-stated facts you supplied, not as evidence I've independently verified.\n\n---\n\nToday the estate runs 28 SQL Server instances across 620 Hyper-V virtual machines, as stated by the buyer. Every patch cycle, license renewal, and capacity decision runs through this Hyper-V and SQL Server footprint. This proposal describes the shift from that self-managed estate to a governed landing zone on Google Cloud.\n\nThe 620 virtual machines move first, before the data layer changes underneath them. On Google Cloud, they run as-is on Compute Engine, so the workloads that depend on them keep operating during the transition instead of being re-platformed all at once. [PF-2.14 REVIEW (commitment): \"keep operating during the transition\" reads as a continuity guarantee and needs confirmation before it ships as a commitment.]\n\nOnce the compute layer is stable on Compute Engine, the 28 SQL Server instances migrate to Cloud SQL for PostgreSQL. The buyer needs to stop owning patching, backup scheduling, and failover configuration for each instance individually; Cloud SQL for PostgreSQL is the means chosen to deliver that. [PF-1.17: PF-2.4 GAP: no comparable migration (instance count, workload type, cutover duration) has been supplied to evidence this outcome for this buyer's SQL Server version and workload mix.]\n\nThe 28-instance, 620-VM baseline above is the only measure currently captured. [PF-2.11: PF-2.4 GAP: no baseline exists yet for downtime tolerance, current patch-cycle duration, or licensing run-rate — these would need to be measured before a \"before vs. after\" cost figure can be stated.]\n\nThe new Google Cloud project is scoped behind VPC Service Controls, so the perimeter restricting data movement in and out of the project is established before workloads land inside it. [PF-1.21: no named alternative has been asserted to lack this capability, so this is stated as what this vendor's architecture does, not as a differentiator over a competitor.] [PF-2.17 REVIEW (compliance): \"VPC Service Controls\" names a specific Google Cloud control; confirm the buyer's actual compliance or data-residency requirement this is meant to satisfy before it ships as a governance claim.]\n\n[PF-1.25: PF-2.13 GAP: no role or stated priority (e.g., a DBA lead's patch-burden concern, a platform owner's licensing-cost target) was supplied, so this outcome cannot yet be addressed to the person who owns it.]\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| \"keep operating during the transition\" | PF-2.14 | Confirm this isn't read as a contractual continuity/uptime commitment during cutover. |\n| No comparable migration cited for Cloud SQL for PostgreSQL move | PF-1.17 / PF-2.4 | A named, checkable comparable (instance count, workload type, cutover time) this vendor can actually produce. |\n| No cost or downtime baseline for the current estate | PF-2.11 / PF-2.4 | The buyer's own run-rate, patch-cycle duration, or licensing cost figures, or confirmation none exist yet. |\n| \"VPC Service Controls\" governance claim | PF-2.17 | Confirmation of which specific buyer compliance/data-residency requirement this is meant to satisfy. |\n| No named owner for the outcome | PF-1.25 / PF-2.13 | The role (e.g., DBA lead, platform owner) and their stated priority, so the outcome can be addressed to them directly. |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28137,
+    "cache_read_input_tokens": 50879,
+    "output_tokens": 2671,
+    "output_tokens_details": {
+      "thinking_tokens": 1258
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28137,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2591,
+        "cache_read_input_tokens": 35140,
+        "cache_creation_input_tokens": 8736,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8736
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1494418,
+  "duration_ms": 37253,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

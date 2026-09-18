@@ -1,0 +1,52 @@
+{
+  "run_id": "cc4cae77-802a-406b-a7d5-ac5771159958",
+  "timestamp": "2026-09-18T10:26:23.671342+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "**Artifact family: an RFP answer.**\n\nCustomer source material for this task is the RFP question text and the programme parameters supplied in the request: 28 SQL Server instances, 620 Hyper-V virtual machines, load-matching and carrier-settlement systems, Google Compute Engine, Cloud SQL for PostgreSQL, a 2-year $4,200,000 programme, proposals due 2026-11-15, and a compliance audit opening in 6 months. Nothing else was supplied, so `PF-3.3` fires only against these terms; every other term is judged by the deletion test alone.\n\n---\n\nYou run load-matching and carrier-settlement on 28 SQL Server instances across 620 Hyper-V virtual machines, and your next compliance audit opens in 6 months. That audit window, not the 2-year programme end, is what sets the shape of this migration: the estate must be auditable in its new position before the auditors arrive, or it must be demonstrably untouched. We propose sequencing the move so that every system in scope at audit time sits on one side of the line, never mid-cutover.\n\n**Phase 1 — Discovery and dependency mapping (months 1–3).** We inventory all 28 instances and 620 virtual machines, and we record each one's dependencies, its version, and its recovery objectives. We produce a signed-off application dependency map as the gating artefact for wave planning. [PF-2.11 GAP: current per-instance workload profile, database sizes, and transaction rates — not supplied in the RFP question, and required to size Cloud SQL instances and the replication window.]\n\n**Phase 2 — Landing zone and audit-boundary freeze (months 2–5).** We build the Google Cloud landing zone — projects, VPC design, IAM, logging, and backup — and we run it in parallel with your existing estate. We complete this before the audit opens. Systems in audit scope stay on-premises and unchanged through the audit window unless you direct otherwise. [PF-2.17 REVIEW (compliance): which of the 28 instances fall inside the audit's scope, and which control framework the audit tests against — we cannot verify this and have not assumed it.]\n\n**Phase 3 — Compute migration (months 4–14).** We move Hyper-V virtual machines to Google Compute Engine in waves, grouped by the dependency map rather than by host. Each wave runs a test migration into an isolated project first, then a production wave. We keep the source virtual machine intact and powered down after each cutover, so rollback is a restart on-premises rather than a restore from backup.\n\n**Phase 4 — Data layer migration (months 8–20).** SQL Server to Cloud SQL for PostgreSQL is a heterogeneous migration: schema, stored procedures, and T-SQL application queries all require conversion, and this is where the programme's schedule risk concentrates. We convert schema and code first, then run Database Migration Service in continuous replication so the PostgreSQL target stays current with the SQL Server source while you test against it. Carrier-settlement runs last, after load-matching has proven the pattern in production. [PF-2.11 GAP: the volume of T-SQL stored procedure and application-embedded query code — not supplied, and the single largest driver of conversion effort within the $4,200,000 budget.]\n\n**Cutover.** Each database cutover follows one sequence: freeze writes on SQL Server, drain replication lag to zero, verify row counts and checksums against the agreed reconciliation set, repoint the application connection string, then release writes on Cloud SQL. We agree the rollback trigger conditions and the reconciliation pass criteria with your team in writing before each cutover window opens, and either party can call rollback. Replication runs in the original direction until you accept the cutover, so rollback is a repoint back to SQL Server. [PF-2.14 REVIEW (commitment): the cutover window duration and the maximum acceptable write-freeze period read as performance commitments; both depend on your database sizes and your settlement processing calendar, neither of which was supplied.]\n\nCarrier settlement carries a specific constraint we will need you to confirm: settlement runs have financial reconciliation periods, and a cutover landing inside one creates a split ledger across two database platforms. We schedule settlement cutovers between reconciliation cycles and hold the write-freeze inside a single cycle boundary.\n\n**What this changes.** Today, a change to a load-matching database is a coordinated release across 28 instances with rollback measured in restore time. After migration, each converted service runs against a managed Cloud SQL instance with point-in-time recovery, and rollback during the migration window is a connection-string repoint to a still-live SQL Server source.\n\n[PF-2.13 GAP: no differentiator is stated in this answer — no named alternative approach, and no vendor capability evidence, was supplied for this task.]\n[PF-1.17 GAP: no comparable prior migration of similar scale is cited — no reference engagement was supplied, and `PF-2.12` forbids naming one that was not.]\n[PF-1.13 GAP: no baseline is stated for current migration or release cycle time, so the after-state above is described as a change in mechanism, not as a measured improvement.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP: per-instance workload profile, database sizes, transaction rates | PF-2.11 | Buyer-supplied sizing data, or a discovery engagement, before Cloud SQL sizing can be stated |\n| REVIEW (compliance): audit scope and control framework | PF-2.17 | Confirmation of which instances are in audit scope and which framework applies |\n| GAP: volume of T-SQL stored procedure and embedded query code | PF-2.11 | Code inventory from the buyer, or an assessment scan, before conversion effort can be quantified |\n| REVIEW (commitment): cutover window and write-freeze duration | PF-2.14 | Legal and delivery confirmation before any window duration is stated as a commitment |\n| GAP: no differentiator stated | PF-2.13 | Vendor-supplied evidence of capability a named alternative approach does not provide |\n| GAP: no comparable prior migration cited | PF-1.17 | A reference engagement the vendor can produce, plus disclosure permission |\n| GAP: no baseline for release or recovery cycle time | PF-1.13 | The buyer's own current figure, or a statement that it has never been captured |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26102,
+    "cache_read_input_tokens": 37540,
+    "output_tokens": 2280,
+    "output_tokens_details": {
+      "thinking_tokens": 32
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26102,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2142,
+        "cache_read_input_tokens": 27047,
+        "cache_creation_input_tokens": 9548,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9548
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.33680999999999994,
+  "duration_ms": 35098,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "75833cb6-b82f-42eb-ba09-169e38702ef5",
+  "timestamp": "2026-09-18T10:23:01.957276+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "Artifact family: executive summary. No customer source material was supplied for this task, so PF-3.3 cannot fire and every term is judged by the deletion test alone.\n\nYou are measured on two things this year: a $1,850,000 annual technology run-rate and a clean DOT compliance audit that opens in six months. Today that run-rate carries 620 Hyper-V virtual machines and 28 Microsoft SQL Server instances supporting load-matching and carrier settlement. [PF-2.4 GAP: the split of the $1,850,000 between licensing, hardware refresh, hosting and staff — not supplied, so no savings figure can be stated.] Your auditors will ask where settlement records live and who touched them. Answering that across 620 virtual machines is manual work today. [PF-2.11 GAP: hours currently spent assembling audit evidence — never captured, and we will not estimate it.] This programme proposes a different shape: you need to evidence carrier-settlement data lineage on demand, and Cloud SQL for PostgreSQL delivers that as managed, logged infrastructure rather than 28 separately administered instances. You also need to stop paying for capacity you do not use, and Google Compute Engine bills you for what you run.\n\nExpect a two-year programme costing $4,200,000, sequenced so compliance lands before savings. [PF-2.14 REVIEW (commitment): \"compliance lands before savings\" reads as a delivery commitment on a six-month audit date — confirm before sending.] The first six months target the audit-facing settlement data, not the full 620-machine estate, because your audit window closes first. [PF-2.13 GAP: no differentiator is stated — nothing in this document names what this vendor does that another bidder could not also do.] Be clear about what you are buying: the migration from SQL Server to PostgreSQL rewrites stored procedures and application data access, and that work carries the programme's largest delivery risk. [PF-2.4 GAP: the count of stored procedures and integrations across the 28 instances — not supplied, so the rewrite is unscoped.] [PF-1.17 GAP: no comparable freight-brokerage migration is attached to these claims, because none was supplied as fact.] You should expect run-rate to rise before it falls, because you will run both estates during cutover. [PF-2.11 GAP: duration and cost of the parallel-run period — not modelled, and this document will not invent one.] Fund a two-week discovery to close these gaps before you commit the $4,200,000.",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 26164,
+    "cache_read_input_tokens": 37594,
+    "output_tokens": 1434,
+    "output_tokens_details": {
+      "thinking_tokens": 501
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 26164,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1293,
+        "cache_read_input_tokens": 27101,
+        "cache_creation_input_tokens": 9556,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9556
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.316307,
+  "duration_ms": 24836,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

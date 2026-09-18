@@ -1,0 +1,52 @@
+{
+  "run_id": "c1fe40fc-a368-459d-a7f0-e1f4917029eb",
+  "timestamp": "2026-09-18T10:04:28.522200+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**Executive summary**\n\nNo RFP text, discovery notes, or other customer source material was supplied beyond the scenario stated in this prompt; the provenance override in PF-3.3 cannot fire, so every term below is judged by the deletion test alone rather than retained as the buyer's own wording.\n\nYou are running 28 on-premises Microsoft SQL Server instances across 620 Hyper-V virtual machines to support load-matching and carrier-settlement, at an annual technology spend of $1,850,000 [PF-1.14: figure and baseline as stated in the scenario provided to this task]. You are measured on reducing that spend and on a clean DOT compliance audit opening in six months, and both pressures compound now: every month this estate stays on-premises is a month closer to that audit window with settlement data still tied to hardware you maintain directly. We propose a two-year, $4,200,000 migration of load-matching and carrier-settlement off this Hyper-V estate onto Google Cloud — replacing fixed VM and SQL Server licensing costs with Compute Engine for the workloads that need to scale with load volume, and Cloud SQL for PostgreSQL for a managed data layer that isolates and logs the settlement data your auditors will review [PF-1.9: capability named before product]. [PF-2.17 REVIEW (compliance): this document does not verify Google Cloud's specific certifications against DOT audit requirements — that mapping needs confirming before the audit date is cited as a driver]. [PF-2.11 GAP: neither a percentage reduction in the $1,850,000 baseline nor a comparable customer benchmark for this migration size was supplied — do not state a savings figure until one is measured or a reference is provided].\n\nFor you, success looks like two things landing before the audit opens and beyond it: a technology cost base that moves from the current $1,850,000 run-rate toward a lower, cloud-consumption-based figure your finance team can track monthly instead of at renewal, and a settlement data platform your auditors can inspect without your team defending 28 separate SQL Server configurations. [PF-2.14 REVIEW (commitment): \"the programme will reduce spend\" and any date-bound audit-readiness promise need confirming as intended contractual commitments, not aspirational framing, before this ships]. [PF-2.4 GAP: no named differentiator over an alternative migration approach or vendor was supplied — this summary does not claim Google Cloud is uniquely capable until a specific, evidenced comparable is provided]. What you should expect over the two years is a phased cutover from the 620-VM Hyper-V estate rather than a single switchover, with cost and audit-readiness milestones reported against the $1,850,000 baseline at each phase; the specific milestone dates and interim cost checkpoints are not yet defined and are marked below rather than estimated.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Compliance certification mapping to DOT audit requirements | PF-2.17 | Confirmation of which Google Cloud certifications/controls map to the specific DOT audit criteria in scope |\n| Savings percentage / comparable migration benchmark | PF-2.11 | A measured savings target or a named comparable of similar scale to cite instead of an invented figure |\n| \"Programme will reduce spend\" / audit-readiness promise | PF-2.14 | Confirmation these are intended as contractual commitments before they ship in buyer-facing language |\n| Differentiator over alternative approach or vendor | PF-2.4 | A specific, evidenced capability this vendor can deliver that an alternative cannot, or removal of any implied uniqueness |\n| Phase milestone dates and interim cost checkpoints | PF-2.13 | Defined phase dates and interim cost/audit checkpoints for the 2-year programme |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28258,
+    "cache_read_input_tokens": 50988,
+    "output_tokens": 2063,
+    "output_tokens_details": {
+      "thinking_tokens": 736
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28258,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1973,
+        "cache_read_input_tokens": 35249,
+        "cache_creation_input_tokens": 8748,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8748
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.14386759999999998,
+  "duration_ms": 28006,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

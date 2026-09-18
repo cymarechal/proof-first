@@ -1,0 +1,52 @@
+{
+  "run_id": "bd67dc25-aad8-40e5-a3db-fc59343b5faf",
+  "timestamp": "2026-09-18T09:58:50.958784+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "skill_sha": null,
+  "repeat": 2,
+  "text": "Dear CFO,\n\nYour current $1,850,000 annual technology spend is anchored by 28 on-premises SQL Server instances and 620 Hyper-V virtual machines that carry the fixed costs of licensing, hardware refresh cycles, and facilities regardless of actual load volumes — costs that don't flex with freight demand and won't shrink on their own. Migrating load-matching and carrier-settlement systems to Google Compute Engine and Cloud SQL for PostgreSQL over this two-year, $4,200,000 programme converts that fixed infrastructure burden into consumption-based spend, eliminates the recurring capital cycle of refreshing on-prem hardware, and removes SQL Server licensing as a line item entirely. You should expect the programme to pay back against your reduction target within the following 12–18 months post-cutover, with year-one spend elevated by parallel-running both environments before decommissioning realizes the savings — plan your budget narrative accordingly rather than expecting first-year relief.\n\nThe more immediate pressure is your DOT compliance audit opening in six months, and the migration timeline needs to be sequenced deliberately around it: carrier-settlement data — the system most likely to be in scope for audit evidentiary requests — should be prioritized early in the migration waves so it's stable on Cloud SQL well ahead of the audit window, not mid-cutover when auditors ask for records. Google Cloud's audit logging, IAM access controls, and data residency configuration give you a stronger compliance evidence trail than your current Hyper-V environment, but only if configured and validated before the audit opens, not during it. I recommend treating the audit date as the hard constraint that governs sequencing, with the cost-reduction case built around a realistic post-migration run rate rather than assumed savings during the transition — this protects you from being caught mid-migration with degraded audit readiness or an unexpected cost bump in either KPI you're measured on.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19357,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 636,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19357,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 636,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19357,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19357
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0869398,
+  "duration_ms": 14001,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

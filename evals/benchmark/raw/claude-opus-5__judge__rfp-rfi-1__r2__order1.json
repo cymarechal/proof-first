@@ -1,0 +1,29 @@
+{
+  "run_id": "af5ad92e-11b5-44b7-a1d1-433c22f7e862",
+  "timestamp": "2026-09-18T10:56:56.289590+00:00",
+  "judge_model": "claude-opus-5",
+  "judge_effort": "high",
+  "scenario_id": "rfp-rfi-1",
+  "model": "claude-opus-5",
+  "repeat": 2,
+  "order": 1,
+  "text_a_condition": "skill-off",
+  "text_b_condition": "skill-on",
+  "raw_judge_output": "{\"text_a\":{\"evidence\":7,\"clarity\":6,\"persuasive_force\":9},\"text_b\":{\"evidence\":9,\"clarity\":7,\"persuasive_force\":4}}",
+  "scores": {
+    "evidence": {
+      "skill-off": 7,
+      "skill-on": 9
+    },
+    "clarity": {
+      "skill-off": 6,
+      "skill-on": 7
+    },
+    "persuasive_force": {
+      "skill-off": 9,
+      "skill-on": 4
+    }
+  },
+  "verdict": "scored",
+  "reason": null
+}

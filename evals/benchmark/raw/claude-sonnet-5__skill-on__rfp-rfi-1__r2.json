@@ -1,0 +1,52 @@
+{
+  "run_id": "90fab89d-b905-40ed-b129-3ec4ba179f6a",
+  "timestamp": "2026-09-18T10:07:13.464615+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "Before drafting, a quick note: I'm treating the RFP question text and the facts given in your message (instance/VM counts, target stack, budget, timeline, audit date) as the only customer source material supplied for this task. No discovery notes, incumbent architecture diagrams, or stated SLAs/RTOs were provided, so I can't invoke the customer's-own-term retention rule beyond that text, and several figures below are marked as gaps rather than invented.\n\n**RFP answer**\n\nToday, load-matching and carrier-settlement run on 28 Microsoft SQL Server instances across 620 Hyper-V virtual machines, entirely on-premises. That footprint carries fixed hardware refresh and Hyper-V licensing cost, and it sits inside a compliance regime whose next audit opens in six months — before a full re-platform could plausibly finish. The migration moves this estate to Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, inside a 2-year, $4,200,000 programme, without breaking that audit's evidence trail.\n\n**Approach: assess, foundation, wave, verify, cut over**\n\nWe start with a discovery and dependency-mapping phase across all 28 SQL Server instances, because load-matching and settlement share reference data and job schedules that determine safe migration order. [PF-2.4 GAP: current inter-instance dependency map and data volumes were not supplied — needed to sequence waves and size Cloud SQL instances.] Landing-zone work follows: GCE project structure, VPC design, IAM, and Cloud SQL for PostgreSQL instances sized to replace the Hyper-V-hosted SQL Server tier.\n\nYou then move workloads in waves, not as one cutover. Each wave covers one bounded set of instances — for example settlement reporting before settlement transaction processing — so a failed wave never blocks the whole programme. Schema and data conversion from SQL Server T-SQL to PostgreSQL runs through an assessment-and-conversion tool followed by manual remediation of incompatible objects (stored procedures, triggers, proprietary functions), since SQL Server and PostgreSQL are not wire-compatible. [PF-2.4 GAP: the proportion of T-SQL-specific logic (stored procedures, CLR objects) in the current estate was not supplied — this drives conversion effort and wave duration estimates.] Continuous replication (CDC) keeps each converted PostgreSQL instance in sync with its SQL Server source during the wave, so cutover for that wave is a switch of write traffic, not a bulk data copy.\n\n**Cutover plan**\n\nEach wave's cutover follows the same sequence: freeze non-essential writes to the source instance, let CDC drain the remaining change backlog, run data-parity checks between source and target, redirect application connection strings to Cloud SQL, then unfreeze writes. [PF-2.4 GAP: no maximum acceptable write-freeze window was supplied — this is normally set by the business owner of load-matching, since a freeze during active load-matching directly affects carrier throughput.] A rollback plan for each wave keeps the SQL Server source live and receiving read-only replication for a defined window after cutover, so traffic can revert to it if parity checks or post-cutover monitoring surface an issue.\n\nGiven the compliance audit opens in six months, the first waves target instances outside the audit's scope, and any instance still mid-migration when the audit opens keeps its SQL Server source as system of record with Cloud SQL running read-only, so the audit trail is never split across two authoritative systems. [PF-2.4 GAP: which of the 28 instances fall inside the upcoming audit's scope was not supplied — this determines the wave order and is a decision for you, the compliance owner, to confirm before wave sequencing is finalized.] [PF-2.14 REVIEW (commitment): the statement that audited instances stay unmigrated until after the audit closes is a scheduling commitment and should be confirmed against your actual audit scope before this proposal is finalized.]\n\n**Metrics and proof**\n\nProgramme duration and wave count size to the 2-year, $4,200,000 budget, sequencing the highest-risk, highest-dependency instances (settlement) after load-matching instances, where CDC and parity-check tooling can be proven at lower risk first. [PF-1.13/PF-1.14 — no current downtime, RTO/RPO, or throughput baseline for load-matching or settlement was supplied; without it we cannot state a numeric improvement target.] [PF-2.4 GAP: baseline figures for current MTTR, transaction volume, or settlement processing time — needed to define migration success metrics and to size Cloud SQL instances correctly.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Inter-instance dependency map and data volumes not supplied | PF-2.4 | Current dependency map and data volumes across the 28 instances, to sequence waves and size Cloud SQL |\n| T-SQL-specific logic proportion not supplied | PF-2.4 | Estimate of stored-procedure/CLR/proprietary-object volume, to size conversion effort |\n| Maximum acceptable write-freeze window not supplied | PF-2.4 | Business-owner-defined cutover freeze tolerance for load-matching and settlement |\n| Audit scope across the 28 instances not supplied | PF-2.4 | Which instances fall inside the upcoming compliance audit, to finalize wave order |\n| Commitment to hold audited instances unmigrated until after audit closes | PF-2.14 REVIEW (commitment) | Confirmation this scheduling commitment matches actual audit scope and buyer expectations |\n| No downtime/RTO/RPO/throughput baseline supplied | PF-2.4 | Current baseline figures for MTTR, transaction volume, settlement processing time |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28175,
+    "cache_read_input_tokens": 50928,
+    "output_tokens": 3454,
+    "output_tokens_details": {
+      "thinking_tokens": 1431
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28175,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 3381,
+        "cache_read_input_tokens": 35189,
+        "cache_creation_input_tokens": 8725,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8725
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1574336,
+  "duration_ms": 45701,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

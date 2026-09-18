@@ -1,0 +1,52 @@
+{
+  "run_id": "dadd575b-f496-453c-8513-8cc482aff5a6",
+  "timestamp": "2026-09-18T10:11:07.314473+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-2",
+  "scenario_prompt": "Write a short demo script for a live discovery session, showing the specific capability the buyer asked to see rather than a generic product tour. Context: the buyer's VP of Infrastructure said in discovery he wants 'a perimeter we can actually govern,' referring to replacing manual failover across a 620-virtual-machine on-premises estate. The demo should show a governed project perimeter being applied to a representative workload on the target cloud platform. Return only the demo script text.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Demo or discovery material**\n\nCustomer source material for this task: the VP of Infrastructure's discovery statement, \"a perimeter we can actually govern,\" referring to manual failover across the 620-VM on-premises estate. I'm treating this quote as supplied source material; no other discovery notes or figures were provided, so every other number below is either marked as a gap or left to you to fill from the account record.\n\n---\n\n**Opening (before the screen share)**\n\nYou told us you want \"[PF-3.3: customer's term, retained — discovery call, VP of Infrastructure] a perimeter we can actually govern\" — right now, failover across your 620-VM estate is a manual process your team runs by hand. Today I'll show you that governed perimeter applied to one representative workload, live, on [PF-1.9: target cloud platform — name the platform here].\n\n**Segment 1 — Define the perimeter (3 min)**\n\nI'm creating a single project-level boundary around one representative VM workload from your estate. Watch what happens as I attach it: the policies you'd need — network isolation, IAM scope, failover rules — apply to everything inside this boundary the moment it's created, not as a separate step afterward.\n\n*[Create the project, attach the workload]*\n\nThat's the perimeter. Nothing enters or leaves it without the rule set you just watched get applied.\n\n**Segment 2 — Trigger a failover inside the perimeter (5 min)**\n\nToday, when a VM fails in your estate, someone finds it, someone routes around it, by hand. I'm going to simulate a failure on this workload now.\n\n*[Trigger simulated failure]*\n\nWatch the perimeter: failover executes according to the policy attached to the project, not a runbook someone opens. No one on my side is touching a console during this step.\n\n[PF-1.13/PF-1.14: your current mean-time-to-failover across the 620-VM estate — GAP: no baseline was supplied; if you can give us that figure and its source, we'll show the delta against this workload's failover time live in the same demo]\n\n**Segment 3 — Show the governance surface (4 min)**\n\nThis is the part your infra team will actually live in day to day: one view showing every policy attached to this perimeter, every workload inside it, and every change made to it.\n\n*[Open the governance/policy dashboard]*\n\nIf you expand this estate from one workload to your full 620, this is the same view — one perimeter definition, not 620 individual configurations to keep in sync by hand.\n\n[PF-1.17 GAP: a named, checkable reference customer running this pattern at comparable VM-estate scale was not supplied — if you have one you can name, we'll bring their proof point to the next session]\n\n**Close**\n\nThat's the perimeter you described: one governed boundary, one failover policy, applied to a workload the way it would apply across your estate. [PF-2.14 REVIEW (commitment): confirm before this ships to the buyer whether \"applied across your estate\" implies a migration timeline or scope commitment we haven't agreed to] Next step, if useful: we scope what governing the full 620-VM estate under this same perimeter model would look like, using your own failover numbers once you can share them.\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-3.3: customer's term, retained — discovery call, VP of Infrastructure] | PF-3.3 | Confirm \"a perimeter we can actually govern\" is accurately attributed to this discovery call before reuse. |\n| [PF-1.9: target cloud platform — name the platform here] | PF-1.9 | Name of the target cloud platform to insert. |\n| [PF-1.13/PF-1.14 GAP: no baseline was supplied] | PF-1.13, PF-1.14 | Buyer's current mean-time-to-failover across the 620-VM estate, and its source. |\n| [PF-1.17 GAP: no named reference customer supplied] | PF-1.17 | A named, checkable reference running this pattern at comparable scale, if one exists and disclosure is confirmed. |\n| [PF-2.14 REVIEW (commitment): scope/timeline implication in the close] | PF-2.14 | Confirm the closing line does not create an unintended commitment about migration scope or timeline. |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28332,
+    "cache_read_input_tokens": 50860,
+    "output_tokens": 1642,
+    "output_tokens_details": {
+      "thinking_tokens": 69
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28332,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1464,
+        "cache_read_input_tokens": 35121,
+        "cache_creation_input_tokens": 8950,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8950
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.139928,
+  "duration_ms": 24982,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "5668f908-b082-4500-80f5-edd2fea4a848",
+  "timestamp": "2026-09-18T10:05:09.229570+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-2",
+  "scenario_prompt": "Write only the opening paragraph of an executive summary, addressed to a fictional buyer's Chief Financial Officer. The opening paragraph must restate the buyer's own situation, in the buyer's own terms, before naming any vendor, product, or capability. Context: the buyer is spending $1,850,000 a year running an on-premises Microsoft SQL Server and Hyper-V estate, and its next compliance audit opens in 6 months. Return only that one opening paragraph.",
+  "skill_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Artifact family: an executive summary**\n\nNo customer source material (RFP text, discovery notes, stated requirements) was supplied beyond the figures given; the provenance override in PF-3.3 cannot fire, so every term below is judged by the deletion test alone.\n\nToday your organization spends $1,850,000 a year keeping an on-premises Microsoft SQL Server and Hyper-V estate running, and in six months that same estate has to pass its next compliance audit [PF-1.14: figure and timeline as stated by the writer, not independently sourced or attributed to the buyer's own documentation — PF-2.2].\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-1.14] figure/timeline source unstated | PF-1.14 / PF-2.2 | Confirmation that the $1,850,000/year figure and the 6-month audit date come from the buyer's own statement or documentation, with that source named |",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28132,
+    "cache_read_input_tokens": 50867,
+    "output_tokens": 591,
+    "output_tokens_details": {
+      "thinking_tokens": 217
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28132,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 502,
+        "cache_read_input_tokens": 35128,
+        "cache_creation_input_tokens": 8743,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 8743
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1286194,
+  "duration_ms": 12105,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

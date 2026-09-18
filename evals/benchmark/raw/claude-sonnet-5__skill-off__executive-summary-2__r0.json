@@ -1,0 +1,52 @@
+{
+  "run_id": "9d855140-c584-46e6-bcaf-7e6cd655bb8a",
+  "timestamp": "2026-09-18T09:58:59.038440+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-2",
+  "scenario_prompt": "Write only the opening paragraph of an executive summary, addressed to a fictional buyer's Chief Financial Officer. The opening paragraph must restate the buyer's own situation, in the buyer's own terms, before naming any vendor, product, or capability. Context: the buyer is spending $1,850,000 a year running an on-premises Microsoft SQL Server and Hyper-V estate, and its next compliance audit opens in 6 months. Return only that one opening paragraph.",
+  "skill_sha": null,
+  "repeat": 0,
+  "text": "Dear CFO,\n\nYour organization currently commits $1,850,000 annually to sustaining an on-premises Microsoft SQL Server and Hyper-V estate—a fixed cost that recurs regardless of utilization, capacity planning accuracy, or business demand. That expenditure covers hardware refresh cycles, licensing, power and facilities, and the specialized staff time required to patch, secure, and maintain these systems. Compounding this, your next compliance audit opens in six months, placing a firm, near-term deadline on demonstrating that this infrastructure meets current control and reporting standards. The result is a budget already carrying significant recurring cost while now also facing a compressed timeline to validate compliance readiness, leaving little room to absorb delays, remediation surprises, or additional unplanned spend.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 19240,
+    "cache_read_input_tokens": 15739,
+    "output_tokens": 264,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 19240,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 264,
+        "cache_read_input_tokens": 15739,
+        "cache_creation_input_tokens": 19240,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 19240
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0827518,
+  "duration_ms": 6540,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

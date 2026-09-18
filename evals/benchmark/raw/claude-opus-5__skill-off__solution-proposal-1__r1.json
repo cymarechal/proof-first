@@ -1,0 +1,52 @@
+{
+  "run_id": "9395e3ca-d542-4747-bfe0-a8a13a074e64",
+  "timestamp": "2026-09-18T10:17:00.566485+00:00",
+  "model": "claude-opus-5",
+  "canonical_model": "claude-opus-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "## Architecture\n\nToday the buyer's data and application estate lives as a single, tightly coupled block. Twenty-eight Microsoft SQL Server instances sit alongside roughly 620 virtual machines on Hyper-V, sharing the same hosts, the same storage fabric, and the same maintenance windows. The practical consequence is that nothing moves independently: a patch to the hypervisor is a database event, a database upgrade is an application event, and capacity for a single busy workload is bought as capacity for the entire cluster. The migration we propose is therefore not a lift of 620 machines into a new datacentre. It is the deliberate separation of that block into two layers that can then evolve at different speeds — compute that moves largely as-is, and a data layer that changes engine on the way across.\n\nThe first movement is establishing the destination before anything lands in it. A new Google Cloud project is created and wrapped in a VPC Service Controls perimeter from day one, so the governance boundary exists before the first byte of the buyer's data does. This ordering matters more than it may appear. A perimeter added after workloads are running is a retrofit that must be negotiated against live traffic; a perimeter established first becomes the defining shape of the environment, and every subsequent landing is validated against it. The perimeter governs the managed services that hold the migrated data, meaning that exfiltration paths out of the project — to another Google Cloud project, to an unmanaged network, to a credential that has leaked — are closed by the platform rather than by policy documents and hope. The buyer's existing network is joined to this perimeter over private connectivity, so that during the transition the two estates behave as one routable space while remaining two distinct trust domains.\n\nThe second movement is the compute layer, and here the guiding principle is to change as little as possible. The Hyper-V virtual machines are rehosted onto Google Compute Engine, preserving operating systems, installed software, and internal addressing wherever the application permits. This is intentionally the unambitious half of the programme. The buyer gains elasticity, per-instance sizing, and the ability to retire the hypervisor estate, but the applications running on those instances are not asked to change their behaviour at the same moment their data layer does. Machine families and sizes are selected per workload from observed utilisation rather than from the provisioned specification of the source VM, which is where the majority of the run-rate improvement is realised — the Hyper-V estate was almost certainly sized for peak-plus-headroom on shared hosts, and that headroom does not need to be repurchased.\n\nThe third movement is the one that carries genuine transformation, and it is the reason the compute layer was kept deliberately boring. The twenty-eight SQL Server instances do not move to SQL Server on Compute Engine; they are converted to Cloud SQL for PostgreSQL. The estate stops being twenty-eight instances the buyer patches, backs up, fails over, and licenses, and becomes a managed service where those responsibilities sit with the platform. Conversion proceeds instance by instance rather than as a single cutover: schema and stored logic are translated and tested ahead of any data movement, data is then replicated continuously from the source instance so that the target stays current while the application is still pointed at SQL Server, and cutover for each instance becomes a short, reversible switch of the connection string rather than an outage-length migration. Instances are grouped into waves by application coupling, so that workloads sharing data cut over together and no application is left straddling two engines.\n\nThe sequencing across these three movements is what makes the programme safe. Compute rehost precedes database conversion, so that at the moment an application's data layer changes, the application itself is already running in its final location and has been observed there under real load. Any problem surfacing at database cutover is therefore unambiguously a database problem, not a compound of two simultaneous changes — and because the source SQL Server instance remains intact and reachable through the transition window, rollback for any single wave is a connection-string reversal, not a restore.\n\nWhat the buyer holds at the end is an estate with the coupling removed. Compute scales and is patched on its own cadence. The data layer is a managed PostgreSQL service with no instance-level operational burden and no SQL Server licensing attached to it. And the whole of it sits inside a governance perimeter that was the first thing built rather than the last thing added — which means the security posture the buyer signs off at the end of the programme is the same one that was in force on the day the first workload arrived.",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 16354,
+    "cache_read_input_tokens": 10493,
+    "output_tokens": 1489,
+    "output_tokens_details": {
+      "thinking_tokens": 54
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16354,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1489,
+        "cache_read_input_tokens": 10493,
+        "cache_creation_input_tokens": 16354,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 16354
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.20602150000000002,
+  "duration_ms": 28695,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}
