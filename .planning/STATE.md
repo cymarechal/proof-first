@@ -1,18 +1,18 @@
 ---
 gsd_state_version: 1.0
-current_phase: 5
+current_phase: 05
 current_phase_name: Evaluation Harness
 status: executing
-stopped_at: Completed 04-14-PLAN.md (gap closure G-04-8) — Phase 04 gap work closed
-last_updated: "2026-09-18T08:53:29.238Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-09-18T09:15:13.089Z"
 last_activity: 2026-09-18
-last_activity_desc: Phase 04 gap work closed (04-12..04-14); all 3 UAT gaps resolved; tests 1-2 deferred to Phases 6 and 5
-state_head: 39852caa4088fa0a58fca779c5bb05b85de3ff9c
+last_activity_desc: Phase 05 execution started
+state_head: da0bd9800baa055074c3226423615318c54e34d3
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 49
-  completed_plans: 46
+  completed_plans: 47
   percent: 33
 ---
 
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** A technical evaluator finishes the document believing the author genuinely understands their problem — because complex things were made simple without being made wrong.
-**Current focus:** Phase 04 — Distribution & Worked Examples
+**Current focus:** Phase 05 — Evaluation Harness
 
 ## Current Position
 
-Phase: 5 (Evaluation Harness) — READY TO EXECUTE
-Plan: 14 of 14 (11 original + 3 gap-closure)
-Status: Gap work closed. Phase 04 cannot reach UAT-green from inside itself —
+Phase: 05 (Evaluation Harness) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
 tests 1 and 2 are owned by Phase 6 (publication) and Phase 5 (benchmark).
 Next: /gsd-plan-phase 5
-Last activity: 2026-09-18 — Phase 04 execution started
+Last activity: 2026-09-18 — Phase 05 execution started
 
 Progress: [███░░░░░░░] 33%
 
@@ -104,6 +104,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P09 | 21min | 3 tasks | 1 files |
 | Phase 04 P10 | 15min | 3 tasks | 2 files |
 | Phase 04 P11 | 35min | 3 tasks | 2 files |
+| Phase 05 P01 | 35 min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -180,6 +181,7 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-09: readme-example-drift, readme-example-lead-distance, and readme-layout-legend-drift registered end to end (44 -> 47 discrimination-proven codes); README_FIRST_EXAMPLE_MAX_LINE frozen at 20 (measured value is 14) so a future contributor raising it is a visible, argued-for change; WINDOWS.md entry 12's prose-quality half of DIST-06 stays open, narrowed but not closed.
 - [Phase 04]: 04-10 closed G-04-7 (three 04-REVIEW.md warnings): _owner_segment now normalises four GitHub URL forms (HTTPS, HTTP, scheme-less, SSH) before comparing publish-location owners; generate_derivatives.py --check now compares bytes (not str) and write_derivatives pins LF, fixing a defect where a CRLF-only divergence silently passed; both plugin-manifest checks now fire on their previously-silent zero/multi-skill ambiguity instead of skipping it. No new violation code; mutation-test holds at 47 codes discrimination-proven throughout. DIST-05 marked Complete.
 - [Phase 04]: 04-11: Closed CR-01 by enforcing PLUGIN_REQUIRED_KEYS on marketplace.json's plugin entry, proven exhaustively (18-cell matrix) and against the real file (second mutation); folded in WR-01/WR-02/IN-01 from 04-REVIEW.md with no new violation code.
+- [Phase 05]: 05-01: SUPERLATIVE_TERMS/HEDGE_TERMS kept disjoint from PROXY_TERMS so no fixture trips two codes; HEDGE_TERMS (may/might/could) sourced from PF-4.3's own possibility-modal vocabulary and Wikipedia MOS:WTW; Task 1 plan self-contradiction (class row) resolved per acceptance_criteria, longest-match-wins proven via a local probe pair instead of shipping an invented term. — Keeps registry honesty (every term traces outward to the two named external sources) intact while satisfying the plan's one-fixture-one-code discipline and the acceptance-criteria wording.
 
 ### Pending Todos
 
@@ -204,6 +206,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-18T05:24:18.862Z
-Stopped at: Completed 04-11-PLAN.md
+Last session: 2026-09-18T09:14:50.194Z
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None

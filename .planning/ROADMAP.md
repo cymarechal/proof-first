@@ -267,12 +267,12 @@ Plans:
   4. A blind pairwise judge scores skill-on against skill-off with labels stripped and both text orders run, scoring persuasive force as its own dimension so a flat-but-clean draft can't pass on clarity alone.
   5. Published results report mechanical-proxy counts and judged persuasion as two separately labeled figures with variance alongside the mean, name honest caveats (position bias, judge-family bias, baseline prompt parity, proxy provenance, sample size), and every raw generation and judgement is committed so any number can be recomputed with one documented command.
 
-**Plans**: 3 plans in 3 sequential waves. The split follows `05-RESEARCH.md`'s recommendation and isolates the one paid, non-reversible step: plans 1 and 2 are entirely offline and free, so a plan-review cycle on either re-triggers no live call; plan 3 owns the judge and the live matrix behind a blocking decision checkpoint. The waves are strictly sequential because the plans share files — 1 and 2 both touch `.github/workflows/ci.yml`, and 2 and 3 both touch `evals/benchmark/run_benchmark.py`.
+**Plans**: 1/3 plans executed in 3 sequential waves. The split follows `05-RESEARCH.md`'s recommendation and isolates the one paid, non-reversible step: plans 1 and 2 are entirely offline and free, so a plan-review cycle on either re-triggers no live call; plan 3 owns the judge and the live matrix behind a blocking decision checkpoint. The waves are strictly sequential because the plans share files — 1 and 2 both touch `.github/workflows/ci.yml`, and 2 and 3 both touch `evals/benchmark/run_benchmark.py`.
 
 Plans:
 **Wave 1**
 
-- [ ] 05-01-PLAN.md — Tracer: one proxy term end to end — `evals/proxy-sources.md` as the external-provenance registry, `evals/lint.py` counting it, `proxy-term-unsourced` making the registry load-bearing, the EVAL-03 disclaimer, and the self-test wired into CI; then the four remaining proxy codes and the provenance allow-list, eight codes each proven in both directions by its own fixture pair (EVAL-01, EVAL-02, EVAL-03)
+- [x] 05-01-PLAN.md — Tracer: one proxy term end to end — `evals/proxy-sources.md` as the external-provenance registry, `evals/lint.py` counting it, `proxy-term-unsourced` making the registry load-bearing, the EVAL-03 disclaimer, and the self-test wired into CI; then the four remaining proxy codes and the provenance allow-list, eight codes each proven in both directions by its own fixture pair (EVAL-01, EVAL-02, EVAL-03)
 
 **Wave 2** *(blocked on Wave 1: shares `.github/workflows/ci.yml`, and imports the linter)*
 
@@ -305,7 +305,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
-| 5. Evaluation Harness | 0/3 | Planned | - |
+| 5. Evaluation Harness | 1/3 | In Progress|  |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
 
 ---

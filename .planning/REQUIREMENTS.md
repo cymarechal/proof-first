@@ -66,9 +66,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Evaluation
 
-- [ ] **EVAL-01**: A deterministic linter counts rule-proxy violations using only the Python standard library, and passes its own self-test
-- [ ] **EVAL-02**: The linter's buzzword proxy list is sourced independently of the skill's own worked examples, so measured improvement is not circular
-- [ ] **EVAL-03**: The linter states plainly that the deletion test is a semantic judgment it cannot perform, and that its numbers are not a compliance verdict
+- [x] **EVAL-01**: A deterministic linter counts rule-proxy violations using only the Python standard library, and passes its own self-test
+- [x] **EVAL-02**: The linter's buzzword proxy list is sourced independently of the skill's own worked examples, so measured improvement is not circular
+- [x] **EVAL-03**: The linter states plainly that the deletion test is a semantic judgment it cannot perform, and that its numbers are not a compliance verdict
 - [ ] **EVAL-04**: A committed scenario set drives generations across all four artifact families
 - [ ] **EVAL-05**: A benchmark runner drives multiple Claude models headlessly with the model string and reasoning effort pinned and recorded per result
 - [ ] **EVAL-06**: Each benchmark cell runs at least three times, and published results report variance alongside the mean
@@ -165,9 +165,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIST-04 | Phase 4 | Pending |
 | DIST-05 | Phase 4 | Gaps Found |
 | DIST-06 | Phase 4 | Pending |
-| EVAL-01 | Phase 5 | Pending |
-| EVAL-02 | Phase 5 | Pending |
-| EVAL-03 | Phase 5 | Pending |
+| EVAL-01 | Phase 5 | Complete |
+| EVAL-02 | Phase 5 | Complete |
+| EVAL-03 | Phase 5 | Complete |
 | EVAL-04 | Phase 5 | Pending |
 | EVAL-05 | Phase 5 | Pending |
 | EVAL-06 | Phase 5 | Pending |
