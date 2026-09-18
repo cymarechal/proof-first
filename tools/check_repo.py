@@ -8,6 +8,16 @@ text — that judgement is Phase 6's legal review gate (LEG-04). It imports
 only the Python standard library; no package-manager dependency is
 introduced by this file or by the CI job that runs it.
 
+It also does not compare two factual assertions in the same document for
+consistency (G-04-8): detecting that one passage contradicts another,
+fifty-odd lines apart, is entailment over two independent phrasings, not
+pattern matching, and nothing in this stdlib-only stack performs it. A
+blocklist of the exact wording this class of defect has used so far would
+only prove that instance did not come back, and a broad negative-existential
+regex over prose would be a fuzzy-proxy build gate on every future
+disclosure sentence. See .planning/WINDOWS.md for the full assessment,
+including the narrow presence-code candidate that was measured and refused.
+
 Usage:
   python3 tools/check_repo.py                # live run against this repo
   python3 tools/check_repo.py --self-test     # run fixture-based self-tests
