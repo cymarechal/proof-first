@@ -24,7 +24,7 @@ Rules applied: PF-1.9, PF-2.14, PF-2.17.
 ## Executive summary
 
 ✗ "Kestrel Systems Group offers a comprehensive suite of cutting-edge cloud capabilities: elastic compute, managed database services, and end-to-end landing-zone governance. This migration will significantly reduce settlement batch overruns and dramatically lower operating costs. Halverton Mutual should choose Kestrel Systems Group for this transformative migration."
-✓ "Halverton Mutual's nightly settlement batch job regularly overruns its required 6-hour window, and the size of that overrun has never been measured — [PF-2.11 GAP: no measured baseline for the settlement batch overrun]. Diane Osoria, the Chief Financial Officer, is measured on bringing the current annual run rate down from $2,300,000 and on a clean regulatory examination. The migration delivers automated failover, Oracle Database licensing relief, and a landing zone the team can govern."
+✓ "Halverton Mutual's nightly settlement batch job regularly overruns its required 6-hour window, and the size of that overrun has never been measured — [PF-2.11 GAP: no measured baseline for the settlement batch overrun]. Diane Osoria, the Chief Financial Officer, is measured on bringing the current annual run rate down from $2,300,000 and on a clean regulatory examination. The proposed migration targets the pains Halverton Mutual named: manual failover across the estate, rising Oracle Database licensing cost, and no governable landing zone."
 
 Rules applied: PF-0.1, PF-1.25, PF-2.11.
 
