@@ -1,9 +1,9 @@
 ---
-status: partial
+status: diagnosed
 phase: 04-distribution-worked-examples
 source: [04-VERIFICATION.md]
 started: 2026-09-18T05:40:00Z
-updated: 2026-09-18T07:25:00Z
+updated: 2026-09-18T07:35:00Z
 ---
 
 ## Current Test
@@ -216,8 +216,25 @@ blocked: 2
   reason: "Cold reader reported: examples/before-after.md:20 states AWS Control Tower delivers governance across Halverton Mutual's on-premises VMware and Oracle estate. Control Tower governs AWS accounts, not on-premises VMs. Self-contradicts sentence 1 of the same column ('every account in its new estate'), contradicts deal-brief.md:22 and worked-examples.md:32 (both scope it to 'the new account structure'), and is a regression introduced by f8ebf78's PF-1.9 recast. The two items the test was written to check — PF-1.9 capability-first shape and PF-3.3 term-level marking — both passed."
   severity: major
   test: 3
-  artifacts: []
-  missing: []
+  root_cause: "Commit f8ebf78 recast the Solution proposal check column into three sentences so PF-1.9's capability-first requirement would be satisfied. The pre-existing single sentence correctly attached governance to the migration target ('moves ... onto Amazon EC2 ... governed end to end by AWS Control Tower's account-level guardrails'). The split left the noun phrase 'on-premises estate of 850 VMware vSphere virtual machines and 40 Oracle Database instances' stranded as the object of the new governance sentence, silently re-scoping the product claim from the post-migration account structure to the pre-migration estate. The PF-1.9 fix was verified for shape, not for the truth of the sentence it created."
+  contributing_cause: "No CI code checks product-scope semantics. tools/check_repo.py's example-facing codes (example-rule-narration, example-sentence-length, before-after-spelled-count, before-after-citation-missing, before-after-family-missing) cover narration, sentence length, word-spelled counts, citations and family headings - none evaluates whether a named product is claimed to do something it does not do. The file is structurally green and substantively wrong at the same time."
+  artifacts:
+    - path: "examples/before-after.md"
+      line: 20
+      issue: "Sentence 2 claims AWS Control Tower delivers governance across the on-premises VMware/Oracle estate. Control Tower governs AWS accounts and OUs."
+  authorities_contradicted:
+    - "examples/deal-brief.md:22 - 'AWS Control Tower for landing-zone governance across the new account structure'"
+    - "skills/proof-first/references/worked-examples.md:32 - 'AWS Control Tower provides that governance boundary across the new account structure'"
+    - "examples/before-after.md:20 sentence 1 - 'every account in its new estate'"
+  missing:
+    - "Re-scope before-after.md:20 sentence 2 so governance attaches to the new account structure, not the on-premises estate, while preserving the capability-first order PF-1.9 requires and the PF-4.1 25-word ceiling."
+    - "Re-check README.md - it reproduces the RFP/RFI pair only, so it is unaffected, but confirm cross-file identity checks still pass after the edit."
+    - "Decide and record whether product-scope truth is checkable by any code in this stack. Assessment from this round: it is semantic and not regex-checkable, so it belongs in the human-verification backstop, not in a new CI code that would overstate its coverage."
+  secondary_defects:
+    - "examples/before-after.md:34 - the PF-2.14 marker reads 'confirm this delivery date' but the text it attaches to names no date."
+    - "examples/before-after.md:34 - deal-brief.md:70 records one Feld utterance; the line renders it as two statements joined by 'He added:', inventing a discourse sequence the brief does not record."
+  debug_session: ""
+
 
 - gap_id: G-04-4
   truth: "A prospective evaluator understands what the skill does and how to install it within the first screen or two, with no confusion about which of the four install routes to pick."
@@ -225,5 +242,28 @@ blocked: 2
   reason: "Cold reader reported: README line 38 promises routes 3 and 4 work today from a local clone, but route 3's output style is never discoverable from a bare clone - output-styles/ at repo root is the plugin-shipped location, and the plugin route is blocked on publication. No copy/symlink step is stated anywhere."
   severity: major
   test: 4
-  artifacts: []
-  missing: []
+  root_cause: "README.md:38 asserts routes 3 and 4 'work today, from a local clone'. Route 3's file is committed at repo-root output-styles/proof-first.md, which is the PLUGIN-ROOT discovery location - live only once the repository is installed as a plugin. Claude Code scans ~/.claude/output-styles/ and <project>/.claude/output-styles/ for a bare clone, neither of which this repository populates. README.md:65-67 gives route 3 in full as 'Select it through /config', with no step between file-exists and select. So route 3's real enabling mechanism is route 2, which the README itself correctly says will not resolve until publication."
+  contributing_cause: "tools/check_repo.py's readme-install-path-missing code verifies that all four install anchors are present beneath ## Install. It verifies nothing about whether a stated route is executable. The structural half of DIST-06 is green precisely because the check measures presence, not truth - the same class of overstatement CR-01 closed for marketplace.json."
+  artifacts:
+    - path: "README.md"
+      line: 38
+      issue: "Claims routes 3 and 4 both work today from a local clone. Route 3 does not."
+    - path: "README.md"
+      line: 65
+      issue: "Route 3 states 'Select it through /config' with no installation step; the file is not on any path Claude Code scans for a bare clone."
+  verified_by_orchestrator:
+    - "Repository has .claude/ containing only CLAUDE.md; no .claude/output-styles/ exists."
+    - "output-styles/proof-first.md exists at repository root only; no copy or symlink elsewhere."
+    - "grep over README.md finds no occurrence of ~/.claude, .claude/output-styles, cp, or symlink."
+    - "output-styles/proof-first.md frontmatter carries keep-coding-instructions: false and no force-for-plugin, so nothing auto-applies it either."
+  missing:
+    - "State the missing step for route 3 - copy or symlink output-styles/proof-first.md into ~/.claude/output-styles/ (or the project's .claude/output-styles/) - or stop claiming route 3 works today from a bare clone. Whichever is chosen, README.md:38's 'routes 3 and 4 work today' sentence must agree with it."
+    - "Consider a CI code that proves each route stated as working-today is executable from a clean clone, so this class of claim cannot go structurally green while being false."
+  secondary_defects:
+    - "README.md:7 says the rules turned 'a paragraph like the one on the left into the one on the right', but lines 14-15 stack vertically. There is no left and right."
+    - "README.md:7-10 is one 63-word sentence of abstraction between the heading and the example - the tell-before-showing move the skill exists to delete."
+    - "README.md:17 'Rules applied: PF-2.1, MC-11' is opaque and unlinked at point of use; NUMBERING.md is not named until line 85."
+    - "README.md:34-36 and 41-42 disclose the <owner>/<repo> placeholder twice in near-identical words, both carrying the garbled clause 'every command and manifest that states it is checked to agree'."
+    - "README.md:77-137 - ## Status is about a quarter of the file, with lines 114-131 a single unbroken 18-line paragraph, denser than anything describing what the skill does."
+  debug_session: ""
+
