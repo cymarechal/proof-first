@@ -429,7 +429,45 @@ def run_matrix(models, conditions, scenarios, repeats, skill_src, raw_dir, timeo
 # Rubric dimensions, each scored independently (Decision 5) so persuasive
 # force cannot be inferred from the other two.
 JUDGE_DIMENSIONS = ('evidence', 'clarity', 'persuasive_force')
-JUDGEMENT_VERDICTS = ('scored', 'unscoreable')
+JUDGE_VERDICTS = ('scored', 'unscoreable')
+
+JUDGE_MODEL = 'claude-opus-5'
+JUDGE_EFFORT = 'high'
+
+# Every field a judgement record must carry (Decision 7's frozen schema,
+# scores nested {dimension: {condition: value}} per 05-02-SUMMARY.md's
+# documented refinement). self_test() asserts a record is never missing one
+# of these.
+JUDGEMENT_RECORD_FIELDS = (
+    'run_id', 'timestamp', 'judge_model', 'judge_effort', 'scenario_id', 'model',
+    'repeat', 'order', 'text_a_condition', 'text_b_condition', 'scores',
+    'raw_judge_output', 'verdict', 'reason',
+)
+
+# The judge reply is validated against this schema in Python after parsing,
+# regardless of what --json-schema enforced on the CLI side (T-05-13). One
+# call per (pair, order) must produce scores for BOTH anonymous texts -- the
+# 96-judge-call total in 05-RESEARCH.md Decision 4 (48 pairs x 2 orders) only
+# balances if a single call scores both texts, not one -- so JUDGE_SCHEMA
+# nests the three required 0-10 integer dimension keys under two top-level
+# keys, text_a and text_b, rather than a single flat 3-key object. This is a
+# documented refinement of the plan's own "JUDGE_SCHEMA ... requiring exactly
+# those three keys as integers" text, read as describing the per-text leaf
+# shape (each of text_a/text_b requires exactly JUDGE_DIMENSIONS as 0-10
+# integers, additionalProperties false) rather than a flat top-level object,
+# which cannot carry two texts' worth of scores in one call.
+_JUDGE_TEXT_SCHEMA = {
+    'type': 'object',
+    'properties': {dim: {'type': 'integer', 'minimum': 0, 'maximum': 10} for dim in JUDGE_DIMENSIONS},
+    'required': list(JUDGE_DIMENSIONS),
+    'additionalProperties': False,
+}
+JUDGE_SCHEMA = {
+    'type': 'object',
+    'properties': {'text_a': _JUDGE_TEXT_SCHEMA, 'text_b': _JUDGE_TEXT_SCHEMA},
+    'required': ['text_a', 'text_b'],
+    'additionalProperties': False,
+}
 
 # The two figure sections a rendered report always carries, kept separate
 # and never blended into one composite number (EVAL-09).
@@ -477,6 +515,418 @@ CAVEAT_TEXT = {
         'evals/benchmark/raw/.'
     ),
 }
+
+
+def build_judge_prompt(text_a, text_b):
+    """Build the blind pairwise judge prompt for two anonymous texts.
+
+    Presents `text_a` and `text_b` under the anonymous labels TEXT A / TEXT B
+    and asks for independent 0-10 scores on three dimensions, described in
+    ordinary language rather than this project's own rule vocabulary. The
+    built string must never contain a condition name ('skill-on'/
+    'skill-off'), this project's name ('proof-first'/'Proof First'), or a
+    PF-/MC- rule-namespace token -- self_test()'s label-stripping assertion
+    scans this function's OUTPUT, not its source, so the check is against
+    what the judge model actually sees.
+
+    `text_a`/`text_b` are embedded verbatim -- the two texts reach the judge
+    exactly as the generation records stored them, UTF-8 and unnormalised,
+    with no transformation beyond the label-stripping this function already
+    performs by never naming which condition produced which text. No
+    truncation is applied here; the judge session's own timeout is the only
+    length bound this module imposes.
+
+    The persuasive_force dimension is worded to ask a question the clarity
+    dimension does not (a short, active-voiced, one-claim-per-sentence text
+    can still read as a checklist and score low on persuasive_force while
+    scoring high on clarity) -- 05-RESEARCH.md Decision 5's own requirement.
+    """
+    return (
+        'You are evaluating two pieces of presales writing, labeled TEXT A and TEXT B below. '
+        'Score EACH text independently on three dimensions, each an integer from 0 to 10. Score '
+        'each text on its own merits -- do not let one text\'s score influence the other\'s.\n\n'
+        'Dimensions:\n'
+        '1. evidence -- does every claim in the text carry a number, a named source, or an '
+        'explicit statement that the fact is missing, with no fabricated figures, reference '
+        'customers, or benchmarks. A text stating unsupported claims as plain fact scores low; a '
+        'text that backs its claims or clearly states what it cannot yet prove scores high.\n'
+        '2. clarity -- sentence length, active voice, and one claim per sentence. A text with '
+        'long, passive, or claim-stacked sentences scores low; short, active, single-claim '
+        'sentences score high.\n'
+        '3. persuasive_force -- would a technical evaluator finish this text believing the '
+        'author genuinely understands their specific problem, reading it as a coherent case for '
+        'a decision rather than a checklist of features. Score this independently of clarity: a '
+        'short, clean, well-organized text can still read as a checklist and score low here, '
+        'while a text that builds a specific, situated argument can score high even with longer '
+        'sentences.\n\n'
+        f'TEXT A:\n{text_a}\n\n'
+        f'TEXT B:\n{text_b}\n\n'
+        'Reply with integer scores from 0 to 10 for both texts on all three dimensions.'
+    )
+
+
+def _judge_prompt_label_violations(prompt):
+    """Return the list of forbidden strings found in `prompt`: a condition
+    name, this project's name, or a PF-/MC- rule-namespace token.
+
+    Checked against the string build_judge_prompt() actually returns, never
+    against its source template -- exactly what self_test()'s label-
+    stripping assertion requires.
+    """
+    forbidden_substrings = ('skill-on', 'skill-off', 'proof-first', 'proof first', 'Proof First')
+    found = [token for token in forbidden_substrings if token.lower() in prompt.lower()]
+    if re.search(r'\bPF-\d', prompt):
+        found.append('PF-<digit>')
+    if re.search(r'\bMC-\d', prompt):
+        found.append('MC-<digit>')
+    return found
+
+
+def _validate_judge_reply(raw_text):
+    """Parse and validate a judge reply string against JUDGE_SCHEMA's key
+    set and 0-10 integer bounds, in Python, regardless of what --json-schema
+    enforced on the CLI side (T-05-13's Python-side re-validation).
+
+    Returns (scores_by_text, None) on success, where scores_by_text is
+    {'text_a': {dim: int}, 'text_b': {dim: int}} for every dim in
+    JUDGE_DIMENSIONS -- or (None, reason) on any failure: unparseable JSON, a
+    non-dict top level, a missing/extra text_a/text_b key, a missing/extra
+    dimension key inside either (a reply missing persuasive_force names it
+    in `reason` via the `missing` list), a non-integer score (bool is
+    explicitly rejected even though Python's bool is an int subclass), or a
+    score outside [0, 10]. Never raises -- the caller records `reason` as
+    the unscoreable reason and the record contributes to no mean.
+    """
+    try:
+        reply = json.loads(raw_text)
+    except (json.JSONDecodeError, TypeError) as exc:
+        return None, f'unparseable judge reply: {exc}'
+
+    if not isinstance(reply, dict):
+        return None, f'judge reply is not a JSON object: {raw_text[:200]!r}'
+
+    if set(reply) != {'text_a', 'text_b'}:
+        return None, f'judge reply top-level keys expected exactly text_a, text_b, got {sorted(reply)}'
+
+    scores_by_text = {}
+    for text_key in ('text_a', 'text_b'):
+        sub = reply[text_key]
+        if not isinstance(sub, dict):
+            return None, f'judge reply {text_key!r} is not a JSON object'
+        if set(sub) != set(JUDGE_DIMENSIONS):
+            missing = [d for d in JUDGE_DIMENSIONS if d not in sub]
+            extra = [k for k in sub if k not in JUDGE_DIMENSIONS]
+            return None, (
+                f'judge reply {text_key!r} keys do not match JUDGE_DIMENSIONS exactly '
+                f'(missing={missing}, extra={extra})'
+            )
+        parsed = {}
+        for dim in JUDGE_DIMENSIONS:
+            value = sub[dim]
+            if isinstance(value, bool) or not isinstance(value, int):
+                return None, f'judge reply {text_key!r}.{dim} is not an integer: {value!r}'
+            if not (0 <= value <= 10):
+                return None, f'judge reply {text_key!r}.{dim} is out of range 0-10: {value!r}'
+            parsed[dim] = value
+        scores_by_text[text_key] = parsed
+
+    return scores_by_text, None
+
+
+def _unscoreable_judgement_record(judge_model, judge_effort, scenario_id, model, repeat, order,
+                                   text_a_condition, text_b_condition, reason, raw_judge_output=None):
+    """Build an `unscoreable` judgement record with the given `reason`.
+
+    Used both by run_judgement() itself (a reply that parses but fails
+    JUDGE_SCHEMA validation) and by run_judge_matrix() (a SessionFailedError
+    from a non-zero exit, an is_error envelope, or an unparseable envelope --
+    handled identically to the generation path, per this task's own
+    behavior spec).
+    """
+    return {
+        'run_id': str(uuid.uuid4()),
+        'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        'judge_model': judge_model,
+        'judge_effort': judge_effort,
+        'scenario_id': scenario_id,
+        'model': model,
+        'repeat': repeat,
+        'order': order,
+        'text_a_condition': text_a_condition,
+        'text_b_condition': text_b_condition,
+        'scores': None,
+        'raw_judge_output': raw_judge_output,
+        'verdict': 'unscoreable',
+        'reason': reason,
+    }
+
+
+def run_judgement(pair, order, judge_model, judge_effort, timeout_s,
+                   raw_dir=None, max_budget_usd=MAX_BUDGET_USD):
+    """Drive one isolated-temp-dir `claude -p` judge session for one order of
+    one (model, scenario_id, repeat) pair, write the resulting record to its
+    frozen filename template, and return (record, wrote_new).
+
+    `pair` is a dict carrying `model`, `scenario_id`, `repeat`,
+    `skill_on_text`, and `skill_off_text`. `order` is 1 (TEXT A = skill-off,
+    TEXT B = skill-on) or 2 (TEXT A = skill-on, TEXT B = skill-off) -- the
+    both-orders swap that cancels position bias (05-RESEARCH.md Decision 5).
+
+    Installs no skill folder into the session's temp dir, unconditionally --
+    the judge must never run under the skill it is scoring (T-05-19).
+
+    `wrote_new` is False when the cell's raw file already existed -- the same
+    skip-if-exists resumability run_generation() already provides.
+
+    Raises SessionFailedError on a non-zero exit, an `is_error: true`
+    envelope, or an unparseable envelope -- exactly the generation path's own
+    trigger set. The caller (run_judge_matrix, or this file's own self-test
+    acting as a single-cell caller) is responsible for catching that and
+    writing an `unscoreable` record instead of letting the failure propagate
+    out of the whole pass.
+
+    A reply that parses but fails JUDGE_SCHEMA validation (missing
+    persuasive_force, an out-of-range or non-integer score, or a schema-
+    invalid shape) does NOT raise -- exactly like run_generation()'s empty-
+    text case, this function writes and returns an `unscoreable` record
+    directly, with `reason` naming the validation failure.
+    """
+    raw_dir = pathlib.Path(raw_dir) if raw_dir is not None else RAW_DIR
+    model = pair['model']
+    scenario_id = pair['scenario_id']
+    repeat = pair['repeat']
+
+    path = raw_path_for_judgement(model, scenario_id, repeat, order, raw_dir)
+    if path.exists():
+        return json.loads(path.read_text(encoding='utf-8')), False
+
+    if order == 1:
+        text_a_condition, text_b_condition = 'skill-off', 'skill-on'
+    elif order == 2:
+        text_a_condition, text_b_condition = 'skill-on', 'skill-off'
+    else:
+        raise ValueError(f'order must be 1 or 2, got {order!r}')
+
+    text_a = pair['skill_off_text'] if text_a_condition == 'skill-off' else pair['skill_on_text']
+    text_b = pair['skill_off_text'] if text_b_condition == 'skill-off' else pair['skill_on_text']
+    prompt = build_judge_prompt(text_a, text_b)
+
+    tmp_dir = pathlib.Path(tempfile.mkdtemp(prefix='proof-first-benchmark-judge-'))
+    try:
+        argv = [
+            'claude', '-p', prompt,
+            '--model', judge_model,
+            '--effort', judge_effort,
+            '--output-format', 'json',
+            '--json-schema', json.dumps(JUDGE_SCHEMA),
+            '--disallowedTools', ','.join(DISALLOWED_TOOLS),
+            '--max-budget-usd', str(max_budget_usd),
+        ]
+        result = subprocess.run(
+            argv, cwd=str(tmp_dir), capture_output=True, text=True, timeout=timeout_s,
+        )
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+    if result.returncode != 0:
+        raise SessionFailedError(result.returncode, result.stderr)
+
+    try:
+        env = _unwrap_envelope(result.stdout)
+    except (json.JSONDecodeError, ValueError) as exc:
+        raise SessionFailedError(-1, f'unparseable envelope: {exc}')
+
+    if not isinstance(env, dict) or env.get('is_error'):
+        detail = str(env.get('result', ''))[:300] if isinstance(env, dict) else 'malformed envelope (not a JSON object)'
+        raise SessionFailedError(-1, detail)
+
+    raw_judge_output = env.get('result', '') or ''
+    scores_by_text, reason = _validate_judge_reply(raw_judge_output)
+
+    record_base = {
+        'run_id': str(uuid.uuid4()),
+        'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        'judge_model': judge_model,
+        'judge_effort': judge_effort,
+        'scenario_id': scenario_id,
+        'model': model,
+        'repeat': repeat,
+        'order': order,
+        'text_a_condition': text_a_condition,
+        'text_b_condition': text_b_condition,
+        'raw_judge_output': raw_judge_output,
+    }
+
+    if scores_by_text is None:
+        record = dict(record_base, scores=None, verdict='unscoreable', reason=reason)
+        _write_json_atomic(path, record)
+        return record, True
+
+    scores = {
+        dim: {
+            text_a_condition: scores_by_text['text_a'][dim],
+            text_b_condition: scores_by_text['text_b'][dim],
+        }
+        for dim in JUDGE_DIMENSIONS
+    }
+    record = dict(record_base, scores=scores, verdict='scored', reason=None)
+    _write_json_atomic(path, record)
+    return record, True
+
+
+def run_judge_matrix(models, scenarios, repeats, raw_dir, timeout_s, judge_model=JUDGE_MODEL,
+                      judge_effort=JUDGE_EFFORT, max_budget_usd=MAX_BUDGET_USD, judgement_fn=run_judgement):
+    """Enumerate model x scenario x repeat x order (1, 2), in that nesting
+    order, and drive one judge call per cell via `judgement_fn` (defaults to
+    run_judgement), reading each pair's skill-on/skill-off generation text
+    from already-committed, `verdict == 'generated'` records under raw_dir.
+
+    Mirrors run_matrix()'s SessionFailedError handling exactly: a raised
+    SessionFailedError writes an `unscoreable` record carrying the real
+    reason to the cell's raw path rather than raising out of the loop, so one
+    judge-call failure never loses the rest of the pass. Any OTHER exception
+    (a genuine interruption) still propagates immediately, leaving on disk
+    exactly the records already written by cells before it.
+
+    Skips a (model, scenario, repeat) triple with no matching skill-on and
+    skill-off generation record on disk (or either not `verdict ==
+    'generated'`) -- a missing or failed generation is not a judge failure
+    and produces no judgement record at all, never a fabricated unscoreable
+    one, since 05-RESEARCH.md's cost/count arithmetic already accounts for
+    judge calls only over completed generation pairs.
+
+    Returns the full list of (model, scenario_id, repeat, order) tuples this
+    call enumerated, in the documented deterministic order.
+    """
+    raw_dir = pathlib.Path(raw_dir) if raw_dir is not None else RAW_DIR
+    enumerated = []
+    for model in models:
+        for scenario in scenarios:
+            scenario_id = scenario['id']
+            for repeat in range(repeats):
+                skill_on_path = raw_path_for_generation(model, 'skill-on', scenario_id, repeat, raw_dir)
+                skill_off_path = raw_path_for_generation(model, 'skill-off', scenario_id, repeat, raw_dir)
+                if not (skill_on_path.exists() and skill_off_path.exists()):
+                    continue
+                skill_on_record = json.loads(skill_on_path.read_text(encoding='utf-8'))
+                skill_off_record = json.loads(skill_off_path.read_text(encoding='utf-8'))
+                if skill_on_record.get('verdict') != 'generated' or skill_off_record.get('verdict') != 'generated':
+                    continue
+                pair = {
+                    'model': model, 'scenario_id': scenario_id, 'repeat': repeat,
+                    'skill_on_text': skill_on_record['text'], 'skill_off_text': skill_off_record['text'],
+                }
+                for order in (1, 2):
+                    try:
+                        judgement_fn(
+                            pair=pair, order=order, judge_model=judge_model,
+                            judge_effort=judge_effort, timeout_s=timeout_s,
+                            raw_dir=raw_dir, max_budget_usd=max_budget_usd,
+                        )
+                    except SessionFailedError as exc:
+                        text_a_condition, text_b_condition = (
+                            ('skill-off', 'skill-on') if order == 1 else ('skill-on', 'skill-off')
+                        )
+                        record = _unscoreable_judgement_record(
+                            judge_model, judge_effort, scenario_id, model, repeat, order,
+                            text_a_condition, text_b_condition,
+                            reason=f'nonzero exit or is_error: returncode={exc.returncode} stderr={exc.stderr!r}',
+                        )
+                        path = raw_path_for_judgement(model, scenario_id, repeat, order, raw_dir)
+                        _write_json_atomic(path, record)
+                    enumerated.append((model, scenario_id, repeat, order))
+    return enumerated
+
+
+def average_orders(order1, order2):
+    """Return {dimension: {condition: averaged_score}} averaging `order1`
+    and `order2`'s per-dimension per-condition scores, or None if either
+    order is missing (None) or not `verdict == 'scored'`.
+
+    A pair with only one order present -- or with an order present but not
+    scored -- is excluded from the pair aggregate rather than counted at
+    half weight (must_haves, EVAL-06 adjacency edge); the caller
+    (judge_summary()) is responsible for counting that exclusion.
+
+    Where the same condition scores the identical value in both orders (e.g.
+    7 and 7), the average is exactly that value, 7.0 -- ordinary arithmetic,
+    asserted directly by self_test().
+    """
+    if order1 is None or order2 is None:
+        return None
+    if order1.get('verdict') != 'scored' or order2.get('verdict') != 'scored':
+        return None
+
+    averaged = {}
+    for dim in JUDGE_DIMENSIONS:
+        averaged[dim] = {}
+        for condition in ('skill-off', 'skill-on'):
+            v1 = order1['scores'][dim][condition]
+            v2 = order2['scores'][dim][condition]
+            averaged[dim][condition] = (v1 + v2) / 2
+    return averaged
+
+
+def judge_summary(records):
+    """Group judgement records into (model, scenario_id, repeat) pairs, run
+    average_orders() over each pair's order1/order2, and tally win/tie/loss
+    per dimension -- comparing the pair's averaged skill-on score against its
+    averaged skill-off score, independently for each of the three
+    dimensions.
+
+    Returns:
+      {
+        'tallies': {(model, scenario_id): {dim: {'wins': n, 'ties': n, 'losses': n}}},
+        'excluded_pairs': int,  -- pairs missing an order, or with an order
+                                   present but not scored, excluded rather
+                                   than counted at half weight
+        'unscoreable': [{'model', 'scenario_id', 'repeat', 'order', 'reason'}, ...],
+      }
+
+    An exact tie (the two averaged condition scores equal) is counted as one
+    tie and is never rounded, nudged, or tie-broken into a winner (must_haves,
+    EVAL-06 adjacency edge). Rendering (build_results_md()) sorts `tallies`'
+    keys itself for the model-then-scenario ascending row order -- this
+    function's own dict does not need to be pre-sorted.
+    """
+    judgement_records = [r for r in records if 'judge_model' in r]
+
+    by_pair = {}
+    for record in judgement_records:
+        key = (record['model'], record['scenario_id'], record['repeat'])
+        by_pair.setdefault(key, {})[record['order']] = record
+
+    unscoreable = [
+        {
+            'model': record['model'], 'scenario_id': record['scenario_id'],
+            'repeat': record['repeat'], 'order': record['order'],
+            'reason': record.get('reason'),
+        }
+        for record in judgement_records
+        if record.get('verdict') != 'scored'
+    ]
+
+    tallies = {}
+    excluded_pairs = 0
+    for (model, scenario_id, _repeat), orders in by_pair.items():
+        averaged = average_orders(orders.get(1), orders.get(2))
+        if averaged is None:
+            excluded_pairs += 1
+            continue
+        bucket = tallies.setdefault(
+            (model, scenario_id), {dim: {'wins': 0, 'ties': 0, 'losses': 0} for dim in JUDGE_DIMENSIONS}
+        )
+        for dim in JUDGE_DIMENSIONS:
+            skill_on = averaged[dim]['skill-on']
+            skill_off = averaged[dim]['skill-off']
+            if skill_on == skill_off:
+                bucket[dim]['ties'] += 1
+            elif skill_on > skill_off:
+                bucket[dim]['wins'] += 1
+            else:
+                bucket[dim]['losses'] += 1
+
+    return {'tallies': tallies, 'excluded_pairs': excluded_pairs, 'unscoreable': unscoreable}
 
 
 def _load_lint_module():
@@ -633,7 +1083,7 @@ def _missing_required_caveats(text, required_caveats=REQUIRED_CAVEATS):
 
 
 def build_results_md(aggregated, models=None, generation_count=None, as_of_date=None,
-                      required_caveats=REQUIRED_CAVEATS):
+                      required_caveats=REQUIRED_CAVEATS, judge_summary_data=None):
     """Pure function: turn aggregate()'s output into the whole RESULTS.md
     document as a string. Calling this twice on identical input returns
     byte-identical strings (EVAL-12) -- there is no timestamp-at-render-time
@@ -644,11 +1094,21 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
     date, and the total generation count in the same sentence (guarding the
     overclaim 05-RESEARCH.md Decision 8 item 1 names: a percentage figure
     with no model/date/N attached); `## Mechanical proxy counts`; `##
-    Judged persuasion`; `## Honest caveats`; and `## Reproduce`. The two
+    Judged persuasion` (per-dimension mean/range table, then a win/tie/loss
+    table from `judge_summary_data`, then excluded-pair and unscoreable-
+    judgement counts); `## Honest caveats`; and `## Reproduce`. The two
     figure sections are two separately headed top-level sections and are
     never blended into one composite figure anywhere in this function
     (EVAL-09) -- there is no code path here that sums or averages a
     mechanical count together with a judged score.
+
+    `judge_summary_data` is judge_summary()'s own return shape
+    (`{'tallies', 'excluded_pairs', 'unscoreable'}`) or None. The win/tie/
+    loss table's rows are emitted by iterating `sorted(tallies.items())` --
+    model ascending, then scenario id ascending -- regardless of the
+    dict's own insertion order, so the rendered report is byte-stable
+    across runs and across a shuffled input record order (must_haves,
+    EVAL-06 ordering edge).
 
     `required_caveats` defaults to REQUIRED_CAVEATS; self_test() calls this
     with a reduced tuple to prove the caveats section is built FROM the
@@ -699,6 +1159,42 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
                     )
     lines.append('')
 
+    lines.append(
+        'Win/tie/loss (skill-on vs skill-off, averaged across both judge orders), rows in '
+        'model-then-scenario ascending order:'
+    )
+    lines.append('')
+    tallies = (judge_summary_data or {}).get('tallies') or {}
+    if not tallies:
+        lines.append('No scored judgement pairs were available to compute a win/tie/loss table.')
+    else:
+        lines.append('| Model | Scenario | Dimension | Wins | Ties | Losses |')
+        lines.append('|---|---|---|---|---|---|')
+        for (model, scenario_id), by_dim in sorted(tallies.items()):
+            for dim in JUDGE_DIMENSIONS:
+                tally = by_dim.get(dim, {'wins': 0, 'ties': 0, 'losses': 0})
+                lines.append(
+                    f"| {model} | {scenario_id} | {dim} | {tally['wins']} | {tally['ties']} "
+                    f"| {tally['losses']} |"
+                )
+    lines.append('')
+
+    excluded_pairs = (judge_summary_data or {}).get('excluded_pairs', 0)
+    lines.append(
+        f'Excluded pairs (missing an order, or an order present but not scored): {excluded_pairs}.'
+    )
+    lines.append('')
+
+    unscoreable_judgements = (judge_summary_data or {}).get('unscoreable') or []
+    lines.append(f'Unscoreable judgements: {len(unscoreable_judgements)}.')
+    if unscoreable_judgements:
+        grouped_reasons = {}
+        for item in unscoreable_judgements:
+            grouped_reasons.setdefault(item.get('reason'), []).append(item)
+        for reason, items in sorted(grouped_reasons.items(), key=lambda kv: (kv[0] or '')):
+            lines.append(f'  - {reason}: {len(items)} record(s)')
+    lines.append('')
+
     lines.append('## Honest caveats')
     lines.append('')
     for key in required_caveats:
@@ -739,6 +1235,7 @@ def generate_report(raw_dir=None, out_path=None, models=None, generation_count=N
         raise ValueError(f'no raw records found under {raw_dir} -- nothing to report')
 
     aggregated = aggregate(records)
+    judge_data = judge_summary(records)
 
     if models is None:
         models = sorted({r['model'] for r in records if 'model' in r and 'judge_model' not in r})
@@ -747,7 +1244,10 @@ def generate_report(raw_dir=None, out_path=None, models=None, generation_count=N
     if as_of_date is None:
         as_of_date = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
 
-    text = build_results_md(aggregated, models=models, generation_count=generation_count, as_of_date=as_of_date)
+    text = build_results_md(
+        aggregated, models=models, generation_count=generation_count, as_of_date=as_of_date,
+        judge_summary_data=judge_data,
+    )
     if out_path is not None:
         pathlib.Path(out_path).write_text(text, encoding='utf-8')
     return text
@@ -1160,6 +1660,310 @@ def self_test():
             else:
                 cases_exercised.append('run-matrix-durability-on-interruption')
 
+    # === The blind pairwise judge (Task 1) ===
+
+    fake_pair = {
+        'model': 'claude-sonnet-5',
+        'scenario_id': 'exec-summary-1',
+        'repeat': 0,
+        'skill_off_text': 'AWS Control Tower governs the new account structure across 850 virtual machines.',
+        'skill_on_text': 'Google Compute Engine hosts the migrated workload across 12 nodes, reducing the '
+                          'annual infrastructure spend the customer named at $1,850,000.',
+    }
+
+    # --- label-stripping: the built judge prompt contains neither condition
+    # name, nor this project's name, nor a PF-/MC- rule-namespace token. ---
+    label_prompt = build_judge_prompt(fake_pair['skill_off_text'], fake_pair['skill_on_text'])
+    label_violations = _judge_prompt_label_violations(label_prompt)
+    if label_violations:
+        print(f'FAIL: build_judge_prompt() leaked forbidden token(s): {label_violations}')
+        all_ok = False
+    else:
+        cases_exercised.append('judge-prompt-label-stripping')
+
+    judge_success_envelope = json.loads(
+        (FIXTURES_DIR / 'judgement-scored-envelope.json').read_text(encoding='utf-8')
+    )
+
+    def _fake_judge_success_run(argv, **kwargs):
+        return subprocess.CompletedProcess(argv, returncode=0, stdout=json.dumps(judge_success_envelope), stderr='')
+
+    # --- well-formed reply: three integer scores per text, verdict scored,
+    # every JUDGEMENT_RECORD_FIELDS key present, written to the frozen
+    # filename template. ---
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        subprocess.run = _fake_judge_success_run
+        try:
+            judgement, wrote = run_judgement(
+                pair=fake_pair, order=1, judge_model=JUDGE_MODEL, judge_effort=JUDGE_EFFORT,
+                timeout_s=30, raw_dir=raw_dir,
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+
+        written_judgement_path = raw_path_for_judgement('claude-sonnet-5', 'exec-summary-1', 0, 1, raw_dir)
+        missing_judgement_fields = [f for f in JUDGEMENT_RECORD_FIELDS if f not in judgement]
+        if missing_judgement_fields:
+            print(f'FAIL: scored judgement record missing fields: {missing_judgement_fields}')
+            all_ok = False
+        elif not wrote:
+            print('FAIL: scored judgement run reported wrote=False for a fresh cell')
+            all_ok = False
+        elif not written_judgement_path.exists():
+            print(f'FAIL: scored judgement run did not write {written_judgement_path}')
+            all_ok = False
+        elif judgement['verdict'] != 'scored':
+            print(f"FAIL: scored judgement verdict expected scored, got {judgement['verdict']!r}")
+            all_ok = False
+        elif judgement['scores'] != {
+            'evidence': {'skill-off': 4, 'skill-on': 8},
+            'clarity': {'skill-off': 6, 'skill-on': 7},
+            'persuasive_force': {'skill-off': 3, 'skill-on': 8},
+        }:
+            print(f"FAIL: scored judgement scores translated incorrectly: {judgement['scores']}")
+            all_ok = False
+        else:
+            cases_exercised.append('judge-scored')
+
+        # skip-if-exists: re-running the identical cell must make zero subprocess calls.
+        def _fail_if_judge_called(argv, **kwargs):
+            raise AssertionError('subprocess.run should not be called for an existing judgement raw file')
+
+        subprocess.run = _fail_if_judge_called
+        try:
+            judgement2, wrote2 = run_judgement(
+                pair=fake_pair, order=1, judge_model=JUDGE_MODEL, judge_effort=JUDGE_EFFORT,
+                timeout_s=30, raw_dir=raw_dir,
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+        if wrote2 or judgement2 != judgement:
+            print('FAIL: re-running an existing judgement cell did not skip the subprocess call')
+            all_ok = False
+        else:
+            cases_exercised.append('judge-skip-if-exists')
+
+    # --- reply missing persuasive_force: verdict unscoreable, reason names
+    # the missing key, and the record contributes to no mean (compared
+    # directly by aggregating with and without it). ---
+    missing_dim_envelope = dict(
+        judge_success_envelope,
+        result=json.dumps({
+            'text_a': {'evidence': 4, 'clarity': 6},
+            'text_b': {'evidence': 8, 'clarity': 7, 'persuasive_force': 8},
+        }),
+    )
+
+    def _fake_missing_dim_run(argv, **kwargs):
+        return subprocess.CompletedProcess(argv, returncode=0, stdout=json.dumps(missing_dim_envelope), stderr='')
+
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        subprocess.run = _fake_missing_dim_run
+        try:
+            missing_dim_judgement, _wrote = run_judgement(
+                pair=fake_pair, order=1, judge_model=JUDGE_MODEL, judge_effort=JUDGE_EFFORT,
+                timeout_s=30, raw_dir=raw_dir,
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+
+        if missing_dim_judgement['verdict'] != 'unscoreable' or 'persuasive_force' not in (missing_dim_judgement['reason'] or ''):
+            print(f'FAIL: reply missing persuasive_force did not record unscoreable naming the key: {missing_dim_judgement}')
+            all_ok = False
+        else:
+            # Direct with-and-without comparison: aggregate() over a scored
+            # record plus this unscoreable record must equal aggregate() over
+            # the scored record alone -- the unscoreable record contributes
+            # zero entries to 'judged' and shifts no mean, never defaulted to
+            # 0 or a midpoint (must_haves, EVAL-07 empty edge).
+            agg_with_unscoreable = aggregate([judgement, missing_dim_judgement])
+            agg_without_unscoreable = aggregate([judgement])
+            if agg_with_unscoreable['judged'] != agg_without_unscoreable['judged']:
+                print(
+                    'FAIL: adding the unscoreable judgement record changed the aggregated '
+                    f'judged means: with={agg_with_unscoreable["judged"]} '
+                    f'without={agg_without_unscoreable["judged"]}'
+                )
+                all_ok = False
+            else:
+                cases_exercised.append('judge-missing-dimension-unscoreable')
+
+    # --- score out of range, non-integer, and unparseable JSON: all unscoreable ---
+    invalid_reply_cases = [
+        ('out-of-range', json.dumps({'text_a': {'evidence': 4, 'clarity': 6, 'persuasive_force': 3},
+                                      'text_b': {'evidence': 11, 'clarity': 7, 'persuasive_force': 8}})),
+        ('non-integer', json.dumps({'text_a': {'evidence': 4.5, 'clarity': 6, 'persuasive_force': 3},
+                                     'text_b': {'evidence': 8, 'clarity': 7, 'persuasive_force': 8}})),
+        ('unparseable-json', '{not valid json'),
+    ]
+    invalid_cases_ok = True
+    for case_name, raw_reply in invalid_reply_cases:
+        scores_by_text, reason = _validate_judge_reply(raw_reply)
+        if scores_by_text is not None or not reason:
+            print(f'FAIL: judge reply validation case {case_name!r} did not produce (None, reason): {(scores_by_text, reason)}')
+            all_ok = False
+            invalid_cases_ok = False
+    if invalid_cases_ok:
+        cases_exercised.append('judge-reply-validation-out-of-range-non-integer-unparseable')
+
+    # --- non-zero exit / is_error envelope: raises SessionFailedError,
+    # handled identically to the generation path. ---
+    def _fake_judge_failed_run(argv, **kwargs):
+        return subprocess.CompletedProcess(argv, returncode=1, stdout='', stderr='usage limit reached')
+
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        subprocess.run = _fake_judge_failed_run
+        raised = None
+        try:
+            run_judgement(
+                pair=fake_pair, order=1, judge_model=JUDGE_MODEL, judge_effort=JUDGE_EFFORT,
+                timeout_s=30, raw_dir=raw_dir,
+            )
+        except SessionFailedError as exc:
+            raised = exc
+        finally:
+            subprocess.run = real_subprocess_run
+
+        if raised is None:
+            print('FAIL: non-zero exit from run_judgement() did not raise SessionFailedError')
+            all_ok = False
+        else:
+            unscoreable_judgement = _unscoreable_judgement_record(
+                JUDGE_MODEL, JUDGE_EFFORT, 'exec-summary-1', 'claude-sonnet-5', 0, 1,
+                'skill-off', 'skill-on', reason=f'nonzero exit {raised.returncode}: {raised.stderr!r}',
+            )
+            if unscoreable_judgement['verdict'] != 'unscoreable' or not unscoreable_judgement['reason']:
+                print(f'FAIL: unscoreable judgement record malformed: {unscoreable_judgement}')
+                all_ok = False
+            else:
+                cases_exercised.append('judge-non-zero-exit')
+
+    # --- run_judge_matrix(): enumerates (model, scenario, repeat, order)
+    # only for pairs with both skill-on and skill-off generation records
+    # already on disk, and catches SessionFailedError exactly like
+    # run_matrix() does, writing an unscoreable record rather than raising. ---
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        gen_scenario = {'id': 'exec-summary-1', 'family': 'executive-summary', 'prompt': 'x'}
+        for condition, text in (('skill-off', fake_pair['skill_off_text']), ('skill-on', fake_pair['skill_on_text'])):
+            record = _unscoreable_generation_record('claude-sonnet-5', 'low', condition, gen_scenario, 0, fake_skill_src, reason=None)
+            record['verdict'] = 'generated'
+            record['text'] = text
+            path = raw_path_for_generation('claude-sonnet-5', condition, 'exec-summary-1', 0, raw_dir)
+            _write_json_atomic(path, record)
+
+        subprocess.run = _fake_judge_failed_run
+        try:
+            judge_cells = run_judge_matrix(
+                models=['claude-sonnet-5'], scenarios=[gen_scenario], repeats=1,
+                raw_dir=raw_dir, timeout_s=30,
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+
+        judge_written = sorted(raw_dir.glob('*__judge__*.json'))
+        if judge_cells != [('claude-sonnet-5', 'exec-summary-1', 0, 1), ('claude-sonnet-5', 'exec-summary-1', 0, 2)]:
+            print(f'FAIL: run_judge_matrix() enumerated unexpected cells: {judge_cells}')
+            all_ok = False
+        elif len(judge_written) != 2:
+            print(f'FAIL: run_judge_matrix() expected 2 judgement records on a SessionFailedError, found {len(judge_written)}')
+            all_ok = False
+        else:
+            judge_records_on_disk = [json.loads(p.read_text(encoding='utf-8')) for p in judge_written]
+            if not all(r['verdict'] == 'unscoreable' for r in judge_records_on_disk):
+                print(f'FAIL: run_judge_matrix() SessionFailedError records not all unscoreable: {judge_records_on_disk}')
+                all_ok = False
+            else:
+                cases_exercised.append('run-judge-matrix-catches-session-failed')
+
+    # --- run_judge_matrix() skips a (model, scenario, repeat) with no
+    # matching generation pair on disk -- zero judge calls, zero records. ---
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        gen_scenario = {'id': 'exec-summary-1', 'family': 'executive-summary', 'prompt': 'x'}
+
+        def _fail_if_judge_matrix_calls(argv, **kwargs):
+            raise AssertionError('run_judge_matrix() must not call subprocess.run with no generation pair on disk')
+
+        subprocess.run = _fail_if_judge_matrix_calls
+        try:
+            no_pair_cells = run_judge_matrix(
+                models=['claude-sonnet-5'], scenarios=[gen_scenario], repeats=1,
+                raw_dir=raw_dir, timeout_s=30,
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+        if no_pair_cells:
+            print(f'FAIL: run_judge_matrix() enumerated cells with no generation pair on disk: {no_pair_cells}')
+            all_ok = False
+        else:
+            cases_exercised.append('run-judge-matrix-skips-missing-generation-pair')
+
+    # --- average_orders(): identical 7/7 scores average to 7.0; a missing
+    # order returns None (excluded, not half-weighted). ---
+    order1_scored = {
+        'verdict': 'scored',
+        'scores': {dim: {'skill-off': 7, 'skill-on': 7} for dim in JUDGE_DIMENSIONS},
+    }
+    order2_scored = {
+        'verdict': 'scored',
+        'scores': {dim: {'skill-off': 7, 'skill-on': 7} for dim in JUDGE_DIMENSIONS},
+    }
+    averaged_equal = average_orders(order1_scored, order2_scored)
+    if averaged_equal is None or any(
+        averaged_equal[dim]['skill-off'] != 7.0 or averaged_equal[dim]['skill-on'] != 7.0
+        for dim in JUDGE_DIMENSIONS
+    ):
+        print(f'FAIL: average_orders() of identical 7/7 scores did not yield 7.0: {averaged_equal}')
+        all_ok = False
+    elif average_orders(order1_scored, None) is not None:
+        print('FAIL: average_orders() with a missing order did not return None')
+        all_ok = False
+    else:
+        cases_exercised.append('average-orders-identical-and-missing-order')
+
+    # --- judge_summary(): a genuine tie (averaged skill-on == skill-off) is
+    # counted as a tie and neither a win nor a loss; a pair missing an order
+    # is excluded and the exclusion is counted, read from the summary dict
+    # directly, not from a log line. ---
+    tie_order1 = {
+        'judge_model': JUDGE_MODEL, 'model': 'claude-sonnet-5', 'scenario_id': 'exec-summary-1',
+        'repeat': 0, 'order': 1, 'verdict': 'scored',
+        'scores': {dim: {'skill-off': 5, 'skill-on': 5} for dim in JUDGE_DIMENSIONS},
+    }
+    tie_order2 = dict(tie_order1, order=2)
+    lone_order1_missing_order2 = {
+        'judge_model': JUDGE_MODEL, 'model': 'claude-sonnet-5', 'scenario_id': 'exec-summary-1',
+        'repeat': 1, 'order': 1, 'verdict': 'scored',
+        'scores': {dim: {'skill-off': 4, 'skill-on': 9} for dim in JUDGE_DIMENSIONS},
+        'reason': None,
+    }
+    summary = judge_summary([tie_order1, tie_order2, lone_order1_missing_order2])
+    tie_bucket = summary['tallies'].get(('claude-sonnet-5', 'exec-summary-1'))
+    if (
+        summary['excluded_pairs'] != 1
+        or not tie_bucket
+        or any(tie_bucket[dim] != {'wins': 0, 'ties': 1, 'losses': 0} for dim in JUDGE_DIMENSIONS)
+    ):
+        print(f'FAIL: judge_summary() tie/exclusion tallies wrong: {summary}')
+        all_ok = False
+    else:
+        cases_exercised.append('judge-summary-tie-and-excluded-pair')
+
+    # --- committed judgement fixtures: both the scored and unscoreable
+    # shapes match JUDGEMENT_RECORD_FIELDS exactly, proving the schema is a
+    # committed artifact, not only an inline dict. ---
+    scored_fixture_record = json.loads((FIXTURES_DIR / 'judgement-record-example.json').read_text(encoding='utf-8'))
+    unscoreable_fixture_record = json.loads((FIXTURES_DIR / 'judgement-unscoreable-example.json').read_text(encoding='utf-8'))
+    if set(scored_fixture_record) != set(JUDGEMENT_RECORD_FIELDS) or set(unscoreable_fixture_record) != set(JUDGEMENT_RECORD_FIELDS):
+        print('FAIL: committed judgement fixture(s) do not match JUDGEMENT_RECORD_FIELDS')
+        all_ok = False
+    else:
+        cases_exercised.append('committed-judgement-fixture-schema')
+
     # --- load_raw_records(): empty/unparseable-file exit, sorted-order determinism ---
     with tempfile.TemporaryDirectory() as tmp:
         raw_dir = pathlib.Path(tmp)
@@ -1259,10 +2063,34 @@ def self_test():
     fixture_raw_dir = FIXTURES_DIR / 'results-render'
     fixture_records = load_raw_records(fixture_raw_dir)
     fixture_agg = aggregate(fixture_records)
+    fixture_judge_summary = judge_summary(fixture_records)
     fixture_models = sorted({r['model'] for r in fixture_records if 'judge_model' not in r})
     fixture_gen_count = sum(1 for r in fixture_records if 'judge_model' not in r)
-    doc1 = build_results_md(fixture_agg, models=fixture_models, generation_count=fixture_gen_count, as_of_date='2026-09-18')
-    doc2 = build_results_md(fixture_agg, models=fixture_models, generation_count=fixture_gen_count, as_of_date='2026-09-18')
+    doc1 = build_results_md(
+        fixture_agg, models=fixture_models, generation_count=fixture_gen_count, as_of_date='2026-09-18',
+        judge_summary_data=fixture_judge_summary,
+    )
+    doc2 = build_results_md(
+        fixture_agg, models=fixture_models, generation_count=fixture_gen_count, as_of_date='2026-09-18',
+        judge_summary_data=fixture_judge_summary,
+    )
+
+    # --- shuffled-input ordering: a shuffled record order produces byte-
+    # identical output, since build_results_md() sorts the win/tie/loss
+    # table (and every other table) itself rather than relying on input or
+    # dict iteration order (must_haves, EVAL-06 ordering edge). ---
+    shuffled_records = list(reversed(fixture_records))
+    shuffled_agg = aggregate(shuffled_records)
+    shuffled_judge_summary = judge_summary(shuffled_records)
+    doc_shuffled = build_results_md(
+        shuffled_agg, models=fixture_models, generation_count=fixture_gen_count, as_of_date='2026-09-18',
+        judge_summary_data=shuffled_judge_summary,
+    )
+    if doc_shuffled != doc1:
+        print('FAIL: build_results_md() output differs for a shuffled input record order')
+        all_ok = False
+    else:
+        cases_exercised.append('win-tie-loss-rows-shuffle-invariant')
 
     missing_headings = [h for h in RESULTS_SECTION_HEADINGS if h not in doc1]
     missing_caveats = _missing_required_caveats(doc1)

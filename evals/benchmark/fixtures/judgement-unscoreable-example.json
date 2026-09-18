@@ -1,0 +1,16 @@
+{
+  "run_id": "20000000-0000-4000-8000-000000000001",
+  "timestamp": "2026-09-18T00:00:00+00:00",
+  "judge_model": "claude-opus-5",
+  "judge_effort": "high",
+  "scenario_id": "exec-summary-1",
+  "model": "claude-sonnet-5",
+  "repeat": 1,
+  "order": 2,
+  "text_a_condition": "skill-on",
+  "text_b_condition": "skill-off",
+  "scores": null,
+  "raw_judge_output": "{\"text_a\": {\"evidence\": 8, \"clarity\": 7}, \"text_b\": {\"evidence\": 4, \"clarity\": 6, \"persuasive_force\": 3}}",
+  "verdict": "unscoreable",
+  "reason": "judge reply 'text_a' keys do not match JUDGE_DIMENSIONS exactly (missing=['persuasive_force'], extra=[])"
+}
