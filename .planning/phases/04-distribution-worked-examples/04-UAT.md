@@ -1,14 +1,14 @@
 ---
-status: diagnosed
+status: partial
 phase: 04-distribution-worked-examples
 source: [04-VERIFICATION.md]
 started: 2026-09-18T05:40:00Z
-updated: 2026-09-18T09:40:00Z
+updated: 2026-09-18T11:15:00Z
 ---
 
 ## Current Test
 
-[testing paused — 3 items outstanding]
+[testing closed for Phase 4 — 2 items deferred to later phases]
 
 Round 2. Test 3 re-read PASSES — G-04-3 closed. Test 4's G-04-4 is closed too,
 but the same cold read found a new defect in the text the fix wrote: gap G-04-8,
@@ -188,7 +188,23 @@ detail: |
 
 ### 4. README reads as leading with a real example and its Install section is actionable
 expected: A prospective evaluator understands what the skill does and how to install it within the first screen or two, with no confusion about which of the four install routes to pick.
-result: issue
+result: pass
+resolved_round: 3
+resolution: |
+  G-04-8 closed by 04-14. The false universal negative is gone from all three
+  places it lived: README.md, WINDOWS.md's rendered table, and WINDOWS.md's JSON.
+  Orchestrator fact-checked the replacement text against source, assertion by
+  assertion - /config listing unobserved (true), repository does drive live
+  sessions via run_conformance.py running headless `claude -p` (true, :216),
+  the ## Status figure comes from those sessions (true), a headless session has
+  no /config picker (true). Code count held at 48; a 49th code was measured,
+  refused, and the refusal recorded in tools/check_repo.py's module docstring
+  and WINDOWS entry 17.
+
+  No further adversarial cold read was run on the repaired text, by the
+  stopping rule the user approved on 2026-09-18: a cold-read finding blocks only
+  if it is checkably false; merely improvable prose goes to backlog. Re-reading
+  changed prose indefinitely is the loop that rule exists to end.
 retest_round: 2
 retest_reported: "You tell me in the Install section that this repository never runs a live harness session - and then forty lines later you give me a measured number from ten live harness sessions. Which one is true?"
 retest_severity: major
@@ -300,8 +316,8 @@ detail: |
 ## Summary
 
 total: 4
-passed: 1
-issues: 1
+passed: 2
+issues: 0
 pending: 0
 skipped: 0
 blocked: 2
@@ -310,9 +326,11 @@ retest_round_2: "test 3 re-read PASS (G-04-3 closed); test 4 re-read: G-04-4 clo
 ## Gaps
 
 - gap_id: G-04-8
+  status: resolved
+  resolved_by: 04-14-PLAN.md
+  resolved_at: 2026-09-18
   truth: "README does not state, as fact, anything the same README disproves elsewhere on the page."
-  status: failed
-  reason: "Cold reader (round 2) reported: README:83 asserts 'this repository's own environment drives no live harness session', but README:111-113 describes run_conformance.py as driving live sessions and README:134-137 reports a measured figure from ten of them. Orchestrator-verified in source: run_conformance.py:216 builds a real `claude -p` invocation. Introduced by commit 63b5dfa, this round's own G-04-4 fix. The true narrower claim is that no INTERACTIVE session runs here - headless `claude -p` has no /config picker."
+  reason_original: "Cold reader (round 2) reported: README:83 asserts 'this repository's own environment drives no live harness session', but README:111-113 describes run_conformance.py as driving live sessions and README:134-137 reports a measured figure from ten of them. Orchestrator-verified in source: run_conformance.py:216 builds a real `claude -p` invocation. Introduced by commit 63b5dfa, this round's own G-04-4 fix. The true narrower claim is that no INTERACTIVE session runs here - headless `claude -p` has no /config picker."
   severity: major
   test: 4
   regression_of: "none - new defect introduced by the G-04-4 repair"

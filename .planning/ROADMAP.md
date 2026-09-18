@@ -252,7 +252,7 @@ Plans:
 
 **Gap closure, round 4** *(04-UAT.md status `diagnosed`, one major gap opened by round 3's own repair; run with `/gsd-execute-phase 4 --gaps-only`)*
 
-- [ ] 04-14-PLAN.md — README self-contradiction: the false universal negative written by 04-13's own fix narrowed to the interactive case it actually describes, the verbatim copy in WINDOWS entry 16 corrected with it, and the mechanisability question answered with a recorded refusal rather than a 49th code — cross-sentence semantic contradiction is not regex-checkable and a code claiming it would be the CR-01 overstatement a third time; plus three folded-in README credibility defects and one unevidenced deliverable claim in the flagship example (G-04-8; 48 codes, unchanged)
+- [x] 04-14-PLAN.md — README self-contradiction: the false universal negative written by 04-13's own fix narrowed to the interactive case it actually describes, the verbatim copy in WINDOWS entry 16 corrected with it, and the mechanisability question answered with a recorded refusal rather than a 49th code — cross-sentence semantic contradiction is not regex-checkable and a code claiming it would be the CR-01 overstatement a third time; plus three folded-in README credibility defects and one unevidenced deliverable claim in the flagship example (G-04-8; 48 codes, unchanged)
 
 ### Phase 5: Evaluation Harness
 
