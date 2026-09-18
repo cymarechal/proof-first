@@ -393,9 +393,12 @@ Violation codes implemented in this file:
                       PLUGIN_REQUIRED_KEYS is enforced against --
                       plugin.json's top-level object and marketplace.json's
                       plugins[0] entry, the object `claude plugin
-                      marketplace add` actually reads -- or plugin.json's
-                      `name` differs from the one shipped skills/*/ folder
-                      name, or marketplace.json's `owner` has no non-empty
+                      marketplace add` actually reads -- or, once both
+                      objects parse, one of MARKETPLACE_ENTRY_EQUAL_KEYS
+                      (description, displayName, author, license, keywords)
+                      disagrees between them, or plugin.json's `name`
+                      differs from the one shipped skills/*/ folder name,
+                      or marketplace.json's `owner` has no non-empty
                       `name`, or its `plugins` array is not exactly one
                       object, or that object's `source` is not the literal
                       `./`. Also fires when plugin.json states a `name` and
@@ -406,12 +409,24 @@ Violation codes implemented in this file:
                       multiple means it names one of several without saying
                       which. Absence of both manifests is not a violation.
                       Declared ceiling: it asserts JSON well-formedness, key
-                      presence at both positions, and the folder-name
-                      equality only, and that equality is verified (not
-                      merely not-skipped) only in the one-skill case -- the
+                      presence at both positions, the five-field equality,
+                      and the folder-name equality only, and the
+                      folder-name equality is verified (not merely
+                      not-skipped) only in the one-skill case -- the
                       multi-skill and zero-skill cases are reported as
-                      unverifiable rather than resolved. It never validates
-                      a value's semantics beyond presence, never reaches
+                      unverifiable rather than resolved. `name`, `version`,
+                      `homepage` and `repository` are deliberately excluded
+                      from MARKETPLACE_ENTRY_EQUAL_KEYS -- `name` and
+                      `version` are separately owned by this same check's
+                      folder-name assertion and by
+                      plugin-manifest-version-mismatch respectively, and
+                      `homepage`/`repository` are owned by
+                      publish-location-drift at owner-segment granularity,
+                      which permits the two manifests to write the same
+                      publish location in four different GitHub URL
+                      syntaxes -- an exact-string check on those two fields
+                      would contradict that. It never validates a value's
+                      semantics beyond presence and equality, never reaches
                       the network, and says nothing about whether a real
                       `claude plugin marketplace add` succeeds -- that is a
                       manual smoke test recorded in 04-VALIDATION.md.
@@ -498,11 +513,15 @@ Violation codes implemented in this file:
                       skills/** is out of scope because the same party
                       name appears there and because a per-rule
                       illustrative pair reads naturally with a spelled
-                      count -- 5 such occurrences were measured. The
-                      proper-noun heuristic is two tokens wide and will
-                      therefore also exempt a cardinal that happens to
-                      end a sentence immediately before a capitalised
-                      sentence start.
+                      count -- 5 raw regex matches were measured there.
+                      One of them ("Nine", in the party name "Vantage
+                      Nine Consulting") is a proper noun the check's own
+                      two-token exemption would excuse even if the check
+                      applied to that path, leaving 4 would-be
+                      violations. The proper-noun heuristic is two
+                      tokens wide and will therefore also exempt a
+                      cardinal that happens to end a sentence
+                      immediately before a capitalised sentence start.
   example-rule-narration - a ✓ column line in either file named by
                       EXAMPLE_PROSE_PATHS pairs a listed contrastive
                       connective (NARRATION_CONNECTIVE_RE: "rather
@@ -2430,11 +2449,14 @@ def check_before_after_spelled_count(repo_root):
     were measured in its prose, including a party name containing a
     number word. skills/** is out of scope because the same party name
     appears there and because a per-rule illustrative pair reads
-    naturally with a spelled count -- 5 such occurrences were measured.
-    The proper-noun heuristic (matched word and the following word both
-    capitalised) is two tokens wide and will therefore also exempt a
-    cardinal that happens to end a sentence immediately before a
-    capitalised sentence start."""
+    naturally with a spelled count -- 5 raw regex matches were measured
+    there. One of them ("Nine", in the party name "Vantage Nine
+    Consulting") is a proper noun the check's own two-token exemption
+    would excuse even if the check applied to that path, leaving 4
+    would-be violations. The proper-noun heuristic (matched word and
+    the following word both capitalised) is two tokens wide and will
+    therefore also exempt a cardinal that happens to end a sentence
+    immediately before a capitalised sentence start."""
     path = repo_root / BEFORE_AFTER_PATH
     if not path.exists():
         return []
@@ -2617,35 +2639,48 @@ PLUGIN_REQUIRED_KEYS = (
     'repository', 'license', 'keywords',
 )
 MARKETPLACE_REQUIRED_KEYS = ('name', 'owner', 'description', 'plugins')
+MARKETPLACE_ENTRY_EQUAL_KEYS = ('description', 'displayName', 'author', 'license', 'keywords')
 
 
 def check_plugin_manifest_invalid(repo_root):
     """Assert both plugin manifests are well-formed. `PLUGIN_REQUIRED_KEYS`
     presence is enforced at two positions: `plugin.json`'s top-level object
     and `marketplace.json`'s `plugins[0]` entry -- the object
-    `claude plugin marketplace add` actually reads. Also asserts
-    plugin.json's `name` equal to the single shipped skill folder name, and
-    marketplace.json's `owner`/`plugins`/`source` shape correct. Returns an
-    empty list before any read when neither manifest exists. Required-key
-    presence at both positions is proven exhaustively by `--self-test`'s
+    `claude plugin marketplace add` actually reads. Required-key presence
+    at both positions is proven exhaustively by `--self-test`'s
     required-key coverage matrix -- one assertion per key per position, 18
     cells in all -- so the claim is verified rather than sampled by a
-    single fixture. Declared ceiling: the required-key loop and its
-    matrix assert presence only -- no value semantics, no cross-manifest
-    equality, and nothing about whether a real
-    `claude plugin marketplace add` succeeds. `version` is separately
-    owned by `check_plugin_manifest_version`, and the owner segment of
-    `homepage`/`repository` is separately owned by
-    `check_publish_location_drift`. The folder-name equality check is
-    verified only when exactly one skill folder matches SKILL_GLOB, the
-    live case; when the repository ships zero or more than one skill
-    folder while plugin.json states a `name`, the equality itself cannot
-    be resolved against a single shipped skill, so this fires naming the
-    ambiguity (how many skill folders were found) instead of silently
-    skipping the check -- zero and multiple are reported with different
-    wording, because zero means the manifest names a skill that is not
-    there and multiple means it names one of several without saying
-    which."""
+    single fixture. Also asserts plugin.json's `name` equal to the single
+    shipped skill folder name, and marketplace.json's
+    `owner`/`plugins`/`source` shape correct. Once both objects parse,
+    `MARKETPLACE_ENTRY_EQUAL_KEYS` (`description`, `displayName`, `author`,
+    `license`, `keywords`) must agree between the marketplace plugin entry
+    and plugin.json's top-level object, compared only where the key is
+    present on both sides -- presence is the required-key loop's job, so
+    double-reporting one absence as two defects would mislead. `name` is
+    excluded from that set because plugin.json's `name` is separately held
+    equal to the shipped skill folder name, and `version` because
+    `check_plugin_manifest_version` owns it. `homepage` and `repository`
+    are deliberately excluded too: `check_publish_location_drift` owns
+    them at owner-segment granularity, normalising the HTTPS, plaintext
+    HTTP, scheme-less and SSH remote forms to the same owner, so the two
+    manifests are permitted to write the same publish location in
+    different syntaxes -- an exact-string equality check on those two
+    fields would contradict that and misfire on a mixed-URL-form
+    manifest pair that is otherwise correct. Returns an empty list before
+    any read when neither manifest exists. Declared ceiling: the
+    required-key loop, its matrix, and the equality guard all assert
+    presence/agreement only -- no deeper value semantics, and nothing
+    about whether a real `claude plugin marketplace add` succeeds. The
+    folder-name equality check is verified only when exactly one skill
+    folder matches SKILL_GLOB, the live case; when the repository ships
+    zero or more than one skill folder while plugin.json states a `name`,
+    the equality itself cannot be resolved against a single shipped
+    skill, so this fires naming the ambiguity (how many skill folders
+    were found) instead of silently skipping the check -- zero and
+    multiple are reported with different wording, because zero means the
+    manifest names a skill that is not there and multiple means it names
+    one of several without saying which."""
     plugin_exists = (repo_root / PLUGIN_MANIFEST_PATH).exists()
     marketplace_exists = (repo_root / MARKETPLACE_MANIFEST_PATH).exists()
     if not plugin_exists and not marketplace_exists:
@@ -2716,6 +2751,13 @@ def check_plugin_manifest_invalid(repo_root):
                             f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH}'s plugin "
                             f"entry is missing required key '{key}'"
                         )))
+                if plugin_data is not None and not plugin_error:
+                    for key in MARKETPLACE_ENTRY_EQUAL_KEYS:
+                        if key in entry and key in plugin_data and entry[key] != plugin_data[key]:
+                            violations.append((MARKETPLACE_MANIFEST_PATH, (
+                                f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH}'s plugin "
+                                f"entry '{key}' differs from {PLUGIN_MANIFEST_PATH}'s '{key}'"
+                            )))
                 source = entry.get('source')
                 if source != './':
                     violations.append((MARKETPLACE_MANIFEST_PATH, (
@@ -4736,6 +4778,21 @@ def _required_key_matrix_root(root, position, key):
     _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(marketplace_data, indent=2) + '\n')
 
 
+def _marketplace_entry_field_drift_manifests(root):
+    """A root isolating the WR-02 equality half of plugin-manifest-invalid:
+    good manifests via the same construction _good_plugin_manifests uses,
+    with marketplace.json's plugins[0]['keywords'] changed to a value that
+    disagrees with plugin.json's, while both remain present and
+    well-formed -- so this root fires plugin-manifest-invalid for the
+    equality guard alone, and only for the equality guard, never the
+    required-key loop (both sides still carry every key)."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
+    data = json.loads(_marketplace_manifest_json('0.1.0'))
+    data['plugins'][0]['keywords'] = ['a-different-keyword']
+    _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(data, indent=2) + '\n')
+
+
 def _publish_location_drift_manifests(root):
     """A root isolating publish-location-drift: plugin.json states one
     owner, marketplace.json's plugin entry states a different one for
@@ -5659,6 +5716,7 @@ def self_test():
         plugin_invalid_root = tmp_root / 'plugin_invalid'
         plugin_marketplace_shape_root = tmp_root / 'plugin_marketplace_shape'
         plugin_marketplace_entry_key_root = tmp_root / 'plugin_marketplace_entry_key'
+        plugin_marketplace_entry_drift_root = tmp_root / 'plugin_marketplace_entry_drift'
         plugin_publish_drift_root = tmp_root / 'plugin_publish_drift'
         plugin_mixed_url_root = tmp_root / 'plugin_mixed_url'
         plugin_mixed_url_drift_root = tmp_root / 'plugin_mixed_url_drift'
@@ -5935,6 +5993,7 @@ def self_test():
         _invalid_plugin_manifests(plugin_invalid_root)
         _bad_marketplace_shape(plugin_marketplace_shape_root)
         _marketplace_entry_missing_key_manifests(plugin_marketplace_entry_key_root)
+        _marketplace_entry_field_drift_manifests(plugin_marketplace_entry_drift_root)
         _publish_location_drift_manifests(plugin_publish_drift_root)
         _mixed_url_form_manifests(plugin_mixed_url_root)
         _mixed_url_form_drift_manifests(plugin_mixed_url_drift_root)
@@ -6117,6 +6176,7 @@ def self_test():
         plugin_invalid_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_invalid_root)}
         plugin_marketplace_shape_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_marketplace_shape_root)}
         plugin_marketplace_entry_key_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_marketplace_entry_key_root)}
+        plugin_marketplace_entry_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_marketplace_entry_drift_root)}
         plugin_publish_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_publish_drift_root)}
         plugin_mixed_url_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_mixed_url_root)}
         plugin_mixed_url_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_mixed_url_drift_root)}
@@ -6162,7 +6222,7 @@ def self_test():
             | family_bad_codes | family_order_bad_codes | source_label_bad_codes
             | results_bad_codes | plugin_bad_codes | plugin_invalid_codes
             | plugin_marketplace_shape_codes | plugin_marketplace_entry_key_codes
-            | plugin_publish_drift_codes
+            | plugin_marketplace_entry_drift_codes | plugin_publish_drift_codes
             | plugin_mixed_url_drift_codes | plugin_multiskill_codes
             | beforeafter_bad_codes | beforeafter_order_bad_codes
             | derivative_bad_codes | readme_install_bad_codes
@@ -6513,6 +6573,26 @@ def self_test():
             all_ok = False
         if 'plugin-manifest-invalid' not in plugin_marketplace_entry_key_codes:
             print("FAIL: plugin-manifest-invalid did not fire when a required key was missing from marketplace.json's plugin entry")
+            all_ok = False
+
+        # Marketplace-entry equality assertions (WR-02): the five
+        # hand-duplicated distribution fields must agree between
+        # plugin.json and marketplace.json's plugin entry, and the
+        # exclusion of homepage/repository from that set (owned by
+        # publish-location-drift's owner-segment normalisation instead)
+        # must be proven silent, not merely described.
+        if 'plugin-manifest-invalid' not in plugin_marketplace_entry_drift_codes:
+            print("FAIL: plugin-manifest-invalid did not fire when marketplace.json's plugin entry disagreed with plugin.json on a MARKETPLACE_ENTRY_EQUAL_KEYS field")
+            all_ok = False
+        # The fire direction is plugin_marketplace_entry_drift_codes above;
+        # these two prove the exclusion is real rather than merely stated --
+        # homepage/repository's mixed-URL-form root must stay silent, and so
+        # must the plain well-formed, agreeing root.
+        if 'plugin-manifest-invalid' in plugin_good_codes:
+            print("FAIL: plugin-manifest-invalid fired on well-formed, agreeing manifests")
+            all_ok = False
+        if 'plugin-manifest-invalid' in plugin_mixed_url_codes:
+            print("FAIL: plugin-manifest-invalid fired on carriers naming the same owner in different GitHub URL forms -- homepage/repository must stay excluded from the equality set")
             all_ok = False
         if 'plugin-manifest-invalid' in good_codes:
             print("FAIL: plugin-manifest-invalid fired on a fixture root shipping no .claude-plugin/ directory")

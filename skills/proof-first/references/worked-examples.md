@@ -139,7 +139,7 @@ to.
 ## MC-31
 
 ✗ "Halverton Mutual's infrastructure team is supportive of this migration."
-✓ "Marcus Feld, Halverton Mutual's Vice President of Infrastructure, said in discovery. 'We need a landing zone we can actually govern — right now every VM is a snowflake.'"
+✓ "Marcus Feld, Halverton Mutual's Vice President of Infrastructure, said in discovery: 'We need a landing zone we can actually govern'. He added: 'Right now every VM is a snowflake'."
 
 ## MC-36
 
