@@ -1,128 +1,126 @@
 ---
 phase: 04-distribution-worked-examples
-reviewed: 2026-09-17T00:00:00Z
+reviewed: 2026-09-18T00:00:00Z
 depth: standard
 files_reviewed: 10
 files_reviewed_list:
   - .claude-plugin/marketplace.json
   - .claude-plugin/plugin.json
   - .github/workflows/ci.yml
-  - README.md
   - examples/before-after.md
   - output-styles/proof-first.md
   - prompts/system-prompt.md
+  - README.md
   - skills/proof-first/references/worked-examples.md
   - tools/check_repo.py
   - tools/generate_derivatives.py
 findings:
-  critical: 1
-  warning: 2
-  info: 1
-  total: 4
-status: issues_found
+  critical: 0
+  warning: 0
+  info: 0
+  total: 0
+status: clean
 ---
 
 # Phase 4: Code Review Report
 
-**Reviewed:** 2026-09-17
+**Reviewed:** 2026-09-18
 **Depth:** standard
 **Files Reviewed:** 10
-**Status:** issues_found
+**Status:** clean
 
 ## Summary
 
-This phase closed seven UAT gaps: three example-prose codes (04-07), three README codes
-(04-09), and three repair items (04-10) — `_owner_segment` URL normalisation, byte-level
-comparison in `generate_derivatives.py --check`, and two plugin-manifest ceiling disclosures.
+This is a re-review of the 04-11 gap-closure round that followed my predecessor's report
+(CR-01 critical, WR-01/WR-02 warnings, IN-01 info). Only two files changed in the four commits
+under review — `tools/check_repo.py` and `skills/proof-first/references/worked-examples.md` — so
+I scoped adversarial effort there and re-examined the other eight files only for whether the
+change could have invalidated the prior "sound" verdict (it could not: nothing else in this
+diff touches manifests, README, output-styles, system-prompt, or `generate_derivatives.py`).
 
-I re-ran `check_repo.py --self-test`, `--mutation-test`, a plain run, and
-`generate_derivatives.py --check` against the working tree: all four pass exactly as CI
-expects (47 codes discrimination-proven, 0 violations, both derivatives byte-identical to a
-fresh render). That is real evidence the shipped gate is green, but it is not evidence the
-gate's own coverage is complete — the self-test and mutation-test only prove each check fires
-on the one mutation its own fixture applies, not that the check's scope matches what its
-docstring or its caller-facing name claims.
+I did not accept the orchestrator's green-gate reproduction (`--self-test`, `--mutation-test`,
+plain run, `generate_derivatives.py --check`) as sufficient on its own — per this project's own
+standard, a green gate proves the gate passes, not that its coverage matches what its docstring
+claims, which is precisely the class of defect CR-01 was. I independently re-derived each of the
+five specific claims flagged for audit by loading `check_repo.py` as a module and exercising its
+own fixture-builder functions and constants directly, rather than trusting the self-test's own
+PASS/FAIL narration:
 
-Working from that distinction, I found one place where `check_plugin_manifest_invalid`'s
-implementation covers meaningfully less than its docstring and its own violation-code name
-promise — a marketplace.json plugin entry can be missing most of its required distribution
-metadata (`name`, `displayName`, `author`, `license`, `keywords`, `description`) and the
-checker reports zero violations, which I reproduced directly against a scratch copy of the
-repository. Given this project's own stated bar ("a check whose docstring promises more than
-its implementation delivers is a real defect of the same class as an unmeasured marketing
-claim"), I am treating this as a blocker rather than a nitpick. I also found one shipped
-worked-example (`MC-31` in `worked-examples.md`) with a punctuation defect that makes its
-"after" sentence read as two disconnected fragments, inconsistent with the correctly-punctuated
-analogous instance in `examples/before-after.md`.
+1. **CR-01 docstring/implementation match.** Read `check_plugin_manifest_invalid`'s full
+   docstring (`tools/check_repo.py:2645-2683`) against its body (`2684-2818`) line by line,
+   including the module-level "Violation codes implemented in this file" contract
+   (`tools/check_repo.py:389-427`). Both now state exactly what the code does: `PLUGIN_REQUIRED_KEYS`
+   enforced at two positions (plugin.json top-level, marketplace.json's `plugins[0]`), and
+   `MARKETPLACE_ENTRY_EQUAL_KEYS` enforced once both objects parse. No claim in either docstring
+   exceeds what I could trace in the implementation.
 
-Everything else I checked — `_owner_segment`'s four-URL-form normalisation, the byte-comparison
-fix in `generate_derivatives.py --check`, the new example-prose checks
-(`example-sentence-length`, `before-after-spelled-count`, `example-rule-narration`), and the
-three new README structural checks — held up under adversarial reading: edge cases I traced by
-hand (SSH remote form, scheme-less form, trailing `.git`, proper-noun exemption in the
-spelled-cardinal check, zero-line-difference truncation in the byte-diff reporter) all resolved
-the way the docstrings claim, and the declared ceilings in those docstrings are, as far as I
-could verify, honestly stated.
+2. **`MARKETPLACE_ENTRY_EQUAL_KEYS` exclusion of `homepage`/`repository`.** The exclusion is
+   disclosed in both docstrings, with the stated reason (`check_publish_location_drift` already
+   owns owner-segment equivalence across four URL syntaxes, so an exact-string check on these two
+   fields would misfire on `_mixed_url_form_manifests`). I confirmed this is literally true of the
+   code: that fixture writes `plugin.json`'s `repository` as an SSH remote
+   (`git@github.com:acme/proof-first.git`) and `marketplace.json`'s plugin-entry `repository` as
+   an HTTPS URL naming the same owner — two different strings. Running the real
+   `check_plugin_manifest_invalid` against that fixture root confirms it stays silent (matching
+   the self-test's own `plugin_mixed_url_codes` assertion), and I traced by hand that including
+   `repository` in the equality set would have made these two literal strings compare unequal and
+   misfire, exactly as claimed.
+
+3. **The 18-cell required-key matrix.** `PLUGIN_REQUIRED_KEYS` has 9 members; the matrix iterates
+   it against the same two literal position strings the production docstring names. I instantiated
+   `_required_key_matrix_root` directly for all 9×2=18 combinations and ran `run_all_checks`
+   against each: all 18 cells fired `plugin-manifest-invalid`, zero misses, and the loop iterates
+   the actual `PLUGIN_REQUIRED_KEYS` constant rather than a hand-copied duplicate list, so there is
+   no drift risk between the matrix and the production check it's proving.
+
+4. **The 47-code total and set-vs-list semantics.** `MUTATIONS` is a 48-row list containing two
+   rows for `plugin-manifest-invalid` (one deleting a key from `plugin.json`, the new one deleting
+   a key from `marketplace.json`'s entry) — 47 unique codes. `discrimination_proven` is
+   constructed as a Python `set`, so both rows firing the same code collapse to one membership,
+   preserving 47 for the reason claimed (set semantics), not because a row was silently dropped
+   from `ALL_CHECK_CODES` or `MUTATIONS`.
+
+5. **MC-31's repair.** The new two-sentence form ("...said in discovery: '...govern'. He added:
+   'Right now every VM is a snowflake'.") splits under `check_example_sentence_length`'s own
+   `SENTENCE_SPLIT_RE` into a 20-word and a 9-word sentence — both well inside PF-4.1's 25-word
+   ceiling, confirmed by running the check's actual regex constants against the line rather than
+   counting by eye. The repair also isn't an isolated stylistic choice: `examples/before-after.md`
+   already uses the identical "said in discovery: '...'. He added: '...'." construction for the
+   same Marcus Feld quote, so `worked-examples.md` now matches the established in-repo pattern
+   rather than inventing a new one.
+
+I also directly reproduced the mutation this round added
+(`_mutate_marketplace_entry_required_key_missing`, deleting `license` from the real
+`marketplace.json`'s entry) against a scratch copy of the actual repository and confirmed it
+fires exactly one `plugin-manifest-invalid` line, with no double-report from the new equality
+guard (the guard's `key in entry` condition correctly excludes an already-missing key from also
+being compared for equality). I did the same for the WR-02 drift fixture
+(`_marketplace_entry_field_drift_manifests`): it fires exactly the one expected
+`plugin-manifest-invalid ... 'keywords' differs ...` line, plus the pre-existing incidental noise
+that minimal fixture roots already carry (missing LICENSE, missing NOTICES.md subsections) — no
+new unexpected code.
+
+All four prior findings (CR-01, WR-01, WR-02, IN-01) are genuinely closed, not merely
+gate-green: I found no gap between what the round's docstrings now claim and what the code does,
+no new coverage hole in the mutation/self-test matrices this round added, and no factual error in
+the newly-stated numbers (the "5 raw matches / 4 would-be violations" split in
+`check_before_after_spelled_count`'s docstring reproduces exactly against the real
+`skills/proof-first/references/` tree). I found nothing new to report in this round's diff.
 
 ## Critical Issues
 
-### CR-01: `check_plugin_manifest_invalid` does not validate marketplace.json's plugin-entry required fields
-
-**File:** `tools/check_repo.py:2617-2702` (the `plugins[0]` handling at lines 2687-2700, and
-`PLUGIN_REQUIRED_KEYS` at lines 2610-2613)
-
-**Issue:** `PLUGIN_REQUIRED_KEYS = ('name', 'displayName', 'description', 'version', 'author', 'homepage', 'repository', 'license', 'keywords')` is enforced only against the top-level `.claude-plugin/plugin.json` object (line 2643: `for key in PLUGIN_REQUIRED_KEYS:` iterates `plugin_data`). For `.claude-plugin/marketplace.json`'s nested plugin entry (`marketplace_data['plugins'][0]`), the only field ever inspected is `source` (line 2695-2700); `name`, `displayName`, `author`, `license`, `keywords`, and `description` on that same object are never checked for presence at all. `check_plugin_manifest_version` separately checks `version`, and `check_publish_location_drift` separately checks `homepage`/`repository`'s *owner segment* — but nothing checks that those two fields, or the six named above, are even present on the marketplace entry.
-
-The function's own docstring says it asserts "both plugin manifests are well-formed: valid JSON, every required key present" — that claim is false for marketplace.json's plugin entry. I reproduced this directly: in a scratch copy of the repository, deleting `license`, `keywords`, `author`, and `displayName` from `.claude-plugin/marketplace.json`'s `plugins[0]` object and re-running `python3 tools/check_repo.py` reports `0 violations`. A marketplace.json in this state would very likely fail a real `claude plugin marketplace add` / `claude plugin install` call (per the Claude Code plugin manifest schema this project's own `plugin.json` already conforms to), yet the project's sole automated gate for manifest validity is silent about it. This is exactly the class of defect the project's own review brief calls out: a check whose docstring promises more than its implementation delivers.
-
-**Fix:** Enforce the same required-key set (or a `MARKETPLACE_PLUGIN_ENTRY_REQUIRED_KEYS` subset, if some fields are intentionally marketplace-entry-optional — but that intent isn't stated anywhere today) against `plugins[0]`, the same way `PLUGIN_REQUIRED_KEYS` is enforced against `plugin_data`:
-
-```python
-        if 'plugins' in marketplace_data:
-            plugins = marketplace_data['plugins']
-            if not isinstance(plugins, list) or len(plugins) != 1 or not isinstance(plugins[0], dict):
-                violations.append((MARKETPLACE_MANIFEST_PATH, (
-                    f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH} 'plugins' must be a "
-                    f"list of exactly one object"
-                )))
-            else:
-                entry = plugins[0]
-                for key in PLUGIN_REQUIRED_KEYS:
-                    if key not in entry:
-                        violations.append((MARKETPLACE_MANIFEST_PATH, (
-                            f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH}'s plugin "
-                            f"entry is missing required key '{key}'"
-                        )))
-                source = entry.get('source')
-                if source != './':
-                    ...
-```
-Add a mutation-test fixture (e.g. `_mutate_plugin_manifest_invalid` variant deleting `license` from `marketplace.json`'s entry rather than from `plugin.json`) so the new coverage is discrimination-proven, matching this project's own stated CI bar rather than just fixing the code silently.
+None.
 
 ## Warnings
 
-### WR-01: Worked example MC-31 has a broken attribution sentence
-
-**File:** `skills/proof-first/references/worked-examples.md:141-142`
-**Issue:** The ✓ column reads: `"Marcus Feld, Halverton Mutual's Vice President of Infrastructure, said in discovery. 'We need a landing zone we can actually govern — right now every VM is a snowflake.'"` — the period after "discovery" instead of a colon leaves the quoted material unintroduced, reading as two disconnected sentences rather than an attributed quote. The analogous instance in `examples/before-after.md:34` gets this right: `"Marcus Feld, Vice President of Infrastructure, said in discovery: 'We need a landing zone we can actually govern'."` This file is cited from `SKILL.md`'s own "Reference files" section ("Before writing or checking a ✗/✓ contrast for a rule, read `references/worked-examples.md`") and from the derived `output-styles/proof-first.md`/`prompts/system-prompt.md` bundles are *not* built from it (it's the one deliberately-omitted source) — but a live skill session, or a human contributor, reading this file directly inherits the malformed sentence as a model for how to write the rule.
-**Fix:** Replace the period with a colon: `"...said in discovery: 'We need a landing zone we can actually govern — right now every VM is a snowflake.'"`
-
-### WR-02: marketplace.json/plugin.json field duplication has no drift guard beyond version and homepage/repository
-
-**File:** `tools/check_repo.py:2617-2702`, `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`
-**Issue:** `plugin.json` and `marketplace.json`'s plugin entry both carry hand-duplicated copies of `description`, `displayName`, `author`, `license`, and `keywords` today, and they currently agree. Nothing in `check_repo.py` asserts they *stay* agreeing — only `version` (via `check_plugin_manifest_version`) and the owner segment of `homepage`/`repository` (via `check_publish_location_drift`) are cross-checked between the two files. A future edit to one manifest's `description` or `keywords` without the matching edit to the other would ship silently. This is a narrower, related instance of CR-01 — even after CR-01 is fixed (which would restore *presence* checking on marketplace.json's entry), nothing enforces *equality* between the two files' duplicated content.
-**Fix:** Either (a) after fixing CR-01, add an explicit `plugin-manifest-invalid` (or a new code) equality check comparing `plugin_data`'s `description`/`displayName`/`author`/`license`/`keywords` against `marketplace_data['plugins'][0]`'s same fields, firing once per disagreeing field; or (b), if this asymmetry is intentional (e.g., a marketplace listing is allowed to state its own description), disclose that explicitly in the docstring as a declared ceiling, matching this file's own convention everywhere else.
+None.
 
 ## Info
 
-### IN-01: `check_before_after_spelled_count`'s docstring measurement is ambiguous about pre- vs. post-exemption counting
-
-**File:** `tools/check_repo.py:2409-2432`
-**Issue:** The docstring states "a per-rule illustrative pair reads naturally with a spelled count -- 5 such occurrences were measured" to justify excluding `skills/**` from this check's scope. I reproduced this by hand: running the check's own regex and proper-noun exemption logic against every ✗/✓ line under `skills/proof-first/references/`, the *raw* match count is 5 (`five`, `Three`, `five`, `three`, `Nine` — the last of these is `Vantage Nine Consulting`, a proper noun the check's own exemption logic would not flag as a violation if the check applied there). The *post-exemption* violation count is 4. The docstring's "5" is defensible under a raw-match reading but is not disambiguated, and a reader auditing this specific number (as the project's own stated standard for headline numbers asks for) cannot tell from the docstring alone which of the two methodologies produced it.
-**Fix:** State explicitly whether "5" counts raw regex matches or would-be violations after the proper-noun exemption, e.g. "5 raw regex matches were measured, one of which (`Nine`, in `Vantage Nine Consulting`) the proper-noun exemption would also excuse if this check applied there."
+None.
 
 ---
 
-_Reviewed: 2026-09-17_
+_Reviewed: 2026-09-18_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
