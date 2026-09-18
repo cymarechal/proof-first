@@ -2626,10 +2626,15 @@ def check_plugin_manifest_invalid(repo_root):
     `claude plugin marketplace add` actually reads. Also asserts
     plugin.json's `name` equal to the single shipped skill folder name, and
     marketplace.json's `owner`/`plugins`/`source` shape correct. Returns an
-    empty list before any read when neither manifest exists. Declared
-    ceiling: the required-key loop asserts presence only -- no value
-    semantics, no cross-manifest equality. `version` is separately owned by
-    `check_plugin_manifest_version`, and the owner segment of
+    empty list before any read when neither manifest exists. Required-key
+    presence at both positions is proven exhaustively by `--self-test`'s
+    required-key coverage matrix -- one assertion per key per position, 18
+    cells in all -- so the claim is verified rather than sampled by a
+    single fixture. Declared ceiling: the required-key loop and its
+    matrix assert presence only -- no value semantics, no cross-manifest
+    equality, and nothing about whether a real
+    `claude plugin marketplace add` succeeds. `version` is separately
+    owned by `check_plugin_manifest_version`, and the owner segment of
     `homepage`/`repository` is separately owned by
     `check_publish_location_drift`. The folder-name equality check is
     verified only when exactly one skill folder matches SKILL_GLOB, the
@@ -4694,6 +4699,43 @@ def _bad_marketplace_shape(root):
     _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(data, indent=2) + '\n')
 
 
+def _marketplace_entry_missing_key_manifests(root):
+    """The fixture-world counterpart of _invalid_plugin_manifests, which
+    removes the required 'license' key from plugin.json: good manifests
+    via the same construction _good_plugin_manifests uses, with 'license'
+    removed from marketplace.json's plugins[0] entry only. plugin.json is
+    left well-formed and version-matched, so this root isolates the
+    marketplace-entry half of plugin-manifest-invalid -- the half CR-01
+    found untested."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
+    data = json.loads(_marketplace_manifest_json('0.1.0'))
+    data['plugins'][0].pop('license', None)
+    _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(data, indent=2) + '\n')
+
+
+def _required_key_matrix_root(root, position, key):
+    """Build one cell of the required-key coverage matrix: well-formed,
+    version-matched plugin and marketplace manifests with a single named
+    key deleted from the object named by `position` -- one of the two
+    literal strings 'plugin.json' or "marketplace.json's plugin entry",
+    chosen so a failure message reads cleanly and names which object the
+    key was deleted from. Its job is to prove plugin-manifest-invalid
+    fires for every key PLUGIN_REQUIRED_KEYS declares, at every position
+    the docstring claims to enforce it -- not just the one key at the one
+    position a single hand-built fixture happens to sample, which is
+    exactly the gap CR-01 left open."""
+    _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
+    plugin_data = json.loads(_plugin_manifest_json('0.1.0'))
+    marketplace_data = json.loads(_marketplace_manifest_json('0.1.0'))
+    if position == 'plugin.json':
+        plugin_data.pop(key, None)
+    else:
+        marketplace_data['plugins'][0].pop(key, None)
+    _write(root / PLUGIN_MANIFEST_PATH, json.dumps(plugin_data, indent=2) + '\n')
+    _write(root / MARKETPLACE_MANIFEST_PATH, json.dumps(marketplace_data, indent=2) + '\n')
+
+
 def _publish_location_drift_manifests(root):
     """A root isolating publish-location-drift: plugin.json states one
     owner, marketplace.json's plugin entry states a different one for
@@ -5616,6 +5658,7 @@ def self_test():
         plugin_bad_root = tmp_root / 'plugin_bad'
         plugin_invalid_root = tmp_root / 'plugin_invalid'
         plugin_marketplace_shape_root = tmp_root / 'plugin_marketplace_shape'
+        plugin_marketplace_entry_key_root = tmp_root / 'plugin_marketplace_entry_key'
         plugin_publish_drift_root = tmp_root / 'plugin_publish_drift'
         plugin_mixed_url_root = tmp_root / 'plugin_mixed_url'
         plugin_mixed_url_drift_root = tmp_root / 'plugin_mixed_url_drift'
@@ -5891,6 +5934,7 @@ def self_test():
         _bad_plugin_manifests(plugin_bad_root)
         _invalid_plugin_manifests(plugin_invalid_root)
         _bad_marketplace_shape(plugin_marketplace_shape_root)
+        _marketplace_entry_missing_key_manifests(plugin_marketplace_entry_key_root)
         _publish_location_drift_manifests(plugin_publish_drift_root)
         _mixed_url_form_manifests(plugin_mixed_url_root)
         _mixed_url_form_drift_manifests(plugin_mixed_url_drift_root)
@@ -6072,6 +6116,7 @@ def self_test():
         plugin_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_bad_root)}
         plugin_invalid_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_invalid_root)}
         plugin_marketplace_shape_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_marketplace_shape_root)}
+        plugin_marketplace_entry_key_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_marketplace_entry_key_root)}
         plugin_publish_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_publish_drift_root)}
         plugin_mixed_url_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_mixed_url_root)}
         plugin_mixed_url_drift_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(plugin_mixed_url_drift_root)}
@@ -6116,7 +6161,8 @@ def self_test():
             | mc_count_unstated_codes | mc_count_mismatch_codes | artifact_bad_codes
             | family_bad_codes | family_order_bad_codes | source_label_bad_codes
             | results_bad_codes | plugin_bad_codes | plugin_invalid_codes
-            | plugin_marketplace_shape_codes | plugin_publish_drift_codes
+            | plugin_marketplace_shape_codes | plugin_marketplace_entry_key_codes
+            | plugin_publish_drift_codes
             | plugin_mixed_url_drift_codes | plugin_multiskill_codes
             | beforeafter_bad_codes | beforeafter_order_bad_codes
             | derivative_bad_codes | readme_install_bad_codes
@@ -6465,6 +6511,9 @@ def self_test():
         if 'plugin-manifest-invalid' not in plugin_marketplace_shape_codes:
             print("FAIL: plugin-manifest-invalid did not fire on a marketplace.json with an empty plugins array")
             all_ok = False
+        if 'plugin-manifest-invalid' not in plugin_marketplace_entry_key_codes:
+            print("FAIL: plugin-manifest-invalid did not fire when a required key was missing from marketplace.json's plugin entry")
+            all_ok = False
         if 'plugin-manifest-invalid' in good_codes:
             print("FAIL: plugin-manifest-invalid fired on a fixture root shipping no .claude-plugin/ directory")
             all_ok = False
@@ -6499,6 +6548,29 @@ def self_test():
         if 'plugin-manifest-version-mismatch' not in plugin_multiskill_codes:
             print("FAIL: plugin-manifest-version-mismatch did not fire when two skills stated disagreeing versions")
             all_ok = False
+
+        # Required-key coverage matrix (Task 2, closing the class CR-01
+        # exposed): every member of PLUGIN_REQUIRED_KEYS must make
+        # plugin-manifest-invalid fire at both positions the docstring
+        # claims to enforce it -- plugin.json's top-level object and
+        # marketplace.json's plugin entry -- not just the one key at the
+        # one position a single hand-built fixture happens to sample.
+        # Presence is asserted, never exclusivity: deleting 'version'
+        # legitimately also trips plugin-manifest-version-mismatch, and
+        # this fixture-world root legitimately trips license-missing and
+        # framework-statement-missing exactly as _good_plugin_manifests's
+        # own root already does.
+        required_key_matrix_misses = []
+        for required_key in PLUGIN_REQUIRED_KEYS:
+            for position in ('plugin.json', "marketplace.json's plugin entry"):
+                slug = 'plugin' if position == 'plugin.json' else 'marketplace'
+                cell_root = tmp_root / f'required_key_matrix_{slug}_{required_key}'
+                _required_key_matrix_root(cell_root, position, required_key)
+                cell_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(cell_root)}
+                if 'plugin-manifest-invalid' not in cell_codes:
+                    print(f"FAIL: plugin-manifest-invalid did not fire for key '{required_key}' missing from {position}")
+                    all_ok = False
+                    required_key_matrix_misses.append((position, required_key))
 
         for code in ALL_CHECK_CODES:
             if code not in bad_codes:
