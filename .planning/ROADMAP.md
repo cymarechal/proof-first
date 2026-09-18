@@ -194,7 +194,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 11/11 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap
+**Plans**: 11/11 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap, plus 2 gap-closure plans (04-12, 04-13) planned from 04-UAT.md's two remaining major gaps
 
 Plans:
 **Wave 1**
@@ -239,6 +239,16 @@ Plans:
 **Gap closure, round 2** *(04-VERIFICATION.md status `gaps_found`, one gap; run with `/gsd-execute-phase 4 --gaps-only`)*
 
 - [x] 04-11-PLAN.md — CR-01: `check_plugin_manifest_invalid` enforces `PLUGIN_REQUIRED_KEYS` on `marketplace.json`'s `plugins[0]` entry, proven red-then-green by a second real-file mutation and exhaustively by a nine-key-by-two-position `--self-test` matrix that closes the class rather than the instance; plus the three review fold-ins — duplicated-field equality between the two manifests, MC-31's colon repair inside PF-4.1's ceiling, and the ambiguous spelled-count measurement disambiguated (DIST-02; 47 codes, unchanged)
+
+**Gap closure, round 3** *(04-UAT.md status `diagnosed`, two major gaps; run with `/gsd-execute-phase 4 --gaps-only`)*
+
+**Gap wave 1**
+
+- [ ] 04-12-PLAN.md — `examples/before-after.md` factual repair: AWS Control Tower's governance re-scoped from the pre-migration VMware/Oracle estate to the new account structure, agreeing with `deal-brief.md:22`, `worked-examples.md:32` and sentence 1 of its own column, with PF-1.9's capability-first shape and PF-4.1's 25-word ceiling both held; plus Marcus Feld's one recorded utterance quoted once instead of twice and the PF-2.14 marker made actionable (G-04-3; 47 codes, unchanged)
+
+**Gap wave 2** *(blocked on gap wave 1: the new code leaves the repository-wide gate deliberately red between registration and repair)*
+
+- [ ] 04-13-PLAN.md — README install truth: route 3's missing copy step and its destination directory stated, the today-runnable claim rewritten to match, and `readme-output-style-destination-missing` registered — a deliberately narrow code proven red on the shipped README and green after, whose declared ceiling refuses the executability claim no code here can make; plus four folded-in credibility defects and one tracked unrun verification (G-04-4; 47 → 48)
 
 ### Phase 5: Evaluation Harness
 
