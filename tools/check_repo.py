@@ -389,24 +389,29 @@ Violation codes implemented in this file:
                       it, or whether the manifest installs.
   plugin-manifest-invalid - a .claude-plugin/plugin.json or
                       .claude-plugin/marketplace.json is not valid JSON, is
-                      missing a required key, plugin.json's `name` differs
-                      from the one shipped skills/*/ folder name, or
-                      marketplace.json's `owner` has no non-empty `name`, or
-                      its `plugins` array is not exactly one object, or that
-                      object's `source` is not the literal `./`. Also fires
-                      when plugin.json states a `name` and the repository
-                      ships anything other than exactly one skills/*/
-                      folder, naming how many were found -- zero and
-                      multiple are worded differently, since zero means the
-                      manifest names a skill that is not there and multiple
-                      means it names one of several without saying which.
-                      Absence of both manifests is not a violation. Declared
-                      ceiling: it asserts JSON well-formedness, key presence
-                      and the folder-name equality only, and that equality
-                      is verified (not merely not-skipped) only in the
-                      one-skill case -- the multi-skill and zero-skill cases
-                      are reported as unverifiable rather than resolved. It
-                      never validates a value's semantics, never reaches
+                      missing a required key at either of the two positions
+                      PLUGIN_REQUIRED_KEYS is enforced against --
+                      plugin.json's top-level object and marketplace.json's
+                      plugins[0] entry, the object `claude plugin
+                      marketplace add` actually reads -- or plugin.json's
+                      `name` differs from the one shipped skills/*/ folder
+                      name, or marketplace.json's `owner` has no non-empty
+                      `name`, or its `plugins` array is not exactly one
+                      object, or that object's `source` is not the literal
+                      `./`. Also fires when plugin.json states a `name` and
+                      the repository ships anything other than exactly one
+                      skills/*/ folder, naming how many were found -- zero
+                      and multiple are worded differently, since zero means
+                      the manifest names a skill that is not there and
+                      multiple means it names one of several without saying
+                      which. Absence of both manifests is not a violation.
+                      Declared ceiling: it asserts JSON well-formedness, key
+                      presence at both positions, and the folder-name
+                      equality only, and that equality is verified (not
+                      merely not-skipped) only in the one-skill case -- the
+                      multi-skill and zero-skill cases are reported as
+                      unverifiable rather than resolved. It never validates
+                      a value's semantics beyond presence, never reaches
                       the network, and says nothing about whether a real
                       `claude plugin marketplace add` succeeds -- that is a
                       manual smoke test recorded in 04-VALIDATION.md.
@@ -2615,11 +2620,18 @@ MARKETPLACE_REQUIRED_KEYS = ('name', 'owner', 'description', 'plugins')
 
 
 def check_plugin_manifest_invalid(repo_root):
-    """Assert both plugin manifests are well-formed: valid JSON, every
-    required key present, plugin.json's `name` equal to the single shipped
-    skill folder name, and marketplace.json's `owner`/`plugins`/`source`
-    shape correct. Returns an empty list before any read when neither
-    manifest exists. Declared ceiling: the folder-name equality check is
+    """Assert both plugin manifests are well-formed. `PLUGIN_REQUIRED_KEYS`
+    presence is enforced at two positions: `plugin.json`'s top-level object
+    and `marketplace.json`'s `plugins[0]` entry -- the object
+    `claude plugin marketplace add` actually reads. Also asserts
+    plugin.json's `name` equal to the single shipped skill folder name, and
+    marketplace.json's `owner`/`plugins`/`source` shape correct. Returns an
+    empty list before any read when neither manifest exists. Declared
+    ceiling: the required-key loop asserts presence only -- no value
+    semantics, no cross-manifest equality. `version` is separately owned by
+    `check_plugin_manifest_version`, and the owner segment of
+    `homepage`/`repository` is separately owned by
+    `check_publish_location_drift`. The folder-name equality check is
     verified only when exactly one skill folder matches SKILL_GLOB, the
     live case; when the repository ships zero or more than one skill
     folder while plugin.json states a `name`, the equality itself cannot
@@ -2692,7 +2704,14 @@ def check_plugin_manifest_invalid(repo_root):
                     f"list of exactly one object"
                 )))
             else:
-                source = plugins[0].get('source')
+                entry = plugins[0]
+                for key in PLUGIN_REQUIRED_KEYS:
+                    if key not in entry:
+                        violations.append((MARKETPLACE_MANIFEST_PATH, (
+                            f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH}'s plugin "
+                            f"entry is missing required key '{key}'"
+                        )))
+                source = entry.get('source')
                 if source != './':
                     violations.append((MARKETPLACE_MANIFEST_PATH, (
                         f"plugin-manifest-invalid {MARKETPLACE_MANIFEST_PATH} plugin entry "
@@ -3830,6 +3849,19 @@ def _mutate_plugin_manifest_invalid(root):
     path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
 
 
+def _mutate_marketplace_entry_required_key_missing(root):
+    """Delete the required 'license' key from the copied real
+    .claude-plugin/marketplace.json's plugins[0] entry, mutating only the
+    copy. This is a separate mutation from _mutate_plugin_manifest_invalid
+    because that function deletes the same key from plugin.json, a
+    different position -- and position is precisely what CR-01 was about:
+    the marketplace entry's required keys were never checked at all."""
+    path = root / MARKETPLACE_MANIFEST_PATH
+    data = json.loads(path.read_text(encoding='utf-8'))
+    data['plugins'][0].pop('license', None)
+    path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+
+
 def _mutate_publish_location_drift(root):
     """Rewrite the copied real .claude-plugin/marketplace.json's plugin
     entry 'repository' to a different owner/repo than plugin.json states,
@@ -4083,6 +4115,7 @@ MUTATIONS = [
     ('source-label-in-skill-content', "insert the frozen 'economic buyer' label into the real skills/proof-first/references/artifact-patterns.md", _mutate_source_label_in_skill_content),
     ('plugin-manifest-version-mismatch', "change the real .claude-plugin/plugin.json version so it no longer equals the skill frontmatter's metadata.version", _mutate_plugin_manifest_version_mismatch),
     ('plugin-manifest-invalid', "delete the required 'license' key from the real .claude-plugin/plugin.json", _mutate_plugin_manifest_invalid),
+    ('plugin-manifest-invalid', "delete the required 'license' key from the real .claude-plugin/marketplace.json's plugin entry", _mutate_marketplace_entry_required_key_missing),
     ('publish-location-drift', "rewrite the real .claude-plugin/marketplace.json plugin entry's repository to a different owner/repo than plugin.json states", _mutate_publish_location_drift),
     ('before-after-family-missing', "delete the '## Solution proposal' heading from the real examples/before-after.md, leaving its body in place", _mutate_before_after_family_missing),
     ('before-after-citation-missing', "strip every PF-/MC- token from the '## Demo and discovery material' section of the real examples/before-after.md", _mutate_before_after_citation_missing),
