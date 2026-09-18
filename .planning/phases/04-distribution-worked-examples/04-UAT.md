@@ -3,15 +3,16 @@ status: diagnosed
 phase: 04-distribution-worked-examples
 source: [04-VERIFICATION.md]
 started: 2026-09-18T05:40:00Z
-updated: 2026-09-18T07:35:00Z
+updated: 2026-09-18T09:40:00Z
 ---
 
 ## Current Test
 
-[testing paused — 2 items outstanding]
+[testing paused — 3 items outstanding]
 
-Tests 3 and 4 are resolved: both returned issues, recorded below with gaps
-G-04-3 and G-04-4. Tests 1 and 2 remain blocked by design — 1 waits on a
+Round 2. Test 3 re-read PASSES — G-04-3 closed. Test 4's G-04-4 is closed too,
+but the same cold read found a new defect in the text the fix wrote: gap G-04-8,
+open and diagnosed. Tests 1 and 2 remain blocked by design — 1 waits on a
 published repository (Phase 6, LEG-04), 2 waits on Phase 5's benchmark. Neither
 is a Phase 4 code defect and neither spawns a gap.
 
@@ -49,7 +50,55 @@ detail: |
 
 ### 3. Each after column demonstrates its cited rule rather than restating it
 expected: Each after column reads as an applied rewrite grounded in the deal brief, not a paraphrase of the rule text; PF-1.9 genuinely leads with capability; PF-3.3 marks a term, not a full quotation.
-result: issue
+result: pass
+retest_round: 2
+retest_verdict: pass
+prior_gap_status: G-04-3 CONFIRMED FIXED
+retest_detail: |
+  Round-2 cold read of the REPAIRED file, under a brief widened beyond round 1 to
+  add product-scope correctness and quotation fidelity, so a re-test could catch a
+  NEW defect rather than only confirm the old one gone. It found none that fail
+  the test.
+
+  (a) PF-1.9 applied, not paraphrased. Line 20 opens with the capability as the
+  buyer's own obligation; AWS Control Tower appears only in sentence 2 as the
+  means, with "that governance" tying product back to capability.
+
+  (b) Every product-scope claim now true AND agreeing with the brief. Control
+  Tower scoped to landing-zone governance across the new account structure, EC2 to
+  compute, Aurora PostgreSQL to the migrated data layer, vSphere/Oracle only as the
+  850-VM and 40-instance source - all matching deal-brief.md:22. The reader checked
+  what each claim ATTACHES to, which is how round 1's defect hid: "It lands on
+  Amazon EC2 ... and Amazon Aurora PostgreSQL ..." takes "the estate" as its
+  antecedent ("those accounts" is plural), and the "for compute" / "for the
+  migrated data layer" adverbials bind each target to the right half of the estate.
+  No product is credited with work it does not do.
+
+  (c) PF-3.3 marker correct - on the unquoted phrase, not the quotation, tracing to
+  deal-brief.md:70.
+
+  (d) Quotation fidelity clean. The file's one quotation is character-identical to
+  deal-brief.md:70 (only the terminal period moves outside the quote marks),
+  unsplit, unmerged, right speaker, plain "He said:" with no invented second beat.
+
+  Noted weaknesses, none failing the test:
+  - PF-4.1's 25-word ceiling forces the product into a standalone sentence where it
+    is unavoidably that sentence's subject (the capability sentence is 24 words),
+    whereas the rule's own exhibit at worked-examples.md:32 keeps it in a
+    post-semicolon clause. A tension between two rules, not a violation of either.
+  - The PF-3.3 marked span is slightly wider than the verbatim term (customer said
+    "we", span says "the team"), and lands on the second occurrence because the
+    first sits inside the direct quote where marking would corrupt it. Correct
+    behavior, imprecise span.
+  - UNSOURCED DELIVERABLE, orchestrator-verified: line 27 asserts "The migration
+    delivers automated failover". deal-brief.md:37 records only that failover IS
+    currently manual, and :27 that Marcus Feld WANTS that ended. Neither states the
+    migration delivers automation. The claim carries no evidence and no marker. It
+    violates none of the three rules that pair cites (PF-0.1, PF-1.25, PF-2.11 -
+    PF-2.11 covers invented metrics/baselines/numbers, and this is none of those),
+    which is why the verdict is pass. Recorded because an unevidenced deliverable
+    claim in the flagship example file is thematically the same class as the two
+    defects just closed. Owner decision, not a gap this round.
 reported: "The Solution proposal check column says AWS Control Tower governs Halverton Mutual's on-premises VMware and Oracle estate, which is not a thing Control Tower does - it governs AWS accounts - so the one sentence where the product is supposed to be named as the means of delivering the capability gets the technical fact wrong, in the example file whose whole job is showing a technical evaluator that the author understands the estate."
 severity: major
 reader: cold first-time reader, no project context
@@ -140,6 +189,55 @@ detail: |
 ### 4. README reads as leading with a real example and its Install section is actionable
 expected: A prospective evaluator understands what the skill does and how to install it within the first screen or two, with no confusion about which of the four install routes to pick.
 result: issue
+retest_round: 2
+retest_reported: "You tell me in the Install section that this repository never runs a live harness session - and then forty lines later you give me a measured number from ten live harness sessions. Which one is true?"
+retest_severity: major
+prior_gap_status: G-04-4 CONFIRMED FIXED by the same cold read - see retest_detail
+retest_detail: |
+  Round-2 cold read of the REPAIRED README. The original defect is closed; a new
+  one, introduced by the repair, is open.
+
+  G-04-4 CONFIRMED CLOSED. The reader checked route 3 specifically and called the
+  handling "correct and unusually careful": README:45-47 states plainly that
+  repo-root output-styles/ is the plugin-ship location and not a directory Claude
+  Code scans, lines 76-78 give the mkdir + cp that fixes it, line 80 gives the
+  project-scoped alternative, and the shipped file has valid name/description
+  frontmatter so /config would in fact list it. Placeholder disclosure now
+  precedes both commands that use it (README:38-41). Every path in the layout
+  tree exists. Q1 (leads with a real example) passed again, with both quoted
+  strings diffed verbatim against examples/before-after.md.
+
+  NEW DEFECT - a false universal negative, introduced by this round's own fix:
+  - README:83 (written by commit 63b5dfa, the G-04-4 fix) asserts: "this
+    repository's own environment drives no live harness session."
+  - README:111-113 describes evals/conformance/run_conformance.py as "a
+    stdlib-only, self-testing scorer that drives live sessions against the
+    shipped skill".
+  - README:134-137 reports a measured figure from those sessions: claude-sonnet-5
+    conformed in 3 of 10 scoreable sessions.
+  - Orchestrator-verified in the source, not inferred from prose:
+    run_conformance.py:216 builds ['claude', '-p', prompt, '--model', model,
+    '--disallowedTools', ...] and :205 installs the skill into a temp
+    .claude/skills/proof-first. The script drives real sessions.
+  - The narrower statement that IS true: no INTERACTIVE session. The conformance
+    harness runs headless `claude -p`, which has no /config picker. That
+    distinction is what line 83 needed to make and did not.
+  - Why this is the worst possible sentence to get wrong here: the page's own
+    stated standard is "measured claims or none" (README:91, 160), and this is a
+    universal negative the same page disproves forty lines later.
+
+  Secondary observations (minor, recorded for the owner):
+  - README:36 says "four install paths, one per harness class" - routes 2 and 3
+    are both Claude Code, so the sentence mis-describes its own list.
+  - README:149 opens a paragraph with the bare fragment "At minimum:" with no
+    antecedent; reads as an editing artifact.
+  - Routes 3 and 4 are described as running "from a local clone" (README:43-45),
+    but no route states how to obtain the clone, and the only repository URL on
+    the page is the unresolved placeholder. Read strictly, a reader with only
+    this README can execute none of the four.
+  - Status is ~40% of the page and puts "30.0%" on screen as the document's only
+    number; lines 139-142 frame it correctly as a conformance-instrument figure,
+    but a skimming evaluator walks away with "30%" attached to the skill.
 reported: "Route 3 says it 'works today, from a local clone' - but I cloned it, and output-styles/proof-first.md never shows up in /config, because a file sitting at the repo root isn't anywhere Claude Code looks for output styles. So of the two routes the README promises are usable right now, one of them doesn't actually run, and the README never tells me the step I'm missing."
 severity: major
 reader: cold first-time evaluator, no project context
@@ -202,17 +300,39 @@ detail: |
 ## Summary
 
 total: 4
-passed: 0
-issues: 2
+passed: 1
+issues: 1
 pending: 0
 skipped: 0
 blocked: 2
+retest_round_2: "test 3 re-read PASS (G-04-3 closed); test 4 re-read: G-04-4 closed but new gap G-04-8 opened"
 
 ## Gaps
 
-- gap_id: G-04-3
-  truth: "Each after column reads as an applied rewrite grounded in the deal brief, not a paraphrase of the rule text; PF-1.9 genuinely leads with capability; PF-3.3 marks a term, not a full quotation."
+- gap_id: G-04-8
+  truth: "README does not state, as fact, anything the same README disproves elsewhere on the page."
   status: failed
+  reason: "Cold reader (round 2) reported: README:83 asserts 'this repository's own environment drives no live harness session', but README:111-113 describes run_conformance.py as driving live sessions and README:134-137 reports a measured figure from ten of them. Orchestrator-verified in source: run_conformance.py:216 builds a real `claude -p` invocation. Introduced by commit 63b5dfa, this round's own G-04-4 fix. The true narrower claim is that no INTERACTIVE session runs here - headless `claude -p` has no /config picker."
+  severity: major
+  test: 4
+  regression_of: "none - new defect introduced by the G-04-4 repair"
+  root_cause: "04-13 Task 1 had to state what the new check does NOT prove - the correct instinct, and the CR-01 lesson applied. Reaching for the strongest available disclaimer, it wrote a universal negative about the whole repository ('drives no live harness session') when the true scope was one narrow case (no INTERACTIVE session, so no /config picker). The repository does drive live sessions: run_conformance.py:216 builds a real `claude -p` invocation and :205 installs the skill into a temp .claude/skills/proof-first, and README:134-137 reports a measured figure from ten of them. Over-claiming a limitation is still over-claiming."
+  contributing_cause: "No code can see it. tools/check_repo.py's 48 codes are per-file, per-pattern presence and drift checks; none compares two factual assertions in the same document for consistency. The gate was green across this defect, exactly as it was green across G-04-3. This is the third consecutive round in which a green gate coexisted with a false statement a cold reader caught on first pass."
+  pattern_note: "Second consecutive round where the FIX introduced the next defect. f8ebf78 (PF-1.9 recast) produced G-04-3's false Control Tower scope; 63b5dfa (G-04-4 repair) produced this. Both were written while being careful, both passed the gate, both were caught only by a human-shaped read."
+  artifacts:
+    - path: "README.md"
+      line: 83
+      issue: "False universal negative; contradicts lines 111-113 and 134-137 of the same file."
+  missing:
+    - "Narrow README:83 to the interactive case: the conformance harness drives headless `claude -p` sessions, which have no /config picker, so the /config listing specifically is unobserved. Do not assert that no live session runs here."
+    - "Consider whether a CI code can catch a self-contradicting factual claim of this shape. Assessment to make honestly: cross-sentence semantic contradiction is very likely NOT regex-checkable, and a code claiming to check it would be the CR-01 overstatement again."
+  debug_session: ""
+
+- gap_id: G-04-3
+  status: resolved
+  resolved_by: 04-12-PLAN.md
+  resolved_at: 2026-09-18
+  truth: "Each after column reads as an applied rewrite grounded in the deal brief, not a paraphrase of the rule text; PF-1.9 genuinely leads with capability; PF-3.3 marks a term, not a full quotation."
   reason: "Cold reader reported: examples/before-after.md:20 states AWS Control Tower delivers governance across Halverton Mutual's on-premises VMware and Oracle estate. Control Tower governs AWS accounts, not on-premises VMs. Self-contradicts sentence 1 of the same column ('every account in its new estate'), contradicts deal-brief.md:22 and worked-examples.md:32 (both scope it to 'the new account structure'), and is a regression introduced by f8ebf78's PF-1.9 recast. The two items the test was written to check — PF-1.9 capability-first shape and PF-3.3 term-level marking — both passed."
   severity: major
   test: 3
@@ -237,8 +357,10 @@ blocked: 2
 
 
 - gap_id: G-04-4
+  status: resolved
+  resolved_by: 04-13-PLAN.md
+  resolved_at: 2026-09-18
   truth: "A prospective evaluator understands what the skill does and how to install it within the first screen or two, with no confusion about which of the four install routes to pick."
-  status: failed
   reason: "Cold reader reported: README line 38 promises routes 3 and 4 work today from a local clone, but route 3's output style is never discoverable from a bare clone - output-styles/ at repo root is the plugin-shipped location, and the plugin route is blocked on publication. No copy/symlink step is stated anywhere."
   severity: major
   test: 4
