@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 10
+open_count: 12
 waived_count: 1
 fixed_count: 6
-total_count: 17
-last_updated: 2026-09-18T07:42:37.964Z
+total_count: 19
+last_updated: 2026-09-18T09:36:24.007Z
 ---
 
 # Broken Windows Ledger
@@ -32,6 +32,8 @@ last_updated: 2026-09-18T07:42:37.964Z
 | 15 | 04 | deviation | tools/generate_derivatives.py |  | 04-10-PLAN.md's own import-set verify probe (regex `^\\\\s*(?:import\|from)\\\\s+...`) matches the module docstring's prose line 'from the Python standard library;' (pre-existing text, unedited by this plan) in addition to the five real import statements, printing ['argparse','hashlib','pathlib','re','sys','the'] instead of the five-element list the acceptance criterion names. Direct inspection confirms the real import set (grep '^import \\\\\|^from ' restricted to the five actual statement lines at the file's end) is exactly argparse/hashlib/pathlib/re/sys, unchanged by this plan. Matching the 03-04/04-01/04-03/04-04/WINDOWS-13 precedent for documenting a plan-authored verify-script false positive rather than rewording shipped docstring prose to dodge it. | open |  | 2026-09-17T10:46:40.096Z |  |
 | 16 | 04 | unrun-verify | README.md |  | README's output-style route now states the copy step (mkdir -p ~/.claude/output-styles, cp output-styles/proof-first.md ~/.claude/output-styles/) and its destination directory; readme-output-style-destination-missing mechanically enforces that at least one destination directory is named. What remains unobserved is the last link in the chain: a live Claude Code session listing the copied style in /config and applying it — this repository's live sessions are headless claude -p runs (evals/conformance/run_conformance.py), which have no /config picker to observe. The two destination paths (~/.claude/output-styles/ and a project's .claude/output-styles/) are recorded from 04-UAT.md test 4's orchestrator-verified finding, not from a documentation source this environment can fetch. Closure condition: a human runs the stated copy on a real machine and confirms the style appears in /config, routed alongside entries 11 and 12 to Phase 6's LEG-04 launch gate. | open |  | 2026-09-18T06:45:50.382Z |  |
 | 17 | 04 | unrun-verify | README.md |  | No code in this repository compares two factual assertions in the same document for consistency. Measured evidence: three consecutive rounds (G-04-3, G-04-4, G-04-8) where check_repo.py reported 0 violations while a cold human read found a false sentence on first pass -- the class is invisible to every existing check, not just the ones that fired green here. This is a decision, not an oversight: the defect is entailment between two independently-phrased passages, which pattern matching over one file at a time cannot perform; a blocklist of the exact removed phrasings would prove only that those specific sentences did not come back; and a broad negative-existential regex over README prose would be a fuzzy-proxy hard-fail gate on every future legitimate disclosure sentence. A narrow presence code (require README.md to name the headless mechanism) was measured and would be red-then-green across this plan, meeting the repository's own evidence bar, but is still refused: unlike 04-13's readme-output-style-destination-missing, whose string has independent reader value (a route missing its destination directory is unexecutable), this token's only function would be to gesture at this specific correction and cannot distinguish a correctly scoped disclosure from an over-broad one that happens to mention the mechanism elsewhere on the page. Recorded in tools/check_repo.py's module docstring alongside the existing paraphrase-judgement limit. Closure condition: a cold human read each round, routed to end-of-phase UAT rather than to CI -- the same method that caught all three instances of this defect class. | open |  | 2026-09-18T07:42:37.964Z |  |
+| 18 | 05 | unrun-verify | evals/benchmark/bench-deal-brief.md |  | Name-collision web search for bench-deal-brief.md's invented company/people names could not be run in this environment (no live network access), mirroring Phase 1's disclosed unrun-verify posture for examples/deal-brief.md. | open |  | 2026-09-18T09:36:23.879Z |  |
+| 19 | 05 | unrun-verify | evals/benchmark/scenarios.json |  | Whether the eight scenario prompts are realistic presales tasks a bid team would actually receive (vs. shaped to favor one condition) is a verification:backstop truth per 05-02-PLAN.md, not mechanically checked. | open |  | 2026-09-18T09:36:24.007Z |  |
 
 ````json
 [
@@ -237,6 +239,30 @@ last_updated: 2026-09-18T07:42:37.964Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-18T07:42:37.964Z",
+    "resolved_at": null
+  },
+  {
+    "id": 18,
+    "kind": "unrun-verify",
+    "phase": "05",
+    "file": "evals/benchmark/bench-deal-brief.md",
+    "line": null,
+    "description": "Name-collision web search for bench-deal-brief.md's invented company/people names could not be run in this environment (no live network access), mirroring Phase 1's disclosed unrun-verify posture for examples/deal-brief.md.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-18T09:36:23.879Z",
+    "resolved_at": null
+  },
+  {
+    "id": 19,
+    "kind": "unrun-verify",
+    "phase": "05",
+    "file": "evals/benchmark/scenarios.json",
+    "line": null,
+    "description": "Whether the eight scenario prompts are realistic presales tasks a bid team would actually receive (vs. shaped to favor one condition) is a verification:backstop truth per 05-02-PLAN.md, not mechanically checked.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-18T09:36:24.007Z",
     "resolved_at": null
   }
 ]
