@@ -1,0 +1,29 @@
+{
+  "run_id": "10000000-0000-4000-8000-000000000004",
+  "timestamp": "2026-09-18T00:00:00+00:00",
+  "judge_model": "claude-opus-5",
+  "judge_effort": "high",
+  "scenario_id": "executive-summary-1",
+  "model": "claude-sonnet-5",
+  "repeat": 2,
+  "order": 1,
+  "text_a_condition": "skill-off",
+  "text_b_condition": "skill-on",
+  "scores": {
+    "evidence": {
+      "skill-off": 4,
+      "skill-on": 7
+    },
+    "clarity": {
+      "skill-off": 5,
+      "skill-on": 7
+    },
+    "persuasive_force": {
+      "skill-off": 3,
+      "skill-on": 7
+    }
+  },
+  "raw_judge_output": "{\"evidence\": {\"skill-off\": 4, \"skill-on\": 7}, \"clarity\": {\"skill-off\": 5, \"skill-on\": 7}, \"persuasive_force\": {\"skill-off\": 3, \"skill-on\": 7}}",
+  "verdict": "scored",
+  "reason": null
+}

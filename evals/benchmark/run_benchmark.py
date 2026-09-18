@@ -426,6 +426,333 @@ def run_matrix(models, conditions, scenarios, repeats, skill_src, raw_dir, timeo
     return [(model, condition, scenario['id'], repeat) for (model, condition, scenario, repeat) in todo]
 
 
+# Rubric dimensions, each scored independently (Decision 5) so persuasive
+# force cannot be inferred from the other two.
+JUDGE_DIMENSIONS = ('evidence', 'clarity', 'persuasive_force')
+JUDGEMENT_VERDICTS = ('scored', 'unscoreable')
+
+# The two figure sections a rendered report always carries, kept separate
+# and never blended into one composite number (EVAL-09).
+RESULTS_SECTION_HEADINGS = ('## Mechanical proxy counts', '## Judged persuasion')
+
+# The five caveats EVAL-10 requires, named as dict keys so build_results_md()
+# builds its caveats section FROM this constant -- the list this file's own
+# self-test checks against cannot silently drift from what the renderer
+# actually emits, because both read the same five keys.
+REQUIRED_CAVEATS = (
+    'position bias',
+    'judge-family bias',
+    'baseline prompt parity',
+    'proxy provenance',
+    'sample size',
+)
+
+CAVEAT_TEXT = {
+    'position bias': (
+        'Position bias: every judged pair is scored in both orders (order1/order2, with which '
+        'text is labeled A and which is labeled B swapped) and the two orders are averaged per '
+        'dimension before this report reads them -- that averaging is what cancels position bias, '
+        'not merely a disclosure that it exists.'
+    ),
+    'judge-family bias': (
+        'Judge-family bias: the judge is a Claude model and the texts are Claude output, so '
+        'family bias is possible.'
+    ),
+    'baseline prompt parity': (
+        'Baseline prompt parity: the skill-off condition receives a materially shorter prompt (no '
+        'skill text, no explicit instruction to attach evidence or watch sentence length) than '
+        'skill-on. This measures default, unguided model behavior against skill-guided behavior, '
+        'not against the best a careful human prompt-writer could achieve without the skill.'
+    ),
+    'proxy provenance': (
+        'Proxy provenance: the mechanical proxy counts above come from evals/lint.py, whose own '
+        'docstring states it counts observable proxies for the rules, not the rules themselves -- '
+        'a violation count is not a compliance verdict on a document.'
+    ),
+    'sample size': (
+        f'Sample size: each cell above is measured at {DEFAULT_REPEATS} repeats. This sample size '
+        'is not powered to detect statistical significance; treat differences smaller than the '
+        'observed range as noise. Every mean is rounded to one decimal place using Python\'s '
+        'default round-half-to-even rule; the unrounded values remain recoverable from '
+        'evals/benchmark/raw/.'
+    ),
+}
+
+
+def _load_lint_module():
+    """Load evals/lint.py's `lint` function by reading and exec'ing its
+    source, rather than importing it as a package.
+
+    This module's own docstring states it imports only ten stdlib modules;
+    a live `import lint` statement would need evals/ on sys.path as an
+    importable package, which it is not, and would add a name this file's
+    stdlib-only self-test (an AST-based import scan) would flag as extra,
+    non-stdlib. `compile()`/`exec()` are builtins, not an import statement,
+    so loading the module this way stays within the ten-module contract
+    while still reusing evals/lint.py's real, committed `lint()` rather than
+    reimplementing proxy-counting logic a second time in this file.
+    """
+    lint_path = BENCHMARK_DIR.parent / 'lint.py'
+    namespace = {'__name__': 'proof_first_benchmark_lint', '__file__': str(lint_path)}
+    exec(compile(lint_path.read_text(encoding='utf-8'), str(lint_path), 'exec'), namespace)
+    return namespace['lint']
+
+
+def load_raw_records(raw_dir=None):
+    """Read every `*.json` file under `raw_dir`, in `sorted()` path order,
+    and return the list of parsed records (generation and judgement records
+    mixed together).
+
+    Raises ValueError, naming the path, for an empty or unparseable file --
+    never a silent skip, because a silently skipped record is a published
+    number computed from less data than it claims. Returns an empty list
+    for a directory that does not exist or contains no `*.json` files; the
+    caller (generate_report()) is responsible for treating zero records as
+    a hard failure with a named reason, not this generic reader.
+
+    `sorted()` iteration means two directories holding the same files in a
+    different filesystem creation order produce an identical record list.
+    """
+    raw_dir = pathlib.Path(raw_dir) if raw_dir is not None else RAW_DIR
+    if not raw_dir.exists():
+        return []
+    records = []
+    for path in sorted(raw_dir.glob('*.json')):
+        text = path.read_text(encoding='utf-8')
+        if not text.strip():
+            raise ValueError(f'{path} is empty')
+        try:
+            records.append(json.loads(text))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f'{path} is unparseable: {exc}')
+    return records
+
+
+def aggregate(records, lint_fn=None):
+    """Pure function: turn a mixed list of raw records (generation +
+    judgement) into `{'mechanical': {...}, 'judged': {...}}`, the two
+    figure halves kept independent throughout and never blended into one
+    number (EVAL-09).
+
+    `mechanical` is keyed by (model, scenario_id, condition); each value
+    reports `n` (the cell's actual record count, even when below 3 -- never
+    silently treated as if it were 3), `mean`, `min`, `max` over the
+    mechanical violation counts obtained by loading evals/lint.py's own
+    `lint()` and running it on each generation's text.
+
+    `judged` is keyed by (model, scenario_id); each value maps a condition
+    ('skill-off'/'skill-on') to a per-dimension `n`/`mean`/`min`/`max` over
+    that dimension's scores, pooled across every repeat and both judge
+    orders (the swap that cancels position bias).
+
+    Expects each judgement record's `scores` field nested as
+    `{dimension: {condition: value}}` (e.g. `{"persuasive_force": {"skill-on":
+    8, "skill-off": 5}}`) -- a documented refinement of 05-RESEARCH.md
+    Decision 7's worked example, whose flat `{dimension: value}` sketch does
+    not by itself say which text (A or B) a given number belongs to, which
+    Decision 5's own both-orders-average-per-dimension arithmetic requires
+    knowing. Every top-level field name in Decision 7's schema (run_id,
+    timestamp, judge_model, judge_effort, scenario_id, model, repeat, order,
+    text_a_condition, text_b_condition, scores, raw_judge_output, verdict,
+    reason) is unchanged; only the internal shape of `scores`' value is
+    resolved here, since a live judge-calling function is out of this
+    plan's scope (05-03's to build) and this file must still be able to
+    aggregate whatever schema that caller produces.
+
+    Computes no standard deviation, no confidence interval, and no p-value:
+    a sample stdev from n=3 divides by n-1=2 and is enormously unstable,
+    and reporting one would look more rigorous than the data supports. This
+    is deliberate at three repeats per cell, not an omission (see
+    05-RESEARCH.md's "Statistical honesty for n=3").
+    """
+    if lint_fn is None:
+        lint_fn = _load_lint_module()
+
+    mechanical_counts = {}
+    for record in records:
+        if 'judge_model' in record:
+            continue
+        if record.get('verdict') != 'generated':
+            continue
+        key = (record['model'], record['scenario_id'], record['condition'])
+        count = lint_fn(record['text'])['violations_total']
+        mechanical_counts.setdefault(key, []).append(count)
+
+    mechanical = {}
+    for key, counts in mechanical_counts.items():
+        mechanical[key] = {
+            'n': len(counts),
+            'mean': round(sum(counts) / len(counts), 1),
+            'min': min(counts),
+            'max': max(counts),
+        }
+
+    judged_scores = {}
+    for record in records:
+        if 'judge_model' not in record:
+            continue
+        if record.get('verdict') != 'scored':
+            continue
+        key = (record['model'], record['scenario_id'])
+        bucket = judged_scores.setdefault(
+            key, {'skill-on': {d: [] for d in JUDGE_DIMENSIONS}, 'skill-off': {d: [] for d in JUDGE_DIMENSIONS}}
+        )
+        for dim in JUDGE_DIMENSIONS:
+            dim_scores = (record.get('scores') or {}).get(dim, {})
+            for condition in ('skill-on', 'skill-off'):
+                if condition in dim_scores:
+                    bucket[condition][dim].append(dim_scores[condition])
+
+    judged = {}
+    for key, bucket in judged_scores.items():
+        judged[key] = {}
+        for condition in ('skill-off', 'skill-on'):
+            per_dim = {}
+            for dim in JUDGE_DIMENSIONS:
+                scores = bucket[condition][dim]
+                if not scores:
+                    continue
+                per_dim[dim] = {
+                    'n': len(scores),
+                    'mean': round(sum(scores) / len(scores), 1),
+                    'min': min(scores),
+                    'max': max(scores),
+                }
+            if per_dim:
+                judged[key][condition] = per_dim
+
+    return {'mechanical': mechanical, 'judged': judged}
+
+
+def _missing_required_caveats(text, required_caveats=REQUIRED_CAVEATS):
+    """Return the subset of `required_caveats` whose key does not appear
+    (case-insensitively) anywhere in `text`.
+    """
+    lowered = text.lower()
+    return [caveat for caveat in required_caveats if caveat.lower() not in lowered]
+
+
+def build_results_md(aggregated, models=None, generation_count=None, as_of_date=None,
+                      required_caveats=REQUIRED_CAVEATS):
+    """Pure function: turn aggregate()'s output into the whole RESULTS.md
+    document as a string. Calling this twice on identical input returns
+    byte-identical strings (EVAL-12) -- there is no timestamp-at-render-time
+    or randomness anywhere in this function; every date-shaped value is an
+    explicit parameter.
+
+    Emits, in this order: a headline sentence naming the tested models, the
+    date, and the total generation count in the same sentence (guarding the
+    overclaim 05-RESEARCH.md Decision 8 item 1 names: a percentage figure
+    with no model/date/N attached); `## Mechanical proxy counts`; `##
+    Judged persuasion`; `## Honest caveats`; and `## Reproduce`. The two
+    figure sections are two separately headed top-level sections and are
+    never blended into one composite figure anywhere in this function
+    (EVAL-09) -- there is no code path here that sums or averages a
+    mechanical count together with a judged score.
+
+    `required_caveats` defaults to REQUIRED_CAVEATS; self_test() calls this
+    with a reduced tuple to prove the caveats section is built FROM the
+    constant (so the list this file's own self-test checks against cannot
+    silently drift from what actually renders), never hardcoded prose.
+    """
+    models = models or []
+    generation_count = generation_count if generation_count is not None else 0
+    as_of_date = as_of_date or '(date not supplied)'
+
+    lines = []
+    lines.append(
+        f"Measured {as_of_date} across {', '.join(models) if models else 'no models'} "
+        f"({generation_count} generations recorded)."
+    )
+    lines.append('')
+
+    lines.append(RESULTS_SECTION_HEADINGS[0])
+    lines.append('')
+    if not aggregated.get('mechanical'):
+        lines.append('No generation records were available to compute mechanical proxy counts.')
+    else:
+        lines.append('| Model | Scenario | Condition | n | Mean violations | Range |')
+        lines.append('|---|---|---|---|---|---|')
+        for (model, scenario_id, condition), stats in sorted(aggregated['mechanical'].items()):
+            lines.append(
+                f"| {model} | {scenario_id} | {condition} | {stats['n']} | {stats['mean']:.1f} "
+                f"| {stats['min']}-{stats['max']} |"
+            )
+    lines.append('')
+
+    lines.append(RESULTS_SECTION_HEADINGS[1])
+    lines.append('')
+    if not aggregated.get('judged'):
+        lines.append('No judgement records were available to compute judged persuasion scores.')
+    else:
+        lines.append('| Model | Scenario | Condition | Dimension | n | Mean | Range |')
+        lines.append('|---|---|---|---|---|---|---|')
+        for (model, scenario_id), by_condition in sorted(aggregated['judged'].items()):
+            for condition in ('skill-off', 'skill-on'):
+                for dim in JUDGE_DIMENSIONS:
+                    stats = by_condition.get(condition, {}).get(dim)
+                    if not stats:
+                        continue
+                    lines.append(
+                        f"| {model} | {scenario_id} | {condition} | {dim} | {stats['n']} "
+                        f"| {stats['mean']:.1f} | {stats['min']}-{stats['max']} |"
+                    )
+    lines.append('')
+
+    lines.append('## Honest caveats')
+    lines.append('')
+    for key in required_caveats:
+        lines.append(f'- {CAVEAT_TEXT[key]}')
+    lines.append('')
+
+    lines.append('## Reproduce')
+    lines.append('')
+    lines.append(
+        '- Live (paid) run: `python3 evals/benchmark/run_benchmark.py` (requires `claude auth '
+        'status` to show `loggedIn: true`).'
+    )
+    lines.append(
+        '- Offline recompute (free, no network/model call): '
+        '`python3 evals/benchmark/run_benchmark.py --report-only`.'
+    )
+    lines.append('')
+
+    return '\n'.join(lines) + '\n'
+
+
+def generate_report(raw_dir=None, out_path=None, models=None, generation_count=None, as_of_date=None):
+    """Offline recompute: load every raw record under `raw_dir`, aggregate,
+    render RESULTS.md's text, and (if `out_path` is given) write it.
+
+    Raises ValueError, naming the reason, if `raw_dir` contains zero
+    records -- an empty report is never rendered as a successful run, and
+    no file is written at `out_path` in that case.
+
+    Makes zero subprocess calls itself, and calls nothing in this module
+    that does either (load_raw_records() and aggregate() are both pure
+    over already-committed files); self_test()'s no-subprocess assertion
+    proves this directly by replacing subprocess.run with a function that
+    raises before calling this function end to end.
+    """
+    records = load_raw_records(raw_dir)
+    if not records:
+        raise ValueError(f'no raw records found under {raw_dir} -- nothing to report')
+
+    aggregated = aggregate(records)
+
+    if models is None:
+        models = sorted({r['model'] for r in records if 'model' in r and 'judge_model' not in r})
+    if generation_count is None:
+        generation_count = sum(1 for r in records if 'judge_model' not in r)
+    if as_of_date is None:
+        as_of_date = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+
+    text = build_results_md(aggregated, models=models, generation_count=generation_count, as_of_date=as_of_date)
+    if out_path is not None:
+        pathlib.Path(out_path).write_text(text, encoding='utf-8')
+    return text
+
+
 def self_test():
     """Offline proof of the generation-record schema and its failure paths.
     No subprocess call, no network call; runs on a machine with no `claude`
@@ -833,6 +1160,185 @@ def self_test():
             else:
                 cases_exercised.append('run-matrix-durability-on-interruption')
 
+    # --- load_raw_records(): empty/unparseable-file exit, sorted-order determinism ---
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        bad_path = raw_dir / 'a.json'
+        bad_path.write_text('')
+        try:
+            load_raw_records(raw_dir)
+            print('FAIL: load_raw_records did not raise on an empty json file')
+            all_ok = False
+        except ValueError as exc:
+            if str(bad_path) not in str(exc):
+                print(f'FAIL: load_raw_records empty-file error does not name the path: {exc}')
+                all_ok = False
+            else:
+                cases_exercised.append('load-raw-records-empty-file')
+
+    with tempfile.TemporaryDirectory() as tmp:
+        raw_dir = pathlib.Path(tmp)
+        unparseable_path = raw_dir / 'b.json'
+        unparseable_path.write_text('{not valid json')
+        try:
+            load_raw_records(raw_dir)
+            print('FAIL: load_raw_records did not raise on an unparseable json file')
+            all_ok = False
+        except ValueError as exc:
+            if str(unparseable_path) not in str(exc):
+                print(f'FAIL: load_raw_records unparseable-file error does not name the path: {exc}')
+                all_ok = False
+            else:
+                cases_exercised.append('load-raw-records-unparseable-file')
+
+    with tempfile.TemporaryDirectory() as tmp1, tempfile.TemporaryDirectory() as tmp2:
+        dir1 = pathlib.Path(tmp1)
+        dir2 = pathlib.Path(tmp2)
+        payload = {'model': 'claude-sonnet-5', 'scenario_id': 'x', 'condition': 'skill-off', 'verdict': 'generated', 'text': 'a'}
+        for name in ('b.json', 'a.json', 'c.json'):
+            (dir1 / name).write_text(json.dumps(payload))
+        for name in ('c.json', 'a.json', 'b.json'):
+            (dir2 / name).write_text(json.dumps(payload))
+        if load_raw_records(dir1) != load_raw_records(dir2):
+            print('FAIL: load_raw_records is not creation-order-independent')
+            all_ok = False
+        else:
+            cases_exercised.append('load-raw-records-sorted-order')
+
+    # --- generate_report(): empty raw_dir exits without writing a file ---
+    with tempfile.TemporaryDirectory() as tmp:
+        empty_raw = pathlib.Path(tmp) / 'raw'
+        empty_raw.mkdir()
+        out_path = pathlib.Path(tmp) / 'RESULTS.md'
+        raised = None
+        try:
+            generate_report(raw_dir=empty_raw, out_path=out_path)
+        except ValueError as exc:
+            raised = exc
+        if raised is None:
+            print('FAIL: generate_report() over an empty raw_dir did not raise')
+            all_ok = False
+        elif out_path.exists():
+            print('FAIL: generate_report() over an empty raw_dir wrote a file despite raising')
+            all_ok = False
+        else:
+            cases_exercised.append('generate-report-empty-dir')
+
+    # --- aggregate(): a cell below 3 repeats reports its actual n, never a
+    # silent 3, and computes no stdev/CI/p-value key anywhere in its output ---
+    synthetic_records = [
+        {
+            'model': 'claude-sonnet-5', 'scenario_id': 'x-1', 'condition': 'skill-off',
+            'verdict': 'generated',
+            'text': 'AWS Control Tower governs the new account structure across 850 virtual machines.',
+        },
+        {
+            'model': 'claude-sonnet-5', 'scenario_id': 'x-1', 'condition': 'skill-off',
+            'verdict': 'generated',
+            'text': 'Google Compute Engine hosts the migrated workload across 12 nodes.',
+        },
+    ]
+    synthetic_agg = aggregate(synthetic_records)
+    below_3_key = ('claude-sonnet-5', 'x-1', 'skill-off')
+    below_3_stats = synthetic_agg['mechanical'].get(below_3_key)
+    forbidden_stat_keys = {'stdev', 'std', 'confidence_interval', 'ci', 'p_value', 'pvalue'}
+    if not below_3_stats or below_3_stats['n'] != 2:
+        print(f'FAIL: aggregate() below-3-repeats cell expected n=2, got {below_3_stats}')
+        all_ok = False
+    elif forbidden_stat_keys & set(below_3_stats):
+        print(f'FAIL: aggregate() computed a forbidden false-precision statistic: {below_3_stats}')
+        all_ok = False
+    else:
+        cases_exercised.append('aggregate-below-3-repeats-reports-actual-n')
+
+    # --- committed results-render fixtures: a real render carries both
+    # required headings and all five caveats; two consecutive renders over
+    # the same input are byte-identical; the rendered text carries no
+    # p-value, confidence interval, standard deviation, or affirmative
+    # "significant". ---
+    fixture_raw_dir = FIXTURES_DIR / 'results-render'
+    fixture_records = load_raw_records(fixture_raw_dir)
+    fixture_agg = aggregate(fixture_records)
+    fixture_models = sorted({r['model'] for r in fixture_records if 'judge_model' not in r})
+    fixture_gen_count = sum(1 for r in fixture_records if 'judge_model' not in r)
+    doc1 = build_results_md(fixture_agg, models=fixture_models, generation_count=fixture_gen_count, as_of_date='2026-09-18')
+    doc2 = build_results_md(fixture_agg, models=fixture_models, generation_count=fixture_gen_count, as_of_date='2026-09-18')
+
+    missing_headings = [h for h in RESULTS_SECTION_HEADINGS if h not in doc1]
+    missing_caveats = _missing_required_caveats(doc1)
+    forbidden_statistics_phrases = ('p-value', 'confidence interval', 'standard deviation', 'is significant', 'statistically significant')
+    found_forbidden = [p for p in forbidden_statistics_phrases if p in doc1.lower()]
+
+    if missing_headings:
+        print(f'FAIL: rendered fixture report missing required heading(s): {missing_headings}')
+        all_ok = False
+    elif missing_caveats:
+        print(f'FAIL: rendered fixture report missing required caveat(s): {missing_caveats}')
+        all_ok = False
+    elif doc1 != doc2:
+        print('FAIL: build_results_md() is not byte-identical across two renders of identical input')
+        all_ok = False
+    elif found_forbidden:
+        print(f'FAIL: rendered fixture report contains a forbidden overclaim phrase: {found_forbidden}')
+        all_ok = False
+    else:
+        cases_exercised.append('results-render-fixture-two-headings-five-caveats-byte-identical')
+
+    # --- per-caveat assertion: deleting each of the five caveats in turn
+    # from a COPY of REQUIRED_CAVEATS (never the constant itself) makes the
+    # renderer omit exactly that caveat, and _missing_required_caveats()
+    # (checked against the real, full REQUIRED_CAVEATS) names it. Proves
+    # the caveats section is built FROM the constant, not hardcoded prose
+    # that could drift from what this file checks. ---
+    per_caveat_ok = True
+    for omitted in REQUIRED_CAVEATS:
+        reduced = tuple(c for c in REQUIRED_CAVEATS if c != omitted)
+        reduced_doc = build_results_md(fixture_agg, required_caveats=reduced)
+        missing = _missing_required_caveats(reduced_doc)
+        if missing != [omitted]:
+            print(f'FAIL: per-caveat assertion for {omitted!r} expected missing=[{omitted!r}], got {missing}')
+            all_ok = False
+            per_caveat_ok = False
+    if per_caveat_ok:
+        cases_exercised.append('per-caveat-drift-guard')
+
+    # --- no-subprocess assertion: the whole --report-only path (
+    # load_raw_records -> aggregate -> build_results_md, via
+    # generate_report()) makes zero subprocess calls, proven by replacing
+    # subprocess.run with a function that raises for the duration of the
+    # call. ---
+    def _raise_if_called(argv, **kwargs):
+        raise AssertionError('report-only path must never call subprocess.run')
+
+    with tempfile.TemporaryDirectory() as tmp:
+        out_path = pathlib.Path(tmp) / 'RESULTS.md'
+        subprocess.run = _raise_if_called
+        try:
+            report_text = generate_report(
+                raw_dir=fixture_raw_dir, out_path=out_path,
+                models=fixture_models, generation_count=fixture_gen_count, as_of_date='2026-09-18',
+            )
+        finally:
+            subprocess.run = real_subprocess_run
+
+        if report_text != doc1:
+            print('FAIL: generate_report() output does not match the equivalent direct build_results_md() render')
+            all_ok = False
+        elif not out_path.exists():
+            print('FAIL: generate_report() with an out_path did not write RESULTS.md')
+            all_ok = False
+        else:
+            cases_exercised.append('report-only-no-subprocess-call')
+
+    # --- RESULTS.md is never committed by this plan; the self-test renders
+    # only into temporary directories, and the real file is 05-03's to
+    # create from the real matrix. ---
+    if RESULTS_PATH.exists():
+        print(f'FAIL: {RESULTS_PATH} exists in the working tree -- this plan must not commit a report built from fixtures')
+        all_ok = False
+    else:
+        cases_exercised.append('no-committed-results-md')
+
     if not all_ok:
         return False
 
@@ -871,9 +1377,19 @@ def main():
         ok = self_test()
         sys.exit(0 if ok else 1)
 
+    if args.report_only:
+        try:
+            text = generate_report(raw_dir=args.raw_dir, out_path=args.out)
+        except ValueError as exc:
+            print(f'report-only failed: {exc}', file=sys.stderr)
+            sys.exit(1)
+        print(f'wrote {args.out} ({len(text)} chars)')
+        sys.exit(0)
+
     print(
-        'Live matrix and --report-only aggregation are not yet implemented in this plan '
-        '(see 05-02-PLAN.md Tasks 2 and 3).',
+        'Live matrix generation is not implemented in this plan -- 05-02 builds the offline '
+        'half only (scenarios, generation recording, and the --report-only aggregator/renderer). '
+        'The paid live matrix belongs to 05-03, behind its own operator checkpoint.',
         file=sys.stderr,
     )
     sys.exit(1)

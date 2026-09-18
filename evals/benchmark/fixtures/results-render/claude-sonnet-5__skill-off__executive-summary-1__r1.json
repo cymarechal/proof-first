@@ -1,0 +1,25 @@
+{
+  "run_id": "00000000-0000-4000-8000-000000000001",
+  "timestamp": "2026-09-18T00:00:00+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "condition": "skill-off",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration.",
+  "skill_sha": null,
+  "repeat": 1,
+  "text": "Our exceptional team brings a world-class approach to this comprehensive cloud migration programme.",
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 120,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0
+  },
+  "cost_usd": 0.05,
+  "duration_ms": 9000,
+  "cli_version": "2.1.267",
+  "verdict": "generated",
+  "reason": null
+}
