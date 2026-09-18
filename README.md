@@ -33,7 +33,8 @@ no install step.
 
 ## Install
 
-Proof First supports four install paths, one per harness class this project targets.
+Proof First supports four install paths: one for every harness the Agent Skills standard reaches,
+two that are Claude Code's own, and one for a harness with no skill support.
 
 Routes 1 and 2 name the publish-location placeholder `<owner>/<repo>`, which stands for wherever
 this repository is published. Neither resolves until it is published. The placeholder is
@@ -44,7 +45,9 @@ Route 4 runs from a local clone with no step beyond the clone: `prompts/system-p
 committed file, and pasting it is the whole action. Route 3 runs from a local clone too, but it
 needs one copy step first, stated in full below. `output-styles/` at this repository's root is
 where a plugin ships an output style from, not a directory Claude Code scans, so the file is not
-offered in `/config` until it is copied to one that is.
+offered in `/config` until it is copied to one that is. Both routes 3 and 4 need that local clone,
+and the clone URL is the same unpublished `<owner>/<repo>` as routes 1 and 2: until this repository
+is published, there is no URL to clone from.
 
 **1. Skills CLI** — for any harness the Agent Skills standard covers (Cursor, Codex, Copilot,
 Gemini CLI, OpenCode, and the rest), install with the `skills` CLI's one-line command:
@@ -80,7 +83,10 @@ cp output-styles/proof-first.md ~/.claude/output-styles/
 Use a project's own `.claude/output-styles/` instead of `~/.claude/output-styles/` to scope the
 style to that project. What this repository checks is that the file exists and that this README
 names the directory it has to reach. That a Claude Code session then lists it in `/config` has not
-been observed here: this repository's own environment drives no live harness session.
+been observed here. This repository does drive live sessions — `evals/conformance/run_conformance.py`
+runs headless `claude -p`, and the conformance figure under `## Status` comes from those sessions —
+but a headless session has no `/config` picker, so the picker is the one link in this route nothing
+here exercises.
 
 **4. System prompt** — `prompts/system-prompt.md` is a paste-able system prompt for a harness with
 no skill support: paste it whole into a system-prompt field, an `AGENTS.md`, or an equivalent.
@@ -146,7 +152,7 @@ exclusions, and caveats live in `evals/conformance/RESULTS-mod04.md` — read th
 trusting anything downstream of it, including its "v1 disposition decision (03-15)" section
 recording why this residual is accepted for v1 rather than pursued further.
 
-At minimum:
+Among those caveats, at minimum:
 `claude-sonnet-5`, the only model behind the anchored figures above, is Anthropic-hosted; the
 harness gives no determinism guarantee (no temperature or seed flag); and every figure recorded
 before this project's own scorer-anchoring fix (see that file's "Scorer anchoring correction
