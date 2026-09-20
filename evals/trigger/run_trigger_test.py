@@ -13,7 +13,12 @@ of the prose would guess; the event stream states it.
 It does not measure a trigger-reliability rate. One observation per phrasing is
 one observation, not a rate, and this file never computes a percentage from
 them. A measured rate across many phrasings and models is the eval harness's
-job (`evals/benchmark/`), not this file's.
+job (`evals/benchmark/`), not this file's. `--repeats` (added for the CAT-10
+gap-closure round) reports a `k of n` count per phrasing and, for a phrasing
+with zero fires, the exact Clopper-Pearson upper bound on its true fire rate
+from `stats.py` -- never a percentage. A bound at n=5 is 0.4507: a bound, not
+a measured rate, and it is a statement about that one phrasing under repeated
+sampling from the same harness on the same day, nothing broader.
 
 Deliberately NOT passed to the session
 --------------------------------------
@@ -49,6 +54,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+
+import stats
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 PRESSURE_TESTS = REPO_ROOT / 'evals' / 'pressure-tests.md'
@@ -201,6 +208,106 @@ def run_session(skill_src, phrasing, model, out_path, timeout_s):
         shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
+# --- repeats, overwrite guard, and labelled append blocks ------------------
+
+def aggregate_verdicts(verdicts):
+    """Reduce a list of per-repeat verdict strings to (fires, scoreable).
+
+    An unscoreable session is excluded from both the numerator and the
+    denominator -- it is never retried into a verdict and never rounded into
+    one. `fires` counts VERDICT_FIRED entries; `scoreable` counts every entry
+    that is not VERDICT_UNSCOREABLE.
+    """
+    scoreable = sum(1 for v in verdicts if v != VERDICT_UNSCOREABLE)
+    fires = sum(1 for v in verdicts if v == VERDICT_FIRED)
+    return fires, scoreable
+
+
+def resolve_out_mode(exists, nonempty, append, path=None):
+    """Decide whether a run writes fresh or appends, and refuse a silent clobber.
+
+    This is the accident that would otherwise destroy the 2026-09-20
+    measurement: `write_results()` calls `write_text()`, which overwrites
+    unconditionally. A non-empty existing `--out` without `--append` raises
+    rather than silently discarding whatever measurement history is already
+    there.
+    """
+    label = path if path else 'the --out file'
+    if exists and nonempty and not append:
+        raise ValueError(
+            '%s already has content. Re-run with --append and --label to add a new '
+            'run block without destroying it, or point --out at a different path.'
+            % label
+        )
+    if exists and nonempty and append:
+        return 'append'
+    return 'write'
+
+
+def render_run_block(label, rows, counts, model='', harness_version='',
+                      scope_hash_value='', repeats=1, run_date=''):
+    """Render one labelled `## Run` block: a k-of-n count per row, never a percentage.
+
+    `rows` is `[(table, phrasing, expects_fire, expected_text), ...]` as
+    `parse_tables()` returns. `counts` is `[(fires, scoreable), ...]` aligned
+    with `rows`, one pair per phrasing, already reduced by
+    `aggregate_verdicts()`. Every zero-fire row gets its exact
+    Clopper-Pearson upper bound from `stats.py`; no row anywhere gets a rate.
+    """
+    planned = repeats * len(rows)
+    scoreable_total = sum(c[1] for c in counts)
+
+    lines = [
+        '## Run — %s' % label,
+        '',
+        '| Field | Value |',
+        '|---|---|',
+        '| Date | %s |' % run_date,
+        '| Model | `%s` |' % model,
+        '| Harness | `claude` %s |' % harness_version,
+        '| SKILL.md description sha256 (first %d lines) | `%s` |' % (SCOPE_HASH_LINES, scope_hash_value),
+        '| Repeats per phrasing | %d |' % repeats,
+        '| Sessions planned | %d |' % planned,
+        '| Sessions scoreable | %d |' % scoreable_total,
+        '',
+        '### Verdicts',
+        '',
+        '| Table | Phrasing | Expected | Observed | Match | Clopper-Pearson upper bound (alpha 0.05) |',
+        '|---|---|---|---|---|---|',
+    ]
+
+    of_total = sn_total = mh_total = sm_total = 0
+    for (table, phrasing, expects_fire, expected_text), (fires, scoreable) in zip(rows, counts):
+        if expects_fire:
+            mh_total += fires
+            sm_total += scoreable
+        else:
+            of_total += fires
+            sn_total += scoreable
+
+        if scoreable == 0:
+            match = 'unscoreable'
+        elif expects_fire:
+            match = 'yes' if fires == scoreable else 'NO'
+        else:
+            match = 'yes' if fires == 0 else 'NO'
+
+        bound = '%.4f' % stats.clopper_pearson_upper(0, scoreable) if (fires == 0 and scoreable > 0) else '-'
+        observed = 'fired %d of %d scoreable' % (fires, scoreable)
+        lines.append('| %s | %s | %s | %s | %s | %s |' % (table, phrasing, expected_text, observed, match, bound))
+
+    lines += [
+        '',
+        '### Totals',
+        '',
+        '- OF (over-fires, must-not-fire rows) = %d' % of_total,
+        '- SN (scoreable, must-not-fire rows) = %d' % sn_total,
+        '- MH (must-fire hits) = %d' % mh_total,
+        '- SM (scoreable, must-fire rows) = %d' % sm_total,
+    ]
+    return '\n'.join(lines)
+
+
 # --- self-test -------------------------------------------------------------
 
 _FIRED_FIXTURE = '\n'.join([
@@ -271,12 +378,56 @@ def self_test():
     if recorded_scope_hash('no hash here') is not None:
         failures.append('recorded_scope_hash invented a hash where none is recorded')
 
+    # --- repeats aggregation (1 case) ---
+    fires, scoreable = aggregate_verdicts(
+        [VERDICT_FIRED, VERDICT_FIRED, VERDICT_DID_NOT_FIRE, VERDICT_UNSCOREABLE, VERDICT_FIRED])
+    if (fires, scoreable) != (3, 4):
+        failures.append('aggregate_verdicts(...) = (%d, %d), expected (3, 4) -- an unscoreable '
+                         'session leaked into a numerator or a denominator' % (fires, scoreable))
+
+    # --- overwrite guard (4 cases) ---
+    if resolve_out_mode(False, False, False) != 'write':
+        failures.append('resolve_out_mode(False, False, False) did not return "write"')
+    guarded = False
+    try:
+        resolve_out_mode(True, True, False)
+    except ValueError:
+        guarded = True
+    if not guarded:
+        failures.append('resolve_out_mode(True, True, False) did NOT raise -- a non-empty '
+                         'results file could be clobbered without --append')
+    if resolve_out_mode(True, True, True) != 'append':
+        failures.append('resolve_out_mode(True, True, True) did not return "append"')
+    if resolve_out_mode(True, False, False) != 'write':
+        failures.append('resolve_out_mode(True, False, False) did not return "write"')
+
+    # --- render_run_block (5 cases) ---
+    fixture_rows = [
+        ('must-fire', 'Write our RFP answer.', True, 'Fires'),
+        ('must-not-fire', 'Write launch copy.', False, 'Does not fire'),
+    ]
+    fixture_counts = [(5, 5), (0, 5)]
+    block = render_run_block(label='self-test fixture', rows=fixture_rows, counts=fixture_counts,
+                              model='claude-sonnet-5', harness_version='2.1.267 (Claude Code)',
+                              scope_hash_value='deadbeef', repeats=5, run_date='2026-09-20')
+    if re.findall(r'[0-9]+(?:\.[0-9]+)?%', block):
+        failures.append('render_run_block emitted a percentage token, which this instrument forbids')
+    if 'fired 5 of 5 scoreable' not in block:
+        failures.append("render_run_block did not report the must-fire row's k-of-n count")
+    if 'fired 0 of 5 scoreable' not in block:
+        failures.append("render_run_block did not report the must-not-fire row's k-of-n count")
+    if '0.4507' not in block:
+        failures.append('render_run_block did not carry the n=5 Clopper-Pearson bound for the zero-fire row')
+    if 'self-test fixture' not in block:
+        failures.append("render_run_block did not carry its own label")
+
     for problem in failures:
         print('FAIL: %s' % problem)
     if failures:
         print('self-test FAIL: %d problem(s)' % len(failures))
         return 1
-    print('self-test PASS: 3 detector cases, 2 table rows, 2 scope-hash cases')
+    print('self-test PASS: 3 detector cases, 2 table rows, 2 scope-hash cases, '
+          '1 aggregate-verdicts case, 4 overwrite-guard cases, 5 render-block cases')
     return 0
 
 
@@ -363,10 +514,20 @@ def main(argv=None):
     parser.add_argument('--timeout', type=int, default=DEFAULT_TIMEOUT_S)
     parser.add_argument('--jobs', type=int, default=3,
                         help='concurrent sessions; each writes its own path, never a shared one')
+    parser.add_argument('--repeats', type=int, default=1,
+                        help='sessions to run per phrasing, aggregated into one k-of-n row (default 1)')
+    parser.add_argument('--append', action='store_true',
+                        help='append a new labelled run block to --out instead of overwriting it')
+    parser.add_argument('--label', default='',
+                        help='label for the appended run block (required with --append)')
     args = parser.parse_args(argv)
 
     if args.self_test:
         return self_test()
+
+    if args.append and not args.label:
+        print('ERROR: --append requires --label', file=sys.stderr)
+        return 1
 
     md_text = pathlib.Path(args.tests).read_text(encoding='utf-8')
     rows = parse_tables(md_text)
@@ -383,6 +544,18 @@ def main(argv=None):
               'not filled in.' % (args.tests, bound_hash, live_hash), file=sys.stderr)
         return 1
 
+    out_path = pathlib.Path(args.out)
+    try:
+        out_mode = resolve_out_mode(
+            exists=out_path.exists(),
+            nonempty=out_path.exists() and out_path.stat().st_size > 0,
+            append=args.append,
+            path=str(out_path),
+        )
+    except ValueError as exc:
+        print('ERROR: %s' % exc, file=sys.stderr)
+        return 1
+
     harness_version = subprocess.run(['claude', '--version'], capture_output=True,
                                      text=True).stdout.strip() or 'unknown'
     run_date = datetime.date.today().isoformat()
@@ -391,25 +564,69 @@ def main(argv=None):
         else pathlib.Path(tempfile.mkdtemp(prefix='proof-first-trigger-out-'))
     transcripts.mkdir(parents=True, exist_ok=True)
 
-    print('Running %d sessions (model=%s, jobs=%d)' % (len(rows), args.model, args.jobs))
+    total_sessions = len(rows) * args.repeats
+    print('Running %d sessions (%d phrasings x %d repeats, model=%s, jobs=%d)'
+          % (total_sessions, len(rows), args.repeats, args.model, args.jobs))
 
-    def one(index_row):
-        index, (table, phrasing, _expects, _expected_text) = index_row
-        out_path = transcripts / ('%02d-%s.jsonl' % (index + 1, table))
-        return run_session(args.skill_src, phrasing, args.model, out_path, args.timeout)
+    tasks = []
+    for row_index, row in enumerate(rows):
+        for rep in range(args.repeats):
+            tasks.append((row_index, rep, row))
+
+    def one(task):
+        row_index, rep, (table, phrasing, _expects, _expected_text) = task
+        if args.repeats == 1:
+            out_file = transcripts / ('%02d-%s.jsonl' % (row_index + 1, table))
+        else:
+            out_file = transcripts / ('%02d-%s-r%d.jsonl' % (row_index + 1, table, rep + 1))
+        return row_index, run_session(args.skill_src, phrasing, args.model, out_file, args.timeout)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        results = list(pool.map(one, enumerate(rows)))
+        raw_results = list(pool.map(one, tasks))
 
-    for (table, phrasing, _e, _t), (verdict, note) in zip(rows, results):
-        print('  %-14s %-72s -> %s%s' % (table, phrasing[:72], verdict,
-                                         ' [%s]' % note if note else ''))
+    verdicts_by_row = {i: [] for i in range(len(rows))}
+    for row_index, (verdict, note) in raw_results:
+        verdicts_by_row[row_index].append(verdict)
+        table, phrasing, _e, _t = rows[row_index]
+        print('  %-14s %-60s rep -> %s%s' % (table, phrasing[:60], verdict,
+                                             ' [%s]' % note if note else ''))
 
-    mismatches, unscoreable = write_results(args.out, args.model, run_date, rows,
-                                            results, live_hash, harness_version)
-    print('Wrote %s' % args.out)
+    counts = [aggregate_verdicts(verdicts_by_row[i]) for i in range(len(rows))]
+
+    if args.repeats == 1 and not args.append:
+        # Legacy single-session-per-row path, preserved byte-for-byte for
+        # any caller that does not opt into the new --repeats/--append shape.
+        results = [(verdicts_by_row[i][0], '') for i in range(len(rows))]
+        mismatches, unscoreable = write_results(args.out, args.model, run_date, rows,
+                                                results, live_hash, harness_version)
+        print('Wrote %s' % args.out)
+        print('Transcripts: %s' % transcripts)
+        print('mismatches=%d unscoreable=%d' % (mismatches, unscoreable))
+        return 0
+
+    label = args.label or ('%s, %d sessions' % (args.model, total_sessions))
+    block = render_run_block(
+        label=label, rows=rows, counts=counts, model=args.model,
+        harness_version=harness_version, scope_hash_value=live_hash,
+        repeats=args.repeats, run_date=run_date,
+    )
+
+    if out_mode == 'append':
+        with open(args.out, 'a', encoding='utf-8') as fh:
+            fh.write('\n---\n\n')
+            fh.write(block)
+            fh.write('\n')
+    else:
+        pathlib.Path(args.out).write_text(block + '\n', encoding='utf-8')
+
+    of_total = sum(c[0] for r, c in zip(rows, counts) if not r[2])
+    sn_total = sum(c[1] for r, c in zip(rows, counts) if not r[2])
+    mh_total = sum(c[0] for r, c in zip(rows, counts) if r[2])
+    sm_total = sum(c[1] for r, c in zip(rows, counts) if r[2])
+
+    print('%s %s' % ('Appended to' if out_mode == 'append' else 'Wrote', args.out))
     print('Transcripts: %s' % transcripts)
-    print('mismatches=%d unscoreable=%d' % (mismatches, unscoreable))
+    print('OF=%d SN=%d MH=%d SM=%d' % (of_total, sn_total, mh_total, sm_total))
     return 0
 
 
