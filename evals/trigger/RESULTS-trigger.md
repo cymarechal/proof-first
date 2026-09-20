@@ -55,3 +55,43 @@ prompt naming the skill. The verdict is read from the session's own event stream
   installed skills were present in every session.
 - The verdicts bind to the `description` whose hash is recorded above. If that description
   changes, these observations must be re-run, not carried forward.
+
+---
+
+## Run — Arm B (control) — 439-character description, head-14 sha256 d5dd651a…
+
+| Field | Value |
+|---|---|
+| Date | 2026-09-20 |
+| Model | `claude-sonnet-5` |
+| Harness | `claude` 2.1.267 (Claude Code) |
+| SKILL.md description sha256 (first 14 lines) | `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675` |
+| Repeats per phrasing | 5 |
+| Sessions planned | 70 |
+| Sessions scoreable | 70 |
+
+### Verdicts
+
+| Table | Phrasing | Expected | Observed | Match | Clopper-Pearson upper bound (alpha 0.05) |
+|---|---|---|---|---|---|
+| must-fire | Write our response to RFP question 4 about the cut-over plan. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-fire | We got an RFI back from procurement — draft the answers. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-fire | Draft the solution proposal section for the migration approach. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-fire | I need an executive summary for the Halverton board deck. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-fire | Write the demo script for tomorrow's discovery call. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-fire | Turn these discovery notes into the after-state section of the proposal. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-fire | Help me write this presales response before it ships to the customer. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-fire | We're putting together our bid response — write the commercial section. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-fire | This is a scored technical response — write section 3 so it holds up. | Fires | fired 5 of 5 scoreable | yes | - |
+| must-not-fire | Write launch copy for our new product announcement. | Does not fire | fired 0 of 5 scoreable | yes | 0.4507 |
+| must-not-fire | Build me a slide deck for the kickoff meeting. | Does not fire | fired 5 of 5 scoreable | NO | - |
+| must-not-fire | Work out pricing and sizing for a 500-seat deployment. | Does not fire | fired 4 of 5 scoreable | NO | - |
+| must-not-fire | Write the API reference docs for the /migrations endpoint. | Does not fire | fired 0 of 5 scoreable | yes | 0.4507 |
+| must-not-fire | Rewrite this paragraph in plain English for a general reader. | Does not fire | fired 0 of 5 scoreable | yes | 0.4507 |
+
+### Totals
+
+- OF (over-fires, must-not-fire rows) = 9
+- SN (scoreable, must-not-fire rows) = 25
+- MH (must-fire hits) = 45
+- SM (scoreable, must-fire rows) = 45
