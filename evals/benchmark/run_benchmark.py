@@ -1224,6 +1224,39 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
     return '\n'.join(lines) + '\n'
 
 
+def _as_of_date_from_records(records):
+    """Derive the report's as-of-date from the committed generation
+    records' own `timestamp` fields -- never from the render-time clock
+    (CR-01: a clock read at render time let the committed RESULTS.md
+    headline drift two days ahead of the actual run date, because
+    `--report-only` has no `--as-of-date` flag and always fell through to
+    `datetime.now()`). Only generation records carry the date that matters
+    to the headline; judgement records (`judge_model` present) are a
+    separate pass, potentially run on a different day, and are excluded
+    from this computation.
+
+    Returns the single ISO date (`YYYY-MM-DD`) shared by every generation
+    record's timestamp. If the generation records span more than one UTC
+    date, returns `'{earliest} to {latest}'` rather than silently
+    collapsing a multi-day run to one date -- 05-RESEARCH.md Decision 8
+    item 1 requires the headline to carry the date the run actually
+    happened on, not a fabricated single day.
+
+    Returns None if there are no generation records with a timestamp (only
+    judgements, or no records at all); the caller supplies its own
+    fallback in that case.
+    """
+    dates = sorted({
+        r['timestamp'][:10] for r in records
+        if 'judge_model' not in r and r.get('timestamp')
+    })
+    if not dates:
+        return None
+    if len(dates) == 1:
+        return dates[0]
+    return f'{dates[0]} to {dates[-1]}'
+
+
 def generate_report(raw_dir=None, out_path=None, models=None, generation_count=None, as_of_date=None):
     """Offline recompute: load every raw record under `raw_dir`, aggregate,
     render RESULTS.md's text, and (if `out_path` is given) write it.
@@ -1237,6 +1270,13 @@ def generate_report(raw_dir=None, out_path=None, models=None, generation_count=N
     over already-committed files); self_test()'s no-subprocess assertion
     proves this directly by replacing subprocess.run with a function that
     raises before calling this function end to end.
+
+    `as_of_date`, when not given explicitly, is derived from the loaded
+    records themselves via `_as_of_date_from_records()` -- there is no
+    clock read anywhere in this function (CR-01 fix). This makes
+    `--report-only` a pure function of `raw_dir`'s committed contents:
+    re-rendering the same records on any later date reproduces the exact
+    same RESULTS.md, byte for byte.
     """
     records = load_raw_records(raw_dir)
     if not records:
@@ -1250,7 +1290,7 @@ def generate_report(raw_dir=None, out_path=None, models=None, generation_count=N
     if generation_count is None:
         generation_count = sum(1 for r in records if 'judge_model' not in r)
     if as_of_date is None:
-        as_of_date = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+        as_of_date = _as_of_date_from_records(records)
 
     text = build_results_md(
         aggregated, models=models, generation_count=generation_count, as_of_date=as_of_date,
@@ -2173,6 +2213,59 @@ def self_test():
             all_ok = False
         else:
             cases_exercised.append('report-only-no-subprocess-call')
+
+    # --- CR-01 regression: generate_report()'s default as_of_date is a pure
+    # function of the committed raw records, never the render-time clock.
+    # Before the fix, `--report-only` fell through to
+    # `datetime.datetime.now(...)` whenever `as_of_date` was not passed
+    # explicitly -- which is every real invocation, since main() never
+    # passes one -- so re-rendering the SAME committed matrix on a LATER
+    # calendar day silently moved the published headline date forward
+    # (this is exactly how RESULTS.md's headline once read "Measured
+    # 2026-09-20" for a matrix whose raw/ records were all timestamped
+    # 2026-09-18). Prove the fix by monkey-patching the module's
+    # `datetime.datetime` class -- the only way to fake "now()" for a
+    # built-in C type -- to two different fake current dates and rendering
+    # the same fixture records under each: a clock-independent render must
+    # produce byte-identical output both times, and the rendered headline
+    # date must be the fixture records' OWN timestamp date, never either
+    # fake "current" date. ---
+    class _FrozenDatetime(datetime.datetime):
+        _fake_now = None
+
+        @classmethod
+        def now(cls, tz=None):
+            return cls._fake_now
+
+    real_datetime_class = datetime.datetime
+    with tempfile.TemporaryDirectory() as tmp:
+        out_path = pathlib.Path(tmp) / 'RESULTS.md'
+        try:
+            datetime.datetime = _FrozenDatetime
+            _FrozenDatetime._fake_now = real_datetime_class(2099, 1, 1, tzinfo=datetime.timezone.utc)
+            clock_a_text = generate_report(raw_dir=fixture_raw_dir, out_path=out_path)
+            _FrozenDatetime._fake_now = real_datetime_class(2000, 6, 15, tzinfo=datetime.timezone.utc)
+            clock_b_text = generate_report(raw_dir=fixture_raw_dir, out_path=out_path)
+        finally:
+            datetime.datetime = real_datetime_class
+
+        if clock_a_text != clock_b_text:
+            print('FAIL: generate_report() default as_of_date is not clock-independent (CR-01 regressed)')
+            all_ok = False
+        elif '2099-01-01' in clock_a_text or '2000-06-15' in clock_b_text:
+            print(
+                'FAIL: generate_report() rendered a monkey-patched clock date instead of deriving '
+                'as_of_date from the fixture records\' own timestamps (CR-01 regressed)'
+            )
+            all_ok = False
+        elif 'Measured 2026-09-18' not in clock_a_text:
+            print(
+                'FAIL: generate_report() default as_of_date did not derive the fixture records\' own '
+                f'date (2026-09-18): {clock_a_text.splitlines()[0]!r}'
+            )
+            all_ok = False
+        else:
+            cases_exercised.append('cr01-report-only-render-is-clock-independent')
 
     # --- self_test() never writes to the real RESULTS_PATH -- every case
     # above renders into a temporary directory only. Before 05-03's live

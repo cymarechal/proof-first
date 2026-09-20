@@ -1,4 +1,4 @@
-Measured 2026-09-20 across claude-opus-5, claude-sonnet-5 (96 generations recorded).
+Measured 2026-09-18 across claude-opus-5, claude-sonnet-5 (96 generations recorded).
 
 ## Mechanical proxy counts
 
