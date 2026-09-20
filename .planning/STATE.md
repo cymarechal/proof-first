@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
 status: executing
-stopped_at: Phase 02 all plans done; blocked at completion gate on measured CAT-10 over-fire
+stopped_at: Phase 02 CAT-10 gap diagnosed and 02-10 gap-closure plan verified; awaiting execution
 last_updated: "2026-09-20T02:25:35.381Z"
 last_activity: 2026-09-20
-last_activity_desc: Phase 02 execution started
+last_activity_desc: CAT-10 diagnosed; 02-10 gap-closure plan written and checker-passed
 state_head: b498be3b358ca64f9dc0db08ed468de44cc5b26d
 progress:
   total_phases: 6
@@ -36,8 +36,13 @@ CAT-10 is measurably NOT SATISFIED: the trigger pressure test was run live on 20
 out-of-scope phrasings. Narrowing it is a design change to the shipped trigger surface
 (SKILL.md frontmatter, both .claude-plugin manifests, and the two generated derivatives),
 so it needs a gap-closure plan rather than an edit inside a completion run.
-Next: /gsd-verify-work 02 to open the CAT-10 gap-closure plan.
-Last activity: 2026-09-20 — trigger pressure test run; CAT-10 re-verdicted on evidence
+Next: /gsd-execute-phase 02 --gaps-only to run 02-10 (the CAT-10 gap-closure plan).
+02-10-PLAN.md is written and checker-verified: a paired n=5 experiment (140 live sessions,
+170 attempt cap) under a six-branch decision rule committed before any measurement. The rule
+pre-names an H4 null as Branch 3, so "the exclusion clause had no measured effect" is a
+recordable result rather than a failed plan. CAT-10 stays unchecked under every branch but 1.
+Diagnosis refuted the lexical-pull explanation; the positive pull remains unidentified.
+Last activity: 2026-09-20 — CAT-10 diagnosed (.planning/debug/), 02-10 gap-closure plan verified
 
 Progress: [███░░░░░░░] 33%
 
