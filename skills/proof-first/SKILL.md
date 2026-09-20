@@ -7,7 +7,9 @@ description: |
   proposal, or a check pass over a finished draft that flags invented
   metrics, missing evidence, undisclosed customer references, competitor
   comparisons, compliance claims, and unquantified buzzwords before the
-  document ships to a buyer.
+  document ships to a buyer. Not for slide decks or visual design,
+  pricing, sizing, or commercial modelling, or marketing and brand
+  writing.
 license: MIT
 metadata:
   version: "0.1.0"

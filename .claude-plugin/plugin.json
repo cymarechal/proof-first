@@ -1,7 +1,7 @@
 {
   "name": "proof-first",
   "displayName": "Proof First",
-  "description": "Write or check RFP and RFI responses, solution proposals, executive summaries, and demo or discovery documents for technical presales and bid teams.",
+  "description": "Write or check RFP and RFI responses, solution proposals, executive summaries, and demo or discovery documents for technical presales and bid teams. Not for slide decks or visual design, pricing, sizing, or commercial modelling, or marketing and brand writing.",
   "version": "0.1.0",
   "author": {
     "name": "Proof First contributors"
