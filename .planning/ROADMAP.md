@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Rule Catalog & Integrity — SKILL.md Core** - Author SKILL.md's self-contained rule catalog, integrity section, and basic draft/check modes.
 - [x] **Phase 3: Completeness Audit & Artifact Patterns** - Add the MEDDICC completeness audit and the four artifact-family patterns, and wire the classification and citation guarantees that depend on them. (completed 2026-09-17)
 - [ ] **Phase 4: Distribution & Worked Examples** - Ship the skill through every promised channel with before/after examples citing real rule numbers.
-- [ ] **Phase 5: Evaluation Harness** - Prove the skill works with a reproducible, multi-model, persuasion-aware benchmark.
+- [x] **Phase 5: Evaluation Harness** - Prove the skill works with a reproducible, multi-model, persuasion-aware benchmark. (completed 2026-09-20)
 - [ ] **Phase 6: Legal Review Gate & Launch** - Clear trademark risk and publish a README whose claims are sourced only from the benchmark that actually ran.
 
 ## Phase Details
@@ -305,7 +305,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 2. Rule Catalog & Integrity — SKILL.md Core | 9/9 | In Progress|  |
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
-| 5. Evaluation Harness | 3/3 | In Progress|  |
+| 5. Evaluation Harness | 3/3 | Complete    | 2026-09-20 |
 | 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
 
 ---
