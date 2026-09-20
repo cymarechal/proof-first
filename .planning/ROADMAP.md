@@ -69,7 +69,7 @@ Plans:
   4. Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite.
   5. Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve.
 
-**Plans**: 11 plans — 6/6 original, plus 5 gap-closure plans added after verification found gaps. 10 executed; 02-11 planned, not yet executed.
+**Plans**: 11/11 plans executed — 6/6 original, plus 5 gap-closure plans added after verification found gaps
 
 Plans:
 
@@ -112,7 +112,7 @@ Plans:
 
 **Gap closure Wave 4** *(from 02-UAT.md test 4 / gap G-02-4; run with `/gsd-execute-phase 2 --gaps-only`)*
 
-- [ ] 02-11-PLAN.md — 02-REVIEW.md CR-01: scope the binding search to `## Scope` and make an absent binding halt, so the trigger instrument's scope-hash guard fails closed instead of open; five self-test cases proven red-then-green by mutation probe
+- [x] 02-11-PLAN.md — 02-REVIEW.md CR-01: scope the binding search to `## Scope` and make an absent binding halt, so the trigger instrument's scope-hash guard fails closed instead of open; five self-test cases proven red-then-green by mutation probe
 
 ### Phase 3: Completeness Audit & Artifact Patterns
 

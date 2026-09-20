@@ -81,7 +81,20 @@ expected: Either a follow-up plan applies the documented fix (require a hash to 
 why_human: An unresolved CRITICAL code-review finding from this round currently has no disposition anywhere in the repository's tracking. It is dormant today (exactly one well-formed hash exists in evals/pressure-tests.md) but its blast radius is a future silent measurement-integrity failure — the class of failure this project's evidence discipline exists to prevent. A phase should not be marked complete with an unresolved critical finding carrying no recorded decision.
 evidence: "evals/trigger/run_trigger_test.py:88-91 and 540-545. recorded_scope_hash() returns None when its whole-document regex finds no 64-hex token; the halt `if bound_hash and bound_hash != live_hash` is then silently skipped. Confirmed still present at HEAD by the verifier."
 source: 02-VERIFICATION.md human_verification item 2
-result: issue
+result: pass
+resolved_by: "02-11-PLAN.md, commit c98114a (2026-09-20). The stated expectation was a disposition — 'either a follow-up plan applies the documented fix, or a new WINDOWS.md entry records the risk as explicitly accepted'. A follow-up plan applied the documented fix, so the expectation is met on its own wording."
+fix_evidence: |
+  recorded_scope_hash() now searches only inside the `## Scope` section; the halt decision moved
+  into scope_binding_verdict(), which refuses an absent binding instead of falling through.
+  Proven live, not only in the self-test: a copy of pressure-tests.md with the binding removed and
+  a copy whose only 64-hex token sits outside `## Scope` both exit 1 with the absent-binding
+  message, and neither wrote an --out file. `grep -c "if bound_hash and bound_hash != live_hash"`
+  prints 0. All nine ci.yml commands exit 0. evals/pressure-tests.md and RESULTS-trigger.md are
+  byte-identical; head -14 of SKILL.md still hashes to d5dd651a….
+  One correction worth keeping: the first version of the absent-binding self-test case passed with
+  its own branch removed, because the mismatch branch raises too (None != live_hash). The mutation
+  probe caught it and the case now asserts on the refusal message. Detail: 02-11-SUMMARY.md.
+prior_result: issue
 reported: "DECISION 2026-09-20 — FIX IT, do not accept. Disposition is a follow-up gap-closure plan applying 02-REVIEW.md's documented fix verbatim: scope `recorded_scope_hash()`'s regex to the `## Scope` section, and make a missing binding halt (`if bound_hash is None: return 1`) instead of falling through. The `record it as accepted risk` branch is explicitly rejected — see disposition_rationale."
 severity: blocker
 decided_by: "verify-work orchestrator, on the evidence below. Recorded as an orchestrator decision rather than a user sign-off so the provenance is not overstated."
@@ -250,7 +263,11 @@ blocked: 0
 
 - gap_id: G-02-4
   truth: "The scope-hash guard in evals/trigger/run_trigger_test.py halts the run whenever the pressure-test rows are not provably bound to the live SKILL.md description."
-  status: failed
+  status: resolved
+  resolved_by: 02-11-PLAN.md
+  resolved_at: 2026-09-20
+  resolution: "Fixed at commit c98114a. recorded_scope_hash() now reads only inside `## Scope`; the halt decision moved to scope_binding_verdict(), which refuses an absent binding. Proven live: a copy with the binding removed and a copy whose only 64-hex token sits outside `## Scope` both exit 1 without writing an --out file. Four mutations confirm the new self-test cases discriminate — including one correction, where the absent-binding case initially passed with its own branch removed because the mismatch branch raises too."
+  status_was: failed
   reason: "02-REVIEW.md CR-01 (CRITICAL), undisposed at the end of the 02-10 gap-closure round. Disposition decided at this UAT: fix, do not accept. See test 4."
   severity: blocker
   test: 4
