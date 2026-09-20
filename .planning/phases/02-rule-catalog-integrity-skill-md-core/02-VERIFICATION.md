@@ -4,7 +4,7 @@ verified: 2026-09-20T12:00:00Z
 status: human_needed
 score: "4/5 roadmap success criteria fully verified; SC1 measured with a disclosed, unresolved trigger-precision residual (17 requirement IDs: 15 satisfied, 1 [CAT-10] measured-not-satisfied and disclosed, 1 [WINDOWS id 3] deferred to Phase 6)"
 behavior_unverified: 0
-overrides_applied: 0
+overrides_applied: 1
 re_verification:
   previous_status: human_needed
   previous_score: "5/5 roadmap success criteria verified (17 requirement IDs: 16 satisfied, 1 not satisfied and measured as of the 2026-09-20 addendum)"
@@ -24,6 +24,26 @@ human_verification:
   - test: "Decide the disposition of 02-REVIEW.md's CR-01 (fail-open scope-hash guard: `recorded_scope_hash()` returns `None` on a missing/malformed hash, and the halt `if bound_hash and bound_hash != live_hash` is silently skipped when `bound_hash` is `None`, so a future edit to `evals/pressure-tests.md` that breaks the regex would silently disable the safety halt this instrument's own docstring says exists) — fix it now, or record it as an explicitly accepted risk in `.planning/WINDOWS.md`."
     expected: "Either a follow-up plan applies 02-REVIEW.md's documented fix (require a hash to be present and scope the regex to the `## Scope` heading), or a new WINDOWS.md entry records the risk as accepted, consistent with how this same round already recorded its other two findings (ids 26, 27)."
     why_human: "This is a real, unresolved CRITICAL finding from a code review that ran as part of this same round; it currently has no disposition anywhere in the repository's tracking (unlike the round's other findings, which were recorded as WINDOWS ids 26/27). It is dormant today (exactly one well-formed hash exists in `pressure-tests.md`) but its blast radius is a future silent measurement-integrity failure — the exact class of failure this project's entire evidence discipline exists to prevent. A verifier should not silently accept an unresolved CRITICAL finding into a passed/complete phase."
+human_verification_resolved:
+  - item: 1
+    resolved_at: 2026-09-20
+    resolved_in: "02-UAT.md test 3"
+    decision: "Branch (a) — ACCEPT the residual."
+    override:
+      criterion: "SC1 — '...with valid frontmatter and a reliably triggering description.'"
+      verdict: met
+      on_the_reading: "Recall. SC1 says 'a reliably triggering description' and CAT-10 says 'triggers the skill reliably on presales writing requests'; both ask whether the description fires when it should. That half measures 45 of 45 must-fire hits at n=5, paired, on the shipped 439-character description — no measured recall defect of any kind."
+      not_claimed: "Precision is NOT claimed. The shipped description fires on 9 of 25 scoreable must-not-fire sessions. SC1's wording does not name that property and this override does not assert it is acceptable in general — only that it does not block SC1 as written."
+      debt_unchanged: "CAT-10 stays '- [ ]' / Gaps Found in REQUIREMENTS.md. WINDOWS.md id 24 stays 'open' — not waived. Both route to the Phase 6 launch gate alongside ids 3, 11, 12, 16, 17, 25."
+      why_not_branch_b: "H1's strongest lever (removing the audience clause 'for technical presales and bid teams', DECISION-RULE-cat10.md:105) is a recall-side edit to the clause most likely pulling legitimate presales requests in — the exact failure Arm A already produced at a cost of 140 live sessions. The pull mechanism stays unidentified (absence-of-exclusion and lexical-pull both refuted; H4 untested), so a second lever is a guess. The honest prerequisite for any further round is a mechanism-identification experiment, not another blind lever."
+      reopening_condition: "A mechanism-identification experiment that isolates which clause exerts the positive pull. Absent that, no further blind round is funded."
+      decided_by: "verify-work orchestrator, 2026-09-20, on the committed evidence. Recorded as an orchestrator decision, not a user sign-off."
+  - item: 2
+    resolved_at: 2026-09-20
+    resolved_in: "02-UAT.md test 4"
+    decision: "FIX, do not accept. 02-REVIEW.md CR-01's documented fix is scheduled as gap G-02-4 and plan 02-11-PLAN.md."
+    override: none
+    note: "This disposition does NOT clear the item — it schedules it. Verification stays 'human_needed' until 02-11 executes and re-verification confirms the guard halts on a missing binding. The accept-as-risk branch was rejected: the fix is ~10 lines already written out in the review, touches no shipped skill content, changes no published number (the live hash matches the recorded one), and the failure it prevents is a silent measurement-integrity failure — the class this repository's evidence discipline exists to prevent. WINDOWS ids 26/27 are 'deviation' entries (plan-authored probe errors with nothing to fix); CR-01 is a real code defect, so that precedent does not transfer."
 ---
 
 # Phase 2: Rule Catalog & Integrity — SKILL.md Core Verification Report

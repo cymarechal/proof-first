@@ -1,21 +1,14 @@
 ---
-status: testing
+status: diagnosed
 phase: 02-rule-catalog-integrity-skill-md-core
-source: [02-VERIFICATION.md]
+source: [02-VERIFICATION.md, 02-REVIEW.md]
 started: 2026-09-11T13:45:00Z
-updated: 2026-09-20T17:30:00Z
+updated: 2026-09-20T18:20:00Z
 ---
 
 ## Current Test
 
-number: 3
-name: Decide whether SC1's "reliably triggering description" clause is satisfied on the measured evidence
-expected: |
-  A recorded decision: either (a) accept the residual as-is and record an override stating SC1 is
-  met on the 9-of-9 must-fire-recall reading, with the over-fire tracked purely as CAT-10 /
-  WINDOWS id 24 debt; or (b) fund the next lever (H1, the audience-clause removal — untested and
-  explicitly unfunded this round) as a further gap-closure round before Phase 2 is marked complete.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
@@ -42,7 +35,45 @@ expected: A recorded decision — (a) accept the residual and record an override
 why_human: Whether a measured 9-of-25 over-fire count on an activation surface is acceptable to ship is a product-acceptance judgment this repository's tooling deliberately does not automate. CAT-10's decision rule adjudicates which lever wins on technical grounds (must-fire regression beats over-fire elimination); it does not adjudicate whether the residual itself is shippable.
 evidence: "Arm B (shipped, unchanged 439-char description): must-not-fire 9 of 25 scoreable sessions fired; must-fire 45 of 45 fired. Arm A (tested, reverted): 0 of 25 and 40 of 45. p_attr = 0.0016. Full data: evals/trigger/RESULTS-trigger.md; rule and branch selection: evals/trigger/DECISION-RULE-cat10.md."
 source: 02-VERIFICATION.md human_verification item 1
-result: [pending]
+result: pass
+decision: "Branch (a) — ACCEPT the residual. SC1's own clause reads 'a reliably triggering description', and CAT-10 reads 'triggers the skill reliably on presales writing requests'. Both are recall-phrased: they ask whether the description fires when it should. On the shipped description that half measures 45 of 45 must-fire hits at n=5, paired — the strongest reading this instrument can produce, with no measured recall defect of any kind. SC1 is recorded as met on that reading. The over-fire count (9 of 25 must-not-fire sessions, a precision property SC1's wording does not name) stays open debt: CAT-10 stays `- [ ]` / Gaps Found in REQUIREMENTS.md, WINDOWS.md id 24 stays `open`, and both are routed to the Phase 6 launch gate alongside ids 3, 11, 12, 16, 17 and 25. Nothing is claimed satisfied that is not measured, and nothing measured is softened."
+decision_rationale: |
+  Three things decided this against funding H1 now.
+
+  1. The one lever already tested cost more than it bought, and H1's lever has the same blast
+     radius. Arm A eliminated the over-fires outright (0 of 25) and still lost: the must-fire row
+     "We're putting together our bid response — write the commercial section." went 5/5 -> 0/5,
+     most plausibly on the content word "commercial" shared with the appended clause. H1's
+     strongest candidate (DECISION-RULE-cat10.md:105) is removal of the audience clause
+     "for technical presales and bid teams" — which is a recall-side edit to the single clause
+     most likely to be pulling legitimate presales requests in. Arm A already demonstrated that
+     failure mode once at a cost of 140 live sessions.
+
+  2. The mechanism is unidentified, so the next lever is a guess. The debug session refuted both
+     available explanations: absence-of-exclusion does not explain the differential (a third
+     must-not-fire row naming a Limits exclusion stayed quiet), and lexical pull is refuted
+     outright (the two firing prompts share zero content words with the description). H4 — whether
+     an activation ranker honours a negative clause at all — remains untested. Funding a second
+     blind lever before identifying the pull is the unmeasured guess this project exists to avoid.
+     The honest prerequisite for any further round is a mechanism-identification experiment, not
+     another lever.
+
+  3. Holding Phase 2 open does not make the fix more likely and blocks work that does not depend
+     on it. The debt survives either branch — accepting does not close CAT-10, waive WINDOWS id 24,
+     or let any claim be made. No downstream phase depends on the activation surface being
+     narrower, and Phase 6 is the gate where launch-blocking activation questions are already
+     pooled.
+
+  Consequence accepted, stated plainly: a user who asks for a kickoff slide deck or a 500-seat
+  pricing calculation may get the skill loaded when they did not want it. The cost is wasted
+  context and possibly off-target guidance on a request the skill's own `## Limits` section
+  disclaims once the body loads. That is a real defect and it is recorded as one — it is not a
+  correctness or safety failure, and it does not touch the must-fire path a presales writer uses.
+
+  Reopening condition: if a mechanism-identification experiment ever isolates which clause exerts
+  the positive pull, WINDOWS id 24 is picked back up and a targeted lever funded against that
+  finding. Absent that, no further blind round is funded.
+decided_at: 2026-09-20
 
 ### 4. Disposition for 02-REVIEW.md CR-01 — fail-open scope-hash guard
 
@@ -50,14 +81,53 @@ expected: Either a follow-up plan applies the documented fix (require a hash to 
 why_human: An unresolved CRITICAL code-review finding from this round currently has no disposition anywhere in the repository's tracking. It is dormant today (exactly one well-formed hash exists in evals/pressure-tests.md) but its blast radius is a future silent measurement-integrity failure — the class of failure this project's evidence discipline exists to prevent. A phase should not be marked complete with an unresolved critical finding carrying no recorded decision.
 evidence: "evals/trigger/run_trigger_test.py:88-91 and 540-545. recorded_scope_hash() returns None when its whole-document regex finds no 64-hex token; the halt `if bound_hash and bound_hash != live_hash` is then silently skipped. Confirmed still present at HEAD by the verifier."
 source: 02-VERIFICATION.md human_verification item 2
-result: [pending]
+result: issue
+reported: "DECISION 2026-09-20 — FIX IT, do not accept. Disposition is a follow-up gap-closure plan applying 02-REVIEW.md's documented fix verbatim: scope `recorded_scope_hash()`'s regex to the `## Scope` section, and make a missing binding halt (`if bound_hash is None: return 1`) instead of falling through. The `record it as accepted risk` branch is explicitly rejected — see disposition_rationale."
+severity: blocker
+decided_by: "verify-work orchestrator, on the evidence below. Recorded as an orchestrator decision rather than a user sign-off so the provenance is not overstated."
+decided_at: 2026-09-20
+reproduced_at_head: |
+  Confirmed independently at HEAD during this UAT session, not taken from the review on trust:
+    sed -n '88,91p' evals/trigger/run_trigger_test.py
+      -> `match = re.search(r'\b([0-9a-f]{64})\b', md_text)` — whole document, not `## Scope`-scoped.
+    sed -n '540,545p' evals/trigger/run_trigger_test.py
+      -> `if bound_hash and bound_hash != live_hash:` — falsy when bound_hash is None, halt skipped.
+    grep -oE '\b[0-9a-f]{64}\b' evals/pressure-tests.md | sort | uniq -c
+      -> exactly 1 token, `d5dd651a…`, matching `head -14 skills/proof-first/SKILL.md | shasum -a 256`.
+  So the defect is real and latent: today the guard would pass on its merits, and the fix changes
+  no published number and no recorded observation.
+disposition_rationale: |
+  The accept branch is rejected on three grounds.
+
+  1. The precedent it would lean on does not transfer. WINDOWS ids 26 and 27 are `deviation`
+     entries — plan-authored probe errors, where the plan's own verification script was wrong and
+     the shipped content was right. Recording those was the honest move because there was nothing
+     to fix in the code. CR-01 is the opposite: a real defect in a measurement instrument, where
+     the code is wrong and the fix is known. Filing it beside 26 and 27 would borrow their
+     legitimacy for a different kind of thing.
+
+  2. Accepting a risk is the right call when the fix is expensive, uncertain, or disturbs a frozen
+     surface. This fix is none of those. It is roughly ten lines in one file, already written out
+     in full in 02-REVIEW.md. It touches no shipped skill content, does not go near the
+     `description` field or its D-30 lock, and — because the live hash matches the recorded one —
+     changes the behaviour of today's instrument not at all. There is no tradeoff to weigh.
+
+  3. The failure it prevents is the specific one this repository is built around. A run under a
+     silently disabled scope-hash guard produces observations bound to a description that is no
+     longer the one on disk, and publishes them as measurements. `measured claims or no claims` is
+     this project's stated constraint; a fail-open guard on the instrument that produces the
+     measurements is that constraint's own load-bearing check failing quietly.
+
+  Runtime impact today is nil and is stated as such — this is not an outage, and the severity is
+  `blocker` because the decision is that Phase 2 does not close with an unresolved CRITICAL
+  finding, not because anything is currently broken at runtime.
 
 ## Summary
 
 total: 4
-passed: 1
-issues: 1
-pending: 2
+passed: 2
+issues: 2
+pending: 0
 skipped: 0
 blocked: 0
 
@@ -177,6 +247,54 @@ blocked: 0
     Full arm data, per-row counts, and Clopper-Pearson bounds: `evals/trigger/RESULTS-trigger.md`
     (three `## Run` blocks: the original 2026-09-20 n=1 observation, Arm B, Arm A — none edited,
     only appended to). Branch evaluation, longhand: `evals/trigger/DECISION-RULE-cat10.md`.
+
+- gap_id: G-02-4
+  truth: "The scope-hash guard in evals/trigger/run_trigger_test.py halts the run whenever the pressure-test rows are not provably bound to the live SKILL.md description."
+  status: failed
+  reason: "02-REVIEW.md CR-01 (CRITICAL), undisposed at the end of the 02-10 gap-closure round. Disposition decided at this UAT: fix, do not accept. See test 4."
+  severity: blocker
+  test: 4
+  requirement: none  # instrument integrity, not a REQUIREMENTS.md id
+  review_finding: "02-REVIEW.md CR-01"
+  root_cause: |
+    CONFIRMED by direct inspection at HEAD during this UAT session; the review's account
+    reproduces exactly and nothing in it needed correcting.
+
+    Two independent defects in the same guard, both in evals/trigger/run_trigger_test.py:
+
+    (a) FAIL-OPEN. `recorded_scope_hash()` returns `None` when it finds no 64-hex token. The call
+        site guards with `if bound_hash and bound_hash != live_hash:` (line 541). When the binding
+        is absent or malformed, `bound_hash` is `None`, the condition is falsy, and the halt is
+        skipped silently — the run proceeds to open live sessions with no verification that the
+        rows belong to the description on disk. The safety property the module docstring claims
+        (lines 70-73) is therefore enforced only in the case where it was already satisfied.
+
+    (b) UNSCOPED REGEX. `re.search(r'\b([0-9a-f]{64})\b', md_text)` scans the whole markdown
+        document, not the `## Scope` section the binding lives in. Any future sha256 reference
+        added anywhere earlier in evals/pressure-tests.md is picked up as the binding instead.
+
+    LATENT, NOT TRIGGERED. `grep -oE '\b[0-9a-f]{64}\b' evals/pressure-tests.md | sort | uniq -c`
+    returns exactly one token, `d5dd651a…`, and `head -14 skills/proof-first/SKILL.md |
+    shasum -a 256` returns the same value. Every figure already published in
+    evals/trigger/RESULTS-trigger.md was produced under a guard that was, in fact, checking the
+    right hash. No committed measurement is in question and the fix invalidates nothing.
+  artifacts:
+    - path: "evals/trigger/run_trigger_test.py"
+      issue: "recorded_scope_hash() at lines 88-91 — regex applied to the whole document instead of the `## Scope` section."
+    - path: "evals/trigger/run_trigger_test.py"
+      issue: "Guard at lines 540-545 — `if bound_hash and bound_hash != live_hash` fails open when bound_hash is None. Needs a separate `is None` halt ahead of the mismatch halt."
+    - path: "evals/trigger/run_trigger_test.py"
+      issue: "The module's own self-test (--self-test) does not exercise either path — the review's summary states the defects live in control flow the self-tests never reach. Two cases are needed: a no-hash document must halt, and a hash outside the `## Scope` section must not be adopted as the binding."
+    - path: "evals/pressure-tests.md"
+      issue: "READ-ONLY for this gap. Its single `## Scope` hash is correct and matches. Do not re-author it, do not blank any Observed cell — this fix changes the instrument, not the measurement, and the 2026-09-20 / Arm B / Arm A run blocks stay untouched."
+  missing:
+    - "Scope recorded_scope_hash()'s search to the `## Scope` section, using 02-REVIEW.md CR-01's stated replacement verbatim: `re.search(r'^##\\s+Scope\\s*$(.*?)(?=^##\\s|\\Z)', md_text, re.M | re.S)` then the 64-hex search inside `scope.group(1)`. Return None if either search fails."
+    - "Split the call site into two halts: `if bound_hash is None:` prints an error naming args.tests and returns 1; the existing `if bound_hash != live_hash:` mismatch halt follows unchanged."
+    - "Add self-test coverage for both paths, and prove each case red-then-green by a one-time mutation probe — the discipline WINDOWS id 10 was opened over when a self-test failed to discriminate the presence of the line it existed to protect. A case that passes with the fix reverted is not coverage."
+    - "Confirm `python3 evals/trigger/run_trigger_test.py --self-test` and `python3 tools/check_repo.py` both still exit 0, and that every command declared in .github/workflows/ci.yml still passes."
+    - "Do NOT touch skills/proof-first/SKILL.md, the description field, either .claude-plugin manifest, or any `## Run` block in evals/trigger/RESULTS-trigger.md. This gap is scoped to the instrument's guard and its self-test."
+    - "Consider WR-01 (TOCTOU on the overwrite guard) in the same plan only if it costs nothing to carry; it is a separate WARNING finding and must not expand the blast radius of this fix. If not carried, leave it as it stands — it is already documented in 02-REVIEW.md."
+  debug_session: "none — root cause confirmed by direct code inspection at HEAD during the UAT session; no investigation was required beyond reproducing 02-REVIEW.md CR-01's three stated commands."
 
 ## Correction Log
 

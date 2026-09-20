@@ -69,11 +69,9 @@ Plans:
   4. Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite.
   5. Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve.
 
-**Plans**: 10/10 plans executed — 6/6 original, plus 3 gap-closure plans added after verification found gaps
+**Plans**: 11 plans — 6/6 original, plus 5 gap-closure plans added after verification found gaps. 10 executed; 02-11 planned, not yet executed.
 
 Plans:
-
-- [x] 02-10-PLAN.md
 
 **Wave 1**
 
@@ -107,6 +105,14 @@ Plans:
 
 - [x] 02-08-PLAN.md — `--mutation-test` asserts discrimination instead of firing, reports any fire-only code separately, empties the stale known-open allowance, and corrects both overclaiming docstrings
 - [x] 02-09-PLAN.md — README's Status prose reconciled with its own tree and the repository, the pending trigger observations made attributable, and WINDOWS ids 3 and 4 routed to human checks rather than machine-closed
+
+**Gap closure Wave 3** *(from 02-UAT.md test 2 / gap G-02-2; run with `/gsd-execute-phase 2 --gaps-only`)*
+
+- [x] 02-10-PLAN.md — CAT-10 paired n=5 experiment under a pre-committed six-branch decision rule: the exclusion-clause lever eliminated every over-fire (0/25) but regressed a must-fire row 5/5 → 0/5, selecting Branch 4 — treatment tested live, then reverted; WINDOWS id 24 stays open with measured counts
+
+**Gap closure Wave 4** *(from 02-UAT.md test 4 / gap G-02-4; run with `/gsd-execute-phase 2 --gaps-only`)*
+
+- [ ] 02-11-PLAN.md — 02-REVIEW.md CR-01: scope the binding search to `## Scope` and make an absent binding halt, so the trigger instrument's scope-hash guard fails closed instead of open; five self-test cases proven red-then-green by mutation probe
 
 ### Phase 3: Completeness Audit & Artifact Patterns
 
