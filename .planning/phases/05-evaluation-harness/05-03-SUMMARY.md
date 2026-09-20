@@ -384,3 +384,60 @@ None - no external service configuration required.
 - FOUND commit: 22faaab
 - FOUND commit: ac14c74
 - Raw record count: 192 total, 96 judgement records (matches D2 claim)
+
+## Post-verification fix (2026-09-20)
+
+**Defect (05-REVIEW.md CR-01, Critical):** `generate_report()` fell through to
+`datetime.datetime.now(datetime.timezone.utc).date().isoformat()` for `as_of_date` whenever the
+caller did not pass one explicitly — which is every real invocation, since `main()`'s
+`--report-only` path never passes one. This is a live clock read in a path this phase's own
+EVAL-11/EVAL-12 acceptance criteria require to be a pure function of the committed
+`evals/benchmark/raw/` records.
+
+**This had already published a false measurement date in the committed artifact.** The
+committed `RESULTS.md` headline read `Measured 2026-09-20 across claude-opus-5, claude-sonnet-5
+(96 generations recorded)`, but every one of the 192 records in `evals/benchmark/raw/` carries a
+`timestamp` between `2026-09-18T09:58:22Z` and `2026-09-18T11:10:18Z` — the matrix ran on
+2026-09-18. A `--report-only` re-render performed after midnight UTC on 2026-09-20 silently moved
+the headline two days forward. This broke 05-RESEARCH.md Decision 8 item 1 (the headline must
+carry the run date, not the render date), narrowed the plan's re-render acceptance criterion to
+"clean only within a single UTC day" rather than a durable proof, and violated the EVAL-11/EVAL-12
+pure-function requirement for `--report-only`.
+
+**Fix:** Added `_as_of_date_from_records()`, which derives `as_of_date` from the generation
+records' own `timestamp` fields (excluding judgement records) — the single shared date if every
+generation shares one UTC date, or an explicit `'{earliest} to {latest}'` span if the run crosses
+a UTC-date boundary, never a silently-collapsed single day. `generate_report()`'s default now
+calls this instead of reading the clock; the explicit `as_of_date=` parameter is unchanged, so the
+existing fixture self-tests that pass `as_of_date='2026-09-18'` explicitly keep passing untouched.
+No `datetime.datetime.now()` call remains anywhere in the render path (`load_raw_records` →
+`aggregate` → `judge_summary` → `build_results_md`).
+
+**New self-test (`cr01-report-only-render-is-clock-independent`):** monkey-patches the module's
+`datetime.datetime` class to two different fake "current" dates (2099-01-01 and 2000-06-15,
+chosen far from any real date to make a regression unmissable) and renders the same committed
+`results-render` fixture records under each. Asserts (1) the two renders are byte-identical, (2)
+neither fake clock date appears anywhere in the output, and (3) the headline correctly reads the
+fixture records' own date, `Measured 2026-09-18`. This is the exact reproduction of the shipped
+defect — a clock read where a data-derived value belongs — and would have failed before the fix.
+
+**Corrected headline:** `evals/benchmark/RESULTS.md` was regenerated via
+`python3 evals/benchmark/run_benchmark.py --report-only` (never hand-edited) and now reads:
+
+    Measured 2026-09-18 across claude-opus-5, claude-sonnet-5 (96 generations recorded).
+
+A repeat `--report-only` run reproduces this byte-for-byte (`git diff --exit-code
+evals/benchmark/RESULTS.md` is clean), including across the real calendar-day boundary this
+defect crossed — the acceptance criterion is now a durable proof, not a same-day coincidence.
+
+**Gates re-run, all pass:** `tools/check_repo.py` (0 violations), `tools/check_repo.py
+--self-test` (48 codes verified), `tools/check_repo.py --mutation-test` (48 codes
+discrimination-proven), `evals/conformance/run_conformance.py --self-test` (4 verdicts
+discriminated), `tools/generate_derivatives.py --check` (clean), `evals/lint.py --self-test` (8
+codes verified), `evals/benchmark/run_benchmark.py --self-test` (38 cases, including the new
+clock-independence case).
+
+**Scope:** This fix addresses CR-01 only. CR-02 (unpaired judgement-order pooling), CR-03
+(missing effort/judge-model in the record key), CR-04 (silent missing-cell gap in the mechanical
+table), and the Warnings from 05-REVIEW.md are explicitly out of scope here and are tracked in
+`.planning/WINDOWS.md` (entries 20–23) for separate remediation.
