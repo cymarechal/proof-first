@@ -112,8 +112,12 @@ What exists today:
 - `skills/proof-first/references/deletion-test.md` — deletion-test edge cases.
 - `skills/proof-first/references/worked-examples.md` — the 28 worked ✗/✓ pairs, keyed by rule ID.
 - `examples/deal-brief.md` — the one canonical fictional deal every worked example cites.
-- `evals/pressure-tests.md` — the trigger-pressure-test method; no observation has been recorded
-  yet, see the file itself.
+- `evals/pressure-tests.md` — the trigger-pressure-test method and its 14 recorded observations.
+- `evals/trigger/run_trigger_test.py` — a stdlib-only, self-testing runner that drives one live
+  session per phrasing and reads activation from the session's own event stream.
+- `evals/trigger/RESULTS-trigger.md` — the recorded run: 9 of 9 must-fire phrasings activated the
+  skill, and 2 of 5 near-miss phrasings activated it when they should not have, with caveats
+  stated in the file.
 - `evals/conformance/run_conformance.py` — a stdlib-only, self-testing scorer that drives live
   sessions against the shipped skill and checks whether each one names its artifact family before
   drafting, the write-mode conformance contract this repository calls MOD-04.
@@ -130,8 +134,8 @@ What exists today:
 
 What does not exist yet:
 
-- Phase 5's skill-on/skill-off, multi-model, judge-scored persuasion benchmark (the pressure-test
-  method exists; no observations are recorded yet).
+- A headline persuasion or quality claim in this README. The benchmark that could source one has
+  run (see below); deciding what this README states on the strength of it is Phase 6's work.
 
 This repository discloses one measured v1 limitation: whether a live write-mode session names its
 artifact family before its first rule citation, reproducible from the committed, stdlib-only
@@ -160,11 +164,14 @@ before this project's own scorer-anchoring fix (see that file's "Scorer anchorin
 above — including the file's earlier, superseded `claude-opus-5` sessions, none of which sit
 behind an anchored figure this README states.
 
-This is not the persuasion benchmark. The skill-on/skill-off, multi-model, judge-scored benchmark
-that will eventually let this README state a headline persuasion or quality number is Phase 5's
-and has not run. No persuasion or quality claim is made anywhere in this repository. Any number
-this README ever carries in the future will be sourced from committed benchmark results, and it
-will state the model versions and the date it was produced.
+This is not the persuasion benchmark. That one — skill-on/skill-off, across `claude-opus-5` and
+`claude-sonnet-5`, with both-orders judge scoring — ran on 2026-09-18 and recorded 96 generations;
+its figures and caveats are in `evals/benchmark/RESULTS.md`, reproducible from the committed
+`evals/benchmark/run_benchmark.py`. Read that file before citing anything from it: its mechanical
+proxy counts do not move in one direction, so it does not hand this README a clean headline number.
+No persuasion or quality claim is made anywhere in this repository today. Any number this README
+ever carries will be sourced from those committed results, and will state the model versions and
+the date it was produced.
 
 ## Keeping derivatives in sync
 
@@ -204,11 +211,23 @@ proof-first/
 │   └── before-after.md
 ├── evals/
 │   ├── pressure-tests.md
-│   └── conformance/
-│       ├── run_conformance.py
+│   ├── proxy-sources.md
+│   ├── lint.py
+│   ├── conformance/
+│   │   ├── run_conformance.py
+│   │   ├── fixtures/
+│   │   ├── transcripts/
+│   │   └── RESULTS-mod04.md
+│   ├── trigger/
+│   │   ├── run_trigger_test.py
+│   │   └── RESULTS-trigger.md
+│   └── benchmark/
+│       ├── run_benchmark.py
+│       ├── scenarios.json
+│       ├── bench-deal-brief.md
 │       ├── fixtures/
-│       ├── transcripts/
-│       └── RESULTS-mod04.md
+│       ├── raw/
+│       └── RESULTS.md
 ├── .claude-plugin/
 │   ├── plugin.json
 │   └── marketplace.json
