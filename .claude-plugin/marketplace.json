@@ -4,13 +4,13 @@
     "name": "Proof First contributors",
     "url": "https://github.com/<owner>"
   },
-  "description": "Write or check RFP and RFI responses, solution proposals, executive summaries, and demo or discovery documents for technical presales and bid teams. Not for slide decks or visual design, pricing, sizing, or commercial modelling, or marketing and brand writing.",
+  "description": "Write or check RFP and RFI responses, solution proposals, executive summaries, and demo or discovery documents for technical presales and bid teams.",
   "plugins": [
     {
       "name": "proof-first",
       "source": "./",
       "displayName": "Proof First",
-      "description": "Write or check RFP and RFI responses, solution proposals, executive summaries, and demo or discovery documents for technical presales and bid teams. Not for slide decks or visual design, pricing, sizing, or commercial modelling, or marketing and brand writing.",
+      "description": "Write or check RFP and RFI responses, solution proposals, executive summaries, and demo or discovery documents for technical presales and bid teams.",
       "version": "0.1.0",
       "author": {
         "name": "Proof First contributors"

@@ -210,4 +210,73 @@ tarball reports under 5120; otherwise the measured size and the local path are r
 
 ---
 
-No session in this round has yet run.
+## Branch evaluation (Task 6, applied after both arms measured)
+
+Measured values, read from `evals/trigger/RESULTS-trigger.md`'s Arm B and Arm A blocks and computed
+with `evals/trigger/stats.py`:
+
+- `OF_B = 9`, `SN_B = 25`, `MH_B = 45`, `SM_B = 45` (Arm B, control, 439-char description).
+- `OF_A = 0`, `SN_A = 25`, `MH_A = 40`, `SM_A = 45` (Arm A, treatment, 551-char description).
+- `p_attr = fisher_exact_two_tailed(9, 16, 0, 25) = 0.0016` (over-fire elimination is itself
+  attributable at this sample size).
+- Per-row Clopper-Pearson upper bound at n=5 for every row that scored zero fires: `0.4507`.
+- Model `claude-sonnet-5`, harness `claude` 2.1.267 (Claude Code).
+- Pre-change hash `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`; treatment
+  hash `9049c7d82fadce008b00cdf70c7dc74add0d23691c7c61b8d586740a3beb3e1e`.
+
+Evaluated in the stated precedence order, first match wins:
+
+- **Branch 6 (harness unavailable)?** No. Task 3's precondition (`claude --version` exits 0;
+  `head -14` hash matched `d5dd651a…`) passed before any session opened. **Not matched.**
+- **Branch 5 (under-sampled)?** No. All four sample floors are met: `SN_A = 25 >= 20`,
+  `SN_B = 25 >= 20`, `SM_A = 45 >= 36`, `SM_B = 45 >= 36`. **Not matched.**
+- **Branch 4 (must-fire regression)?** Check every row in MF for `F_B(r) == S_B(r)` and
+  `F_A(r) < S_A(r)`. The row "We're putting together our bid response — write the commercial
+  section." scored `F_B = 5, S_B = 5` (`F_B == S_B`, true) under Arm B and `F_A = 0, S_A = 5`
+  (`F_A < S_A`, true) under Arm A. **Matched.** No other must-fire row regressed (the remaining
+  eight all scored `5 of 5` under both arms).
+
+**Branch 4 is the first match in precedence order 6, 5, 4, 1, 2, 3. Branch 4 is selected.** Branches
+1, 2 and 3 are not evaluated — precedence stops at the first match, exactly as this rule requires,
+even though Arm A's `OF_A == 0` and every other must-fire row held clean, which is what Branch 1's
+condition alone would have selected.
+
+**What this branch means, stated plainly.** The exclusion clause eliminated every measured
+over-fire (`OF_A = 0` against `OF_B = 9`, `p_attr = 0.0016` — a real, attributable effect on the
+must-not-fire half) and simultaneously broke a legitimate must-fire phrasing that shares no
+over-fire target with either excluded topic. A fix that trades one measured defect for another is
+not a fix under this project's own truth ("triggers the skill reliably... on presales writing
+requests"), so the clause is reverted rather than kept. H4 (whether the harness applies negation as
+a suppressor) is not settled either way by this result — the clause plausibly did suppress the
+over-fires exactly as intended, and its cost showed up as an unanticipated side effect on adjacent
+vocabulary, not as a failure of negation handling per se. That distinction is not resolvable from
+this round's data and is not asserted here.
+
+Applying Branch 4's four columns:
+
+1. **`REQUIREMENTS.md` CAT-10** stays `[ ]`. Annotation updated below.
+2. **`WINDOWS.md` id 24** stays `open`, description replaced with Arm B's measured pre-fix
+   over-fire counts.
+3. **`02-UAT.md` G-02-2** status set to `partially_resolved`.
+4. **Revert.** `git checkout b077b8b -- skills/proof-first/SKILL.md .claude-plugin/plugin.json
+   .claude-plugin/marketplace.json evals/pressure-tests.md`, then
+   `python3 tools/generate_derivatives.py`, confirming `head -14 skills/proof-first/SKILL.md |
+   shasum -a 256` returns to `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`.
+   `b077b8b` is Task 3's commit, the commit immediately before Task 4's `2fc7e7c`. Arm A's results
+   block in `RESULTS-trigger.md` and `INIT-EVENTS.md` are retained — a reverted intervention that
+   was measured is evidence, not waste.
+
+Reproduction commands for both arms:
+
+```
+python3 evals/trigger/run_trigger_test.py --model claude-sonnet-5 --repeats 5 --jobs 3 --timeout 600 \
+  --append --label "Arm B (control) — 439-character description, head-14 sha256 d5dd651a…" \
+  --out evals/trigger/RESULTS-trigger.md --transcripts evals/trigger/transcripts/control
+
+python3 evals/trigger/run_trigger_test.py --model claude-sonnet-5 --repeats 5 --jobs 3 --timeout 600 \
+  --append --label "Arm A (treatment) — 551-character description with exclusion clause, head-14 sha256 9049c7d8…" \
+  --out evals/trigger/RESULTS-trigger.md --transcripts evals/trigger/transcripts/treatment
+```
+
+Total live invocations this round: 140 (of the 170-invocation cap). No retries were needed; every
+planned session was scoreable.

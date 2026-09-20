@@ -45,7 +45,7 @@ blocked: 0
 
 - gap_id: G-02-2
   truth: "Every Must-not-fire phrasing in evals/pressure-tests.md leaves the skill inactive."
-  status: failed
+  status: partially_resolved
   reason: "Measured 2026-09-20 by evals/trigger/run_trigger_test.py (claude-sonnet-5, claude 2.1.267, one fresh session per phrasing, verdict read from each session's own Skill tool-use event). Must-fire 9 of 9 fired. Must-not-fire 3 of 5 stayed quiet; 2 fired that should not have: \"Build me a slide deck for the kickoff meeting.\" and \"Work out pricing and sizing for a 500-seat deployment.\""
   severity: major
   test: 2
@@ -118,6 +118,42 @@ blocked: 0
     half does not hold. Narrowing the description changes a shipped, distributed trigger surface and
     invalidates the scope hash every recorded observation binds to, so it is recorded as a measured
     defect rather than patched inside the run that found it. Tracked in `.planning/WINDOWS.md`.
+  measured: |
+    CAT-10 gap-closure round (02-10-PLAN.md), a paired n=5 experiment under a six-branch decision
+    rule committed BEFORE any session ran (evals/trigger/DECISION-RULE-cat10.md). Same instrument
+    both arms: `run_trigger_test.py --model claude-sonnet-5 --repeats 5 --jobs 3 --timeout 600`,
+    all 14 phrasings, 70 sessions per arm, 140 total (of the 170-invocation cap; no retries needed).
+
+    Arm B (control, unchanged 439-char description, head-14 sha256 `d5dd651a…`):
+    `OF_B/SN_B = 9/25` over-fires on the must-not-fire rows, `MH_B/SM_B = 45/45` must-fire hits —
+    the same two phrasings that fired at n=1 (slide deck, pricing/sizing) now fire 5/5 and 4/5.
+
+    Arm A (treatment, 551-char description with the exclusion clause this gap's `missing` field
+    named, head-14 sha256 `9049c7d8…`): `OF_A/SN_A = 0/25` — every must-not-fire row scored zero
+    fires, eliminating the original defect entirely on that half. But `MH_A/SM_A = 40/45`: the
+    must-fire row "We're putting together our bid response — write the commercial section."
+    regressed from 5/5 (Arm B) to 0/5 (Arm A) — a genuine must-fire regression, most plausibly
+    because the appended clause's phrase "commercial modelling" shares the content word
+    "commercial" with this unrelated, legitimate must-fire request (a hypothesis about mechanism,
+    not confirmed further by this round).
+
+    `p_attr` (Fisher exact two-tailed, `evals/trigger/stats.py`, on `[[9,16],[0,25]]`) = `0.0016` —
+    the over-fire elimination is itself statistically attributable at this sample size, and is
+    still not sufficient, because trading one measured defect for another does not satisfy a truth
+    that says every must-not-fire phrasing AND the must-fire half both hold.
+
+    Per the pre-committed precedence order (6, 5, 4, 1, 2, 3), the must-fire regression selects
+    **Branch 4** — ahead of Branch 1, which Arm A's over-fire numbers alone would otherwise have
+    selected. Branch 4's disposition: the 551-char treatment description was tested live, then
+    REVERTED (`git checkout` to the pre-Task-4 commit for `SKILL.md`, both `.claude-plugin`
+    manifests, and `evals/pressure-tests.md`; derivatives regenerated; `head -14` hash confirmed
+    back to `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`). The shipped
+    description is unchanged from the pre-round text. `WINDOWS.md` id 24 stays `open` with its
+    description replaced by these measured counts. `REQUIREMENTS.md` CAT-10 stays `[ ]`.
+
+    Full arm data, per-row counts, and Clopper-Pearson bounds: `evals/trigger/RESULTS-trigger.md`
+    (three `## Run` blocks: the original 2026-09-20 n=1 observation, Arm B, Arm A — none edited,
+    only appended to). Branch evaluation, longhand: `evals/trigger/DECISION-RULE-cat10.md`.
 
 ## Correction Log
 

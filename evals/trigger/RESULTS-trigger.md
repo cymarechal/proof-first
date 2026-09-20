@@ -135,3 +135,32 @@ prompt naming the skill. The verdict is read from the session's own event stream
 - SN (scoreable, must-not-fire rows) = 25
 - MH (must-fire hits) = 40
 - SM (scoreable, must-fire rows) = 45
+
+### Finding (applied per `evals/trigger/DECISION-RULE-cat10.md`, Task 6)
+
+Comparing this block against Arm B's: `p_attr = fisher_exact_two_tailed(9, 16, 0, 25) = 0.0016`
+(computed with `evals/trigger/stats.py`) on the pooled over-fire 2x2 — the elimination of every
+must-not-fire over-fire is itself statistically attributable to this description, not noise. But
+one must-fire row ("We're putting together our bid response — write the commercial section.")
+scored `5 of 5` under Arm B and `0 of 5` here — a genuine must-fire regression, most plausibly
+caused by the appended clause's phrase "commercial modelling" sharing the content word
+"commercial" with this unrelated, legitimate must-fire request (a hypothesis about mechanism; not
+tested further by this round). Evaluated in the pre-committed precedence order (6, 5, 4, 1, 2, 3),
+this regression selects **Branch 4**, ahead of Branch 1, which the clean `OF_A = 0` result and
+every other must-fire row holding would otherwise have selected on its own.
+
+**Branch 4 means the intervention is reverted, not kept.** The 551-character description measured
+in this block was tested live and then reverted to the pre-round 439-character text (`git checkout`
+of `SKILL.md`, both `.claude-plugin` manifests, and `evals/pressure-tests.md` to the commit
+immediately before the change; derivatives regenerated; `head -14` hash confirmed back to
+`d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`). This block, and the
+transcripts and init-event distillation behind it, are retained as the permanent record of what
+was measured — a reverted intervention that was measured is evidence, not waste.
+
+**What this does and does not license anyone to say.** It licenses: the appended exclusion clause
+does eliminate the measured over-fires on this instrument, at this sample size, on this model — a
+real, attributable, and now-tested result for hypothesis H4. It does NOT license: that the
+description is fixed, that CAT-10 is satisfied, or that this clause should ship — the same
+description that eliminated the over-fires broke a legitimate must-fire request, and this project's
+own truth requires both halves to hold. **CAT-10 is NOT satisfied.** The shipped description is
+unchanged from before this round; it still measures `OF_B/SN_B = 9/25` over-fires at n=5.
