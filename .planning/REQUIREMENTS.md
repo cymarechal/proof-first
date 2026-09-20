@@ -70,14 +70,14 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **EVAL-02**: The linter's buzzword proxy list is sourced independently of the skill's own worked examples, so measured improvement is not circular
 - [x] **EVAL-03**: The linter states plainly that the deletion test is a semantic judgment it cannot perform, and that its numbers are not a compliance verdict
 - [x] **EVAL-04**: A committed scenario set drives generations across all four artifact families
-- [ ] **EVAL-05**: A benchmark runner drives multiple Claude models headlessly with the model string and reasoning effort pinned and recorded per result
-- [ ] **EVAL-06**: Each benchmark cell runs at least three times, and published results report variance alongside the mean
-- [ ] **EVAL-07**: A blind pairwise judge scores skill-on against skill-off with labels stripped and both text orders run
-- [ ] **EVAL-08**: The judge rubric scores persuasive force as its own dimension, so a flat but clean draft cannot pass on clarity alone
-- [ ] **EVAL-09**: Published results report mechanical-proxy counts and judged persuasion as two separately labeled figures, never blended into one number
-- [ ] **EVAL-10**: RESULTS.md carries an honest-caveats section naming position bias, judge family bias, baseline prompt parity, proxy provenance, and sample size
-- [ ] **EVAL-11**: Every raw generation and judgement is committed as JSON so any published number can be recomputed from the repo
-- [ ] **EVAL-12**: A reader can reproduce the benchmark with one documented command
+- [x] **EVAL-05**: A benchmark runner drives multiple Claude models headlessly with the model string and reasoning effort pinned and recorded per result
+- [x] **EVAL-06**: Each benchmark cell runs at least three times, and published results report variance alongside the mean
+- [x] **EVAL-07**: A blind pairwise judge scores skill-on against skill-off with labels stripped and both text orders run
+- [x] **EVAL-08**: The judge rubric scores persuasive force as its own dimension, so a flat but clean draft cannot pass on clarity alone
+- [x] **EVAL-09**: Published results report mechanical-proxy counts and judged persuasion as two separately labeled figures, never blended into one number
+- [x] **EVAL-10**: RESULTS.md carries an honest-caveats section naming position bias, judge family bias, baseline prompt parity, proxy provenance, and sample size
+- [x] **EVAL-11**: Every raw generation and judgement is committed as JSON so any published number can be recomputed from the repo
+- [x] **EVAL-12**: A reader can reproduce the benchmark with one documented command
 
 ### Legal
 
@@ -169,14 +169,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EVAL-02 | Phase 5 | Complete |
 | EVAL-03 | Phase 5 | Complete |
 | EVAL-04 | Phase 5 | Complete |
-| EVAL-05 | Phase 5 | Pending |
-| EVAL-06 | Phase 5 | Pending |
-| EVAL-07 | Phase 5 | Pending |
-| EVAL-08 | Phase 5 | Pending |
-| EVAL-09 | Phase 5 | Pending |
-| EVAL-10 | Phase 5 | Pending |
-| EVAL-11 | Phase 5 | Pending |
-| EVAL-12 | Phase 5 | Pending |
+| EVAL-05 | Phase 5 | Complete |
+| EVAL-06 | Phase 5 | Complete |
+| EVAL-07 | Phase 5 | Complete |
+| EVAL-08 | Phase 5 | Complete |
+| EVAL-09 | Phase 5 | Complete |
+| EVAL-10 | Phase 5 | Complete |
+| EVAL-11 | Phase 5 | Complete |
+| EVAL-12 | Phase 5 | Complete |
 | LEG-01 | Phase 1 | Complete |
 | LEG-02 | Phase 1 | Complete |
 | LEG-03 | Phase 1 | Complete |

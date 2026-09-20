@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 05
 current_phase_name: Evaluation Harness
-status: executing
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-09-18T09:38:45.167Z"
+status: verifying
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-09-20T01:48:24.001Z"
 last_activity: 2026-09-18
 last_activity_desc: Phase 05 execution started
-state_head: 723137ae594b4d5102009ab68753628976bdbd07
+state_head: ac14c743420b949907e7c5febaac5dbc70c4f494
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 49
-  completed_plans: 48
+  completed_plans: 49
   percent: 33
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 Phase: 05 (Evaluation Harness) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 tests 1 and 2 are owned by Phase 6 (publication) and Phase 5 (benchmark).
 Next: /gsd-plan-phase 5
 Last activity: 2026-09-18 — Phase 05 execution started
@@ -106,6 +106,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 04 P11 | 35min | 3 tasks | 2 files |
 | Phase 05 P01 | 35 min | 3 tasks | 3 files |
 | Phase 05 P02 | ~50min | 3 tasks | 30 files |
+| Phase 05 P03 | 72min-live-run+15min-continuation | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -184,6 +185,9 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-11: Closed CR-01 by enforcing PLUGIN_REQUIRED_KEYS on marketplace.json's plugin entry, proven exhaustively (18-cell matrix) and against the real file (second mutation); folded in WR-01/WR-02/IN-01 from 04-REVIEW.md with no new violation code.
 - [Phase 05]: 05-01: SUPERLATIVE_TERMS/HEDGE_TERMS kept disjoint from PROXY_TERMS so no fixture trips two codes; HEDGE_TERMS (may/might/could) sourced from PF-4.3's own possibility-modal vocabulary and Wikipedia MOS:WTW; Task 1 plan self-contradiction (class row) resolved per acceptance_criteria, longest-match-wins proven via a local probe pair instead of shipping an invented term. — Keeps registry honesty (every term traces outward to the two named external sources) intact while satisfying the plan's one-fixture-one-code discipline and the acceptance-criteria wording.
 - [Phase 05]: 05-02: Judgement scores nested {dimension:{condition:value}}, not Decision 7's flat sketch -- documented decision for 05-03 to match; load_scenarios() family-coverage moved to a self-test-only assertion so Task 1's intermediate 2-scenario file stays a legitimate loader input.
+- [Phase 05]: Closed Decision 8 item 5 by adding a sixth REQUIRED_CAVEATS/CAVEAT_TEXT key (judge construct validity) to run_benchmark.py, then regenerated RESULTS.md via --report-only rather than hand-editing it
+- [Phase 05]: Judged persuasion result reported as measured: skill loses 7/3/38 win/tie/loss on persuasive_force despite winning on evidence and clarity — material to Phase 6 LEG-05 README claims
+- [Phase 05]: $18.21 recorded as generation cost only; judge-call cost is unrecoverable from committed records (run_judgement lacks cost_usd/usage fields) and is disclosed as a schema gap, not estimated
 
 ### Pending Todos
 
@@ -208,6 +212,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-18T09:38:44.868Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-09-20T01:48:23.748Z
+Stopped at: Completed 05-03-PLAN.md
 Resume file: None
