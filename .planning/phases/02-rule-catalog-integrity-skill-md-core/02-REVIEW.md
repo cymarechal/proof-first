@@ -1,222 +1,245 @@
 ---
 phase: 02-rule-catalog-integrity-skill-md-core
-reviewed: 2026-09-11T04:58:30Z
+reviewed: 2026-09-20T00:00:00Z
 depth: standard
-files_reviewed: 8
+files_reviewed: 7
 files_reviewed_list:
-  - NUMBERING.md
-  - README.md
-  - evals/pressure-tests.md
-  - skills/proof-first/SKILL.md
-  - skills/proof-first/references/checklist.md
-  - skills/proof-first/references/deletion-test.md
-  - skills/proof-first/references/worked-examples.md
-  - tools/check_repo.py
+  - evals/trigger/run_trigger_test.py
+  - evals/trigger/stats.py
+  - .github/workflows/ci.yml
+  - .gitignore
+  - evals/trigger/DECISION-RULE-cat10.md
+  - evals/trigger/RESULTS-trigger.md
+  - evals/trigger/INIT-EVENTS.md
 findings:
-  critical: 2
-  warning: 2
-  info: 1
-  total: 5
+  critical: 1
+  warning: 3
+  info: 2
+  total: 6
 status: issues_found
 ---
 
-# Phase 02: Code Review Report (gap-closure round)
+# Phase 02: Code Review Report (gap-closure round, plan 02-10)
 
-**Reviewed:** 2026-09-11T04:58:30Z
+**Reviewed:** 2026-09-20
 **Depth:** standard
-**Files Reviewed:** 8
+**Files Reviewed:** 7
 **Status:** issues_found
+
+## Superseded reviews
+
+An earlier review round (2026-09-11) exists in git history for this same `02-REVIEW.md` path,
+against a **different** file set (`NUMBERING.md`, `README.md`, `evals/pressure-tests.md`,
+`skills/proof-first/SKILL.md`, two `references/` files, and `tools/check_repo.py`) — 5 findings
+(2 critical, 2 warning, 1 info; IDs CR-01, CR-02, WR-01, WR-02). That round's record is preserved
+at git commit `e950e3c` and is **not** re-litigated here. Read it with:
+
+```
+git show e950e3c:.planning/phases/02-rule-catalog-integrity-skill-md-core/02-REVIEW.md
+```
+
+This review is a fresh round, scoped only to the files plan 02-10 touched (`git diff
+6ca3342..HEAD`), per the workflow's gap-closure scope note. `evals/trigger/transcripts-cat10.tar.gz`
+is out of scope by explicit instruction.
 
 ## Summary
 
-This is a re-review of the state after the 02-07/02-08/02-09 gap-closure round that claimed to
-close CR-01, CR-02, CR-03, WR-01, WR-02 from the prior review. I re-ran all three CI gates live
-(`--self-test`, `--mutation-test`, plain run) and they pass exactly as claimed (21 codes
-discrimination-proven, 0 live violations). The rule catalog itself (31 rules, `NUMBERING.md`,
-`checklist.md`, `worked-examples.md`) is internally consistent — every rule title, every ID, and
-every next-free-ID computation cross-checks cleanly across all three files, and the 20 worked
-✗/✓ pairs all resolve to real, correctly-scoped rule IDs.
+`stats.py` is new this round and is mathematically sound: both `clopper_pearson_upper` and
+`fisher_exact_two_tailed` were independently re-run against the module's own inputs
+(`fisher_exact_two_tailed(9, 16, 0, 25)` reproduces the `p_attr = 0.0016` cited in
+`DECISION-RULE-cat10.md`; `clopper_pearson_upper(0, 5)` reproduces `0.4507`), and every number
+quoted in `RESULTS-trigger.md` and `DECISION-RULE-cat10.md` was cross-checked by re-summing the
+per-row `k of n` cells and matches the published `OF`/`SN`/`MH`/`SM` totals exactly. No code path
+in either file emits a percentage; the self-test explicitly asserts against that
+(`run_trigger_test.py:413`). The live `SKILL.md` head-14 hash on disk matches the pre-round hash
+recorded as the reverted target, confirming Branch 4's revert was actually applied.
 
-However, the 02-08 fix commit (`f04e298`, "correct two overclaiming docstrings") was incomplete:
-it fixed the `KNOWN_OPEN_VIOLATIONS` comment, the `_mutate_skill_token_budget_exceeded` function
-docstring, and the `MUTATIONS` list description string, but missed a fourth location carrying the
-exact same stale claim — the top-of-file module docstring's own `skill-token-budget-exceeded`
-paragraph still asserts the check currently fires against the real `SKILL.md`, which is
-demonstrably false (confirmed live: 0 violations). I also found a genuine self-contradiction in
-`README.md` introduced in the same gap-closure round (worked-examples.md is listed as both
-existing and not-yet-existing), a functional bug in `check_repo.py`'s `KNOWN_OPEN_VIOLATIONS`
-exclusion logic that silently cannot do what its own instructing comment tells a future
-maintainer to do, and a reproducible case (demonstrated live) where `mutation_test()`'s final
-summary line prints a misleadingly reassuring count under a `FAILED` banner.
+The defects found are not in the numbers already published — they are in control-flow paths the
+self-tests do not exercise: a fail-open scope-hash guard, a TOCTOU window in the overwrite guard,
+duplicated total-aggregation logic, and missing validation on `--repeats`.
 
 ## Critical Issues
 
-### CR-01: Module docstring still claims `skill-token-budget-exceeded` fires against the real SKILL.md — false, and contradicts a comment 60 lines below it in the same file
+### CR-01: Scope-hash mismatch halt fails open when no hash is recorded, and its regex is not scoped to the Scope section
 
-**File:** `tools/check_repo.py:200-205`
-**Issue:** The `skill-token-budget-exceeded` entry in the top-of-file "Violation codes implemented
-in this file" docstring ends with:
+**File:** `evals/trigger/run_trigger_test.py:88-91, 540-545`
 
-```
-this check uses one stated estimator consistently,
-never the more favourable of several. As of this
-writing this code fires against this repository's
-own skills/proof-first/SKILL.md — a known, tracked,
-open finding against CAT-08 (see
-.planning/WINDOWS.md), not a defect in this check.
-```
+**Issue:** The entire safety property this instrument depends on — "an observation recorded
+against a different description is not an observation of these rows, so a mismatch halts" (the
+file's own docstring, lines 70-73) — is enforced by:
 
-This is false. Live verification (word count 3,694 × 1.3 = 4,802 estimated tokens, under the
-5,000 ceiling) confirms the check does **not** fire against the real `SKILL.md` — confirmed by
-`python3 tools/check_repo.py` reporting `0 violations` and `--mutation-test` reporting `21 codes
-discrimination-proven` with a clean control. The 02-08 gap-closure commit (`f04e298`, "correct two
-overclaiming docstrings") explicitly fixed three other locations carrying this exact same stale
-claim — `KNOWN_OPEN_VIOLATIONS`'s comment block, `_mutate_skill_token_budget_exceeded`'s own
-function docstring, and the `MUTATIONS` list's description string for that code — but missed this
-fourth location, which is the most prominent one (the module's own top-level docstring, the first
-thing a reader or `--help` invocation sees). The result is a direct, in-file self-contradiction:
-the `KNOWN_OPEN_VIOLATIONS` comment 60 lines below correctly states "that finding is now closed,"
-while this docstring paragraph still says it's "a known, tracked, open finding." This is exactly
-the class of overclaiming docstring this project's own constraint ("measured claims or no claims")
-exists to prevent, in the one file that is the project's sole enforcement mechanism.
-**Fix:**
-```
-this check uses one stated estimator consistently,
-never the more favourable of several. As of 02-07's
-trim this check stays silent against this repository's
-own skills/proof-first/SKILL.md (3,694 words, an
-estimated 4,802 tokens, a 198-token margin under the
-5,000-token ceiling) -- see KNOWN_OPEN_VIOLATIONS'
-comment for the closed .planning/WINDOWS.md finding
-this check previously excused.
+```python
+bound_hash = recorded_scope_hash(md_text)
+if bound_hash and bound_hash != live_hash:
+    print('ERROR: ...')
+    return 1
 ```
 
-### CR-02: `README.md` states in the same section that `worked-examples.md` both exists and does not exist yet
+`recorded_scope_hash` returns `None` whenever its regex (`r'\b([0-9a-f]{64})\b'`, applied to the
+*whole* markdown document, not scoped to the `## Scope` heading) fails to find a 64-hex-char
+token. When it returns `None`, the guard condition `bound_hash and ...` is falsy and the halt is
+**silently skipped** — the script proceeds to run live sessions against `pressure-tests.md` with
+no verification that the rows are bound to the live `SKILL.md` description at all. This is a
+fail-open design: the safety check activates only when a hash happens to be present and
+well-formed, not when the binding is absent, malformed, or (a second, independent risk) when a
+different 64-hex-char token earlier in the document is picked up instead of the one under the
+Scope heading. Currently `evals/pressure-tests.md` contains exactly one such token, so the defect
+is latent rather than triggered — but the entire point of a pre-committed instrument surviving
+future edits is that a later, unrelated edit to that file (e.g. adding another sha256 reference,
+or a formatting change that breaks the regex match) must not silently disable the halt it exists
+to provide. A measurement run under a silently-disabled guard is exactly the "measured claims or
+no claims" failure this project is built to prevent.
 
-**File:** `README.md:26,40`
-**Issue:** "What exists today" (line 26) states:
+**Fix:** Require a hash to be present and matched, and scope the regex to the `## Scope` section
+rather than the whole document:
 
-> `skills/proof-first/references/worked-examples.md` — the 20 worked ✗/✓ pairs, keyed by rule ID.
-
-"What does not exist yet" (line 40) states:
-
-> The worked before-and-after examples.
-
-Both lines were touched in the same commit (`0307c8a`, "docs(02-05): record the trigger
-pressure-test and correct README's layout claims") — the author added the "exists today" bullet
-for the new `worked-examples.md` file but did not remove or rephrase the pre-existing "does not
-exist yet" bullet, which was written when neither file existed. The two bullets use near-identical
-language ("worked ✗/✓ pairs" vs. "worked before-and-after examples") for what a reader would
-reasonably assume is the same artifact, producing a direct self-contradiction in the repository's
-own status page. This is defensible only if "the worked before-and-after examples" is meant to
-refer exclusively to the still-planned `examples/before-after.md` (visible in the tree diagram
-below), but the prose bullet never says so, and nothing distinguishes the two named "worked...
-examples" artifacts for a reader who has not also parsed the tree diagram. For a repository whose
-entire premise is measured, non-contradictory claims, this is a real defect, not a nitpick.
-**Fix:**
+```python
+def recorded_scope_hash(md_text):
+    scope = re.search(r'^##\s+Scope\s*$(.*?)(?=^##\s|\Z)', md_text, re.M | re.S)
+    if not scope:
+        return None
+    match = re.search(r'\b([0-9a-f]{64})\b', scope.group(1))
+    return match.group(1) if match else None
 ```
-- The rendered before-and-after example document (`examples/before-after.md`) —
-  distinct from `references/worked-examples.md`'s per-rule ✗/✓ pairs, which already exist.
+
+```python
+bound_hash = recorded_scope_hash(md_text)
+if bound_hash is None:
+    print('ERROR: %s has no Scope-hash binding recorded; rows cannot be trusted to be '
+          'bound to the live description. Add the sha256 to the Scope section before '
+          'running.' % args.tests, file=sys.stderr)
+    return 1
+if bound_hash != live_hash:
+    print('ERROR: ...')
+    return 1
 ```
 
 ## Warnings
 
-### WR-01: `KNOWN_OPEN_VIOLATIONS`'s documented `(code, subject)` tuple usage cannot work with the membership check that consumes it
+### WR-01: Overwrite guard is checked once at the start of a (potentially long) run, not immediately before the write — a TOCTOU window that can still silently clobber
 
-**File:** `tools/check_repo.py:1061-1063,1394-1397`
-**Issue:** The comment above `KNOWN_OPEN_VIOLATIONS` instructs a future maintainer:
+**File:** `evals/trigger/run_trigger_test.py:547-557, 596-620`
 
-> If a future finding needs this set populated again, name the specific `(code, subject)` pair it
-> excuses -- e.g. `frozenset({('skill-token-budget-exceeded', 'skills/proof-first/SKILL.md')})` --
-> never a bare code.
+**Issue:** `resolve_out_mode()` is invoked once, before `harness_version` is fetched and before any
+live session runs (line 549). Its own docstring calls this "the accident that would otherwise
+destroy the 2026-09-20 measurement." But for a `--repeats 5` round like the one this file
+documents, the gap between that check and the actual write (`write_text` at line 620, or the
+`write_results()` call in the legacy branch) spans the full wall-clock time of up to 70 live
+`claude -p` sessions per arm — potentially tens of minutes. If `--out` did not exist or was empty
+at check time (`out_mode == 'write'`), nothing re-verifies that state immediately before the final
+`pathlib.Path(args.out).write_text(block + '\n', ...)` at line 620. Content written to that path
+during the run (by a concurrent process, or a human editing the file while sessions are still
+in flight) is silently destroyed by that unconditional `write_text()` call, contradicting the
+guard's stated purpose. The append branch (`open(args.out, 'a', ...)` at line 615-618) is not
+subject to this risk since it never truncates.
 
-But the code that actually consumes this constant only ever compares a bare code string:
+**Fix:** Re-check immediately before the write, not only at the top of `main()`:
 
 ```python
-unexpected_control_violations = [
-    v for v in control_violations
-    if v[1].split(' ', 1)[0] not in KNOWN_OPEN_VIOLATIONS
-]
+if out_mode == 'write' and out_path.exists() and out_path.stat().st_size > 0:
+    print('ERROR: %s gained content after this run started; re-run with --append.' % args.out,
+          file=sys.stderr)
+    return 1
 ```
 
-`v[1].split(' ', 1)[0]` is always a bare code string (e.g. `'skill-token-budget-exceeded'`).
-Testing a string for membership in a `frozenset` of 2-tuples will never match — Python string
-equality against a tuple is always `False`. If a future maintainer follows the comment's own
-worked example verbatim, `KNOWN_OPEN_VIOLATIONS` would silently do nothing: every control
-violation for that code would still be reported as "unexpected," and `mutation-test CONTROL`
-would never go clean for it. This is currently dormant (the set is empty, so nothing is masked
-today), but it means the specific safety property this constant exists to provide — narrow,
-subject-scoped exclusion instead of a code-wide blanket exclusion — is unimplemented, not just
-undocumented. The maintainer's only two live options today are "populate with the documented tuple
-format and watch it silently fail to exclude anything" or "populate with a bare code string (which
-the comment explicitly warns against, since it re-introduces the exact blanket-masking risk WR-01
-of the prior review closed)."
-**Fix:** Either implement subject-scoped matching:
+### WR-02: OF/SN/MH/SM totals are computed twice, once inside `render_run_block` and once again in `main()`, from the same inputs
+
+**File:** `evals/trigger/run_trigger_test.py:279-286` (inside `render_run_block`) and
+`evals/trigger/run_trigger_test.py:622-625` (inside `main()`)
+
+**Issue:** `render_run_block()` already computes `of_total`, `sn_total`, `mh_total`, `sm_total` and
+writes them into the "### Totals" section of the persisted block (lines 279-286, 299-307). `main()`
+then independently recomputes the identical four sums from the same `rows`/`counts` via a second,
+differently-written expression (`sum(c[0] for r, c in zip(rows, counts) if not r[2])`, etc., lines
+622-625) purely to print them to the console. The two computations happen to agree today because
+both correctly key off `expects_fire`, but they are two hand-written copies of the same aggregation
+with no shared source of truth — exactly the "second copy that creates a place for two numbers to
+silently drift apart" pattern this project's own documentation (e.g.
+`DECISION-RULE-cat10.md`'s Scope section, `INIT-EVENTS.md`'s "not reproduced a second time here")
+explicitly calls out as the failure mode to avoid.
+
+**Fix:** Have `render_run_block()` return the totals alongside the block text (or expose a small
+`totals(rows, counts)` helper used by both call sites) instead of recomputing them in `main()`:
+
 ```python
-unexpected_control_violations = [
-    v for v in control_violations
-    if (v[1].split(' ', 1)[0], v[0]) not in KNOWN_OPEN_VIOLATIONS
-]
+def totals(rows, counts):
+    of_total = sum(c[0] for r, c in zip(rows, counts) if not r[2])
+    sn_total = sum(c[1] for r, c in zip(rows, counts) if not r[2])
+    mh_total = sum(c[0] for r, c in zip(rows, counts) if r[2])
+    sm_total = sum(c[1] for r, c in zip(rows, counts) if r[2])
+    return of_total, sn_total, mh_total, sm_total
 ```
-or, if bare-code exclusion is intentionally retained for simplicity, correct the comment's worked
-example to `frozenset({'skill-token-budget-exceeded'})` and drop the "(code, subject)" framing so
-the documented usage matches what the code actually does.
+called once, and its result passed into `render_run_block()` as well as used for the console print.
 
-### WR-02: `mutation_test()`'s final `FAILED` summary line can read "0 codes not discrimination-proven" while the run is genuinely failing
+### WR-03: `--repeats` accepts 0 or negative values with no validation, silently producing a vacuous run block
 
-**File:** `tools/check_repo.py:1445-1448`
-**Issue:** When `all_ok` is `False`, the run prints:
+**File:** `evals/trigger/run_trigger_test.py:517-518` (`parser.add_argument('--repeats', ...)`),
+used at lines 567, 573, 594-599
 
+**Issue:** `--repeats` is declared as `type=int` with no range check. `--repeats 0` (or a negative
+value) makes `range(args.repeats)` empty for every row, so `tasks = []`, no live sessions run, and
+`aggregate_verdicts([])` returns `(0, 0)` for every row. The script does not error: it proceeds to
+either the legacy branch (which would crash on `verdicts_by_row[i][0]` — an `IndexError` on an
+empty list, since line 599 indexes element `[0]` of what is now an empty per-row list) or, if
+`--append`/`repeats != 1`, silently writes/appends a "Sessions planned: 0" block with every row
+marked `unscoreable`. The legacy-branch crash path is an unhandled `IndexError` with no actionable
+message; the append path silently pollutes `RESULTS-trigger.md` with a content-free run block.
+
+**Fix:**
 ```python
-failed = len(ALL_CHECK_CODES) - len(discrimination_proven) - len(fire_only)
-print(f"mutation-test FAILED: {failed} codes not discrimination-proven")
-```
-
-`failed` only counts codes that ended up in neither `discrimination_proven` nor `fire_only`. A
-code whose control copy is already non-clean (e.g. from unrelated repository drift — a stray
-citation of an undefined ID landing in `README.md` outside this phase's changes) is correctly
-classified `FIRE-ONLY` and is *not* counted in `failed`, even though the drift is exactly what
-caused `all_ok = False` via the earlier `unexpected_control_violations` check. Reproduced live: I
-appended one stray undefined-ID citation to a scratch copy of `README.md` and re-ran
-`--mutation-test`; the run correctly exits 1, and the `CONTROL` line and the per-code `FIRE-ONLY`
-line both correctly surface the drift — but the final summary line printed
-`mutation-test FAILED: 0 codes not discrimination-proven`, which reads as "nothing is wrong with
-discrimination" directly under a `FAILED` banner. The full detail is present elsewhere in the
-output, so nothing is silently hidden, but the one-line takeaway a reader would scan for is
-misleading exactly in the state-drift scenario this function's own docstring says it is designed
-to "disclose rather than fail" (or here, disclose why it's failing) honestly.
-**Fix:** Fold the unexpected-control-violation count into the failure summary, e.g.:
-```python
-if all_ok:
-    ...
-else:
-    failed = len(ALL_CHECK_CODES) - len(discrimination_proven) - len(fire_only)
-    reasons = []
-    if unexpected_control_violations:
-        reasons.append(f"{len(unexpected_control_violations)} unexpected control violation(s)")
-    if failed:
-        reasons.append(f"{failed} code(s) not discrimination-proven")
-    print(f"mutation-test FAILED: {'; '.join(reasons) or 'see CONTROL/FIRE-ONLY lines above'}")
+parser.add_argument('--repeats', type=int, default=1,
+                    help='sessions to run per phrasing, aggregated into one k-of-n row (default 1)')
+...
+if args.repeats < 1:
+    print('ERROR: --repeats must be >= 1', file=sys.stderr)
+    return 1
 ```
 
 ## Info
 
-### IN-01: `SKILL.md`'s Write-mode register heading is stated once and never repeated where the section promises full specification
+### IN-01: `detect_activation` assumes a truthy `tool_use` `input` field is always a dict
 
-**File:** `skills/proof-first/SKILL.md:45,269`
-**Issue:** Line 45 promises: "a trailing register under the heading `## Unresolved before this
-document is sent`. That register's full column shape is specified in Write mode below." The Write
-mode section (lines 261-276) does specify the three-column shape and shows the table, but never
-repeats the heading text itself — a reader who lands on Write mode directly (having skipped the
-Marker vocabulary section) will not learn the register's required heading text from Write mode
-alone, only its column shape. Not a contradiction (the heading is stated once, correctly, at line
-45), but the phrase "specified in Write mode below" slightly overpromises what Write mode alone
-delivers.
-**Fix:** Either repeat the heading text in Write mode's register paragraph, or narrow line 45's
-claim to "That register's column shape is specified in Write mode below" (dropping "full").
+**File:** `evals/trigger/run_trigger_test.py:151`
+
+**Issue:** `skill = (block.get('input') or {}).get('skill', '')` guards against `input` being
+absent or `None`/falsy, but not against `input` being present and non-empty but not a `dict` (e.g.
+a bare string, if a future harness version or a malformed transcript line ever emits one). In that
+case `.get('skill', '')` raises `AttributeError`, which is not caught anywhere between here and
+`concurrent.futures.ThreadPoolExecutor.map()` in `main()` (line 585) — the exception surfaces when
+the pool's results are consumed and aborts collection of the *entire* batch, discarding verdicts
+for whichever other sessions in that `--repeats` batch had already completed. Given this project
+runs batches of up to 70+70 live sessions per round, a single malformed event would be an expensive
+way to lose an otherwise-complete measurement.
+
+**Fix:**
+```python
+raw_input = block.get('input')
+skill = raw_input.get('skill', '') if isinstance(raw_input, dict) else ''
+```
+
+### IN-02: The Clopper-Pearson bound column is emitted for any zero-fire row, including must-fire rows, without a note on what it means there
+
+**File:** `evals/trigger/run_trigger_test.py:295` (`render_run_block`)
+
+**Issue:** `bound = '%.4f' % stats.clopper_pearson_upper(0, scoreable) if (fires == 0 and
+scoreable > 0) else '-'` is computed identically regardless of `expects_fire`. This is
+mathematically correct (the math doesn't care which direction is "good"), and it is exactly what
+produced the `0.4507` entry for the must-fire regression row in `RESULTS-trigger.md`'s Arm A block
+(the "We're putting together our bid response..." row). But the column header
+("Clopper-Pearson upper bound (alpha 0.05)") reads, without context, as reassurance about a low
+rate — which is the wrong framing for a must-fire row where a low fire rate is the defect, not the
+result being bounded away from. `DECISION-RULE-cat10.md`'s prose correctly explains this
+particular row in words, but the mechanism generating the table itself carries no such
+disambiguation, so a reader of a future run relying on the table alone (rather than the
+accompanying prose) could misread the bound's direction of concern for a must-fire row.
+
+**Fix:** Either suppress the bound for must-fire rows (since the interesting statistic there is the
+`k of n` count itself, not an upper bound on its own failure rate) or label the column
+directionally, e.g. `'%.4f (upper bound on true fire rate)' % ...` with a one-line legend noting
+that for must-fire rows a *low* bound is the failure mode.
 
 ---
 
-_Reviewed: 2026-09-11T04:58:30Z_
+_Reviewed: 2026-09-20_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
