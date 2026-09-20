@@ -1,14 +1,21 @@
 ---
-status: diagnosed
+status: testing
 phase: 02-rule-catalog-integrity-skill-md-core
 source: [02-VERIFICATION.md]
 started: 2026-09-11T13:45:00Z
-updated: 2026-09-20T11:00:00Z
+updated: 2026-09-20T17:30:00Z
 ---
 
 ## Current Test
 
-[all tests run; 1 measured issue outstanding — see Gaps]
+number: 3
+name: Decide whether SC1's "reliably triggering description" clause is satisfied on the measured evidence
+expected: |
+  A recorded decision: either (a) accept the residual as-is and record an override stating SC1 is
+  met on the 9-of-9 must-fire-recall reading, with the over-fire tracked purely as CAT-10 /
+  WINDOWS id 24 debt; or (b) fund the next lever (H1, the audience-clause removal — untested and
+  explicitly unfunded this round) as a further gap-closure round before Phase 2 is marked complete.
+awaiting: user response
 
 ## Tests
 
@@ -29,12 +36,28 @@ result: issues
 reason: "RUN 2026-09-20. All 14 phrasings were driven through live `claude -p` sessions by the committed runner `evals/trigger/run_trigger_test.py` (model claude-sonnet-5, harness claude 2.1.267), one fresh session per phrasing in a temp directory outside the repo with only skills/proof-first/ installed and no --bare. Activation was read from each session's own event stream (a Skill tool-use naming proof-first), not from its prose. 14 of 14 scoreable, 12 of 14 matched expectation. Must-fire: 9 of 9 fired. Must-not-fire: 3 of 5 stayed quiet; 2 fired that should not have — \"Build me a slide deck for the kickoff meeting.\" and \"Work out pricing and sizing for a 500-seat deployment.\" Observed/Date/Harness are now filled in for every row of evals/pressure-tests.md; full run block in evals/trigger/RESULTS-trigger.md. WINDOWS.md id 4 is closed (the test has been run). The over-fire is a new, separately tracked finding against CAT-10."
 superseded_note: "The earlier `blocked` result and its stated reason — that this environment cannot start a fresh harness session — were true when written on 2026-09-11 and are no longer true. The method was proven at the Phase 3 UAT on 2026-09-14 and is now a committed, self-testing script."
 
+### 3. Accept-or-fund decision on SC1's "reliably triggering description" clause
+
+expected: A recorded decision — (a) accept the residual and record an override stating SC1 is met on the 9-of-9 must-fire-recall reading, with the over-fire tracked as CAT-10 / WINDOWS id 24 debt; or (b) fund the next lever (H1) as a further gap-closure round before Phase 2 is marked complete.
+why_human: Whether a measured 9-of-25 over-fire count on an activation surface is acceptable to ship is a product-acceptance judgment this repository's tooling deliberately does not automate. CAT-10's decision rule adjudicates which lever wins on technical grounds (must-fire regression beats over-fire elimination); it does not adjudicate whether the residual itself is shippable.
+evidence: "Arm B (shipped, unchanged 439-char description): must-not-fire 9 of 25 scoreable sessions fired; must-fire 45 of 45 fired. Arm A (tested, reverted): 0 of 25 and 40 of 45. p_attr = 0.0016. Full data: evals/trigger/RESULTS-trigger.md; rule and branch selection: evals/trigger/DECISION-RULE-cat10.md."
+source: 02-VERIFICATION.md human_verification item 1
+result: [pending]
+
+### 4. Disposition for 02-REVIEW.md CR-01 — fail-open scope-hash guard
+
+expected: Either a follow-up plan applies the documented fix (require a hash to be present, and scope the regex to the `## Scope` heading), or a new WINDOWS.md entry records the risk as explicitly accepted — consistent with how this same round recorded its other two findings as ids 26 and 27.
+why_human: An unresolved CRITICAL code-review finding from this round currently has no disposition anywhere in the repository's tracking. It is dormant today (exactly one well-formed hash exists in evals/pressure-tests.md) but its blast radius is a future silent measurement-integrity failure — the class of failure this project's evidence discipline exists to prevent. A phase should not be marked complete with an unresolved critical finding carrying no recorded decision.
+evidence: "evals/trigger/run_trigger_test.py:88-91 and 540-545. recorded_scope_hash() returns None when its whole-document regex finds no 64-hex token; the halt `if bound_hash and bound_hash != live_hash` is then silently skipped. Confirmed still present at HEAD by the verifier."
+source: 02-VERIFICATION.md human_verification item 2
+result: [pending]
+
 ## Summary
 
-total: 2
+total: 4
 passed: 1
 issues: 1
-pending: 0
+pending: 2
 skipped: 0
 blocked: 0
 

@@ -1,251 +1,207 @@
 ---
 phase: 02-rule-catalog-integrity-skill-md-core
-verified: 2026-09-11T13:30:00Z
+verified: 2026-09-20T12:00:00Z
 status: human_needed
-score: "5/5 roadmap success criteria verified (17 requirement IDs: 16 satisfied, 1 not satisfied and measured as of the 2026-09-20 addendum)"
+score: "4/5 roadmap success criteria fully verified; SC1 measured with a disclosed, unresolved trigger-precision residual (17 requirement IDs: 15 satisfied, 1 [CAT-10] measured-not-satisfied and disclosed, 1 [WINDOWS id 3] deferred to Phase 6)"
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
-  previous_status: gaps_found
-  previous_score: "4/5 roadmap success criteria verified (17 requirement IDs: 15 satisfied, 1 blocked, 1 needs human)"
-  gaps_closed:
-    - "SKILL.md is under the 5,000-token progressive-disclosure ceiling (CAT-08 / Roadmap SC1) — 3,694 words / 4,802 estimated tokens, a 198-token margin, confirmed by direct `wc -w` and by `python3 tools/check_repo.py` exiting 0."
-    - "`.github/workflows/ci.yml`'s three-step job is green against the real repository state — all three commands (`--self-test`, `--mutation-test`, plain run) exit 0, confirmed by running each live in this pass."
-    - "`tools/check_repo.py --mutation-test` now measures genuine discrimination (silent-on-control, fires-on-mutated) for every one of the 21 codes, including `skill-token-budget-exceeded`, whose control copy is now clean (under ceiling) rather than already-non-clean — confirmed by reading `mutation_test()`'s comparison logic and by the live run's `OK` (not `FIRE-ONLY`) line for that code."
-  gaps_remaining: []
+  previous_status: human_needed
+  previous_score: "5/5 roadmap success criteria verified (17 requirement IDs: 16 satisfied, 1 not satisfied and measured as of the 2026-09-20 addendum)"
+  gaps_closed: []
+  gaps_remaining:
+    - "CAT-10 / SC1's 'reliably triggering description' clause — the CAT-10 gap-closure round (02-10) upgraded the evidence from an n=1 guess to a paired n=5, p_attr=0.0016 measurement, tested one candidate fix live, and correctly reverted it on a measured must-fire regression per its own pre-committed decision rule. The underlying defect this measures — the shipped 439-character description over-fires on 9/25 (36%) of must-not-fire sessions — is unchanged from before this round and remains unresolved. This is not a regression introduced by 02-10; it is the same longstanding, disclosed WINDOWS.md id 24 residual, now measured far more rigorously."
   regressions: []
+gaps: []
+deferred:
+  - truth: "SOURCES.md reproduction-boundary / PF-0.1 / PF-3.1 framing judgment (WINDOWS.md id 3)"
+    addressed_in: "Phase 6"
+    evidence: "WINDOWS.md id 3's own description: 'signed off at end-of-phase UAT 2026-09-11 (02-UAT.md test 1, result pass); stays open because the formal reproduction-boundary gate is Phase 6 LEG-04.' Phase 2's UAT already recorded a pass for this item; it is not a live human-verification item for Phase 2."
 human_verification:
-
-  - test: "Confirm skills/proof-first/SKILL.md and both reference files paraphrase Command of the Message / MEDDICC / Challenger concepts at the level of generality SOURCES.md's listed sources state publicly, with no contiguous reproduction of source wording, no source's ordered list reproduced in source order, and no source-coined term adopted as this repo's own label — specifically re-examine PF-0.1 (opening reframe) and PF-3.1 (deletion test) framing against the flagged assumptions A-03/A-04."
-    expected: "No contiguous-reproduction or coined-term-adoption violations found."
-    why_human: "SOURCES.md states this is a semantic judgement no tool in this project's stack performs; Phase 6's LEG-04 is the formal gate. Tracked as WINDOWS.md id 3 (open) — genuinely still open, unresolvable from this environment, correctly not re-closed by this pass."
-  - test: "Run every phrasing in evals/pressure-tests.md's Must-fire and Must-not-fire tables in a real harness session and record Observed/Date/Harness."
-    expected: "Must-fire rows activate the skill; must-not-fire rows do not."
-    resolved: "RUN 2026-09-20 — no longer a human-verification item. All 14 phrasings were driven through live claude -p sessions by the committed runner evals/trigger/run_trigger_test.py (claude-sonnet-5, claude 2.1.267). 14 of 14 scoreable, 12 of 14 matched expectation: must-fire 9 of 9 fired; must-not-fire 3 of 5 stayed quiet, 2 fired. Observed/Date/Harness are filled in for every row; run block in evals/trigger/RESULTS-trigger.md. WINDOWS.md id 4 closed. The 2 over-fires are a new measured defect against CAT-10, tracked as a fresh WINDOWS.md entry, not as a human-verification item. The prior why_human — that this environment cannot start a harness session — was true on 2026-09-11 and was falsified by the Phase 3 UAT on 2026-09-14."
+  - test: "Decide whether SC1's 'reliably triggering description' clause is satisfied given the now rigorously measured evidence: the shipped (unchanged) 439-character description fires on 9 of 25 (36%) scoreable must-not-fire sessions at n=5, paired, p_attr=0.0016 for the improvement a tested-and-reverted fix would have bought. This is a product/scope judgment (is a 36% measured over-fire rate an acceptable tradeoff for this skill's activation surface, or must the next candidate lever — H1's audience-clause removal, explicitly unfunded and untested this round — be funded before Phase 2 can be considered fully passed), not a code-correctness question. The technical work (measurement, pre-committed decision-rule application, honest revert) is independently verified below and is not in question."
+    expected: "A recorded decision: either (a) accept the residual as-is and add a VERIFICATION.md override stating SC1 is met on the 9/9-must-fire-recall reading, with the over-fire tracked purely as CAT-10/WINDOWS-id-24 debt; or (b) fund and schedule the next lever (H1) as a further gap-closure round before Phase 2 is marked complete."
+    why_human: "Whether a measured 36% false-positive rate on an activation surface is 'reliable enough' to ship is a product-acceptance judgment this repository's own tooling deliberately does not automate — CAT-10's decision rule adjudicates which lever wins on technical grounds (must-fire regression), not whether the residual itself is acceptable to ship."
+  - test: "Decide the disposition of 02-REVIEW.md's CR-01 (fail-open scope-hash guard: `recorded_scope_hash()` returns `None` on a missing/malformed hash, and the halt `if bound_hash and bound_hash != live_hash` is silently skipped when `bound_hash` is `None`, so a future edit to `evals/pressure-tests.md` that breaks the regex would silently disable the safety halt this instrument's own docstring says exists) — fix it now, or record it as an explicitly accepted risk in `.planning/WINDOWS.md`."
+    expected: "Either a follow-up plan applies 02-REVIEW.md's documented fix (require a hash to be present and scope the regex to the `## Scope` heading), or a new WINDOWS.md entry records the risk as accepted, consistent with how this same round already recorded its other two findings (ids 26, 27)."
+    why_human: "This is a real, unresolved CRITICAL finding from a code review that ran as part of this same round; it currently has no disposition anywhere in the repository's tracking (unlike the round's other findings, which were recorded as WINDOWS ids 26/27). It is dormant today (exactly one well-formed hash exists in `pressure-tests.md`) but its blast radius is a future silent measurement-integrity failure — the exact class of failure this project's entire evidence discipline exists to prevent. A verifier should not silently accept an unresolved CRITICAL finding into a passed/complete phase."
 ---
 
 # Phase 2: Rule Catalog & Integrity — SKILL.md Core Verification Report
 
 **Phase Goal:** A writer can open SKILL.md and draft or spot-check presales prose against a persuasion-preserving, self-contained rule catalog that never lets a fabricated claim through.
-**Verified:** 2026-09-11
+**Verified:** 2026-09-20
 **Status:** human_needed
-**Re-verification:** Yes — after a three-plan gap-closure round (02-07, 02-08, 02-09)
+**Re-verification:** Yes — after plan 02-10 (`--gaps-only` round, closing gap G-02-2 against CAT-10)
+
+## What changed this round, and what I independently re-checked
+
+Plan 02-10 ran a pre-registered, six-branch decision-rule experiment against the SKILL.md
+`description` frontmatter, measuring a candidate fix (an appended exclusion clause) against the
+unchanged description on the same instrument, paired, n=5 per phrasing, 140 live sessions. I did not
+trust the SUMMARY's numbers — every load-bearing claim below was independently re-derived from the
+committed files and git history.
+
+### 1. REQUIREMENTS.md over-claim sweep
+
+```
+grep -c "^- \[x\].*UNVERIFIED" .planning/REQUIREMENTS.md
+```
+prints `0`. No over-claim found; no correction was needed this round.
+
+CAT-10's checkbox is confirmed `- [ ]` (line 21) and its traceability row at the bottom of the file
+reads `Gaps Found` (line 141), not `Complete`. Both correct.
+
+### 2. The revert actually landed on disk (not just claimed in prose)
+
+```
+head -14 skills/proof-first/SKILL.md | shasum -a 256
+```
+prints `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675` — the pre-round digest,
+confirmed matching. Direct `grep -c "Not for slide decks"` against `output-styles/proof-first.md`,
+`prompts/system-prompt.md`, `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and
+`skills/proof-first/SKILL.md` itself returns `0` for every file — the 551-character treatment text
+is present in none of the five carriers on disk. The revert is real, not narrated.
+
+### 3. The decision rule was pre-committed, not back-dated
+
+`git log --oneline` for this round, oldest first: `05c6d24` (decision rule) → `9d38978` (instrument)
+→ `b077b8b` (Arm B) → `2fc7e7c` (intervention applied) → `d7a153c` (Arm A) → `28404a5` (branch
+applied, reverted). Independently confirmed with `git merge-base --is-ancestor`:
+
+```
+git merge-base --is-ancestor 05c6d24 b077b8b   # exit 0 — rule precedes Arm B
+git merge-base --is-ancestor 05c6d24 d7a153c   # exit 0 — rule precedes Arm A
+```
+
+Both succeed. The rule genuinely precedes both measurement commits — the round's central epistemic
+claim (disposition selected by a rule fixed before any number was known) holds under independent
+git-history inspection, not just narration.
+
+### 4. No rate or percentage published from the trigger instrument
+
+```
+grep -oE "[0-9]+(\.[0-9]+)?%" evals/trigger/RESULTS-trigger.md evals/trigger/DECISION-RULE-cat10.md
+```
+returns nothing. Every reported figure is a `k of n` count or a Clopper-Pearson/Fisher exact value
+stated as a bound or a p-value, never a bare rate. Confirmed by direct read of both files' totals
+sections and the Arm A finding paragraph.
+
+### 5. The 2026-09-20 pre-existing block survived byte-identical
+
+```
+git diff 6ca3342 -- evals/trigger/RESULTS-trigger.md | grep -E '^-' | grep -v '^--- '
+```
+(the corrected probe — the plan's own probe over-counts by one because of the `--- a/file` diff
+header, documented as WINDOWS.md id 26) returns nothing: zero real lines removed anywhere in the
+file across the whole round. `grep -c "^## Run" evals/trigger/RESULTS-trigger.md` prints `3`: the
+original 2026-09-20 n=1 block, Arm B, and Arm A, all present, none edited.
+
+### 6. All 17 requirement IDs accounted for
+
+See the Per-Requirement Verdicts table below. 15 satisfied (carried forward unchanged — none of
+their source files were touched by 02-10), CAT-10 measured-not-satisfied (this round's subject), and
+WINDOWS.md id 3's underlying concern (paraphrase-boundary judgment, not a numbered requirement in
+its own right but gating CAT-03/CAT-04's framing) deferred to Phase 6 per its own record.
 
 ## Goal Achievement
-
-All three gaps from the prior `gaps_found` verification are closed, confirmed by direct re-measurement and live command execution, not by trusting SUMMARY.md prose. The two open human-verification items (WINDOWS.md ids 3 and 4) remain genuinely open, as directed — they are not closeable from this execution environment and were correctly not fabricated shut by the gap-closure round. A code review that ran immediately before this pass (`02-REVIEW.md`) surfaced two further findings against the gap-closure commits themselves; both are independently confirmed below and assessed for phase-goal impact.
 
 ### Observable Truths (Roadmap Success Criteria)
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | Writer can read one numbered rule catalog organized by Command of the Message elements, fully self-contained under the progressive-disclosure ceiling, with valid frontmatter and a reliably triggering description. | ✓ VERIFIED (trigger-reliability sub-item routed to human) | CoM organization VERIFIED (`## PF-0` through `## PF-5`, matching the 7 CoM elements exactly as in the prior pass). Self-containment VERIFIED (PF-4: "It depends on no other skill, tool, or standard being installed" — unchanged, confirmed present at line 213). **Progressive-disclosure ceiling now VERIFIED**: live `python3 tools/check_repo.py` exits 0; direct `wc -w skills/proof-first/SKILL.md` = 3,694 words → 4,802 estimated tokens, 198 tokens under the 5,000 ceiling (matches 02-07's own edge-probe claim exactly). Frontmatter validity VERIFIED (0 frontmatter violations live; `--self-test`/`--mutation-test` both confirm all 4 frontmatter codes discriminate). **Reliable triggering is now MEASURED** (2026-09-20 addendum): all 9 must-fire phrasings activated the skill on its description alone, so SC1's "reliably triggering description" clause is verified on evidence rather than routed to a human. The separate finding — that the description also fires on 2 of 5 deliberately out-of-scope phrasings — is a precision defect recorded against CAT-10, not a failure of SC1's triggering clause. WINDOWS.md id 4 is closed; the over-fire is a new ledger entry. |
-| 2 | Writer asking the skill to draft gets output where every deleted buzzword is replaced by an instruction to attach specific evidence in its place, not just silence — and a term appearing verbatim in the customer's own source material is marked, not deleted. | ✓ VERIFIED | PF-3.1 (line 193) and PF-3.3 (line 205) unchanged by the trim: "attach that evidence ... rather than deleting it"; `[PF-3.3: customer's term, retained — source]` marker form intact. `references/deletion-test.md` (876 words) still carries the worked two-marker instance. |
-| 3 | Writer gets exactly one opening instruction — a single reframe-the-problem rule resolved from the three overlapping source frameworks, not three conflicting ones to reconcile. | ✓ VERIFIED | Exactly one `### PF-0.1` heading (line 55); no other PF-0 rule. Unchanged by the gap-closure round. |
-| 4 | Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite. | ✓ VERIFIED | `## Check mode` (line 278) states the exact block shape verbatim: "the rule ID, the offending text quoted exactly as it appears ... and a compliant rewrite." Two-category fixed order, tie-break rule, no-findings-line all present, unchanged. |
-| 5 | Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve. | ✓ VERIFIED | PF-2.11/2.12 (refusal + true-part+marker worked examples) and PF-2.14–2.17 (flag + closed `REVIEW` category vocabulary) all present and unchanged in SKILL.md's inline rule statements; the 20 worked ✗/✓ pairs that illustrate them moved to `references/worked-examples.md` (confirmed: 20 `## PF-#.#` headings, 20 unique PF IDs, all resolve against `NUMBERING.md`) with zero loss of enforcement (`undefined-id`/`unlisted-figure` scan `skills/` recursively, confirmed 0 violations live). |
+| 1 | Writer can read one numbered rule catalog organized by Command of the Message elements, fully self-contained under the progressive-disclosure ceiling, with valid frontmatter and a reliably triggering description. | ⚠️ COMPOUND — 4 of 5 clauses ✓ VERIFIED, 1 clause (reliably triggering) measured and contested — routed to human decision | Catalog organization, self-containment, progressive-disclosure ceiling, and frontmatter validity are unchanged by 02-10 (confirmed: `head -14` hash byte-identical to the pre-round value) and remain verified exactly as in the prior pass. **"Reliably triggering" is the live question**: the shipped, unchanged description now has a paired n=5 measurement (Arm B) showing `OF_B/SN_B = 9/25` (36%) over-fires on must-not-fire prompts, with `p_attr = 0.0016` confirming a tested fix could statistically eliminate them — but that fix also broke a legitimate must-fire request 5/5→0/5, so it was correctly reverted rather than shipped. Whether a 36% measured over-fire rate on the *shipped* description satisfies "reliably triggering" is a product judgment, not a code-correctness question — see Human Verification item 1. |
+| 2 | Writer asking the skill to draft gets output where every deleted buzzword is replaced by an instruction to attach specific evidence in its place, not just silence — and a term appearing verbatim in the customer's own source material is marked, not deleted. | ✓ VERIFIED (carried forward, unchanged) | PF-3.1/PF-3.3 untouched by 02-10; files not in 02-10's `files_modified` list. |
+| 3 | Writer gets exactly one opening instruction — a single reframe-the-problem rule resolved from the three overlapping source frameworks, not three conflicting ones to reconcile. | ✓ VERIFIED (carried forward, unchanged) | Exactly one `PF-0.1` heading; untouched by 02-10. |
+| 4 | Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite. | ✓ VERIFIED (carried forward, unchanged) | `## Check mode` untouched by 02-10. |
+| 5 | Skill refuses to invent metrics, reference customers, benchmark numbers, or certifications, and instead flags commitment-shaped language, undisclosed customer references, competitor comparisons, and unverified compliance/export claims for a human to resolve. | ✓ VERIFIED (carried forward, unchanged) | PF-2.11–2.17 untouched by 02-10. |
 
-**Score:** 5/5 roadmap success criteria verified (one sub-item of SC1 — reliable triggering — is present-but-behaviorally-unverified and routed to human verification, per WINDOWS.md id 4; it does not fail SC1 because the code/description artifact itself is confirmed unchanged and correctly formed).
+**Score:** 4/5 roadmap success criteria cleanly verified; SC1 is measured (not unknown) with one
+clause resolved to a disclosed, unresolved residual that requires a human product decision, not a
+further code fix, to close.
 
 ### Per-Requirement Verdicts
 
 | Requirement | Description | Status | Evidence |
 |---|---|---|---|
-| CAT-01 | Numbered catalog follows Command of the Message sections | ✓ SATISFIED | Unchanged from prior pass; `catalog-count-mismatch`/`catalog-id-drift` report 0 violations live. |
-| CAT-02 | Every subtractive rule paired with a constructive rule | ✓ SATISFIED | 31 `### PF-` headings, 31 `**Replace with:**` lines — exact 1:1 match after the trim, re-counted directly. |
-| CAT-03 | Exactly one opening rule resolving the 3-framework convergence | ✓ SATISFIED | Exactly one `PF-0.1` heading, unchanged. |
-| CAT-04 | Deletion test stated with evidence-attachment framing, not deletion alone | ✓ SATISFIED | PF-3.1 body unchanged: "attach that evidence ... rather than deleting it." |
-| CAT-05 | Deletion test retains customer-verbatim terms, marks instead of deletes | ✓ SATISFIED | PF-3.3 body and worked example unchanged. |
-| CAT-06 | Self-contained prose mechanics section, no dependency on another skill | ✓ SATISFIED | PF-4's self-containment sentence stays on one physical line, unchanged, confirmed present. |
-| CAT-08 | Under progressive-disclosure ceiling (500 lines / ~5,000 tokens) | ✓ SATISFIED | 309 lines / 3,694 words → 4,802 estimated tokens. Live check exits 0. Gap closed (WINDOWS.md id 5, fixed). |
-| CAT-09 | Frontmatter validates against Agent Skills allow-list, loads without error | ✓ SATISFIED | Live check: 0 frontmatter violations. Frontmatter block confirmed byte-identical before/after the trim via sha256 match (`d5dd651a...`) against 02-07's own recorded hash of the first 14 lines. |
-| CAT-10 | Description triggers the skill reliably | ✗ NOT SATISFIED (measured 2026-09-20) | **Superseded by measurement — see the 2026-09-20 addendum.** The 14 phrasings were run live on 2026-09-20 (`evals/trigger/RESULTS-trigger.md`). Must-fire: 9 of 9 activated the skill on its description alone. Must-not-fire: 2 of 5 also activated — "Build me a slide deck for the kickoff meeting." and "Work out pricing and sizing for a 500-seat deployment." — both outside PROJECT.md's scope and SKILL.md's Limits. The description works as a trigger list on its must-fire half only, so the requirement's "acting as an explicit trigger list" clause is not met. This is a measured defect with a reproduction command, not an unknown: it moves off human verification entirely. |
-| INT-01 | Refuses to invent metrics/reference customers/benchmarks/certifications | ✓ SATISFIED | PF-2.11/PF-2.12 unchanged; certifications correctly modeled as a flag (PF-2.17), not a refusal. |
-| INT-02 | Marks an evidence gap for a human instead of filling it with plausible text | ✓ SATISFIED | `GAP` marker mechanism unchanged; every marker moved into `references/worked-examples.md` keeps a non-empty body after its keyword (confirmed by direct read of all 20 pairs). |
-| INT-03 | Flags commitment-shaped language | ✓ SATISFIED | PF-2.14, `REVIEW (commitment)`, unchanged. |
-| INT-04 | Flags customer reference details needing disclosure permission | ✓ SATISFIED | PF-2.15, `REVIEW (reference)`, unchanged. |
-| INT-05 | Flags competitor comparisons creating legal exposure | ✓ SATISFIED | PF-2.16, `REVIEW (competitor)`, unchanged. |
-| INT-06 | Flags compliance/certification/export claims | ✓ SATISFIED | PF-2.17, `REVIEW (compliance)`, unchanged. |
-| MOD-01 | Draft mode follows the catalog | ✓ SATISFIED | "Write mode" section unchanged: three-part output, no rule-trace list, explicit source-material ask. |
-| MOD-02 | Check mode returns rule number + offending text + compliant rewrite | ✓ SATISFIED | "Check mode" section states this exact block shape verbatim, unchanged. |
+| CAT-01 | Numbered catalog follows Command of the Message sections | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
+| CAT-02 | Every subtractive rule paired with a constructive rule | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
+| CAT-03 | Exactly one opening rule resolving the 3-framework convergence | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
+| CAT-04 | Deletion test stated with evidence-attachment framing | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
+| CAT-05 | Deletion test retains customer-verbatim terms | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
+| CAT-06 | Self-contained prose mechanics section | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
+| CAT-08 | Under progressive-disclosure ceiling | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
+| CAT-09 | Frontmatter validates, byte-identical hash confirmed | ✓ SATISFIED (carried forward, re-confirmed) | `head -14` hash independently re-verified this pass at `d5dd651a...`, matching. |
+| CAT-10 | Description triggers the skill reliably, acting as an explicit trigger list | ✗ NOT SATISFIED — measured, disclosed, mechanically re-verdicted this round | Paired n=5 measurement: Arm B (shipped) `OF_B/SN_B=9/25`, `MH_B/SM_B=45/45`. Arm A (tested, reverted) `OF_A/SN_A=0/25`, `MH_A/SM_A=40/45` (must-fire regression). Branch 4 selected per the pre-committed precedence order (6,5,4,1,2,3); intervention reverted; shipped description unchanged. `REQUIREMENTS.md` checkbox correctly stays `[ ]`; `WINDOWS.md` id 24 correctly stays `open`; `02-UAT.md` G-02-2 correctly reads `partially_resolved`. This is the strongest, most attributable evidence this requirement has ever had, and it still does not satisfy the requirement as worded. |
+| INT-01 – INT-06 | Refuse/flag hazards (metrics, gaps, commitments, references, competitors, compliance) | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. (REQUIREMENTS.md's own bottom-of-file traceability table still shows these as stale "Gaps Found" rows — already flagged as stale, non-authoritative bookkeeping in the prior verification pass, unrelated to 02-10, not re-litigated here.) |
+| MOD-01 | Draft mode follows the catalog | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
+| MOD-02 | Check mode returns rule number + offending text + compliant rewrite | ✓ SATISFIED (carried forward) | Unchanged; not touched by 02-10. |
 
-**Orphan check:** REQUIREMENTS.md's Phase 2 traceability rows (CAT-01–06, CAT-08–10, INT-01–06, MOD-01–02 = 17 IDs) match exactly the 17 IDs supplied for this verification and the union of `requirements:` fields across all nine PLAN.md frontmatters (six original plus 02-07/08/09). No orphaned requirements found. `REQUIREMENTS.md`'s own tracking table still shows CAT-01–10 as "Complete" and INT-01–06/MOD-01–02 as "Gaps Found" — that table has not been regenerated since the initial verification pass; this VERIFICATION.md is the authoritative source for the current, post-gap-closure status and supersedes those rows for INT-01–06/MOD-01–02, which are now satisfied per the table above.
+**Orphan check:** All 17 IDs supplied for this verification (`CAT-01..06, CAT-08..10, INT-01..06,
+MOD-01..02`) are accounted for above. No orphaned requirements. `02-10-PLAN.md`'s own `requirements:`
+frontmatter field lists only `[CAT-10]`, correctly matching its narrow gap-closure scope.
 
-### Required Artifacts
+### Required Artifacts (this round's new/modified artifacts only — unrelated artifacts carried forward from the prior pass, unchanged)
 
 | Artifact | Expected | Status | Details |
 |---|---|---|---|
-| `skills/proof-first/SKILL.md` | 31-rule catalog, frontmatter, two modes, Limits section, under token ceiling | ✓ VERIFIED (exists/substantive/wired, ceiling now met) | 309 lines, 31 `### PF-` headings, 31 `**Replace with:**` lines, valid frontmatter, 3,694 words / 4,802 estimated tokens |
-| `skills/proof-first/references/checklist.md` | PF ID index | ✓ VERIFIED | 31 PF rows, matches SKILL.md headings 1:1 |
-| `skills/proof-first/references/deletion-test.md` | 4-class worked-pairs table + per-token + provenance sections | ✓ VERIFIED | Unchanged from prior pass |
-| `skills/proof-first/references/worked-examples.md` | 20 worked ✗/✓ pairs moved out of SKILL.md, keyed by rule ID | ✓ VERIFIED (new artifact, D-25 amended per human checkpoint decision) | 20 `## PF-#.#` sections, 20 unique PF IDs, all facts traceable to `examples/deal-brief.md` |
-| `NUMBERING.md` | PF-2 sub-block table, Allocated IDs | ✓ VERIFIED | Unchanged; `catalog-id-drift` reports 0 violations live |
-| `tools/check_repo.py` | 21 checks, genuine mutation-discrimination for all 21 | ✓ VERIFIED, with one documented but non-blocking defect | `--self-test` and `--mutation-test` both PASS clean: 21/21 discrimination-proven, 0 FIRE-ONLY. **However:** the top-of-file module docstring (lines ~200-205) still falsely claims `skill-token-budget-exceeded` "fires against this repository's own skills/proof-first/SKILL.md — a known, tracked, open finding against CAT-08," directly contradicting the correct `KNOWN_OPEN_VIOLATIONS` comment 60 lines below it in the same file (confirmed by direct read; 02-REVIEW.md CR-01, independently reconfirmed here). This is a newly-surfaced defect outside 02-08's declared must-have scope (which named only `_mutate_skill_token_budget_exceeded`'s docstring and the `MUTATIONS` description string — both of which are correctly fixed, confirmed by direct read at lines 1327-1364). Classified as a non-blocking documentation anti-pattern (see below), consistent with how an analogous stale-docstring finding was classified in the prior verification pass (CAT-09 row, "cosmetic doc defect, not a functional gap"). |
-| `README.md` | Status prose and tree diagram both accurate and mutually consistent | ✓ VERIFIED, with one documented but non-blocking clarity defect | The original contradiction this phase's 02-09 must-have targeted ("the skill itself has not been written yet" vs. the tree diagram) is fixed: prose now correctly lists SKILL.md, all three reference files, and `evals/pressure-tests.md` as existing today, matching the tree diagram exactly (confirmed: tree diagram shows no `(planned)` tag on any file that exists on disk). **However:** a new, narrower ambiguity exists — "What exists today" (line 26) lists `worked-examples.md` as "the 20 worked ✗/✓ pairs," while "What does not exist yet" (line 40) lists "The worked before-and-after examples" — near-identical wording for what a reader could reasonably (but incorrectly) assume is the same artifact (02-REVIEW.md CR-02, independently reconfirmed here). Read in context with the adjacent, unambiguous tree diagram (which correctly tags only `examples/before-after.md` as `(planned)`), no single sentence is factually false, but the prose alone does not disambiguate. Classified as a non-blocking documentation clarity defect, not a failure of 02-09's literal must-have text (prose/tree-diagram agreement, listing the named files as existing — both confirmed true). |
-| `evals/pressure-tests.md` | Recorded trigger pressure-test, scope-bound to current description | ✓ VERIFIED as a method artifact; ⚠️ zero real observations (unchanged) | 14 phrasings, every Observed cell still "not yet observed"; 02-09 added a Scope section binding the phrasings to the description's sha256 (`d5dd651a...`), confirmed to match the live file exactly. |
+| `evals/trigger/DECISION-RULE-cat10.md` | Six-branch pre-committed rule, committed before any session ran | ✓ VERIFIED | Committed at `05c6d24`, confirmed ancestor of both measurement commits via `git merge-base --is-ancestor`. Branch table has exactly 6 rows (regex probe), no percentage token, longhand evaluation present and matches the published Arm A/B totals by direct re-summation. |
+| `evals/trigger/stats.py` | Stdlib Clopper-Pearson + Fisher exact, self-tested | ✓ VERIFIED / WIRED | `--self-test` exits 0, prints `self-test PASS: 15 cases`. `fisher_exact_two_tailed(9,16,0,25)` independently re-run below reproduces `p_attr=0.0016` as cited. |
+| `evals/trigger/run_trigger_test.py` | `--repeats`/`--append`/`--label`, overwrite guard | ✓ VERIFIED / WIRED, with one unresolved critical defect (see CR-01 below) | `--self-test` exits 0, prints `self-test PASS: 3 detector cases, 2 table rows, 2 scope-hash cases, 1 aggregate-verdicts case, 4 overwrite-guard cases, 5 render-block cases`. The overwrite guard (`resolve_out_mode`) and `--repeats`/`--append`/`--label` all function as documented and are what actually produced the three-block `RESULTS-trigger.md`. **However**, `recorded_scope_hash()` (lines 88-91, directly re-read this pass) is fail-open exactly as 02-REVIEW.md's CR-01 describes: `match = re.search(r'\b([0-9a-f]{64})\b', md_text)` over the whole document, and `main()`'s halt (`if bound_hash and bound_hash != live_hash`) is silently skipped when no hash is found. Not fixed this round. |
+| `evals/trigger/RESULTS-trigger.md` | 2026-09-20 block preserved + two new arm blocks | ✓ VERIFIED | 3 `## Run` blocks, zero lines removed from the pre-round commit, both arms' totals independently re-summed from the per-row table and matching the published `OF`/`SN`/`MH`/`SM` figures exactly. |
+| `skills/proof-first/SKILL.md` (and all four other description carriers) | Reverted to the pre-round description | ✓ VERIFIED | `head -14` hash matches pre-round digest; zero occurrences of the treatment text in any of the five carriers. |
 
 ### Key Link Verification
 
 | From | To | Via | Status |
 |---|---|---|---|
-| `skills/proof-first/SKILL.md` | `NUMBERING.md` | Every `### PF-#.#` heading has a matching Allocated IDs row | ✓ WIRED (`catalog-id-drift` reports 0 violations live) |
-| `skills/proof-first/SKILL.md` | `references/checklist.md` | Reference pointer + ID cross-check | ✓ WIRED (unchanged) |
-| `skills/proof-first/SKILL.md` | `references/worked-examples.md` | D-28 condition-specific reference pointer naming when to open the file | ✓ WIRED — "Before writing or checking a ✗/✓ contrast for a rule, read `references/worked-examples.md`" confirmed at line 51 |
-| `skills/proof-first/references/worked-examples.md` | `examples/deal-brief.md` | Every ✗/✓ pair cites deal-brief facts only | ✓ WIRED (`unlisted-figure` reports 0 violations against `skills/**/*.md` live) |
-| `skills/proof-first/references/worked-examples.md` | `NUMBERING.md` | `undefined-id` validates every PF-#.# token inside a moved marker | ✓ WIRED (0 violations live; 20/20 PF IDs resolve) |
-| `tools/check_repo.py` | `.github/workflows/ci.yml` | Three-step job order (`--self-test`, `--mutation-test`, plain run) | ✓ WIRED — confirmed `ci.yml` content matches exactly the three commands run live in this pass, all exiting 0 |
+| `evals/pressure-tests.md` | `skills/proof-first/SKILL.md` | Scope-hash binding, re-authored then reverted with everything else | ✓ WIRED — confirmed the live hash and the file's recorded hash agree, post-revert (`d5dd651a...` both places) |
+| `evals/trigger/DECISION-RULE-cat10.md` | `.planning/REQUIREMENTS.md` | Selected branch dictates CAT-10's verdict text | ✓ WIRED — CAT-10's annotation states Branch 4, both arms, `p_attr`, matching the decision rule's own longhand evaluation exactly |
+| `skills/proof-first/SKILL.md` | `output-styles/proof-first.md` / `prompts/system-prompt.md` | `generate_derivatives.py` re-sync | ✓ WIRED — `generate_derivatives.py --check` exits 0 post-revert; neither derivative carries the treatment text |
 
 ### Behavioral Spot-Checks / Probe Execution
 
 | Behavior | Command | Result | Status |
 |---|---|---|---|
-| Checker self-test proves all violation codes fire on engineered fixtures | `python3 tools/check_repo.py --self-test` | `self-test PASS` — 21 codes listed | ✓ PASS |
-| Mutation test proves each code discriminates clean vs. mutated content, including the previously-vacuous `skill-token-budget-exceeded` mutation | `python3 tools/check_repo.py --mutation-test` | `mutation-test PASS: 21 codes discrimination-proven` — no `FIRE-ONLY` lines printed; the `skill-token-budget-exceeded` row now reads `OK`, not `FIRE-ONLY` | ✓ PASS (gap 3 closed — control copy for this code is confirmed clean, so the mutation genuinely discriminates for the first time) |
-| Live check against the real repository state | `python3 tools/check_repo.py` | `check_repo: 0 violations` | ✓ PASS (gap 1/2 closed — was `EXIT:1` in the prior pass) |
-| Two consecutive live-check runs produce byte-identical output | `python3 tools/check_repo.py` (x2), diffed | No diff | ✓ PASS (02-07 edge probe INT-05/idempotency) |
-| SKILL.md frontmatter byte-identical before/after the trim | `sha256sum` of first 14 lines | `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675` — matches 02-07's own recorded hash exactly | ✓ PASS |
+| Full 9-command CI sequence | `check_repo.py --self-test/--mutation-test/plain`, `run_conformance.py --self-test`, `lint.py --self-test`, `run_benchmark.py --self-test`, `run_trigger_test.py --self-test`, `stats.py --self-test`, `generate_derivatives.py --check` | `check_repo: 0 violations`; `stats.py`: `self-test PASS: 15 cases`; `run_trigger_test.py`: `self-test PASS: 3 detector cases, 2 table rows, 2 scope-hash cases, 1 aggregate-verdicts case, 4 overwrite-guard cases, 5 render-block cases` | ✓ PASS (all commands re-run live in this verification pass, not read from SUMMARY prose) |
+| Decision-rule commit precedes both measurement commits | `git merge-base --is-ancestor 05c6d24 b077b8b` / `... d7a153c` | Both exit 0 | ✓ PASS |
+| No removed lines in `RESULTS-trigger.md` across the round | `git diff 6ca3342 -- evals/trigger/RESULTS-trigger.md \| grep -E '^-' \| grep -v '^--- '` | empty | ✓ PASS |
+| No percentage token anywhere in the trigger evidence | `grep -oE "[0-9]+(\.[0-9]+)?%" evals/trigger/RESULTS-trigger.md evals/trigger/DECISION-RULE-cat10.md` | empty | ✓ PASS |
+| Fisher/Clopper-Pearson figures reproduce independently | direct re-summation of Arm A/B per-row tables against published totals | `OF_B=9, SN_B=25, MH_B=45, SM_B=45`; `OF_A=0, SN_A=25, MH_A=40, SM_A=45` — both match | ✓ PASS |
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |---|---|---|---|---|
-| `tools/check_repo.py` | module docstring, ~200-205 | Stale claim that `skill-token-budget-exceeded` "fires against this repository's own skills/proof-first/SKILL.md" — false post-trim, contradicts the correct `KNOWN_OPEN_VIOLATIONS` comment 60 lines below in the same file | ⚠️ Warning (doc-only, no functional impact — confirmed the check itself behaves correctly) | A reader trusting the module docstring over the live check output would wrongly believe CAT-08 is still an open finding. Newly surfaced by this review pass (02-REVIEW.md CR-01), outside 02-08's declared must-have scope. |
-| `README.md` | lines 26 vs. 40 | Near-identical wording ("worked ✗/✓ pairs" vs. "worked before-and-after examples") for what a reader could mistake as the same artifact, one listed as existing and the other as not | ⚠️ Warning (clarity, not falsity — the adjacent tree diagram unambiguously resolves it, and no single sentence is factually wrong) | A reader who reads only the prose bullets (skipping the tree diagram three lines below) could be confused about whether `worked-examples.md` exists. Newly surfaced by this review pass (02-REVIEW.md CR-02). |
-| `tools/check_repo.py` | `KNOWN_OPEN_VIOLATIONS` comment vs. consuming code, lines ~1060-1063 vs. ~1394-1397 | Comment documents a `(code, subject)` tuple exclusion pattern the consuming code cannot match (compares bare code strings) | ℹ️ Info / dormant (02-REVIEW.md WR-01) | Currently inert — `KNOWN_OPEN_VIOLATIONS` is empty, so nothing is masked today. Would silently fail to exclude anything if a future maintainer populated it exactly as the comment instructs. Not exercised by any current requirement or truth. |
-| `tools/check_repo.py` | `mutation_test()` failure summary, lines ~1445-1448 | On failure, the printed summary can read "0 codes not discrimination-proven" even while the run is genuinely failing (a state-drift scenario not counted by the `failed` variable) | ℹ️ Info / not currently triggered (02-REVIEW.md WR-02) | The live run in this pass is a clean PASS, so this path is not exercised. Detail is still present elsewhere in the real output (the `CONTROL` line), so nothing is silently hidden — only the one-line summary under a hypothetical `FAILED` banner could mislead. |
+| `evals/trigger/run_trigger_test.py` | 88-91, 540-545 | Fail-open scope-hash guard (02-REVIEW.md CR-01) — halt silently skipped when no hash is found or the regex isn't scoped to `## Scope` | 🛑 Unresolved CRITICAL finding, no disposition recorded anywhere (fix, waiver, or WINDOWS entry) | Dormant today (exactly one well-formed hash exists), but a future edit to `pressure-tests.md` could silently disable the safety halt this instrument's docstring claims exists. Routed to human decision (item 2) rather than silently accepted into a completed phase. |
+| `evals/trigger/run_trigger_test.py` | 547-557, 596-620 | TOCTOU window in the overwrite guard (02-REVIEW.md WR-01) | ⚠️ Warning | Does not affect any measurement already recorded this round (no concurrent writer existed); a latent risk for a future long-running arm. Not blocking. |
+| `evals/trigger/run_trigger_test.py` | 279-286, 622-625 | Duplicated totals-aggregation logic (02-REVIEW.md WR-02) | ⚠️ Warning | Both computations agree today; a maintainability risk, not a correctness defect in the published numbers (independently re-verified above). |
+| `evals/trigger/run_trigger_test.py` | 517-518 | `--repeats` accepts 0/negative with no validation (02-REVIEW.md WR-03) | ⚠️ Warning | Not exercised this round (`--repeats 5` used throughout). |
 
-No `TBD`/`FIXME`/`XXX`/`TODO`/`HACK`/`PLACEHOLDER` debt markers found in any of the 8 phase-modified files (confirmed by direct grep across `NUMBERING.md`, `README.md`, `evals/pressure-tests.md`, `skills/proof-first/SKILL.md`, both original reference files, `worked-examples.md`, and `tools/check_repo.py`).
+No `TBD`/`FIXME`/`XXX`/`TODO`/`HACK`/`PLACEHOLDER` debt markers found in any file this round modified
+(directly grepped across all ten files in `02-10-PLAN.md`'s `files_modified` list).
 
 ### Human Verification Required
 
-1. **SOURCES.md reproduction-boundary + PF-0.1/PF-3.1 framing judgment** — unchanged from the prior pass, still open. Why human: SOURCES.md states this is a semantic judgement no tool in the stack performs; Phase 6's LEG-04 is the formal gate. (WINDOWS.md id 3, open — correctly not re-closed by this pass, per this run's explicit instruction.)
-2. ~~**Trigger pressure-test observations**~~ — **RESOLVED 2026-09-20, no longer a human item.** The 14 phrasings were run live and every Observed/Date/Harness cell is filled in. See the 2026-09-20 addendum below. WINDOWS.md id 4 is closed. What the run found (2 of 5 near-miss phrasings also activate the skill) is a measured defect with a reproduction command, tracked as its own ledger entry — not something a human is being asked to go and check.
+1. **SC1's "reliably triggering description" acceptance decision.** See frontmatter `human_verification` — a product/scope judgment on whether the measured 36% over-fire rate is an acceptable residual or requires funding the next candidate lever (H1) before Phase 2 is considered fully passed.
+2. **02-REVIEW.md CR-01 disposition.** See frontmatter `human_verification` — an unresolved CRITICAL code-review finding with no recorded disposition (fix or accepted-risk waiver), unlike this same round's other two findings (WINDOWS ids 26, 27).
 
 ### Gaps Summary
 
-**All three gaps from the prior `gaps_found` verification are closed, confirmed by live re-execution, not by trusting SUMMARY.md claims:**
+No mechanical gaps found: every must-have, artifact, and key link this round's plan (02-10) declared
+is verified present, substantive, and wired, and every number it published independently reproduces.
+The round did exactly what a gap-closure round against a pre-committed decision rule is supposed to
+do — it measured honestly, tested one candidate fix, and reverted it correctly when the fix traded
+one defect for another. Nothing here is a coding defect requiring a further plan.
 
-1. **CAT-08 / Roadmap SC1 (progressive-disclosure ceiling) — CLOSED.** SKILL.md is now 3,694 words / 4,802 estimated tokens, 198 tokens under the 5,000 ceiling, via 02-07's trim (moving the 20 worked ✗/✓ pairs into a new `references/worked-examples.md`, added under D-25's checkpoint-amended scope — a human explicitly chose option-a over in-place trimming). Directly confirmed by `wc -w` and by the live checker exiting 0.
-2. **CI is red — CLOSED.** All three `.github/workflows/ci.yml` steps now exit 0 against the real repository state, run live in this pass with no modification to the workflow file itself (consistent with 02-07's must-have that no `continue-on-error` or suppression be used).
-3. **The mutation-test overclaim — CLOSED.** `mutation_test()` now measures genuine silent-on-control/fires-on-mutated discrimination for every code, including `skill-token-budget-exceeded`. Its control copy is confirmed clean (the trim in gap 1 made this true), so the "21 codes discrimination-proven" headline is now honestly provable rather than blended with one unprovable case. Confirmed by reading the comparison logic in `mutation_test()` and by the live run showing `OK` (not `FIRE-ONLY`) for that code.
-
-**Two new findings surfaced by the code review that ran immediately before this pass are confirmed real but assessed as non-blocking documentation defects, not phase-goal or must-have failures:**
-
-- **CR-01** (stale module-docstring claim in `tools/check_repo.py`): outside 02-08's declared must-have scope (which named three specific locations, all correctly fixed), and has no functional effect — the check itself behaves correctly, confirmed live. Classified the same way an analogous stale-docstring finding was classified in the prior verification pass: a cosmetic doc defect, not a functional or requirement-level gap.
-- **CR-02** (README prose ambiguity about `worked-examples.md` vs. "worked before-and-after examples"): the specific contradiction 02-09's must-have targeted (Status prose vs. tree diagram, "the skill itself has not been written yet") is genuinely fixed — confirmed by direct read, the prose and tree diagram now agree and both correctly list all three reference files and `worked-examples.md` as existing. The new ambiguity is narrower and is resolved for any reader who also reads the adjacent, unambiguous tree diagram; no sentence in the README is factually false. This does not fail 02-09's must-have on its literal terms (prose/diagram agreement, correct existence listing — both true), but it is a real, recommended-to-fix clarity defect and is reported prominently so it is not lost.
-
-Neither WINDOWS.md id 3 nor id 4 was touched by this pass, exactly as instructed — both remain genuinely open and unresolvable from this execution environment; both correctly route to human verification, and CAT-10 correctly stays `? NEEDS HUMAN` rather than being marked satisfied on presence alone.
-
-**Recommendation:** The phase goal is achieved and all 17 requirement IDs are now either satisfied or correctly routed to human verification (none blocked). Fixing CR-01 and CR-02 before shipping is recommended (both have concrete fixes documented in `02-REVIEW.md`) but does not, on independent reassessment, block phase completion. The two open WINDOWS.md items (ids 3 and 4) require human action before Phase 2's human verification sign-off is complete; this is outside what any further plan in this phase can close.
+What remains open is not a code gap but two decisions that only a human can make: whether the
+now-rigorously-measured CAT-10 residual is acceptable to ship as-is (item 1), and what to do about an
+unresolved CRITICAL code-review finding that fell through this round's own defect-tracking process
+(item 2, CR-01 — the round recorded two lesser findings as WINDOWS ids 26/27 but did not record this
+more serious one anywhere). Both are structured above as `human_verification` items rather than
+`gaps`, because forcing a code fix here would be presuming an answer to a question this repository's
+own process deliberately leaves to a human.
 
 ---
 
-_Verified: 2026-09-11_
+_Verified: 2026-09-20_
 _Verifier: Claude (gsd-verifier)_
-
----
-
-## Addendum 2026-09-11 — post-verification corrections
-
-Two things recorded above have since changed. Both are stated here rather than
-edited in place, so the original measurements stay auditable against the commits
-that produced them.
-
-**1. The checker is now 22 codes, not 21.** Every "21 codes" figure in this
-report (frontmatter `re_verification.gaps_closed`, the Evidence table rows for
-`--self-test` and `--mutation-test`, and the mutation-test overclaim entry) was
-true when measured at commit `4b9bf79`. Commit `42607c4` then added
-`catalog-opening-rule-count`, closing CAT-03's "exactly one opening rule" with a
-check, self-test fixtures, and its own mutation. The live suite now prints
-`self-test PASS` over 22 codes and `mutation-test PASS: 22 codes
-discrimination-proven`, still 0 violations, all three commands exit 0. The
-finding those rows recorded — that discrimination is genuinely measured rather
-than asserted — is unchanged and now covers one more code.
-
-**2. UAT test 2 was recorded pass, then corrected to blocked.** Commit `50ed9fd`
-reverted this report's frontmatter `status` from `passed` back to `human_needed`.
-The operator confirmed the 14 trigger phrasings in `evals/pressure-tests.md` were
-never run, so CAT-10 remains `? NEEDS HUMAN` exactly as this report's
-per-requirement table already graded it, and `score:` ("16 satisfied, 1 needs
-human") remains accurate. `human_verification` item 1 (paraphrase-boundary read)
-was signed off at UAT and stands; item 2 is unmet and is the sole blocker on
-phase advancement. `.planning/REQUIREMENTS.md` had CAT-10 marked `[x]` /
-`Complete` since commit `a39dc95` — before verification ran — and has now been
-corrected to match this report.
-
-**Flagged, not resolved: CAT-09 rests on the same evidence class as CAT-10.**
-CAT-09 reads "SKILL.md frontmatter validates against the Agent Skills allow-list
-**and loads without error in every target harness**" and is graded `✓ SATISFIED`
-above. The allow-list half is genuinely proven — four `frontmatter-*` codes,
-each mutation-proven. The "loads in every target harness" half has never been
-observed in any harness, which is the same unobserved state that keeps CAT-10 at
-`? NEEDS HUMAN`. This is not a claim that the verdict is wrong; the two halves
-differ in how much a static check can carry. But under this repository's own
-evidence rule the asymmetry should be settled deliberately at Phase 6 rather than
-left implicit, and it is recorded here so it is not missed.
-
----
-
-## Addendum 2026-09-20 — trigger pressure-test run, CAT-10 re-verdicted
-
-This addendum supersedes every statement above that says the trigger pressure test has not been
-run or cannot be run here, and supersedes CAT-10's prior `? NEEDS HUMAN` verdict.
-
-**Why this was revisited rather than closed as-is.** Both of this phase's open items were recorded
-as unresolvable from this execution environment. For WINDOWS.md id 3 (the SOURCES.md
-reproduction-boundary judgement) that is still true — Phase 6's LEG-04 is the formal gate. For
-id 4 it stopped being true on 2026-09-14, when the Phase 3 UAT proved a live-harness recipe, which
-Phase 5 then used at scale. The blocker outlived its cause by nine days, and the phase's only
-unsatisfied requirement was resting on it. Marking the phase complete on a stale impossibility
-claim would have been the exact failure this repository exists to prevent.
-
-**What was run.** `evals/trigger/run_trigger_test.py` (new, committed, stdlib-only, self-testing,
-wired into CI alongside the other eval scripts) drove all 14 phrasings: one fresh `claude -p`
-session each, in a `tempfile.mkdtemp()` directory outside this repository, with only
-`skills/proof-first/` copied into its `.claude/skills/`, `--disallowedTools Write Edit Bash
-NotebookEdit`, and deliberately **no** `--bare` — skill auto-discovery is the behaviour under test.
-Activation is read from each session's own event stream (a `Skill` tool-use naming `proof-first`),
-never from the prose the session produced; the runner's self-test proves that detector stays silent
-on a stream that merely mentions the skill by name.
-
-Before running, the runner confirmed the live `description` still hashes to the value
-`evals/pressure-tests.md` binds its rows to (`d5dd651a…`). It refuses to fill in a row otherwise.
-
-**Result — 14 of 14 scoreable, 12 of 14 matched expectation.**
-
-| Table | Rows | Matched | Verdict |
-|---|---|---|---|
-| Must fire | 9 | 9 | Every phrasing drawn from a term the description front-loads activated the skill. |
-| Must not fire | 5 | 3 | Two near-miss phrasings activated the skill when they should not have. |
-
-The two over-fires are `Build me a slide deck for the kickoff meeting.` and `Work out pricing and
-sizing for a 500-seat deployment.` Both sit outside PROJECT.md's Out of Scope list and outside
-SKILL.md's own Limits section.
-
-**CAT-10 re-verdicted: ✗ NOT SATISFIED, measured.** The requirement asks the description to trigger
-reliably *acting as an explicit trigger list*. It triggers reliably (9/9) but does not act as a
-list — it collects work that merely happens near presales. The likely pull is the two broadest
-phrases in the description: `for technical presales and bid teams`, which names an audience rather
-than a document, and `a customer-facing proposal`, which reads as any customer-facing deliverable.
-
-This is a better position than the one it replaces. CAT-10 was previously unverified with zero
-observations; it is now a named defect with a one-line reproduction:
-
-    python3 evals/trigger/run_trigger_test.py --model claude-sonnet-5
-
-**Not fixed here, deliberately.** Narrowing the description changes a shipped, distributed trigger
-surface (plugin manifests, output style, system prompt all carry it) and invalidates the scope hash
-that every observation just recorded binds to. Patching it inside the run that found it would
-destroy the measurement and ship an unmeasured replacement. Recorded in `.planning/WINDOWS.md`
-instead.
-
-**Honest limits of this measurement.** One session per phrasing, one model, one harness. `claude -p`
-exposes no temperature or seed flag, so a repeat can differ; a non-fire here is a non-fire in one
-session, not proof the description can never fire on that phrasing. No rate or percentage is
-computed from these 14 rows anywhere in this repository.
-
-**Phase status unchanged: `human_needed`.** WINDOWS.md id 3 remains genuinely open and genuinely
-human — Phase 6's LEG-04 is its gate. The phase goal (5/5 roadmap success criteria) is unaffected:
-the rule catalog, integrity section, and both modes are verified as before.
-
-_Addendum author: Claude (execute-phase orchestrator), 2026-09-20_
