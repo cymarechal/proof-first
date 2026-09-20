@@ -2,7 +2,7 @@
 phase: 02-rule-catalog-integrity-skill-md-core
 verified: 2026-09-11T13:30:00Z
 status: human_needed
-score: "5/5 roadmap success criteria verified (17 requirement IDs: 16 satisfied, 1 needs human)"
+score: "5/5 roadmap success criteria verified (17 requirement IDs: 16 satisfied, 1 not satisfied and measured as of the 2026-09-20 addendum)"
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
@@ -21,7 +21,7 @@ human_verification:
     why_human: "SOURCES.md states this is a semantic judgement no tool in this project's stack performs; Phase 6's LEG-04 is the formal gate. Tracked as WINDOWS.md id 3 (open) — genuinely still open, unresolvable from this environment, correctly not re-closed by this pass."
   - test: "Run every phrasing in evals/pressure-tests.md's Must-fire and Must-not-fire tables in a real harness session and record Observed/Date/Harness."
     expected: "Must-fire rows activate the skill; must-not-fire rows do not."
-    why_human: "Skill activation requires driving a live harness session this environment cannot start. Every row still reads 'not yet observed'; 02-09 added a scope note (SKILL.md frontmatter sha256) binding the 14 phrasings to the current description but did not, and could not, add observations. Tracked as WINDOWS.md id 4 (open, genuinely unresolvable here) — the same finding drives CAT-10's requirement verdict."
+    resolved: "RUN 2026-09-20 — no longer a human-verification item. All 14 phrasings were driven through live claude -p sessions by the committed runner evals/trigger/run_trigger_test.py (claude-sonnet-5, claude 2.1.267). 14 of 14 scoreable, 12 of 14 matched expectation: must-fire 9 of 9 fired; must-not-fire 3 of 5 stayed quiet, 2 fired. Observed/Date/Harness are filled in for every row; run block in evals/trigger/RESULTS-trigger.md. WINDOWS.md id 4 closed. The 2 over-fires are a new measured defect against CAT-10, tracked as a fresh WINDOWS.md entry, not as a human-verification item. The prior why_human — that this environment cannot start a harness session — was true on 2026-09-11 and was falsified by the Phase 3 UAT on 2026-09-14."
 ---
 
 # Phase 2: Rule Catalog & Integrity — SKILL.md Core Verification Report
@@ -39,7 +39,7 @@ All three gaps from the prior `gaps_found` verification are closed, confirmed by
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | Writer can read one numbered rule catalog organized by Command of the Message elements, fully self-contained under the progressive-disclosure ceiling, with valid frontmatter and a reliably triggering description. | ✓ VERIFIED (trigger-reliability sub-item routed to human) | CoM organization VERIFIED (`## PF-0` through `## PF-5`, matching the 7 CoM elements exactly as in the prior pass). Self-containment VERIFIED (PF-4: "It depends on no other skill, tool, or standard being installed" — unchanged, confirmed present at line 213). **Progressive-disclosure ceiling now VERIFIED**: live `python3 tools/check_repo.py` exits 0; direct `wc -w skills/proof-first/SKILL.md` = 3,694 words → 4,802 estimated tokens, 198 tokens under the 5,000 ceiling (matches 02-07's own edge-probe claim exactly). Frontmatter validity VERIFIED (0 frontmatter violations live; `--self-test`/`--mutation-test` both confirm all 4 frontmatter codes discriminate). **Reliable triggering remains UNVERIFIED** (WINDOWS.md id 4, open) — routed to human verification below, not counted as failed. |
+| 1 | Writer can read one numbered rule catalog organized by Command of the Message elements, fully self-contained under the progressive-disclosure ceiling, with valid frontmatter and a reliably triggering description. | ✓ VERIFIED (trigger-reliability sub-item routed to human) | CoM organization VERIFIED (`## PF-0` through `## PF-5`, matching the 7 CoM elements exactly as in the prior pass). Self-containment VERIFIED (PF-4: "It depends on no other skill, tool, or standard being installed" — unchanged, confirmed present at line 213). **Progressive-disclosure ceiling now VERIFIED**: live `python3 tools/check_repo.py` exits 0; direct `wc -w skills/proof-first/SKILL.md` = 3,694 words → 4,802 estimated tokens, 198 tokens under the 5,000 ceiling (matches 02-07's own edge-probe claim exactly). Frontmatter validity VERIFIED (0 frontmatter violations live; `--self-test`/`--mutation-test` both confirm all 4 frontmatter codes discriminate). **Reliable triggering is now MEASURED** (2026-09-20 addendum): all 9 must-fire phrasings activated the skill on its description alone, so SC1's "reliably triggering description" clause is verified on evidence rather than routed to a human. The separate finding — that the description also fires on 2 of 5 deliberately out-of-scope phrasings — is a precision defect recorded against CAT-10, not a failure of SC1's triggering clause. WINDOWS.md id 4 is closed; the over-fire is a new ledger entry. |
 | 2 | Writer asking the skill to draft gets output where every deleted buzzword is replaced by an instruction to attach specific evidence in its place, not just silence — and a term appearing verbatim in the customer's own source material is marked, not deleted. | ✓ VERIFIED | PF-3.1 (line 193) and PF-3.3 (line 205) unchanged by the trim: "attach that evidence ... rather than deleting it"; `[PF-3.3: customer's term, retained — source]` marker form intact. `references/deletion-test.md` (876 words) still carries the worked two-marker instance. |
 | 3 | Writer gets exactly one opening instruction — a single reframe-the-problem rule resolved from the three overlapping source frameworks, not three conflicting ones to reconcile. | ✓ VERIFIED | Exactly one `### PF-0.1` heading (line 55); no other PF-0 rule. Unchanged by the gap-closure round. |
 | 4 | Writer asking the skill to check text gets each prose violation back labeled with a rule number, the offending text, and a compliant rewrite. | ✓ VERIFIED | `## Check mode` (line 278) states the exact block shape verbatim: "the rule ID, the offending text quoted exactly as it appears ... and a compliant rewrite." Two-category fixed order, tie-break rule, no-findings-line all present, unchanged. |
@@ -59,7 +59,7 @@ All three gaps from the prior `gaps_found` verification are closed, confirmed by
 | CAT-06 | Self-contained prose mechanics section, no dependency on another skill | ✓ SATISFIED | PF-4's self-containment sentence stays on one physical line, unchanged, confirmed present. |
 | CAT-08 | Under progressive-disclosure ceiling (500 lines / ~5,000 tokens) | ✓ SATISFIED | 309 lines / 3,694 words → 4,802 estimated tokens. Live check exits 0. Gap closed (WINDOWS.md id 5, fixed). |
 | CAT-09 | Frontmatter validates against Agent Skills allow-list, loads without error | ✓ SATISFIED | Live check: 0 frontmatter violations. Frontmatter block confirmed byte-identical before/after the trim via sha256 match (`d5dd651a...`) against 02-07's own recorded hash of the first 14 lines. |
-| CAT-10 | Description triggers the skill reliably | ? NEEDS HUMAN | Description confirmed byte-identical to its pre-trim state (sha256 match); front-loaded trigger terms unaffected. Zero real activations have ever been observed — every row in `evals/pressure-tests.md` still reads "not yet observed"; 02-09 added a scope note binding the 14 phrasings to this exact description (via sha256) but could not add observations. WINDOWS.md id 4, open — correctly not closed. |
+| CAT-10 | Description triggers the skill reliably | ✗ NOT SATISFIED (measured 2026-09-20) | **Superseded by measurement — see the 2026-09-20 addendum.** The 14 phrasings were run live on 2026-09-20 (`evals/trigger/RESULTS-trigger.md`). Must-fire: 9 of 9 activated the skill on its description alone. Must-not-fire: 2 of 5 also activated — "Build me a slide deck for the kickoff meeting." and "Work out pricing and sizing for a 500-seat deployment." — both outside PROJECT.md's scope and SKILL.md's Limits. The description works as a trigger list on its must-fire half only, so the requirement's "acting as an explicit trigger list" clause is not met. This is a measured defect with a reproduction command, not an unknown: it moves off human verification entirely. |
 | INT-01 | Refuses to invent metrics/reference customers/benchmarks/certifications | ✓ SATISFIED | PF-2.11/PF-2.12 unchanged; certifications correctly modeled as a flag (PF-2.17), not a refusal. |
 | INT-02 | Marks an evidence gap for a human instead of filling it with plausible text | ✓ SATISFIED | `GAP` marker mechanism unchanged; every marker moved into `references/worked-examples.md` keeps a non-empty body after its keyword (confirmed by direct read of all 20 pairs). |
 | INT-03 | Flags commitment-shaped language | ✓ SATISFIED | PF-2.14, `REVIEW (commitment)`, unchanged. |
@@ -119,7 +119,7 @@ No `TBD`/`FIXME`/`XXX`/`TODO`/`HACK`/`PLACEHOLDER` debt markers found in any of 
 ### Human Verification Required
 
 1. **SOURCES.md reproduction-boundary + PF-0.1/PF-3.1 framing judgment** — unchanged from the prior pass, still open. Why human: SOURCES.md states this is a semantic judgement no tool in the stack performs; Phase 6's LEG-04 is the formal gate. (WINDOWS.md id 3, open — correctly not re-closed by this pass, per this run's explicit instruction.)
-2. **Trigger pressure-test observations** — unchanged from the prior pass, still open. Why human: skill activation requires driving a live harness session this environment cannot start; zero observations exist. 02-09 added a sha256-bound scope note but no plan in this phase could add an actual observation. (WINDOWS.md id 4, open — correctly not re-closed by this pass. Same finding drives the CAT-10 requirement verdict.)
+2. ~~**Trigger pressure-test observations**~~ — **RESOLVED 2026-09-20, no longer a human item.** The 14 phrasings were run live and every Observed/Date/Harness cell is filled in. See the 2026-09-20 addendum below. WINDOWS.md id 4 is closed. What the run found (2 of 5 near-miss phrasings also activate the skill) is a measured defect with a reproduction command, tracked as its own ledger entry — not something a human is being asked to go and check.
 
 ### Gaps Summary
 
@@ -183,3 +183,69 @@ observed in any harness, which is the same unobserved state that keeps CAT-10 at
 differ in how much a static check can carry. But under this repository's own
 evidence rule the asymmetry should be settled deliberately at Phase 6 rather than
 left implicit, and it is recorded here so it is not missed.
+
+---
+
+## Addendum 2026-09-20 — trigger pressure-test run, CAT-10 re-verdicted
+
+This addendum supersedes every statement above that says the trigger pressure test has not been
+run or cannot be run here, and supersedes CAT-10's prior `? NEEDS HUMAN` verdict.
+
+**Why this was revisited rather than closed as-is.** Both of this phase's open items were recorded
+as unresolvable from this execution environment. For WINDOWS.md id 3 (the SOURCES.md
+reproduction-boundary judgement) that is still true — Phase 6's LEG-04 is the formal gate. For
+id 4 it stopped being true on 2026-09-14, when the Phase 3 UAT proved a live-harness recipe, which
+Phase 5 then used at scale. The blocker outlived its cause by nine days, and the phase's only
+unsatisfied requirement was resting on it. Marking the phase complete on a stale impossibility
+claim would have been the exact failure this repository exists to prevent.
+
+**What was run.** `evals/trigger/run_trigger_test.py` (new, committed, stdlib-only, self-testing,
+wired into CI alongside the other eval scripts) drove all 14 phrasings: one fresh `claude -p`
+session each, in a `tempfile.mkdtemp()` directory outside this repository, with only
+`skills/proof-first/` copied into its `.claude/skills/`, `--disallowedTools Write Edit Bash
+NotebookEdit`, and deliberately **no** `--bare` — skill auto-discovery is the behaviour under test.
+Activation is read from each session's own event stream (a `Skill` tool-use naming `proof-first`),
+never from the prose the session produced; the runner's self-test proves that detector stays silent
+on a stream that merely mentions the skill by name.
+
+Before running, the runner confirmed the live `description` still hashes to the value
+`evals/pressure-tests.md` binds its rows to (`d5dd651a…`). It refuses to fill in a row otherwise.
+
+**Result — 14 of 14 scoreable, 12 of 14 matched expectation.**
+
+| Table | Rows | Matched | Verdict |
+|---|---|---|---|
+| Must fire | 9 | 9 | Every phrasing drawn from a term the description front-loads activated the skill. |
+| Must not fire | 5 | 3 | Two near-miss phrasings activated the skill when they should not have. |
+
+The two over-fires are `Build me a slide deck for the kickoff meeting.` and `Work out pricing and
+sizing for a 500-seat deployment.` Both sit outside PROJECT.md's Out of Scope list and outside
+SKILL.md's own Limits section.
+
+**CAT-10 re-verdicted: ✗ NOT SATISFIED, measured.** The requirement asks the description to trigger
+reliably *acting as an explicit trigger list*. It triggers reliably (9/9) but does not act as a
+list — it collects work that merely happens near presales. The likely pull is the two broadest
+phrases in the description: `for technical presales and bid teams`, which names an audience rather
+than a document, and `a customer-facing proposal`, which reads as any customer-facing deliverable.
+
+This is a better position than the one it replaces. CAT-10 was previously unverified with zero
+observations; it is now a named defect with a one-line reproduction:
+
+    python3 evals/trigger/run_trigger_test.py --model claude-sonnet-5
+
+**Not fixed here, deliberately.** Narrowing the description changes a shipped, distributed trigger
+surface (plugin manifests, output style, system prompt all carry it) and invalidates the scope hash
+that every observation just recorded binds to. Patching it inside the run that found it would
+destroy the measurement and ship an unmeasured replacement. Recorded in `.planning/WINDOWS.md`
+instead.
+
+**Honest limits of this measurement.** One session per phrasing, one model, one harness. `claude -p`
+exposes no temperature or seed flag, so a repeat can differ; a non-fire here is a non-fire in one
+session, not proof the description can never fire on that phrasing. No rate or percentage is
+computed from these 14 rows anywhere in this repository.
+
+**Phase status unchanged: `human_needed`.** WINDOWS.md id 3 remains genuinely open and genuinely
+human — Phase 6's LEG-04 is its gate. The phase goal (5/5 roadmap success criteria) is unaffected:
+the rule catalog, integrity section, and both modes are verified as before.
+
+_Addendum author: Claude (execute-phase orchestrator), 2026-09-20_

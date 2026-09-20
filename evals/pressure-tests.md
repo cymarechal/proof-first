@@ -29,10 +29,13 @@ An observation recorded in the tables below is valid only for the `description` 
 against. If the `description` changes in a later phase, previously recorded observations must be
 re-run against the new text rather than carried forward as still-current.
 
-No observation exists yet, for either table. This execution environment cannot start a fresh
-harness session, install the skill into it, and read back whether the skill activated — that is
-an interactive, per-session harness action outside what this environment can perform. This is a
-statement of what has not been done, not a hedge implying the rows are probably fine.
+Every row below now carries a real observation, recorded 2026-09-20 against the description whose
+hash is named above. They were produced by `evals/trigger/run_trigger_test.py`, which starts one
+fresh `claude -p` session per phrasing in a temp directory outside this repository with only
+`skills/proof-first/` installed, and reads activation from the session's own event stream rather
+than from the prose it produced. The earlier note here said this environment could not start such
+a session; that was true when written and is no longer true — the method was proven during Phase
+3 and is now a committed script.
 
 ## Must fire
 
@@ -42,15 +45,15 @@ response), phrased the way a writer actually asks rather than as a bare keyword.
 
 | Phrasing | Expected | Observed | Date | Harness |
 |---|---|---|---|---|
-| Write our response to RFP question 4 about the cut-over plan. | Fires | not yet observed | — | — |
-| We got an RFI back from procurement — draft the answers. | Fires | not yet observed | — | — |
-| Draft the solution proposal section for the migration approach. | Fires | not yet observed | — | — |
-| I need an executive summary for the Halverton board deck. | Fires | not yet observed | — | — |
-| Write the demo script for tomorrow's discovery call. | Fires | not yet observed | — | — |
-| Turn these discovery notes into the after-state section of the proposal. | Fires | not yet observed | — | — |
-| Help me write this presales response before it ships to the customer. | Fires | not yet observed | — | — |
-| We're putting together our bid response — write the commercial section. | Fires | not yet observed | — | — |
-| This is a scored technical response — write section 3 so it holds up. | Fires | not yet observed | — | — |
+| Write our response to RFP question 4 about the cut-over plan. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| We got an RFI back from procurement — draft the answers. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Draft the solution proposal section for the migration approach. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| I need an executive summary for the Halverton board deck. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Write the demo script for tomorrow's discovery call. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Turn these discovery notes into the after-state section of the proposal. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Help me write this presales response before it ships to the customer. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| We're putting together our bid response — write the commercial section. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| This is a scored technical response — write section 3 so it holds up. | Fires | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
 
 ## Must not fire
 
@@ -60,26 +63,48 @@ rows meaningful rather than incidental.
 
 | Phrasing | Expected | Observed | Date | Harness |
 |---|---|---|---|---|
-| Write launch copy for our new product announcement. | Does not fire | not yet observed | — | — |
-| Build me a slide deck for the kickoff meeting. | Does not fire | not yet observed | — | — |
-| Work out pricing and sizing for a 500-seat deployment. | Does not fire | not yet observed | — | — |
-| Write the API reference docs for the /migrations endpoint. | Does not fire | not yet observed | — | — |
-| Rewrite this paragraph in plain English for a general reader. | Does not fire | not yet observed | — | — |
+| Write launch copy for our new product announcement. | Does not fire | did not fire | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Build me a slide deck for the kickoff meeting. | Does not fire | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Work out pricing and sizing for a 500-seat deployment. | Does not fire | fired | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Write the API reference docs for the /migrations endpoint. | Does not fire | did not fire | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Rewrite this paragraph in plain English for a general reader. | Does not fire | did not fire | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
 
 ## Observations
 
-No row above carries a real observation. Running this pressure test requires installing
-`skills/proof-first/` into a harness's own skills directory and driving a fresh session per
-phrasing — an interactive, per-session harness action this execution environment cannot perform:
-it has no way to launch a separate Claude Code (or other harness) session, install a skill into
-it, and read back whether that session activated. Every Observed cell above therefore reads
-`not yet observed` rather than a claimed result, per this repository's evidence rule (PROJECT.md
-§ Constraints: measured claims or no claims).
+Run 2026-09-20, `claude-sonnet-5` on `claude` 2.1.267, one session per phrasing, 14 of 14
+scoreable. Full run block with caveats: `evals/trigger/RESULTS-trigger.md`.
 
-This gap is logged as an open unrun-verify entry in `.planning/WINDOWS.md`, naming this file and
-this method, exactly as Phase 1 logged its own two unrun `<manual>` verification steps. A human
-running each phrasing above in a real harness session, filling in the Observed/Date/Harness
-columns, and marking the ledger entry fixed is what closes it — not an estimate written here.
+**Must fire: 9 of 9 fired.** Every phrasing drawn from a term the description front-loads
+activated the skill on the description alone, with nothing in the prompt naming it.
 
-Nothing in this file states a trigger-reliability rate, a percentage, or a score. That number does
-not exist yet; it is Phase 5's job to produce one, reproducibly, from a committed benchmark run.
+**Must not fire: 3 of 5 stayed quiet. Two fired.** This is the finding, and it is the half of this
+file that was built to catch it:
+
+| Phrasing | Observed | What it means |
+|---|---|---|
+| Build me a slide deck for the kickoff meeting. | fired | A kickoff deck is not a scored response, a proposal, or a check pass over a draft. |
+| Work out pricing and sizing for a 500-seat deployment. | fired | Pricing and sizing is a commercial calculation, not presales writing. |
+
+Both sit outside PROJECT.md's scope and outside the Limits section of `SKILL.md`, and the skill
+still activated. The likely pull is the description's two broadest phrases — "for technical
+presales and bid teams", which names an audience rather than a document, and "a customer-facing
+proposal", which a model can read as any customer-facing deliverable. A description that names who
+the reader is rather than what the document is will collect work that merely happens near presales.
+
+What this does and does not establish. It establishes that the must-fire half of the trigger list
+works on this model and this harness, and that the description is measurably over-broad on 2 of 5
+near-miss phrasings. It does not establish a rate: one session per phrasing is one observation, and
+`claude -p` exposes no temperature or seed flag, so a repeat can differ. No percentage is computed
+from these 14 rows anywhere in this repository.
+
+Reproduce with:
+
+    python3 evals/trigger/run_trigger_test.py --model claude-sonnet-5
+
+The runner refuses to fill in any row if the live `description` no longer hashes to the value bound
+in the Scope section above — an observation recorded against a different description is not an
+observation of these rows.
+
+Narrowing the description is a change to a shipped, distributed trigger surface, so it is recorded
+here as a measured defect rather than patched inside the run that found it. Tracked in
+`.planning/WINDOWS.md`.

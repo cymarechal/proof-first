@@ -1,5 +1,5 @@
 ---
-status: partial
+status: complete
 phase: 02-rule-catalog-integrity-skill-md-core
 source: [02-VERIFICATION.md]
 started: 2026-09-11T13:45:00Z
@@ -8,7 +8,7 @@ updated: 2026-09-11T14:05:00Z
 
 ## Current Test
 
-[testing paused — 1 item outstanding]
+[all tests run; 1 measured issue outstanding — see Gaps]
 
 ## Tests
 
@@ -25,22 +25,27 @@ expected: Every Must-fire row activates the skill; every Must-not-fire row does 
 why_human: Skill activation requires driving a live harness session this environment cannot start. Every row still reads "not yet observed". Tracked as WINDOWS.md id 4 (open). This is also the sole blocker on requirement CAT-10.
 scope_note: `evals/pressure-tests.md`'s `## Scope` section binds these 14 phrasings to the SKILL.md frontmatter `description` whose first 14 lines hash to sha256 `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`. Confirm that hash still matches before recording observations; if it does not, the rows must be re-authored, not filled in.
 hash_check: confirmed matching at UAT time (2026-09-11) — `head -14 skills/proof-first/SKILL.md | shasum -a 256` = `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`. The rows are runnable as written; they were not run.
-result: blocked
-blocked_by: other
-reason: "Initially recorded pass, corrected the same session: the 14 phrasings were not run. Confirmed by the operator — \"No I didn't\". Running them needs a fresh harness session with the skill installed, which this environment cannot start. All 14 Observed cells in evals/pressure-tests.md correctly still read 'not yet observed'; no observation was written. Tracked as WINDOWS.md id 4 (open). Sole blocker on CAT-10."
+result: issues
+reason: "RUN 2026-09-20. All 14 phrasings were driven through live `claude -p` sessions by the committed runner `evals/trigger/run_trigger_test.py` (model claude-sonnet-5, harness claude 2.1.267), one fresh session per phrasing in a temp directory outside the repo with only skills/proof-first/ installed and no --bare. Activation was read from each session's own event stream (a Skill tool-use naming proof-first), not from its prose. 14 of 14 scoreable, 12 of 14 matched expectation. Must-fire: 9 of 9 fired. Must-not-fire: 3 of 5 stayed quiet; 2 fired that should not have — \"Build me a slide deck for the kickoff meeting.\" and \"Work out pricing and sizing for a 500-seat deployment.\" Observed/Date/Harness are now filled in for every row of evals/pressure-tests.md; full run block in evals/trigger/RESULTS-trigger.md. WINDOWS.md id 4 is closed (the test has been run). The over-fire is a new, separately tracked finding against CAT-10."
+superseded_note: "The earlier `blocked` result and its stated reason — that this environment cannot start a fresh harness session — were true when written on 2026-09-11 and are no longer true. The method was proven at the Phase 3 UAT on 2026-09-14 and is now a committed, self-testing script."
 
 ## Summary
 
 total: 2
 passed: 1
-issues: 0
+issues: 1
 pending: 0
 skipped: 0
-blocked: 1
+blocked: 0
 
 ## Gaps
 
-[none]
+- **CAT-10 — the `description` is measurably over-broad.** 2 of 5 near-miss phrasings activated the
+  skill: a kickoff slide deck and a pricing/sizing calculation, both outside PROJECT.md's scope and
+  SKILL.md's Limits section. The must-fire half of the trigger list works (9 of 9); the must-not-fire
+  half does not hold. Narrowing the description changes a shipped, distributed trigger surface and
+  invalidates the scope hash every recorded observation binds to, so it is recorded as a measured
+  defect rather than patched inside the run that found it. Tracked in `.planning/WINDOWS.md`.
 
 ## Correction Log
 
@@ -52,3 +57,20 @@ blocked: 1
   was written into `evals/pressure-tests.md`. Per the workflow, a blocked test is
   a prerequisite gate rather than a code issue, so no gap was opened and no fix
   plan was spawned.
+
+## Addendum 2026-09-20 — test 2 run
+
+Test 2 was recorded `blocked` on 2026-09-11 with the reason that this environment could not start
+a fresh harness session, install the skill, and read back whether it activated. That was accurate
+when written. It stopped being accurate on 2026-09-14, when the Phase 3 UAT proved the recipe, and
+Phase 5 then ran the same pattern at scale. The blocker outlived its cause.
+
+Running it changed the verdict rather than confirming it. The must-fire half of the trigger list
+holds on every one of its nine phrasings. The must-not-fire half does not: the description pulls in
+a kickoff slide deck and a pricing calculation, neither of which is presales writing. That is a
+worse-looking result than `blocked` and a better one to have — an unrun test had left CAT-10's
+status genuinely unknown, and the half of the file built to catch an over-broad description is
+exactly the half that caught one.
+
+CAT-10 therefore does not become satisfied. It moves from unverified to measured, with a named,
+reproducible defect and a command that reproduces it.
