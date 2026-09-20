@@ -86,8 +86,16 @@ def scope_hash(skill_md_path):
 
 
 def recorded_scope_hash(md_text):
-    """Pull the sha256 the Scope section binds the rows to. None if absent."""
-    match = re.search(r'\b([0-9a-f]{64})\b', md_text)
+    """Pull the sha256 the Scope section binds the rows to. None if absent.
+
+    Scoped to the ## Scope section on purpose (02-REVIEW.md CR-01): an earlier
+    form searched the whole document, so any later sha256 reference added
+    anywhere in pressure-tests.md would have been adopted as the binding.
+    """
+    scope = re.search(r'^##\s+Scope\s*$(.*?)(?=^##\s|\Z)', md_text, re.M | re.S)
+    if not scope:
+        return None
+    match = re.search(r'\b([0-9a-f]{64})\b', scope.group(1))
     return match.group(1) if match else None
 
 
@@ -244,6 +252,31 @@ def resolve_out_mode(exists, nonempty, append, path=None):
     return 'write'
 
 
+def scope_binding_verdict(bound_hash, live_hash, path=None):
+    """Decide whether the recorded rows are provably bound to the live description.
+
+    02-REVIEW.md CR-01: the earlier form of this check read `if bound_hash and
+    bound_hash != live_hash`, which is falsy when no binding was found at all --
+    so a document with a missing or malformed Scope hash ran with the guard
+    silently skipped, which is the one thing this instrument must never do. An
+    absent binding is a refusal, not a pass.
+    """
+    label = path if path else 'the --tests file'
+    if bound_hash is None:
+        raise ValueError(
+            '%s records no sha256 under its ## Scope heading, so its rows cannot be '
+            'shown to belong to the live description. Add the binding before running.'
+            % label
+        )
+    if bound_hash != live_hash:
+        raise ValueError(
+            '%s binds its rows to description sha256 %s but the live SKILL.md '
+            'hashes to %s. The rows must be re-authored against the new description, '
+            'not filled in.' % (label, bound_hash, live_hash)
+        )
+    return 'bound'
+
+
 def render_run_block(label, rows, counts, model='', harness_version='',
                       scope_hash_value='', repeats=1, run_date=''):
     """Render one labelled `## Run` block: a k-of-n count per row, never a percentage.
@@ -352,6 +385,39 @@ bound to d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675 exactl
 nothing yet.
 """
 
+# CR-01 defect (b): a sha256 somewhere else in the document is NOT the binding.
+# This is the exact edit shape the review names as the live risk -- a later,
+# unrelated hash reference added to pressure-tests.md.
+_SCOPE_DECOY_MD = """# heading
+
+Recorded elsewhere: """ + 'a' * 64 + """ (an unrelated reference, not the binding).
+
+## Scope
+
+no hash recorded here yet.
+
+## Must fire
+
+| Phrasing | Expected | Observed | Date | Harness |
+|---|---|---|---|---|
+| Write our RFP answer. | Fires | not yet observed | - | - |
+"""
+
+_SCOPE_WINS_MD = """# heading
+
+Recorded elsewhere: """ + 'a' * 64 + """ (an unrelated reference, not the binding).
+
+## Scope
+
+bound to """ + 'b' * 64 + """ exactly.
+
+## Must fire
+
+| Phrasing | Expected | Observed | Date | Harness |
+|---|---|---|---|---|
+| Write our RFP answer. | Fires | not yet observed | - | - |
+"""
+
 
 def self_test():
     """Prove the two offline judgements discriminate, with no model call and no quota spend."""
@@ -377,6 +443,35 @@ def self_test():
         failures.append('recorded_scope_hash did not read the bound hash out of the Scope section')
     if recorded_scope_hash('no hash here') is not None:
         failures.append('recorded_scope_hash invented a hash where none is recorded')
+    if recorded_scope_hash(_SCOPE_DECOY_MD) is not None:
+        failures.append('recorded_scope_hash adopted a sha256 from outside the ## Scope '
+                        'section as the binding (02-REVIEW.md CR-01 defect (b))')
+    if recorded_scope_hash(_SCOPE_WINS_MD) != 'b' * 64:
+        failures.append('recorded_scope_hash did not prefer the ## Scope hash over an '
+                        'earlier unrelated one elsewhere in the document')
+
+    # --- scope-binding guard: an absent binding must refuse (3 cases) ---
+    absent_msg = ''
+    try:
+        scope_binding_verdict(None, 'a' * 64, path='fixture.md')
+    except ValueError as exc:
+        absent_msg = str(exc)
+    if 'no sha256' not in absent_msg:
+        failures.append('scope_binding_verdict(None, ...) did not refuse via its absent-binding '
+                        'branch (got %r) -- a document with no recorded binding would run with '
+                        'the guard silently skipped (02-REVIEW.md CR-01 defect (a))'
+                        % (absent_msg or 'no refusal at all'))
+    mismatch_msg = ''
+    try:
+        scope_binding_verdict('a' * 64, 'b' * 64, path='fixture.md')
+    except ValueError as exc:
+        mismatch_msg = str(exc)
+    if 'binds its rows' not in mismatch_msg:
+        failures.append('scope_binding_verdict did not refuse a hash mismatch via its mismatch '
+                        'branch (got %r) -- rows bound to a different description would be '
+                        'filled in as observations' % (mismatch_msg or 'no refusal at all'))
+    if scope_binding_verdict('a' * 64, 'a' * 64) != 'bound':
+        failures.append('scope_binding_verdict refused a correctly bound document')
 
     # --- repeats aggregation (1 case) ---
     fires, scoreable = aggregate_verdicts(
@@ -426,8 +521,9 @@ def self_test():
     if failures:
         print('self-test FAIL: %d problem(s)' % len(failures))
         return 1
-    print('self-test PASS: 3 detector cases, 2 table rows, 2 scope-hash cases, '
-          '1 aggregate-verdicts case, 4 overwrite-guard cases, 5 render-block cases')
+    print('self-test PASS: 3 detector cases, 2 table rows, 4 scope-hash cases, '
+          '3 scope-binding-guard cases, 1 aggregate-verdicts case, 4 overwrite-guard '
+          'cases, 5 render-block cases')
     return 0
 
 
@@ -538,10 +634,10 @@ def main(argv=None):
     skill_md = pathlib.Path(args.skill_src) / 'SKILL.md'
     live_hash = scope_hash(skill_md)
     bound_hash = recorded_scope_hash(md_text)
-    if bound_hash and bound_hash != live_hash:
-        print('ERROR: %s binds its rows to description sha256 %s but the live SKILL.md '
-              'hashes to %s. The rows must be re-authored against the new description, '
-              'not filled in.' % (args.tests, bound_hash, live_hash), file=sys.stderr)
+    try:
+        scope_binding_verdict(bound_hash, live_hash, path=args.tests)
+    except ValueError as exc:
+        print('ERROR: %s' % exc, file=sys.stderr)
         return 1
 
     out_path = pathlib.Path(args.out)
