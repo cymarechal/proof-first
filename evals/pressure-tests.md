@@ -52,15 +52,15 @@ response), phrased the way a writer actually asks rather than as a bare keyword.
 
 | Phrasing | Expected | Observed | Date | Harness |
 |---|---|---|---|---|
-| Write our response to RFP question 4 about the cut-over plan. | Fires | not yet observed | - | - |
-| We got an RFI back from procurement — draft the answers. | Fires | not yet observed | - | - |
-| Draft the solution proposal section for the migration approach. | Fires | not yet observed | - | - |
-| I need an executive summary for the Halverton board deck. | Fires | not yet observed | - | - |
-| Write the demo script for tomorrow's discovery call. | Fires | not yet observed | - | - |
-| Turn these discovery notes into the after-state section of the proposal. | Fires | not yet observed | - | - |
-| Help me write this presales response before it ships to the customer. | Fires | not yet observed | - | - |
-| We're putting together our bid response — write the commercial section. | Fires | not yet observed | - | - |
-| This is a scored technical response — write section 3 so it holds up. | Fires | not yet observed | - | - |
+| Write our response to RFP question 4 about the cut-over plan. | Fires | fired 5 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| We got an RFI back from procurement — draft the answers. | Fires | fired 5 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Draft the solution proposal section for the migration approach. | Fires | fired 5 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| I need an executive summary for the Halverton board deck. | Fires | fired 5 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Write the demo script for tomorrow's discovery call. | Fires | fired 5 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Turn these discovery notes into the after-state section of the proposal. | Fires | fired 5 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Help me write this presales response before it ships to the customer. | Fires | fired 5 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| We're putting together our bid response — write the commercial section. | Fires | fired 0 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| This is a scored technical response — write section 3 so it holds up. | Fires | fired 5 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
 
 ## Must not fire
 
@@ -70,29 +70,35 @@ rows meaningful rather than incidental.
 
 | Phrasing | Expected | Observed | Date | Harness |
 |---|---|---|---|---|
-| Write launch copy for our new product announcement. | Does not fire | not yet observed | - | - |
-| Build me a slide deck for the kickoff meeting. | Does not fire | not yet observed | - | - |
-| Work out pricing and sizing for a 500-seat deployment. | Does not fire | not yet observed | - | - |
-| Write the API reference docs for the /migrations endpoint. | Does not fire | not yet observed | - | - |
-| Rewrite this paragraph in plain English for a general reader. | Does not fire | not yet observed | - | - |
+| Write launch copy for our new product announcement. | Does not fire | fired 0 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Build me a slide deck for the kickoff meeting. | Does not fire | fired 0 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Work out pricing and sizing for a 500-seat deployment. | Does not fire | fired 0 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Write the API reference docs for the /migrations endpoint. | Does not fire | fired 0 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
+| Rewrite this paragraph in plain English for a general reader. | Does not fire | fired 0 of 5 scoreable | 2026-09-20 | `claude` 2.1.267 / `claude-sonnet-5` |
 
 ## Observations
 
 **This round's method.** The CAT-10 gap-closure round (`02-10-PLAN.md`) measures whether the
 appended exclusion clause changes the two over-fires the 2026-09-20 single-session run found. Two
-paired arms run on the identical instrument — `evals/trigger/run_trigger_test.py` with
+paired arms ran on the identical instrument — `evals/trigger/run_trigger_test.py` with
 `--model claude-sonnet-5 --repeats 5 --jobs 3 --timeout 600`, all 14 phrasings, 70 sessions each:
 Arm B (control, the pre-change 439-character description) and Arm A (treatment, the 551-character
-description this file is now bound to, hash above). Arm B's full run block, with its own
-`k of n` counts and Clopper-Pearson bounds, is recorded in
-`evals/trigger/RESULTS-trigger.md`; the 2026-09-20 single-session block above it is untouched.
+description the rows above now carry, measured against the hash bound in Scope). Arm B's and Arm
+A's full run blocks, each with their own `k of n` counts and Clopper-Pearson bounds, are recorded
+in `evals/trigger/RESULTS-trigger.md`; the 2026-09-20 single-session block above them is untouched.
+
+**Arm A's rows above are this round's measurement of the description this file is bound to at the
+commit that added this paragraph.** `OF_A = 0, SN_A = 25` (every must-not-fire row scored zero
+fires) and `MH_A = 40, SM_A = 45` (one must-fire row, "We're putting together our bid response —
+write the commercial section.", scored zero of five). For comparison, Arm B measured
+`OF_B = 9, SN_B = 25` and `MH_B = 45, SM_B = 45`. Every zero-fire row's exact Clopper-Pearson upper
+bound at n=5 is stated in `evals/trigger/RESULTS-trigger.md`'s Arm A block.
 
 `evals/trigger/DECISION-RULE-cat10.md` — committed before either arm ran — is the authority for
-what these two arms mean: it fixes the closure threshold, the attribution threshold, the sample
-floors, the attempt cap, and a six-branch precedence table applied mechanically once both arms are
-measured. **This file publishes no verdict.** The rows above are filled with Arm A's counted
-result by Task 5; the branch selected and what it means for CAT-10 is written in
-`evals/trigger/RESULTS-trigger.md` and `.planning/REQUIREMENTS.md` by Task 6, never here.
+what these two arms mean. **This file publishes no verdict.** The branch its six-branch table
+selects, and what that means for CAT-10, is applied and written out by Task 6 in
+`evals/trigger/RESULTS-trigger.md`, `.planning/REQUIREMENTS.md`, and `.planning/WINDOWS.md` id 24 —
+never here.
 
 Reproduce with:
 

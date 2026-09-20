@@ -139,6 +139,34 @@ state which skill, if any, was selected.
 retention decision across both arms is recorded once, in this file, at the end of Task 5 (Arm A),
 per the pre-committed transcript-retention rule in `evals/trigger/DECISION-RULE-cat10.md`.
 
-## Arm A (treatment)
+## Arm A (treatment) — 70 sessions, `evals/trigger/transcripts/treatment/`
 
-Recorded by Task 5, appended below this line, once Arm A's sessions have run.
+Same extraction command as Arm B, with `d = pathlib.Path('evals/trigger/transcripts/treatment')`.
+
+- All 70 captured transcripts carry a `system`/`init` event (none missing).
+- All 70 sessions share **one identical top-level key set** and **one identical `skills` field**,
+  and that field's content hash (`14563d17bfe7`) is byte-for-byte the same value Arm B's sessions
+  recorded. **The two arms saw the identical activation environment** — the only variable between
+  them was the `description` text itself, confirming the pairing the round's attribution claim
+  depends on.
+- The top-level key set and the `skills` field's contents are identical to Arm B's — see the Arm B
+  section above; they are not reproduced a second time here since a byte-identical duplicate would
+  only be a place for the two copies to silently drift apart.
+
+**What this settles, for Arm A specifically.** The description that produced Arm A's zero over-fires
+and one must-fire regression (`evals/trigger/RESULTS-trigger.md`'s Arm A block) was given to the
+harness in the same bare-name-list form as Arm B's — no description text, no exclusion clause, no
+trigger vocabulary appears in the init event for either arm. Whatever mechanism produced the
+regression on "We're putting together our bid response — write the commercial section." acted on
+information available to the harness at some point after this event (most plausibly, the
+per-skill `description` fetched during activation ranking), not on anything visible in the init
+event stream itself.
+
+## Transcript retention (applied once, over both arms)
+
+Per the pre-committed transcript-retention rule in `evals/trigger/DECISION-RULE-cat10.md`:
+gzipping both arms' combined 140 transcripts (`evals/trigger/transcripts/control/` and
+`evals/trigger/transcripts/treatment/`) into one tarball measured **`du -k` = 3988 KB**, under the
+5120 KB threshold. The tarball is committed as `evals/trigger/transcripts-cat10.tar.gz`.
+
+(Arm B alone measured 1964 KB gzipped, recorded above before the combined measurement was taken.)
