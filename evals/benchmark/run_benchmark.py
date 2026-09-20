@@ -483,6 +483,7 @@ REQUIRED_CAVEATS = (
     'baseline prompt parity',
     'proxy provenance',
     'sample size',
+    'judge construct validity',
 )
 
 CAVEAT_TEXT = {
@@ -513,6 +514,13 @@ CAVEAT_TEXT = {
         'observed range as noise. Every mean is rounded to one decimal place using Python\'s '
         'default round-half-to-even rule; the unrounded values remain recoverable from '
         'evals/benchmark/raw/.'
+    ),
+    'judge construct validity': (
+        'Judge construct validity: the scores under Judged persuasion are one language model\'s '
+        'rating of these texts against the rubric build_judge_prompt() sends it -- a proxy for '
+        'how a technical evaluator might react, not a measurement of real buyer behavior or of '
+        'any commercial outcome. No human evaluator scored any of these texts, and no score here '
+        'should be read as predicting one.'
     ),
 }
 
@@ -2063,8 +2071,9 @@ def self_test():
         cases_exercised.append('aggregate-below-3-repeats-reports-actual-n')
 
     # --- committed results-render fixtures: a real render carries both
-    # required headings and all five caveats; two consecutive renders over
-    # the same input are byte-identical; the rendered text carries no
+    # required headings and every required caveat (REQUIRED_CAVEATS, six as
+    # of the judge-construct-validity addition); two consecutive renders
+    # over the same input are byte-identical; the rendered text carries no
     # p-value, confidence interval, standard deviation, or affirmative
     # "significant". ---
     fixture_raw_dir = FIXTURES_DIR / 'results-render'
@@ -2117,7 +2126,7 @@ def self_test():
         print(f'FAIL: rendered fixture report contains a forbidden overclaim phrase: {found_forbidden}')
         all_ok = False
     else:
-        cases_exercised.append('results-render-fixture-two-headings-five-caveats-byte-identical')
+        cases_exercised.append('results-render-fixture-two-headings-all-caveats-byte-identical')
 
     # --- per-caveat assertion: deleting each of the five caveats in turn
     # from a COPY of REQUIRED_CAVEATS (never the constant itself) makes the
