@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
-status: executing
-stopped_at: "Completed 02-10-PLAN.md (CAT-10 gap-closure): Branch 4 selected, intervention reverted"
-last_updated: "2026-09-20T09:10:45.272Z"
+status: completed
+stopped_at: "Phase 02 complete (11/11 plans). Closed 2026-09-20 by explicit project-owner override over CAT-10's open over-fire residual; CAT-10 and WINDOWS id 24 route to Phase 6."
+last_updated: "2026-09-20T09:54:42.303Z"
 last_activity: 2026-09-20
-last_activity_desc: Phase 02 execution started
-state_head: 28404a5251258f43c0c3efe2d294a106936d94bb
+last_activity_desc: Phase 02 closed — 02-11 fixed the fail-open scope-hash guard (CR-01); CAT-10 residual accepted and disclosed
+state_head: 2009e8aabbd369d2a614d1acb4f5d373934f59bc
 progress:
   total_phases: 6
-  completed_phases: 3
-  total_plans: 50
-  completed_plans: 50
-  percent: 50
+  completed_phases: 4
+  total_plans: 51
+  completed_plans: 51
+  percent: 67
 ---
 
 # Project State
@@ -27,27 +27,29 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — ALL 10 PLANS SUMMARIZED
-Plan: 10 of 10 (02-10 gap-closure plan complete)
-Status: 02-10 executed; CAT-10 remains open on a measured, attributable finding
-02-10 ran the pre-committed six-branch decision rule (evals/trigger/DECISION-RULE-cat10.md)
-live: 140 sessions, paired n=5, both arms on one instrument. Arm B (control, 439-char
-description): OF_B/SN_B=9/25 over-fires, MH_B/SM_B=45/45 must-fire hits. Arm A (treatment,
-551-char description with an exclusion clause): OF_A/SN_A=0/25 (every must-not-fire row
-clean, p_attr=0.0016 vs. control) but MH_A/SM_A=40/45 — a genuine must-fire regression on
-"write the commercial section." The rule's precedence order (6,5,4,1,2,3) selects Branch 4
-ahead of Branch 1: the treatment was reverted (SKILL.md, both .claude-plugin manifests, and
-evals/pressure-tests.md back to the pre-intervention commit, derivatives regenerated, hash
-confirmed back to d5dd651a...). CAT-10 stays [ ] in REQUIREMENTS.md with the full measured
-annotation; WINDOWS.md id 24 stays open with the measured counts (not waived — a tested lever
-was reverted, not an accepted residual). The next candidate lever (H1: remove the audience
-clause "for technical presales and bid teams") is named but deliberately unattempted this
-round. Full evidence: evals/trigger/RESULTS-trigger.md (3 run blocks), INIT-EVENTS.md.
-Next: Phase 02 has no further plans; route to /gsd-plan-phase 03 (if not already planned) or
-/gsd-verify-work 02 to confirm phase-level closure with CAT-10's open status disclosed.
-Last activity: 2026-09-20 — 02-10 gap-closure plan executed (6 tasks, 140 live sessions)
+Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — COMPLETE, 11/11 plans
+Plan: 11 of 11 (02-11 gap-closure plan complete)
+Status: closed 2026-09-20 by explicit project-owner override; one disclosed residual stays open
 
-Progress: [█████░░░░░] 50%
+02-11 closed 02-REVIEW.md CR-01, the last unresolved critical finding: the trigger instrument's
+scope-hash guard failed open. `recorded_scope_hash()` searched the whole document instead of the
+`## Scope` section, and the halt read `if bound_hash and bound_hash != live_hash`, which is falsy
+when no binding was found — so a pressure-test file with a missing or malformed hash ran with the
+guard silently skipped. The decision now lives in `scope_binding_verdict()`, an absent binding is
+a refusal, and both halts are covered by self-test cases proven red-then-green by mutation probe.
+No published measurement moved: pressure-tests.md and RESULTS-trigger.md are byte-identical and
+SKILL.md's head-14 digest is still d5dd651a….
+
+Worth carrying forward: the absent-binding self-test case initially passed with its own branch
+removed, because the neighbouring mismatch branch raises too (None != live_hash). The mutation
+probe caught it; the case now asserts on the refusal message. Same failure shape as WINDOWS id 10.
+
+CAT-10 is NOT closed and was not made to look closed. The shipped 439-character description still
+fires on 9 of 25 scoreable must-not-fire sessions at n=5, paired. 02-UAT.md test 2 still reads
+`result: issues` with those counts verbatim, and `gsd-tools phase uat-passed 02` still returns
+passed=false on exactly that one check. Phase 2 was marked complete by hand over that verdict, as
+an explicit, dated project-owner decision recorded in 02-VERIFICATION.md `completion_override` —
+the WINDOWS id 8 posture. CAT-10 stays `- [ ]`, WINDOWS id 24 stays open, both route to Phase 6.
 
 ## Performance Metrics
 

@@ -14,7 +14,7 @@ Proof First ships as one dependency-free skill folder plus a reproducible eval h
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundations — Legal Scaffolding, Numbering, Shared Deal** - Freeze the rule-numbering namespaces, the shared deal brief, and the license/trademark scaffolding before any rule content is drafted. (completed 2026-09-10)
-- [ ] **Phase 2: Rule Catalog & Integrity — SKILL.md Core** - Author SKILL.md's self-contained rule catalog, integrity section, and basic draft/check modes.
+- [x] **Phase 2: Rule Catalog & Integrity — SKILL.md Core** - Author SKILL.md's self-contained rule catalog, integrity section, and basic draft/check modes. (completed 2026-09-20 — closed by explicit project-owner override over CAT-10's disclosed, still-open over-fire residual; see 02-VERIFICATION.md `completion_override`)
 - [x] **Phase 3: Completeness Audit & Artifact Patterns** - Add the MEDDICC completeness audit and the four artifact-family patterns, and wire the classification and citation guarantees that depend on them. (completed 2026-09-17)
 - [ ] **Phase 4: Distribution & Worked Examples** - Ship the skill through every promised channel with before/after examples citing real rule numbers.
 - [x] **Phase 5: Evaluation Harness** - Prove the skill works with a reproducible, multi-model, persuasion-aware benchmark. (completed 2026-09-20)

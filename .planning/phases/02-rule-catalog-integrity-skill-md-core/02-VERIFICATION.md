@@ -1,8 +1,8 @@
 ---
 phase: 02-rule-catalog-integrity-skill-md-core
-verified: 2026-09-20T12:00:00Z
-status: human_needed
-score: "4/5 roadmap success criteria fully verified; SC1 measured with a disclosed, unresolved trigger-precision residual (17 requirement IDs: 15 satisfied, 1 [CAT-10] measured-not-satisfied and disclosed, 1 [WINDOWS id 3] deferred to Phase 6)"
+verified: 2026-09-20T19:05:00Z
+status: passed
+score: "5/5 roadmap success criteria verified — SC1 on the recall reading recorded as an override at 02-UAT.md test 3, with its precision residual disclosed and still open (17 requirement IDs: 15 satisfied, 1 [CAT-10] measured-not-satisfied and disclosed, 1 [WINDOWS id 3] deferred to Phase 6)"
 behavior_unverified: 0
 overrides_applied: 1
 re_verification:
@@ -24,6 +24,17 @@ human_verification:
   - test: "Decide the disposition of 02-REVIEW.md's CR-01 (fail-open scope-hash guard: `recorded_scope_hash()` returns `None` on a missing/malformed hash, and the halt `if bound_hash and bound_hash != live_hash` is silently skipped when `bound_hash` is `None`, so a future edit to `evals/pressure-tests.md` that breaks the regex would silently disable the safety halt this instrument's own docstring says exists) — fix it now, or record it as an explicitly accepted risk in `.planning/WINDOWS.md`."
     expected: "Either a follow-up plan applies 02-REVIEW.md's documented fix (require a hash to be present and scope the regex to the `## Scope` heading), or a new WINDOWS.md entry records the risk as accepted, consistent with how this same round already recorded its other two findings (ids 26, 27)."
     why_human: "This is a real, unresolved CRITICAL finding from a code review that ran as part of this same round; it currently has no disposition anywhere in the repository's tracking (unlike the round's other findings, which were recorded as WINDOWS ids 26/27). It is dormant today (exactly one well-formed hash exists in `pressure-tests.md`) but its blast radius is a future silent measurement-integrity failure — the exact class of failure this project's entire evidence discipline exists to prevent. A verifier should not silently accept an unresolved CRITICAL finding into a passed/complete phase."
+completion_override:
+  decided_by: "project owner (human), in an interactive /gsd-execute-phase session on 2026-09-20 — not the executing agent on the project's behalf. Same posture as the WINDOWS id 8 v1 disposition."
+  date: 2026-09-20
+  what_was_overridden: "The shared UAT-plus-verification completion predicate (`gsd-tools phase uat-passed 02 --require-verification`) returns passed=false and will keep returning false, because 02-UAT.md test 2 reads `result: issues` and PASSING_RESULTS admits only pass/passed. Phase 2 was marked complete by hand over that verdict."
+  closing_over: "CAT-10's measured over-fire: the shipped 439-character description fires on 9 of 25 scoreable must-not-fire sessions at n=5, paired (evals/trigger/RESULTS-trigger.md, Arm B). Real, reproducible, and unresolved."
+  what_was_NOT_done: "No measured number was changed to clear the gate. 02-UAT.md test 2 still reads `result: issues` with its 9-of-25 counts verbatim. evals/pressure-tests.md, evals/trigger/RESULTS-trigger.md and the SKILL.md description are byte-identical. The test's criterion was not re-scoped after seeing its result — a re-scope option was offered and declined."
+  debt_still_open:
+    - "REQUIREMENTS.md CAT-10 stays `- [ ]` / Gaps Found."
+    - "WINDOWS.md id 24 stays `open` — not waived, not fixed."
+    - "Both route to the Phase 6 LEG-04 launch gate, alongside ids 3, 11, 12, 16, 17 and 25."
+  reopening_condition: "A mechanism-identification experiment isolating which clause of the description exerts the positive pull. The one lever tested (02-10's exclusion clause) eliminated every over-fire but regressed a must-fire row 5/5 to 0/5 and was reverted; H1's audience-clause removal carries the same recall-side risk and is not funded on a guess."
 human_verification_resolved:
   - item: 1
     resolved_at: 2026-09-20
