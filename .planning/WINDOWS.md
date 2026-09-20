@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 12
+open_count: 16
 waived_count: 1
 fixed_count: 6
-total_count: 19
-last_updated: 2026-09-18T09:36:24.007Z
+total_count: 23
+last_updated: 2026-09-20T02:01:53.185Z
 ---
 
 # Broken Windows Ledger
@@ -34,6 +34,10 @@ last_updated: 2026-09-18T09:36:24.007Z
 | 17 | 04 | unrun-verify | README.md |  | No code in this repository compares two factual assertions in the same document for consistency. Measured evidence: three consecutive rounds (G-04-3, G-04-4, G-04-8) where check_repo.py reported 0 violations while a cold human read found a false sentence on first pass -- the class is invisible to every existing check, not just the ones that fired green here. This is a decision, not an oversight: the defect is entailment between two independently-phrased passages, which pattern matching over one file at a time cannot perform; a blocklist of the exact removed phrasings would prove only that those specific sentences did not come back; and a broad negative-existential regex over README prose would be a fuzzy-proxy hard-fail gate on every future legitimate disclosure sentence. A narrow presence code (require README.md to name the headless mechanism) was measured and would be red-then-green across this plan, meeting the repository's own evidence bar, but is still refused: unlike 04-13's readme-output-style-destination-missing, whose string has independent reader value (a route missing its destination directory is unexecutable), this token's only function would be to gesture at this specific correction and cannot distinguish a correctly scoped disclosure from an over-broad one that happens to mention the mechanism elsewhere on the page. Recorded in tools/check_repo.py's module docstring alongside the existing paraphrase-judgement limit. Closure condition: a cold human read each round, routed to end-of-phase UAT rather than to CI -- the same method that caught all three instances of this defect class. | open |  | 2026-09-18T07:42:37.964Z |  |
 | 18 | 05 | unrun-verify | evals/benchmark/bench-deal-brief.md |  | Name-collision web search for bench-deal-brief.md's invented company/people names could not be run in this environment (no live network access), mirroring Phase 1's disclosed unrun-verify posture for examples/deal-brief.md. | open |  | 2026-09-18T09:36:23.879Z |  |
 | 19 | 05 | unrun-verify | evals/benchmark/scenarios.json |  | Whether the eight scenario prompts are realistic presales tasks a bid team would actually receive (vs. shaped to favor one condition) is a verification:backstop truth per 05-02-PLAN.md, not mechanically checked. | open |  | 2026-09-18T09:36:24.007Z |  |
+| 20 | 05 | unmet-truth | evals/benchmark/run_benchmark.py |  | 05-REVIEW.md CR-02: aggregate()'s 'Judged persuasion' mean/range table pools individual per-order judgement records (n=6 per cell) instead of averaging each pair's two orders first, the way judge_summary()/average_orders() does for the win/tie/loss table. With a complete matrix (0 unscoreable, 0 excluded pairs) the published means are unaffected, which is why no committed figure is wrong today. But if one order of a pair were ever unscoreable, an un-paired, position-bias-uncorrected score would leak into the mean while RESULTS.md's own position-bias caveat still asserts orders are averaged before the report reads them. Non-blocking now, latent falsehood later. | open |  | 2026-09-20T02:01:52.821Z |  |
+| 21 | 05 | unmet-truth | evals/benchmark/run_benchmark.py |  | 05-REVIEW.md CR-03: raw-record filenames and aggregate()'s grouping key omit effort, judge_model and judge_effort. Re-running against a populated evals/benchmark/raw/ with a different --effort or --judge-model silently reuses stale-configuration records (skip-if-exists matches on the shorter key) with no diagnostic, and RESULTS.md never states which effort or judge model produced its numbers. The committed run is internally consistent (single effort, single judge model), so no published figure is wrong; the gap is that nothing prevents or discloses a mixed-configuration run. | open |  | 2026-09-20T02:01:52.940Z |  |
+| 22 | 05 | unmet-truth | evals/benchmark/run_benchmark.py |  | 05-REVIEW.md CR-04: a (model, scenario, condition) cell whose every generation attempt failed is silently absent from the 'Mechanical proxy counts' table, with no 'Unscoreable generations: N' line -- asymmetric with the judgement side, which does print 'Unscoreable judgements: N' and 'Excluded pairs: N'. The committed run has zero unscoreable generations so nothing is hidden today, but a future partial run could publish a table that silently covers fewer cells than it appears to. | open |  | 2026-09-20T02:01:53.066Z |  |
+| 23 | 05 | deviation | evals/benchmark/run_benchmark.py |  | 05-REVIEW.md W-02: DISALLOWED_TOOLS = ['Write','Edit','Bash','NotebookEdit'] omits WebSearch and WebFetch, so generations run with web access available. MEASURED, NOT HYPOTHETICAL: summing usage.server_tool_use across all 96 committed generation records gives web_search_requests=0 and web_fetch_requests=0, so the committed measurement is uncontaminated. Recorded as a hardening gap for any future run, not as a defect in the published numbers. | open |  | 2026-09-20T02:01:53.185Z |  |
 
 ````json
 [
@@ -263,6 +267,54 @@ last_updated: 2026-09-18T09:36:24.007Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-18T09:36:24.007Z",
+    "resolved_at": null
+  },
+  {
+    "id": 20,
+    "kind": "unmet-truth",
+    "phase": "05",
+    "file": "evals/benchmark/run_benchmark.py",
+    "line": null,
+    "description": "05-REVIEW.md CR-02: aggregate()'s 'Judged persuasion' mean/range table pools individual per-order judgement records (n=6 per cell) instead of averaging each pair's two orders first, the way judge_summary()/average_orders() does for the win/tie/loss table. With a complete matrix (0 unscoreable, 0 excluded pairs) the published means are unaffected, which is why no committed figure is wrong today. But if one order of a pair were ever unscoreable, an un-paired, position-bias-uncorrected score would leak into the mean while RESULTS.md's own position-bias caveat still asserts orders are averaged before the report reads them. Non-blocking now, latent falsehood later.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-20T02:01:52.821Z",
+    "resolved_at": null
+  },
+  {
+    "id": 21,
+    "kind": "unmet-truth",
+    "phase": "05",
+    "file": "evals/benchmark/run_benchmark.py",
+    "line": null,
+    "description": "05-REVIEW.md CR-03: raw-record filenames and aggregate()'s grouping key omit effort, judge_model and judge_effort. Re-running against a populated evals/benchmark/raw/ with a different --effort or --judge-model silently reuses stale-configuration records (skip-if-exists matches on the shorter key) with no diagnostic, and RESULTS.md never states which effort or judge model produced its numbers. The committed run is internally consistent (single effort, single judge model), so no published figure is wrong; the gap is that nothing prevents or discloses a mixed-configuration run.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-20T02:01:52.940Z",
+    "resolved_at": null
+  },
+  {
+    "id": 22,
+    "kind": "unmet-truth",
+    "phase": "05",
+    "file": "evals/benchmark/run_benchmark.py",
+    "line": null,
+    "description": "05-REVIEW.md CR-04: a (model, scenario, condition) cell whose every generation attempt failed is silently absent from the 'Mechanical proxy counts' table, with no 'Unscoreable generations: N' line -- asymmetric with the judgement side, which does print 'Unscoreable judgements: N' and 'Excluded pairs: N'. The committed run has zero unscoreable generations so nothing is hidden today, but a future partial run could publish a table that silently covers fewer cells than it appears to.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-20T02:01:53.066Z",
+    "resolved_at": null
+  },
+  {
+    "id": 23,
+    "kind": "deviation",
+    "phase": "05",
+    "file": "evals/benchmark/run_benchmark.py",
+    "line": null,
+    "description": "05-REVIEW.md W-02: DISALLOWED_TOOLS = ['Write','Edit','Bash','NotebookEdit'] omits WebSearch and WebFetch, so generations run with web access available. MEASURED, NOT HYPOTHETICAL: summing usage.server_tool_use across all 96 committed generation records gives web_search_requests=0 and web_fetch_requests=0, so the committed measurement is uncontaminated. Recorded as a hardening gap for any future run, not as a defect in the published numbers.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-20T02:01:53.185Z",
     "resolved_at": null
   }
 ]
