@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 current_phase: 02
 current_phase_name: Rule Catalog & Integrity — SKILL.md Core
 status: executing
-stopped_at: Phase 02 CAT-10 gap diagnosed and 02-10 gap-closure plan verified; awaiting execution
-last_updated: "2026-09-20T02:25:35.381Z"
+stopped_at: "Completed 02-10-PLAN.md (CAT-10 gap-closure): Branch 4 selected, intervention reverted"
+last_updated: "2026-09-20T09:10:45.272Z"
 last_activity: 2026-09-20
-last_activity_desc: CAT-10 diagnosed; 02-10 gap-closure plan written and checker-passed
-state_head: b498be3b358ca64f9dc0db08ed468de44cc5b26d
+last_activity_desc: Phase 02 execution started
+state_head: 28404a5251258f43c0c3efe2d294a106936d94bb
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 49
-  completed_plans: 49
+  total_plans: 50
+  completed_plans: 50
   percent: 50
 ---
 
@@ -27,24 +27,27 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — ALL PLANS DONE, NOT COMPLETE
-Plan: 9 of 9
-Status: Phase 02 blocked at the completion gate by one measured defect, not by unfinished plans.
-All 9 plans are summarized and the phase goal (5/5 roadmap success criteria) is verified.
-CAT-10 is measurably NOT SATISFIED: the trigger pressure test was run live on 2026-09-20
-(evals/trigger/RESULTS-trigger.md) and the description fires on 2 of 5 deliberately
-out-of-scope phrasings. Narrowing it is a design change to the shipped trigger surface
-(SKILL.md frontmatter, both .claude-plugin manifests, and the two generated derivatives),
-so it needs a gap-closure plan rather than an edit inside a completion run.
-Next: /gsd-execute-phase 02 --gaps-only to run 02-10 (the CAT-10 gap-closure plan).
-02-10-PLAN.md is written and checker-verified: a paired n=5 experiment (140 live sessions,
-170 attempt cap) under a six-branch decision rule committed before any measurement. The rule
-pre-names an H4 null as Branch 3, so "the exclusion clause had no measured effect" is a
-recordable result rather than a failed plan. CAT-10 stays unchecked under every branch but 1.
-Diagnosis refuted the lexical-pull explanation; the positive pull remains unidentified.
-Last activity: 2026-09-20 — CAT-10 diagnosed (.planning/debug/), 02-10 gap-closure plan verified
+Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — ALL 10 PLANS SUMMARIZED
+Plan: 10 of 10 (02-10 gap-closure plan complete)
+Status: 02-10 executed; CAT-10 remains open on a measured, attributable finding
+02-10 ran the pre-committed six-branch decision rule (evals/trigger/DECISION-RULE-cat10.md)
+live: 140 sessions, paired n=5, both arms on one instrument. Arm B (control, 439-char
+description): OF_B/SN_B=9/25 over-fires, MH_B/SM_B=45/45 must-fire hits. Arm A (treatment,
+551-char description with an exclusion clause): OF_A/SN_A=0/25 (every must-not-fire row
+clean, p_attr=0.0016 vs. control) but MH_A/SM_A=40/45 — a genuine must-fire regression on
+"write the commercial section." The rule's precedence order (6,5,4,1,2,3) selects Branch 4
+ahead of Branch 1: the treatment was reverted (SKILL.md, both .claude-plugin manifests, and
+evals/pressure-tests.md back to the pre-intervention commit, derivatives regenerated, hash
+confirmed back to d5dd651a...). CAT-10 stays [ ] in REQUIREMENTS.md with the full measured
+annotation; WINDOWS.md id 24 stays open with the measured counts (not waived — a tested lever
+was reverted, not an accepted residual). The next candidate lever (H1: remove the audience
+clause "for technical presales and bid teams") is named but deliberately unattempted this
+round. Full evidence: evals/trigger/RESULTS-trigger.md (3 run blocks), INIT-EVENTS.md.
+Next: Phase 02 has no further plans; route to /gsd-plan-phase 03 (if not already planned) or
+/gsd-verify-work 02 to confirm phase-level closure with CAT-10's open status disclosed.
+Last activity: 2026-09-20 — 02-10 gap-closure plan executed (6 tasks, 140 live sessions)
 
-Progress: [███░░░░░░░] 33%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -118,6 +121,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 05 P01 | 35 min | 3 tasks | 3 files |
 | Phase 05 P02 | ~50min | 3 tasks | 30 files |
 | Phase 05 P03 | 72min-live-run+15min-continuation | 3 tasks | 3 files |
+| Phase 02 P10 | 75min | 6 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -199,6 +203,7 @@ Recent decisions affecting current work:
 - [Phase 05]: Closed Decision 8 item 5 by adding a sixth REQUIRED_CAVEATS/CAVEAT_TEXT key (judge construct validity) to run_benchmark.py, then regenerated RESULTS.md via --report-only rather than hand-editing it
 - [Phase 05]: Judged persuasion result reported as measured: skill loses 7/3/38 win/tie/loss on persuasive_force despite winning on evidence and clarity — material to Phase 6 LEG-05 README claims
 - [Phase 05]: $18.21 recorded as generation cost only; judge-call cost is unrecoverable from committed records (run_judgement lacks cost_usd/usage fields) and is disclosed as a schema gap, not estimated
+- [Phase 02]: 02-10: CAT-10 gap-closure round measured live (140 sessions, paired n=5): exclusion clause eliminates all over-fires (p_attr=0.0016) but causes a must-fire regression, so pre-committed Branch 4 reverts it; CAT-10 stays [ ], WINDOWS id 24 stays open with measured counts, next lever (H1 audience-clause removal) is named but unfunded.
 
 ### Pending Todos
 
@@ -223,6 +228,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-20T01:48:23.748Z
-Stopped at: Phase 02 all plans done; blocked at completion gate on measured CAT-10 over-fire
+Last session: 2026-09-20T09:10:44.975Z
+Stopped at: Completed 02-10-PLAN.md (CAT-10 gap-closure): Branch 4 selected, intervention reverted
 Resume file: None

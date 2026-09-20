@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 17
+open_count: 19
 waived_count: 1
 fixed_count: 7
-total_count: 25
-last_updated: 2026-09-20T02:20:59.504Z
+total_count: 27
+last_updated: 2026-09-20T09:08:30.560Z
 ---
 
 # Broken Windows Ledger
@@ -40,6 +40,8 @@ last_updated: 2026-09-20T02:20:59.504Z
 | 23 | 05 | deviation | evals/benchmark/run_benchmark.py |  | 05-REVIEW.md W-02: DISALLOWED_TOOLS = ['Write','Edit','Bash','NotebookEdit'] omits WebSearch and WebFetch, so generations run with web access available. MEASURED, NOT HYPOTHETICAL: summing usage.server_tool_use across all 96 committed generation records gives web_search_requests=0 and web_fetch_requests=0, so the committed measurement is uncontaminated. Recorded as a hardening gap for any future run, not as a defect in the published numbers. | open |  | 2026-09-20T02:01:53.185Z |  |
 | 24 | 02 | unmet-truth | skills/proof-first/SKILL.md |  | CAT-10 over-broad description. The 2026-09-20 n=1 observation (9/9 must-fire, 2/5 must-not-fire over-fires) was superseded by the CAT-10 gap-closure round's paired n=5 measurement (02-10-PLAN.md, evals/trigger/DECISION-RULE-cat10.md, evals/trigger/RESULTS-trigger.md): Arm B (control, unchanged 439-char description) measured OF_B/SN_B=9/25 over-fires and MH_B/SM_B=45/45 must-fire hits. Arm A (treatment, 551-char description with an appended exclusion clause) measured OF_A/SN_A=0/25 (every must-not-fire row clean) but MH_A/SM_A=40/45 -- the must-fire row 'We're putting together our bid response -- write the commercial section.' regressed from 5/5 to 0/5, a genuine must-fire regression the pre-committed decision rule's Branch 4 catches ahead of Branch 1's clean over-fire elimination (Fisher exact p_attr=0.0016 on the over-fire delta alone -- real, and still insufficient because it cost a legitimate must-fire request). The treatment was tested live and REVERTED; the shipped description is unchanged from the original 439-char text, still measuring 9/25 must-not-fire hits at n=5. This entry stays open: the exclusion-clause lever is now a tested and refuted first candidate, not an unfunded one -- the next lever (most likely H1's audience-clause removal, deliberately not bundled into this round) remains unattempted. | open |  | 2026-09-20T02:20:51.680Z |  |
 | 25 | 05 | unmet-truth | README.md |  | Phase 5 closeout left README.md asserting its own benchmark 'has not run' and listing it under 'What does not exist yet', while evals/benchmark/RESULTS.md records a 2026-09-18 run of 96 generations across claude-opus-5 and claude-sonnet-5 with both-orders judge scoring. The false negative claims were corrected during Phase 2's closeout to point at the committed results file; what remains for Phase 6 (LEG/README claims) is deciding what, if anything, this README states on the strength of that run -- its mechanical proxy counts do not move in one direction, so no clean headline number falls out of it. | open |  | 2026-09-20T02:20:59.504Z |  |
+| 26 | 02 | deviation | evals/trigger/DECISION-RULE-cat10.md |  | 02-10-PLAN.md's own git-diff removed-lines probes (Tasks 3, 5, 6, and the plan-level <verification> block) always print >=1 because git diff's '--- a/file' header line starts with '-', independent of any real content removal; the substantive check (grep -E '^-' \| grep -v '^--- ') printed empty throughout, proving zero real removed lines across the round. | open |  | 2026-09-20T09:08:30.444Z |  |
+| 27 | 02 | deviation | evals/pressure-tests.md |  | 02-10-PLAN.md Task 4's 'not yet observed' whole-file count probe expects 14 but this file's own pre-existing intro paragraph (unrelated to this task, present since 02-05) already contains that literal phrase once as descriptive prose, so the naive count is 15; the table-scoped count (grep -cE '^\\\| .* \\\| not yet observed \\\| - \\\| - \\\|$') correctly printed 14. | open |  | 2026-09-20T09:08:30.560Z |  |
 
 ````json
 [
@@ -341,6 +343,30 @@ last_updated: 2026-09-20T02:20:59.504Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-20T02:20:59.504Z",
+    "resolved_at": null
+  },
+  {
+    "id": 26,
+    "kind": "deviation",
+    "phase": "02",
+    "file": "evals/trigger/DECISION-RULE-cat10.md",
+    "line": null,
+    "description": "02-10-PLAN.md's own git-diff removed-lines probes (Tasks 3, 5, 6, and the plan-level <verification> block) always print >=1 because git diff's '--- a/file' header line starts with '-', independent of any real content removal; the substantive check (grep -E '^-' | grep -v '^--- ') printed empty throughout, proving zero real removed lines across the round.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-20T09:08:30.444Z",
+    "resolved_at": null
+  },
+  {
+    "id": 27,
+    "kind": "deviation",
+    "phase": "02",
+    "file": "evals/pressure-tests.md",
+    "line": null,
+    "description": "02-10-PLAN.md Task 4's 'not yet observed' whole-file count probe expects 14 but this file's own pre-existing intro paragraph (unrelated to this task, present since 02-05) already contains that literal phrase once as descriptive prose, so the naive count is 15; the table-scoped count (grep -cE '^\\| .* \\| not yet observed \\| - \\| - \\|$') correctly printed 14.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-20T09:08:30.560Z",
     "resolved_at": null
   }
 ]
