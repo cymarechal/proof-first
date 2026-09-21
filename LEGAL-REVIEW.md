@@ -229,6 +229,50 @@ already says no tool in this stack performs it. Two items above are live rather 
 prong-2 judgement that the expression is thin, and the prong-4 position of "Economic Buyer" and
 "Paper Process" — and either would be the place to reopen this entry.
 
+### The PF-1 sub-block list — the seven Command of the Message elements
+
+**Disposition: examined at this review; not closed.**
+
+Neither of the two entries above reached this. `WINDOWS.md` id 3 read the PF-0.1 and PF-3.1 rule
+wording; id 6 read the MC dimension list. Nothing read `NUMBERING.md`'s PF-1 carve-up, and on
+`SOURCES.md`'s own definition it is the stronger instance of what id 6 examined.
+
+What is there: `NUMBERING.md`:26-40 divides `PF-1`'s reserved range into "seven named sub-blocks,
+one per Command of the Message element" and freezes them in a table in this order — Before scenario,
+After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, Positive Business
+Outcomes. The prose names the source on the table's face.
+
+Why it is stronger than id 6, point by point:
+
+- It is a source's ordered list, in that source's order, and `NUMBERING.md` says so in its own
+  words. Id 6 at least had to be argued into that description; this one declares it.
+- No acronym defence is available. The MC blocks could at least be argued to follow a mnemonic that
+  many publishers teach; these seven spell nothing and are ordered the way the framework itself
+  sequences them.
+- The mark is live and unadjudicated. `Command of the Message®` is used by Force Management in its
+  own name on its own current public pages (see the section above). There is no genericness holding
+  here of the kind the 2026-04-21 MEDDPICC ruling supplied — no adjudication of any kind was found.
+- Prong 4 engages harder. "Required Capabilities", "Proof Points", "Differentiators" and "Positive
+  Business Outcomes" are this framework's own vocabulary for its own blocks, adopted here verbatim
+  as `NUMBERING.md` labels. They are not neutral English the way "Metric" or "Competition" are.
+
+What weighs the other way, recorded so this entry is not one-sided: the seven labels are short noun
+phrases; no rule text under them is taken from a source; `NOTICES.md` carries the attribution and
+the non-affiliation statement; and the list appears in an internal ID registry rather than in
+`SKILL.md`, the output style or the system prompt — nothing a reader of the shipped skill sees names
+these seven elements as a set in this order.
+
+**This review does not close the entry.** The plan that commissioned this read required the list to
+be examined, not disposed of, and the two facts that would decide it — whether an internal registry
+counts as shipping the list, and whether prong 4 is answered by attribution or only by renaming —
+are the same two live questions id 6 ends on, asked against a live unadjudicated mark instead of an
+adjudicated one. Recorded as `WINDOWS.md` id 29, open.
+
+The narrower observation that can be made now: the exposure, such as it is, is confined to
+`NUMBERING.md`. Renaming the seven sub-blocks to this repository's own terms would remove it
+entirely and would cost nothing a reader depends on, since no shipped file cites them. That is the
+cheapest available answer and it is available whenever someone decides to take it.
+
 ## Name collisions
 
 Every invented party and person in `examples/deal-brief.md` and `evals/benchmark/bench-deal-brief.md`
