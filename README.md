@@ -136,14 +136,15 @@ What exists today:
 - `evals/lint.py` — the stdlib-only mechanical proxy linter the benchmark counts with.
 - `evals/trigger/run_trigger_test.py` — a stdlib-only, self-testing runner that drives live
   sessions per phrasing and reads activation from each session's own event stream.
-- `evals/trigger/RESULTS-trigger.md` — three runs against the shipped skill description. The
-  current one is Arm B, the paired n=5 control measured 2026-09-20 on `claude-sonnet-5`: the skill
-  activated in 45 of 45 must-fire sessions, and over-fired in 9 of 25 must-not-fire sessions — two
-  near-miss phrasings account for all nine, at 5 of 5 and 4 of 5, and the other three over-fired 0
-  of 5. Arm B is the description that ships. The file's earlier single-observation run is superseded
-  by it, and the Arm A block records a longer description that was measured and then reverted, so
-  Arm A describes nothing this repository ships. Caveats are stated in the file, and the over-fire
-  residual is open as CAT-10 (`.planning/WINDOWS.md` entry 24).
+- `evals/trigger/RESULTS-trigger.md` — three runs, two of them against the shipped skill
+  description. The current one is Arm B, the paired n=5 control measured 2026-09-20 on
+  `claude-sonnet-5`: the skill activated in 45 of 45 must-fire sessions, and over-fired in 9 of 25
+  must-not-fire sessions — two near-miss phrasings account for all nine, at 5 of 5 and 4 of 5, and
+  the other three over-fired 0 of 5. Arm B is the description that ships. The file's earlier
+  single-observation run is superseded by it, and the Arm A block records a longer description that
+  was measured and then reverted, so Arm A describes nothing this repository ships. Caveats are
+  stated in the file, and the over-fire residual is open as CAT-10 (`.planning/WINDOWS.md` entry
+  24).
 - `evals/conformance/run_conformance.py` — a stdlib-only, self-testing scorer that drives live
   sessions against the shipped skill and checks whether each one names its artifact family before
   its first rule marker, the write-mode conformance contract this repository calls MOD-04.
