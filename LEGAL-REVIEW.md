@@ -285,21 +285,41 @@ Why it is stronger than id 6, point by point:
   as `NUMBERING.md` labels. They are not neutral English the way "Metric" or "Competition" are.
 
 What weighs the other way, recorded so this entry is not one-sided: the seven labels are short noun
-phrases; no rule text under them is taken from a source; `NOTICES.md` carries the attribution and
-the non-affiliation statement; and the list appears in an internal ID registry rather than in
-`SKILL.md`, the output style or the system prompt — nothing a reader of the shipped skill sees names
-these seven elements as a set in this order.
+phrases; no rule text under them is taken from a source; and `NOTICES.md` carries the attribution
+and the non-affiliation statement.
 
-**This review does not close the entry.** The plan that commissioned this read required the list to
-be examined, not disposed of, and the two facts that would decide it — whether an internal registry
-counts as shipping the list, and whether prong 4 is answered by attribution or only by renaming —
-are the same two live questions id 6 ends on, asked against a live unadjudicated mark instead of an
-adjudicated one. Recorded as `WINDOWS.md` id 29, open.
+**Correcting this entry's fourth counterweight, 2026-09-21.** When this section was written it
+carried a fourth item on that list: that the seven appear in an internal ID registry rather than in
+`SKILL.md`, the output style or the system prompt, so nothing a reader of the shipped skill sees
+names them as a set in this order. That is false against this repository's own files. All three
+carry one identical sentence naming all seven in the table's order:
 
-The narrower observation that can be made now: the exposure, such as it is, is confined to
-`NUMBERING.md`. Renaming the seven sub-blocks to this repository's own terms would remove it
-entirely and would cost nothing a reader depends on, since no shipped file cites them. That is the
-cheapest available answer and it is available whenever someone decides to take it.
+    skills/proof-first/SKILL.md:63
+    output-styles/proof-first.md:87
+    prompts/system-prompt.md:75
+
+The list ships. It reaches every installed user, and the two derivatives carry it because
+`tools/generate_derivatives.py` copies `SKILL.md`'s line into both.
+
+**This review does not close the entry, and the correction above changes why.** The plan that
+commissioned this read required the list to be examined, not disposed of. It was opened on two
+questions. The first — whether an internal ID registry counts as shipping the list — is no longer a
+question: the list is in the shipped skill, so it does not turn on how a registry is characterised.
+The second stands: whether `SOURCES.md`'s fourth prong is answered by attribution or only by
+renaming, asked here against a live unadjudicated mark instead of an adjudicated one. That question
+also sits inside id 6's disposition, which is why the two entries were compared when this section
+was written; they are related questions about the same prong, not the same open items — `## What
+remains open` carries them separately, as items 5 and 6, with different content. Recorded as
+`WINDOWS.md` id 29, open.
+
+The narrower observation, as corrected: the exposure is not confined to `NUMBERING.md`. Renaming the
+seven sub-blocks to this repository's own terms would still remove it entirely, and it is still the
+cheapest available answer, but it costs three files rather than one — `NUMBERING.md`,
+`skills/proof-first/SKILL.md`, and a `python3 tools/generate_derivatives.py` run to carry the change
+into both derivatives. No rule body, no worked example and no reader-facing instruction depends on
+the seven labels, so nothing a reader relies on breaks. What the correction changes is the kind of
+decision it is: a change to shipped content, and so a version decision, rather than an edit to an
+internal registry.
 
 ## Name collisions
 
@@ -381,10 +401,13 @@ observed on the day, in both directions.
    TSDR API gate blocked bulk lookup, and none was pursued through other channels. `NOTICES.md`
    makes no claim that depends on one.
 5. **The PF-1 sub-block labels** — the seven Command of the Message elements frozen in
-   `NUMBERING.md`. Examined for the first time at this review under `## Reproduction boundary` and
-   left open as `WINDOWS.md` id 29, on two questions: whether an internal ID registry counts as
-   shipping the list, and whether `SOURCES.md`'s fourth prong is answered by attribution or only by
-   renaming. Renaming the seven is the cheap alternative and costs nothing a reader depends on.
+   `NUMBERING.md` and named in the same order in `skills/proof-first/SKILL.md`, the output style and
+   the system prompt. Examined for the first time at this review under `## Reproduction boundary`
+   and left open as `WINDOWS.md` id 29. One of the two questions it was opened on — whether an
+   internal ID registry counts as shipping the list — was answered by the files themselves on
+   2026-09-21: the list ships. What stays open is `SOURCES.md`'s fourth prong, whether it is
+   answered by attribution or only by renaming. Renaming the seven is still the cheap alternative —
+   three files and a regeneration, and nothing a reader depends on.
 6. **Two live questions inside the id-6 disposition** — whether the MC list's expression is thin
    enough to carry the conclusion, and where "Economic Buyer" and "Paper Process" sit on the fourth
    prong. Either is a reason to reopen id 6.
@@ -625,7 +648,7 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 26 | 02 | 02-10 plan's git-diff removed-lines probe always printed >=1 | **Waived** | Plan-authored probe artifact; the substantive check printed empty throughout. |
 | 27 | 02 | 02-10 plan's whole-file phrase count returned 15 against 14 | **Waived** | Plan-authored probe artifact; the table-scoped count was correct at 14. |
 | 28 | 04 | Route-equivalence measured and not distinguished | **Waived** | Measured null result published with its four named limits. |
-| 29 | 06 | PF-1's seven Command of the Message sub-block labels in NUMBERING.md | **Open — v2** | Opened at this review. Examined for the first time under `## Reproduction boundary`; left open on two named questions, with renaming as the cheap alternative. |
+| 29 | 06 | PF-1's seven Command of the Message sub-block labels, in NUMBERING.md and in the shipped skill | **Open — v2** | Opened at this review. The counterweight recorded when the row was opened — that the list appears only in an internal registry — was false, corrected by 06-06: SKILL.md:63 and both derivatives name all seven in the table's order. The first of its two questions is answered by that fact; stays open on prong 4. Renaming now costs three files and a regeneration. |
 
 Counts after this sweep: **9 fixed, 2 closed on reasoning, 9 waived, 9 open**, totalling 29.
 `.planning/WINDOWS.md`'s frontmatter reads `fixed_count: 11, waived_count: 9, open_count: 9,
