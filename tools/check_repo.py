@@ -6793,7 +6793,7 @@ def _claim_readme(region_body, tree_extra='', images='', markers=True):
     """A minimal README carrying the layout heading, an optional image, and
     a claim region built from region_body. markers=False omits the end
     marker, giving the unbalanced-region direction."""
-    start = CLAIM_REGION_START + '\n' if markers else CLAIM_REGION_START + '\n'
+    start = CLAIM_REGION_START + '\n'
     end = CLAIM_REGION_END + '\n' if markers else ''
     return (
         "# Fixture readme\n\n"
@@ -7379,8 +7379,7 @@ def self_test():
             anchored + "\n\nMeasured 2026-09-18 across `claude-opus-5`: 91743 points higher."))
         _write(claim_unanchored_root / 'README.md', _claim_readme(
             "The skill won 45 of 48 pairs."))
-        _write(claim_unbalanced_root / 'README.md',
-               "# Fixture readme\n\n" + CLAIM_REGION_START + "\n\n" + anchored + "\n")
+        _write(claim_unbalanced_root / 'README.md', _claim_readme(anchored, markers=False))
         _write(claim_nomarker_root / 'README.md',
                "# Fixture readme\n\nThe skill won 45 of 48 pairs with no claim region at all.\n")
         _write(claim_two_root / 'README.md', _claim_readme(
