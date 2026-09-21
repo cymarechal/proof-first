@@ -164,38 +164,70 @@ instruction similarly, and it is not a copyright opinion.
 
 The question is narrow and real: `NUMBERING.md` freezes eight dimension blocks — Metric, Economic
 Buyer, Decision Criteria, Decision Process, Paper Process, Pain, Champion, Competition — in that
-order, at `MC-1` through `MC-40`. That order is the acronym's own canonical expansion order.
-`SOURCES.md` says a source's own ordered list reproduced in its order is reproduction.
+order, at `MC-1` through `MC-40`. `SOURCES.md` says a source's own ordered list reproduced in its
+order is reproduction. This read applies all four of `SOURCES.md`'s reproduction prongs to that
+list in turn.
 
-The reasoning, in three steps.
+**Correcting the earlier reading first.** An earlier draft of this entry reasoned that the order
+"*is* the acronym, letter by letter," and that reordering the blocks "would produce a different
+word." Both statements are false against this repository's own registry, and the correction matters
+more than the conclusion it was supporting. The eight blocks give the initials M, E, D, D, P, P, C,
+C — **MEDDPPCC**, which is not MEDDIC, MEDDICC or MEDDPICC. This repository ships "Pain", not
+"Identify Pain", so position 6 contributes P and not I. Nor is the sequence forced even where the
+letters do line up: Decision Criteria and Decision Process both give D, and Champion and Competition
+both give C, so four of the eight positions could be swapped with no change to any spelling. The
+order is therefore a choice this repository made, at least in part, and the prong has to be answered
+on that footing rather than on a mnemonic that the shipped block names do not spell.
 
-First, what the order is. The sequence is not an editorial arrangement this repository could have
-chosen differently while keeping the acronym intact — it *is* the acronym, letter by letter. An
-acronym's expansion is not an ordered list a source composed and this repository copied; it is the
-only order in which the letters spell the word. Reordering the dimensions would not produce a
-differently-arranged version of the same thing, it would produce a different word. That is the
-distinction between reproducing someone's chosen sequence and being bound by a mnemonic's own
-structure, and it is the step the id-6 entry was waiting on.
+**Prong 1 — a contiguous run of a source's own wording.** Does not apply. The unit in question is a
+row of eight labels of one or two words each in a range table. There is no run of sentence-level
+wording from any source here, and each audit question written underneath the blocks is in this
+repository's own words and grounded in `examples/deal-brief.md`'s own facts.
 
-Second, what the ruling does and does not contribute. On 2026-04-21 a US federal court held that
-MEDDPICC is generic — that the term names a methodology rather than identifying one source of
-training services. That is a holding about **the term**, under **trademark** law. It is not a
-holding about whether any expression of the methodology is protectable, and it is not a copyright
-determination. Genericness of a name and protectability of an expression are separate questions
-under separate bodies of law, and a review record that treated the first as settling the second
-would be worse than one that says plainly it does not. The ruling therefore supports one narrow
-point — that the term itself is not a source identifier the repository could be seen to be trading
-on — and supports nothing further. It is also, as recorded above, under continuing motion practice.
+**Prong 2 — a source's own ordered list reproduced in its order.** This is the prong that engages.
+The sequence does follow the conventional presentation order the qualification family is taught in.
+What this review rests the conclusion on is how little expression that sequence carries. Eight
+blocks, each labelled with the shortest ordinary English for the thing it covers, arranged in the
+order a methodology is conventionally walked through by many independent publishers rather than
+composed by one of them, and organised around a mnemonic: at that thinness, the expression and the
+idea it organises are hard to separate, and what can be separated is slight. That is a judgement
+about how much expression is present, not a finding that no source's arrangement was followed — the
+arrangement plainly was followed, and this record says so.
 
-Third, what this repository actually ships. The eight names are labels for the blocks; every audit
-question underneath them is written in this repository's own words and grounded in
-`examples/deal-brief.md`'s own facts. No dimension was renamed and none was reordered, which means
-no arrangement decision was taken from a source either — the arrangement was determined by the
-acronym before any source expressed a preference about it.
+**Prong 3 — a source's diagram or figure.** Does not apply. `NUMBERING.md`'s MC table is this
+repository's own ID-range registry. No diagram, figure or visual arrangement from any source is
+reproduced anywhere in this repository.
 
-Where the reasoning stops: this disposition addresses the names and their order. It does not and
-cannot establish that every future rule written under those blocks stays inside the boundary; that
-remains a per-rule judgement, and `SOURCES.md` already says no tool in this stack performs it.
+**Prong 4 — a term coined by a source and adopted here as this repository's own label.** This prong
+engages and the earlier draft never reached it, although its own step 3 described the eight names
+as "labels for the blocks", which is the prong's own language. Applied honestly, the eight split.
+"Metric", "Pain", "Champion", "Competition", "Decision Criteria" and "Decision Process" are ordinary
+business English that stands on its own outside this framework family. "Economic Buyer" and "Paper
+Process" are not — both are terms of art this family put into circulation, and both are adopted here
+verbatim as block labels. This review does not find those two off the prong. What it records instead
+is where they sit: they are index terms in `NUMBERING.md`'s registry and block headings in
+`completeness-audit.md`, `NOTICES.md` carries the attribution for the family, and no rule text under
+them is taken from a source. A stricter reading of prong 4 would rename both. This review did not,
+and the choice is recorded here rather than left implicit.
+
+**What the 2026-04-21 ruling contributes.** On that date a US federal court held that MEDDPICC is
+generic — that the term names a methodology rather than identifying one source of training services.
+That is a holding about **the term**, under **trademark** law. It is not a holding about whether any
+expression of the methodology is protectable, and it is not a copyright determination. Genericness
+of a name and protectability of an expression are separate questions under separate bodies of law,
+and a review record that treated the first as settling the second would be worse than one that says
+plainly it does not. What the ruling supports here is narrow and confined to the trademark question
+the ruling itself decided: as of that date, and subject to the continuing motion practice recorded
+above, a court has held the term generic. This review draws nothing further from it, and in
+particular draws nothing from it about the copyright question prongs 1 to 4 are asked under.
+
+Where the reasoning stops: this disposition addresses the eight names and their order, and it is a
+reading of this repository's files against `SOURCES.md`'s four prongs by a non-lawyer. It is not a
+legal opinion and not an infringement analysis. It does not establish that every future rule written
+under those blocks stays inside the boundary; that remains a per-rule judgement, and `SOURCES.md`
+already says no tool in this stack performs it. Two items above are live rather than settled — the
+prong-2 judgement that the expression is thin, and the prong-4 position of "Economic Buyer" and
+"Paper Process" — and either would be the place to reopen this entry.
 
 ## Name collisions
 

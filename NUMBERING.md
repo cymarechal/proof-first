@@ -6,11 +6,16 @@ everywhere, not just in this document.
 
 ## Namespaces
 
-`PF-<section>.<n>` addresses the numbered prose rule catalog. `MC-<n>` addresses the MEDDICC
-completeness audit. The two namespaces are disjoint: no ID exists in both. A citation is always
-prefixed — never a bare number — because a check-mode report can audit both catalogs in the same
-line, and `PF-2.3` and `MC-2` printed side by side must never be mistaken for the same kind of
-thing that two bare numbers (`2.3` and `2`) drawn from unrelated catalogs would be.
+`PF-<section>.<n>` addresses the numbered prose rule catalog. `MC-<n>` addresses the completeness
+audit this repository derives from the MEDDIC/MEDDICC qualification family. The audit's eight
+blocks are this repository's own selection and spell none of that family's acronyms — their
+initials run M-E-D-D-P-P-C-C — so "the MEDDICC completeness audit" is not an accurate name for the
+`MC-` namespace and is not used for it. See `LEGAL-REVIEW.md`'s `WINDOWS.md` id 6 entry.
+
+The two namespaces are disjoint: no ID exists in both. A citation is always prefixed — never a bare
+number — because a check-mode report can audit both catalogs in the same line, and `PF-2.3` and
+`MC-2` printed side by side must never be mistaken for the same kind of thing that two bare numbers
+(`2.3` and `2`) drawn from unrelated catalogs would be.
 
 ## PF reserved ranges
 
