@@ -271,12 +271,15 @@ model string and a date.
 
 The other kind is inventory: the 31 rules, the 28 worked pairs, the paths in the layout tree. Those
 count what this repository contains rather than measuring model behaviour, so they carry no model
-string and no date, and the two claim-region codes stop at the end marker rather than reaching
-them. Different codes check those — `catalog-count-mismatch`, `readme-layout-tree-stale` and their
-neighbours read the counted artefact and compare. What no code checks is the third case: figures
-quoted from a results file in prose outside the claim region, such as the conformance numbers above.
-Each names the file it came from, so you can check it against that file yourself; `check_repo.py`
-will not do it for you.
+string and no date, and the two claim-region codes stop at the end marker rather than reaching them.
+One of the three is checked: `readme-layout-tree-stale` fails the build when an immediate
+subdirectory of `evals/` exists and this README's layout tree does not name it. The two counts are
+not. `catalog-count-mismatch` compares `SKILL.md`'s own stated count against `NUMBERING.md` and
+never opens this file, and outside the claim region no code in `check_repo.py` reads a stated count
+out of README at all — change the 31 or the 28 to any other number and the checker still reports
+zero violations. What no code checks either is the third case: figures quoted from a results file in
+prose outside the claim region, such as the conformance numbers above. Each names the file it came
+from, so you can check it against that file yourself; `check_repo.py` will not do it for you.
 
 ## Keeping derivatives in sync
 
