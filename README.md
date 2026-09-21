@@ -84,13 +84,18 @@ cp output-styles/proof-first.md ~/.claude/output-styles/
 
 Use a project's own `.claude/output-styles/` instead of `~/.claude/output-styles/` to scope the
 style to that project. What this repository checks is that the file exists and that this README
-names the directory it has to reach. That a Claude Code session then lists it in `/config` has not
-been observed here. This repository does drive live sessions — `evals/conformance/run_conformance.py`
-runs headless `claude -p`, and the conformance figure under `## Status` comes from those sessions —
-but a headless session has no `/config` picker, so the picker is the one link in this route nothing
-here exercises.
+names the directory it has to reach. That a Claude Code session then lists it in `/config` was
+observed on 2026-09-21: an interactive Claude Code 2.1.267 session on Darwin 25.6.0 was driven in a
+pty and its rendered output captured, the picker listed `proof-first` with its `description`
+frontmatter as the entry summary, and selecting it wrote `{"outputStyle": "proof-first"}` to
+`.claude/settings.local.json`, where it survived closing and reopening the panel. What that
+observation does not settle: it was made by automation reading a terminal rather than by a human
+eye, on one platform, and against a project-scoped `.claude/output-styles/` rather than
+`~/.claude/output-styles/`. `.planning/WINDOWS.md` entry 16 states its closure condition as a human
+observation and stays open on that basis. The full record, with its two controls, is in
+`LEGAL-REVIEW.md`'s `## Human observations` section 4.
 
-What is now observed is the rest of the route. `evals/routes/run_routes.py` copied this file into a
+The rest of the route is observed too. `evals/routes/run_routes.py` copied this file into a
 headless session's own `.claude/output-styles/`, named it in that session's `.claude/settings.json`,
 and the session cited this project's rule markers where an unrouted control session on the same
 prompt cited none. Twelve sessions under this route reached the artifact-family line; see
