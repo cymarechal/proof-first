@@ -1,0 +1,55 @@
+{
+  "run_id": "48ef446f-a34a-4be3-8d08-d2ed09e8445e",
+  "timestamp": "2026-09-21T08:23:13.462741+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "artifact_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "Before drafting, I'll name customer source material: none has been supplied for this task, so PF-3.3 cannot fire and every term will be judged by the deletion test alone.\n\n**Proposal section**\n\nThe estate today is 28 SQL Server instances spread across 620 Hyper-V virtual machines — a fleet whose scale [PF-2.4 GAP: cost of running this fleet — no run-rate, license, or maintenance figure was supplied] and whose licensing terms tie every future capacity decision to Microsoft's stack. The instances and their host VMs are managed, patched, and licensed as one bound unit, so growth on either axis compounds cost on the other.\n\nThis proposal separates that binding. Compute moves first: the 620 Hyper-V VMs migrate to Google Compute Engine, so the workloads keep running on virtual machines the team already understands, now provisioned and scaled independently of the database layer beneath them. The database layer moves second, and differently in kind, not just location: the 28 SQL Server instances migrate to Cloud SQL for PostgreSQL, a managed engine where Google operates patching, backup, and failover, replacing the manual instance-by-instance operation the estate runs today. Before: 28 instances individually patched and backed up by the operations team. After: a managed service handling those operations, with the team's remaining work narrowed to schema, query, and application-level compatibility during cutover.\n\nThat compatibility work is the one part of this migration this section cannot size without the estate's own data: [PF-2.4 GAP: SQL Server-to-PostgreSQL schema and query compatibility effort across the 28 instances — no assessment of T-SQL-specific procedures, data types, or application dependencies was supplied].\n\nThe governance perimeter is new, not migrated. VPC Service Controls establishes a network boundary around the new Google Cloud project, so data movement in and out of the migrated environment is restricted to an explicit allow-list rather than left open to any authenticated caller — a control the current Hyper-V estate has no equivalent to, since it was never network-perimetered at the project level in the first place.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Cost of running the current 28-instance/620-VM fleet | PF-2.4 | Run-rate, licensing, or maintenance figure for the current estate |\n| Schema/query compatibility effort for SQL Server → PostgreSQL | PF-2.4 | Assessment of T-SQL-specific procedures, data types, or application dependencies across the 28 instances |",
+  "activated": true,
+  "lint_violations": 7,
+  "conformance_verdict": "rule-before-family",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28450,
+    "cache_read_input_tokens": 50877,
+    "output_tokens": 1088,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28450,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 847,
+        "cache_read_input_tokens": 35138,
+        "cache_creation_input_tokens": 9051,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9051
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.13486340000000002,
+  "duration_ms": 18841,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

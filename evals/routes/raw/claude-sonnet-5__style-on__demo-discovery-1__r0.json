@@ -1,0 +1,55 @@
+{
+  "run_id": "d3bc41da-3e42-4439-abd6-ace69bcc0719",
+  "timestamp": "2026-09-21T08:26:54.401716+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-1",
+  "scenario_prompt": "Write a set of discovery call notes, in the buyer's own words, attributed to the specific people who said them, so a later document can cite this material directly. Context, from a fictional discovery call: the VP of Infrastructure said, 'We need a perimeter we can actually govern -- right now every VM is a snowflake.' The Chief Architect said, 'Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.' The CFO said, 'I'm measured on cost-per-load and a clean audit, not on architecture elegance.' Write these up as discovery notes attributed by role, with a one-line context note for each. Return only the discovery notes text.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 0,
+  "text": "Demo and discovery material\n\n## Discovery notes\n\n**VP of Infrastructure:** \"We need a perimeter we can actually govern — right now every VM is a snowflake.\"\nContext: stated when describing the current state of the VM estate, unprompted.\n\n**Chief Architect:** \"Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.\"\nContext: stated in response to a question about appetite for migration timing [PF-2.16 REVIEW (competitor): names a preference for the incumbent's contract — confirm before this is cited elsewhere, since it references a named alternative].\n\n**CFO:** \"I'm measured on cost-per-load and a clean audit, not on architecture elegance.\"\nContext: stated when asked what would make this a win from their seat [MC-1 GAP: cost-per-load has no baseline figure stated in this call].\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Chief Architect quote referencing the incumbent's contract | PF-2.16 | Confirm this can be cited without exposure before reuse in a later document |\n| CFO's cost-per-load measure | MC-1 | The current baseline figure for cost-per-load, if one exists |",
+  "activated": true,
+  "lint_violations": 4,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35882,
+    "cache_read_input_tokens": 14707,
+    "output_tokens": 415,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35882,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 415,
+        "cache_read_input_tokens": 14707,
+        "cache_creation_input_tokens": 35882,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35882
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1506234,
+  "duration_ms": 6031,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

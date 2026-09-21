@@ -1,0 +1,55 @@
+{
+  "run_id": "ac625248-a006-41ac-b83c-b884cdd52516",
+  "timestamp": "2026-09-21T08:24:32.490351+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 0,
+  "text": "Executive summary\n\nYou state you are measured on cutting the $1,850,000 annual technology spend you carry today and on a clean DOT compliance audit that opens in six months. Right now that spend runs 28 Microsoft SQL Server instances across 620 Hyper-V virtual machines, supporting load-matching and carrier-settlement — the two systems a DOT auditor will examine most closely. This proposal replaces that on-premises SQL Server/Hyper-V estate with Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 24-month, $4,200,000 programme, so the estate you answer for at audit time is the one you are actively simplifying, not the one you are defending as-is.\n\nYou should expect the programme to run against your two named priorities, not as an architecture exercise: [MC-1 GAP: current $1,850,000 spend has no stated per-instance or per-VM baseline, so the run-rate reduction this migration is expected to produce cannot yet be quantified] and [MC-16 GAP: no submission date, review checklist, or named DOT audit criteria have been supplied, so the six-month audit-readiness milestones cannot be sequenced against the programme's 24-month timeline]. What is fixed is the shift itself: today, 28 SQL Server instances on Hyper-V; after the programme, Cloud SQL for PostgreSQL on Compute Engine. Before this document is sent, both gaps need your input — the current spend broken out by instance/VM, and the audit's own review dates — so the business case in front of you carries figures you have verified rather than ones this document estimated.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [MC-1 GAP] | MC-1 | Baseline breakdown of the $1,850,000 spend by instance/VM, so the reduction this migration produces can be stated as a figure rather than a direction |\n| [MC-16 GAP] | MC-16 | The DOT audit's own review dates, scope, and criteria, so programme milestones can be sequenced against the six-month window |",
+  "activated": true,
+  "lint_violations": 6,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 50641,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 698,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 50641,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 698,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 50641,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 50641
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.20954799999999998,
+  "duration_ms": 11568,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

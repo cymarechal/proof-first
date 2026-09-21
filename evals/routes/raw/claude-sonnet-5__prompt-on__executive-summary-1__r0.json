@@ -1,0 +1,55 @@
+{
+  "run_id": "9dcdc720-f817-49ca-91bd-1cdab63feaa9",
+  "timestamp": "2026-09-21T08:27:36.127003+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 0,
+  "text": "**Executive summary** — read as an Executive summary per `references/artifact-patterns.md`.\n\nEvery month your load-matching and carrier-settlement systems stay on 28 on-premises SQL Server instances spread across 620 Hyper-V virtual machines, you carry $1,850,000 in annual technology spend as a fixed cost tied to infrastructure you own and operate directly [PF-2.13 GAP: no stated current run-rate breakdown by system or vendor — reduction target not yet quantified by the buyer]. That exposure sharpens now: your DOT compliance audit opens in six months, and an on-premises estate of this size is the surface auditors will examine most closely. Migrating load-matching and carrier-settlement onto Google Cloud — Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer — replaces that fixed infrastructure footprint with a managed platform before the audit window opens, giving you a materially different position to walk into that review with than the one you hold today.\n\nThe programme runs two years at a stated cost of $4,200,000, moving you from 28 self-managed SQL Server instances on Hyper-V to Cloud SQL for PostgreSQL, and from 620 self-managed virtual machines to Google Compute Engine [PF-2.14 REVIEW (commitment): confirm the $4,200,000 figure and 2-year duration are the approved programme baseline, not an estimate, before this ships]. You should expect this document's team to report progress against the two measures you've said you're accountable for — the technology spend it replaces and the compliance posture it changes going into your audit — rather than against infrastructure milestones alone [PF-2.11 GAP: no post-migration spend target or percentage reduction has been supplied; state only once you provide a figure, or confirm none exists to report].\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-2.13 GAP] | PF-2.13 | The $1,850,000 baseline's composition and any stated reduction target — confirm whether a specific savings figure exists to cite. |\n| [PF-2.14 REVIEW (commitment)] | PF-2.14 | Confirm the $4,200,000 / 2-year programme figures are an approved commitment, not a rough estimate, before this ships as a promise to the CFO. |\n| [PF-2.11 GAP] | PF-2.11 | No post-migration cost-reduction number was supplied — either provide one or confirm the summary should stay silent on a specific target. |",
+  "activated": true,
+  "lint_violations": 8,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35866,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 1434,
+    "output_tokens_details": {
+      "thinking_tokens": 588
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35866,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1434,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35866,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35866
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1609576,
+  "duration_ms": 17886,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

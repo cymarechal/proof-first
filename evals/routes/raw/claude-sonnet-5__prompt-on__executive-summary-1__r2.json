@@ -1,0 +1,55 @@
+{
+  "run_id": "77143bf9-2a1b-481b-8349-f3429e0e18cc",
+  "timestamp": "2026-09-21T08:28:13.841541+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 2,
+  "text": "**Executive summary**\n\nDiane, your $1,850,000 annual technology spend runs through 28 on-premises Microsoft SQL Server instances across 620 Hyper-V virtual machines supporting load-matching and carrier settlement — infrastructure you carry into a DOT compliance audit that opens in six months. [PF-1.13/PF-2.11 GAP: no current baseline exists for how much of that spend is attributable to on-premises licensing, hardware refresh, and Hyper-V overhead specifically, versus other technology cost — this would need to be broken out before a reduction percentage can be committed to]. The proposed two-year, $4,200,000 migration to Google Cloud — moving compute to Google Compute Engine and the data layer to Cloud SQL for PostgreSQL — is built around the two measures you've said you're accountable for: bringing that $1,850,000 run rate down, and walking into the audit with systems you can show are governed, current, and defensible. Cloud SQL for PostgreSQL gives you managed patching, automated backups, and point-in-time recovery — the kind of operational evidence a DOT auditor asks for — in place of manual processes run today across 28 self-managed database instances. [PF-2.14 REVIEW (commitment): confirm before this ships whether the programme can commit to a stated spend-reduction figure, or whether this stays qualitative until sizing is complete].\n\nOver the next two years, expect a phased migration — not a cutover — sequenced so load-matching and settlement stay operational throughout, with the highest-risk workloads validated on Google Cloud before the on-premises Hyper-V estate is retired. You should expect a capacity and licensing assessment in the first phase that produces the actual current-state cost breakdown needed to size your spend reduction, since that number isn't yet captured; a migration plan for the 28 SQL Server instances onto Cloud SQL for PostgreSQL with a defined cutover order; and a compliance evidence package — audit logging, access controls, and backup verification — built to be ready ahead of your six-month audit window, not delivered alongside it. [PF-2.14 REVIEW (commitment): confirm the \"ready ahead of the six-month window\" delivery commitment is one the programme timeline can actually support before this ships]. The $4,200,000 programme cost is the investment against a $1,850,000 recurring baseline you already carry every year on the current estate — the case for moving now is that the audit clock and the spend both run whether or not the migration starts today.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| No baseline for on-prem-attributable share of the $1,850,000 spend | PF-1.13/PF-2.11 | Cost breakout separating Hyper-V/SQL Server infrastructure spend from other technology spend, so a reduction figure can be stated rather than implied |\n| \"Reduce spend\" framing has no stated target percentage or dollar figure | PF-2.14 | Confirm whether the programme commits to a specific reduction number, or whether this stays qualitative until the capacity/licensing assessment completes |\n| \"Ready ahead of the six-month audit window\" compliance delivery claim | PF-2.14 | Confirm the programme timeline actually supports evidence readiness before the audit opens, before this commitment ships |",
+  "activated": true,
+  "lint_violations": 9,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35864,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 1544,
+    "output_tokens_details": {
+      "thinking_tokens": 439
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35864,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1544,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35864,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35864
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.16204960000000002,
+  "duration_ms": 19642,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

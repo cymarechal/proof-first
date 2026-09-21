@@ -1,0 +1,55 @@
+{
+  "run_id": "300391ef-3cc8-46f4-afbb-aa9fc8a8aa05",
+  "timestamp": "2026-09-21T08:23:37.710478+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "skill-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "artifact_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**Proposal section**\n\nToday the estate runs 28 Microsoft SQL Server instances inside a 620-virtual-machine Hyper-V environment. [PF-1.2/PF-2.11 GAP: the cost this current estate imposes — license spend, hardware refresh cycle, or operational overhead — was not supplied and is not invented here.] Every new workload, patch cycle, and capacity request today means provisioning another Hyper-V VM and another SQL Server instance, all inside the same physical footprint.\n\nThis migration moves that footprint to Google Cloud, replacing the 620 Hyper-V VMs with Google Compute Engine instances and replacing the 28 SQL Server instances with Cloud SQL for PostgreSQL. Where the current estate ties compute capacity to physical host limits, Compute Engine lets the buyer provision and resize virtual machines against Google Cloud's compute capacity instead. Where the current estate requires SQL Server licensing and manual instance management for each of the 28 databases, Cloud SQL for PostgreSQL takes over patching, backup, and instance administration for the migrated data layer, so the buyer's team administers a managed PostgreSQL service rather than 28 separately maintained SQL Server instances.\n\nThe 620 virtual machines migrate to Compute Engine in scoped waves rather than as a single cutover, so each wave can be validated before the next begins. [PF-1.13/PF-2.11 GAP: a wave size, a migration timeline, or a cutover sequence was not supplied and is not invented here.] The 28 SQL Server databases migrate to Cloud SQL for PostgreSQL, which requires converting each database's schema and stored logic from T-SQL to PostgreSQL — an engineering effort the buyer's team needs to scope per instance, since instance complexity varies. [PF-1.17/PF-2.4 GAP: a named comparable migration of this schema-conversion effort was not supplied and is not invented here.]\n\nGovernance for the new estate is established before workloads land in it: VPC Service Controls defines a service perimeter around the new Google Cloud project, so the buyer's data — including the migrated Cloud SQL for PostgreSQL instances — is only reachable from inside that defined perimeter, not from the open internet or from unauthorized projects. This gives the buyer a governance boundary around the target platform that the current Hyper-V estate does not have, since perimeter enforcement did not exist as a network-layer control in the source environment. [PF-2.17 REVIEW (compliance): confirm which specific compliance or regulatory requirement VPC Service Controls is meant to satisfy for this buyer before this claim is presented as meeting it.]\n\nThe result is a data layer the buyer's team no longer administers instance-by-instance, and a compute layer sized to Google Cloud capacity rather than to the physical limits of 620 Hyper-V hosts, inside a project boundary the current estate does not enforce today.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Cost of current estate not stated | PF-1.2 / PF-2.11 | The license, hardware, or operational cost figure the buyer attributes to the current 28-instance/620-VM estate |\n| Migration wave size / timeline not stated | PF-1.13 / PF-2.11 | A wave sequencing plan or cutover timeline for the 620 VMs |\n| No comparable migration proof point | PF-1.17 / PF-2.4 | A named, checkable prior migration of comparable schema-conversion scope (SQL Server to PostgreSQL) |\n| Compliance driver for VPC Service Controls unconfirmed | PF-2.17 | Confirmation of which compliance or regulatory requirement this perimeter control is meant to satisfy |",
+  "activated": true,
+  "lint_violations": 10,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28466,
+    "cache_read_input_tokens": 50875,
+    "output_tokens": 2052,
+    "output_tokens_details": {
+      "thinking_tokens": 568
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28466,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1792,
+        "cache_read_input_tokens": 35136,
+        "cache_creation_input_tokens": 9069,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9069
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.144567,
+  "duration_ms": 22646,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

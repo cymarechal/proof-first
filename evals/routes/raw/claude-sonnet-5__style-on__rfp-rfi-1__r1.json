@@ -1,0 +1,55 @@
+{
+  "run_id": "8a06baac-400b-43c0-9921-7ae8d0167237",
+  "timestamp": "2026-09-21T08:25:43.962353+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 1,
+  "text": "RFP answer.\n\nI have not been supplied any customer source material for this task (discovery notes, prior RFP question wording, or stated buyer requirements beyond what appears in the prompt) — the provenance override in PF-3.3 cannot fire, so every term below is judged by the deletion test alone.\n\n---\n\nYou run 28 on-premises SQL Server instances across 620 Hyper-V VMs supporting load-matching and carrier settlement — production systems that cannot pause during migration. We sequence the 2-year, $4,200,000 programme in four phases, each gated by a rollback decision before the next begins.\n\n**Phase 1 — Assessment and landing zone (months 1–3).** We inventory all 28 instances by schema complexity, transaction volume, and interdependency with load-matching and settlement logic, and stand up the target Google Cloud landing zone: Compute Engine for application/compute workloads, Cloud SQL for PostgreSQL for the data layer. [PF-2.11 GAP: no current transaction-volume, schema-count, or dependency baseline was supplied for the 28 instances — this would need to be measured during assessment before phase durations past Phase 1 can be committed with confidence.]\n\n**Phase 2 — Schema conversion and parallel build (months 4–10).** T-SQL objects are converted to PostgreSQL-compatible equivalents instance by instance, starting with carrier settlement (financial data, highest audit exposure) given your compliance audit opens in 6 months from today — 2027-03-21. [PF-2.14 REVIEW (commitment): confirm settlement-first sequencing is achievable within the stated audit window before this ships, since no current-state migration progress exists to base that sequencing on.] Each converted instance runs in parallel on Cloud SQL for PostgreSQL alongside its live SQL Server source, with output reconciled row-for-row before cutover eligibility.\n\n**Phase 3 — Phased cutover (months 8–20).** Cutover moves one instance (or logical group) at a time, never all 28 at once: freeze writes on the source instance, run a final delta sync, redirect load-matching and settlement traffic to Cloud SQL for PostgreSQL, and hold the source instance in read-only standby for a defined rollback window. [PF-2.4 GAP: no rollback-window duration was supplied by the buyer or measured — this needs to be agreed during Phase 1 planning, and stated as a fixed number of hours before cutover runbooks are finalized.] A failed reconciliation check blocks cutover for that instance and it remains on-premises until resolved — this is the mechanism that keeps a single bad conversion from taking down settlement processing.\n\n**Phase 4 — Decommission and steady state (months 20–24).** Once every instance has completed cutover and passed its rollback window with no rollback triggered, the corresponding Hyper-V hosts are decommissioned in batches, not all at once, so on-premises capacity remains available as a fallback until the last dependent instance clears.\n\nYou need assurance that settlement processing keeps running throughout — every cutover step above is designed around that requirement, with the freeze/reconciliation/rollback sequence stated first because it is the mechanism, not the Cloud SQL for PostgreSQL migration itself, that delivers it.\n\n[PF-1.17 GAP: no comparable prior migration of this scale (28 instances / 620 VMs) was supplied to attach as proof this sequencing has worked before — a named reference programme would need to be added before this section ships.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-2.11 GAP] | PF-2.11 | Baseline transaction volume, schema count, and dependency mapping for the 28 SQL Server instances |\n| [PF-2.14 REVIEW (commitment)] | PF-2.14 | Confirmation that settlement-first phase sequencing is achievable inside the 6-month audit window |\n| [PF-2.4 GAP] | PF-2.4 | Agreed, fixed rollback-window duration per cutover instance |\n| [PF-1.17 GAP] | PF-1.17 | A named, comparable prior migration to cite as proof of this cutover approach |",
+  "activated": true,
+  "lint_violations": 10,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35880,
+    "cache_read_input_tokens": 14707,
+    "output_tokens": 1412,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35880,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1412,
+        "cache_read_input_tokens": 14707,
+        "cache_creation_input_tokens": 35880,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35880
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.16058540000000002,
+  "duration_ms": 19017,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

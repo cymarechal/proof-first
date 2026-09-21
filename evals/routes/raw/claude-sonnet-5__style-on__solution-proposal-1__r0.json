@@ -1,0 +1,55 @@
+{
+  "run_id": "733f3ddc-a98b-4c19-b3f8-29517734e6b4",
+  "timestamp": "2026-09-21T08:26:20.369141+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 0,
+  "text": "Solution proposal\n\nThe buyer's current estate is 28 Microsoft SQL Server instances running across 620 virtual machines on Hyper-V. This document tells the migration as the path from that estate to a Google Cloud target, not as a component list.\n\nToday, each of the 620 Hyper-V virtual machines carries its own patch cycle, its own host-level capacity ceiling, and its own recovery procedure, because the 28 SQL Server instances sit on infrastructure the buyer administers and patches directly. [PF-2.4 GAP: the buyer's own stated cost of running this estate — patch labor hours, downtime incidents, or licensing spend — was not supplied]\n\nThe target moves compute onto Google Compute Engine, so the 620 virtual machines are re-hosted on Google-managed infrastructure rather than buyer-administered Hyper-V hosts. The 28 SQL Server instances move to Cloud SQL for PostgreSQL: the buyer stops operating a database engine on a VM and starts consuming a managed PostgreSQL service, so patching, backup, and failover become the operations Google performs rather than operations the buyer's team schedules. [PF-2.14 REVIEW (commitment): \"patching, backup, and failover become operations Google performs\" states a level of managed-service responsibility — confirm this matches the actual Cloud SQL support boundary before this ships]\n\nMoving 28 SQL Server instances onto Cloud SQL for PostgreSQL is a database engine migration, not a lift-and-shift: it changes the SQL dialect, the stored-procedure language, and the driver layer the applications talk to. [PF-2.4 GAP: the buyer's own tolerance for application-layer rework, or a stated inventory of dependent applications, was not supplied]\n\nGovernance for the new estate is established before workloads land in it: the target Google Cloud project sits inside a VPC Service Controls perimeter, so once resources are provisioned, data movement in and out of that perimeter is restricted to what the perimeter's rules allow, rather than left open by default. [PF-1.17 GAP: no comparable, verifiable proof (a reference deployment, a named benchmark) was supplied for this control]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-2.4 GAP] | PF-2.4 | The buyer's own stated cost of the current Hyper-V/SQL Server estate (spend, labor, or downtime figures) |\n| [PF-2.14 REVIEW (commitment)] | PF-2.14 | Confirmation that Cloud SQL for PostgreSQL's managed responsibilities (patching, backup, failover) match what is described here |\n| [PF-2.4 GAP] | PF-2.4 | The buyer's tolerance for SQL Server-to-PostgreSQL application rework, or an inventory of dependent applications |\n| [PF-1.17 GAP] | PF-1.17 | A named, checkable comparable for the VPC Service Controls perimeter claim |",
+  "activated": true,
+  "lint_violations": 7,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35829,
+    "cache_read_input_tokens": 14707,
+    "output_tokens": 1016,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35829,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1016,
+        "cache_read_input_tokens": 14707,
+        "cache_creation_input_tokens": 35829,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35829
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1564214,
+  "duration_ms": 12365,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

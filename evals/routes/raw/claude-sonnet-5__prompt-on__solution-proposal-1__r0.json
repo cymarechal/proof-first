@@ -1,0 +1,55 @@
+{
+  "run_id": "dec0f313-6458-4632-b69e-dbb9b75667e9",
+  "timestamp": "2026-09-21T08:29:18.550605+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 0,
+  "text": "Solution proposal — Architecture narrative\n\nToday, Halverton Mutual's transaction workload runs on 28 Microsoft SQL Server instances hosted across 620 virtual machines on Hyper-V — a fixed hardware footprint that scales in whole hosts, not in the increments the workload actually needs. Migration moves the compute layer first: the 620 virtual machines are re-hosted onto Google Compute Engine, so the same workload runs on infrastructure that scales instance-by-instance rather than host-by-host, without waiting for a data-layer cutover to see that flexibility.\n\nWith compute re-hosted, the 28 SQL Server instances migrate next, onto Cloud SQL for PostgreSQL — moving the data layer off self-managed instances and onto a managed service that takes over patching, backups, and failover, functions the current Hyper-V estate leaves to Halverton Mutual's own operations staff today.\n\nOnce compute and data sit inside the new Google Cloud project, VPC Service Controls establishes a governance perimeter around that project — a control the current Hyper-V estate has no equivalent for — so data movement in and out of the migrated environment is bounded by policy from the moment the last workload lands, not added afterward as a follow-on step.",
+  "activated": false,
+  "lint_violations": 5,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35761,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 414,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35761,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 414,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35761,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35761
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.15033760000000002,
+  "duration_ms": 7959,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

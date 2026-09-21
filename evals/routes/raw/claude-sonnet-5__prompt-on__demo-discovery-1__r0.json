@@ -1,0 +1,55 @@
+{
+  "run_id": "ef8cc6cd-3efd-4832-809f-1d776130ee43",
+  "timestamp": "2026-09-21T08:29:54.266748+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "demo-discovery",
+  "scenario_id": "demo-discovery-1",
+  "scenario_prompt": "Write a set of discovery call notes, in the buyer's own words, attributed to the specific people who said them, so a later document can cite this material directly. Context, from a fictional discovery call: the VP of Infrastructure said, 'We need a perimeter we can actually govern -- right now every VM is a snowflake.' The Chief Architect said, 'Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.' The CFO said, 'I'm measured on cost-per-load and a clean audit, not on architecture elegance.' Write these up as discovery notes attributed by role, with a one-line context note for each. Return only the discovery notes text.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 0,
+  "text": "Discovery Call Notes — 2026-09-21\n\n**VP of Infrastructure:**\n\"We need a perimeter we can actually govern -- right now every VM is a snowflake.\"\nContext: Stated when describing the current state of the infrastructure estate and the motivation for change.\n\n**Chief Architect:**\n\"Honestly, I'd rather extend the incumbent's contract than gamble on a migration during an audit year.\"\nContext: Stated when asked about appetite for a migration approach, flagging a preference for the incumbent as an alternative under consideration.\n\n**CFO:**\n\"I'm measured on cost-per-load and a clean audit, not on architecture elegance.\"\nContext: Stated when asked what outcomes matter most to her personally, clarifying the criteria she evaluates any proposal against.",
+  "activated": false,
+  "lint_violations": 3,
+  "conformance_verdict": "no-family",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35812,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 259,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35812,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 259,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35812,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35812
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1489916,
+  "duration_ms": 3680,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

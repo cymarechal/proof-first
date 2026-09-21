@@ -1,0 +1,55 @@
+{
+  "run_id": "44d5ff5d-920e-4a3e-9e14-2e1ca848a2c3",
+  "timestamp": "2026-09-21T08:21:35.255033+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "skill-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "This is an executive summary. What customer source material do I have to work with (RFP text, discovery notes, the CFO's own stated words)? I'll treat the prompt's details as the supplied facts — the CFO's own stated priorities ($1,850,000 annual spend, DOT compliance audit in 6 months) and the programme figures given (28 SQL Server instances, 620 Hyper-V VMs, $4,200,000 over 2 years, targeting GCE and Cloud SQL for PostgreSQL). No other source material (discovery notes, RFP text) was supplied, so `PF-3.3` cannot fire — every term is judged by the deletion test alone. Drafting now.\n\n**Executive summary**\n\n---\n\nRachel, you are measured on two things this year: bringing technology spend down from its current $1,850,000 run rate, and walking into a clean Department of Transportation compliance audit that opens in six months. Today, your load-matching and carrier-settlement systems run on 28 on-premises Microsoft SQL Server instances across 620 Hyper-V virtual machines — infrastructure you own, patch, and pay for whether or not it is fully utilized [PF-2.11 GAP: current utilization or idle-capacity figures for the 620 VMs were not supplied]. We propose moving that estate to Google Cloud over a 2-year, $4,200,000 programme: Google Compute Engine replaces the Hyper-V layer, and Cloud SQL for PostgreSQL replaces the SQL Server instances, so your teams stop maintaining hypervisor and database infrastructure and start consuming it as a managed service [PF-1.17 GAP: a named, checkable comparable — a similarly sized freight brokerage migration this vendor has delivered — was not supplied].\n\nTwo things should happen on a predictable schedule. First, your infrastructure cost profile shifts from a fixed $1,850,000 annual spend to a consumption model tied to actual load-matching and settlement volume [PF-2.11 GAP: no projected post-migration run-rate or payback timeline was supplied, so the size and timing of the reduction cannot be stated]. Second, ahead of your audit in six months, the migration gives your compliance team a single, logged, access-controlled data layer in Cloud SQL for PostgreSQL in place of 28 separately administered SQL Server instances — fewer systems to reconcile evidence across when the auditor asks for it [PF-2.17 REVIEW (compliance): which DOT audit controls this data-layer consolidation actually satisfies, and whether Google Cloud's own certifications cover your specific compliance scope, needs confirmation before this claim ships]. We will size the cutover sequence and cost timeline against your audit date in the next planning session, so neither commitment lands on you unverified.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Current utilization/idle-capacity figures for the 620 Hyper-V VMs | PF-2.11 | Actual or estimated utilization data for the existing VM fleet, to ground the \"pay whether or not fully utilized\" claim |\n| Named, checkable migration comparable | PF-1.17 | A reference migration (freight brokerage or similar scale) this vendor can actually produce as proof |\n| Post-migration run-rate / payback timeline | PF-2.11 | Projected annual cost after migration and the timeline to realize savings against the $1,850,000 baseline |\n| DOT audit controls satisfied by data-layer consolidation | PF-2.17 | Confirmation of which specific DOT audit requirements the Cloud SQL consolidation addresses, and applicable Google Cloud compliance certifications |",
+  "activated": true,
+  "lint_violations": 7,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 27390,
+    "cache_read_input_tokens": 50984,
+    "output_tokens": 1323,
+    "output_tokens_details": {
+      "thinking_tokens": 38
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 27390,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1232,
+        "cache_read_input_tokens": 35245,
+        "cache_creation_input_tokens": 7884,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 7884
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1329948,
+  "duration_ms": 16428,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

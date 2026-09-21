@@ -1,0 +1,55 @@
+{
+  "run_id": "74065a33-1a7e-46c5-bd41-56633f0f2ba3",
+  "timestamp": "2026-09-21T08:26:46.777260+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 2,
+  "text": "Solution proposal\n\nThe buyer's estate today is 28 SQL Server instances spread across 620 Hyper-V virtual machines, each instance requiring its own patch cycle, licensing tier, and failover configuration on hardware the buyer manages directly. That estate moves to Google Cloud in three linked steps, each replacing one piece of what the buyer runs today.\n\nFirst, the 620 Hyper-V virtual machines move to Google Compute Engine, so compute capacity is provisioned on demand rather than sized against peak hardware purchases made years in advance. Second, the 28 SQL Server instances move to Cloud SQL for PostgreSQL, so the database layer that today needs manual patching, backup scheduling, and failover testing is instead managed by the platform. Third, the new Google Cloud project is wrapped in a VPC Service Controls perimeter, so data exfiltration paths that exist by default in an open network boundary are closed at the project edge rather than relying on VM-level firewall rules alone.\n\n[PF-1.2 GAP: the buyer's own stated cost of running the current Hyper-V/SQL Server estate — e.g. licensing spend, hardware refresh cost, or failover incident history — was not supplied]\n\n[PF-1.13 GAP: no baseline metric (e.g. current failover time, patch cycle duration, or instance-hours) was supplied to measure against after migration]\n\nThe three moves are sequenced together because each one retires a specific operational burden the buyer carries today: hardware sizing on Compute Engine, database administration on Cloud SQL, and network perimeter definition on VPC Service Controls. No comparable proof point, differentiator, or named migration precedent is attached here because none was supplied for this task.\n\n[PF-1.17 GAP: no comparable, verifiable proof point (e.g. a named prior migration of similar scale) was supplied to attach to the compute or database capability claims]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP | PF-1.2 | The buyer's own stated cost of the current estate (licensing, hardware refresh, incident history) |\n| GAP | PF-1.13 | A current-state baseline metric to measure the migration against |\n| GAP | PF-1.17 | A comparable, verifiable proof point for the compute/database capability claims |",
+  "activated": true,
+  "lint_violations": 7,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35827,
+    "cache_read_input_tokens": 14707,
+    "output_tokens": 780,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35827,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 780,
+        "cache_read_input_tokens": 14707,
+        "cache_creation_input_tokens": 35827,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35827
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.15405339999999998,
+  "duration_ms": 11418,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

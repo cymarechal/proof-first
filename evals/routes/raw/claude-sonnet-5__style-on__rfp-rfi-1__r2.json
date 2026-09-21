@@ -1,0 +1,55 @@
+{
+  "run_id": "f3e33c26-3448-407b-94de-256fadf4f2f6",
+  "timestamp": "2026-09-21T08:26:06.110251+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 2,
+  "text": "RFP answer\n\nBefore drafting: no discovery notes, quotes, or buyer-supplied source material were included with this question — only the RFP metadata (instance counts, VM counts, target services, budget, dates). The provenance override (PF-3.3) cannot fire on any term below; every term is judged by the deletion test alone, and every figure used is the one supplied in the prompt (28 SQL Server instances, 620 Hyper-V VMs, $4,200,000, 24 months, compliance audit opening 2027-03-21).\n\nYour load-matching and carrier-settlement systems run today on 28 on-premises Microsoft SQL Server instances across 620 Hyper-V virtual machines. Your compliance audit opens in six months, on 2027-03-21, before a full lift-and-shift of that estate could responsibly complete. The approach below sequences the migration so the audit lands on a stabilized, already-migrated core rather than a system mid-cutover.\n\n**Phase 1 — Assessment and wave planning (months 1–3).** We inventory all 28 SQL Server instances and map each to its dependent Hyper-V VMs, classifying every workload by audit relevance, transaction volume, and cross-system coupling. Systems in direct scope for the 2027-03-21 audit move into Wave 1; lower-risk, less-coupled workloads move into later waves. [MC-16 GAP: the audit's specific scope — which systems or data domains it examines — was not supplied, so wave assignment by audit relevance cannot be finalized without it.]\n\n**Phase 2 — Parallel-run migration by wave (months 3–18).** Each wave moves compute from Hyper-V VMs to Google Compute Engine and data from SQL Server to Cloud SQL for PostgreSQL. Migration uses schema conversion and continuous replication so the source SQL Server instance and the target Cloud SQL instance run in parallel, with replication lag monitored until it reaches zero before cutover of that wave. [PF-2.14 REVIEW (commitment): \"replication lag monitored until it reaches zero\" states a specific technical precondition for cutover — confirm this is the standard this team can commit to before the document ships, since actual tooling and lag thresholds depend on the schema-conversion approach selected during Phase 1.]\n\n**Phase 3 — Cutover per wave.** Cutover for each wave follows the same sequence: freeze writes to the source SQL Server instance, confirm zero replication lag to the corresponding Cloud SQL for PostgreSQL instance, redirect load-matching or carrier-settlement traffic to the Google Compute Engine target, and validate against a pre-agreed set of transaction checks before unfreezing writes on the new platform. Each wave's rollback path is the reverse of this sequence: writes redirect back to the original SQL Server instance if validation fails, so no wave is cutover without a tested path back.\n\n**Phase 4 — Decommission and audit readiness (months 18–24).** Once all waves are validated on Google Cloud, the remaining on-premises SQL Server instances and Hyper-V VMs are decommissioned. Systems in the audit's scope are migrated and stabilized well ahead of 2027-03-21, giving your compliance team a running period on the new platform before examiners arrive rather than a live migration to explain.\n\n[MC-21 GAP: the RFP does not state what internal reviews — security, procurement, legal, or change-advisory — this migration plan must clear before work can start on each wave; sequencing and duration for those reviews are not addressed here.]\n\n[MC-1 GAP: no current baseline was supplied for cutover-related metrics such as per-wave downtime window or acceptable replication lag threshold — these would need to be captured from the buyer's own operational requirements before being stated as targets.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Audit scope for wave sequencing | MC-16 | Which specific systems or data domains the 2027-03-21 compliance audit examines |\n| Cutover replication-lag commitment | PF-2.14 | Confirmation that \"zero replication lag before cutover\" is a standard this team can commit to in writing |\n| Pre-migration review gates | MC-21 | The buyer's own required internal reviews (security/procurement/legal) and their durations, if any exist |\n| Cutover/downtime baseline | MC-1 | The buyer's own current baseline for acceptable downtime or replication lag, if one has been measured |",
+  "activated": true,
+  "lint_violations": 11,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35878,
+    "cache_read_input_tokens": 14707,
+    "output_tokens": 1498,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35878,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1498,
+        "cache_read_input_tokens": 14707,
+        "cache_creation_input_tokens": 35878,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35878
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1614374,
+  "duration_ms": 20422,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

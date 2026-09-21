@@ -1,0 +1,55 @@
+{
+  "run_id": "c593879a-1d52-41a2-9819-fe9d2e5d4c7a",
+  "timestamp": "2026-09-21T08:20:59.974543+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "skill-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 0,
+  "text": "**Executive summary**\n\nRight now, you're spending $1,850,000 a year to run load-matching and carrier-settlement on 28 SQL Server instances across 620 Hyper-V virtual machines, and in six months a DOT compliance audit opens against that same environment. [PF-1.13 GAP: current on-prem cost breakdown by category — not supplied] [PF-1.14 GAP: source of the $1,850,000 figure — stated by you, provenance not given]. The shift this proposal makes is to retire that on-prem footprint in favor of Google Compute Engine for compute and Cloud SQL for PostgreSQL for data, so the systems the audit will examine run on infrastructure with centralized logging, access controls, and change history you [PF-2.14 REVIEW (commitment): \"will\" vs \"may\" — confirm whether audit-readiness is a deliverable or a target] can produce on demand rather than reconstruct under deadline.\n\nOver the two-year, $4,200,000 programme, you should expect a phased cutover — [PF-2.4 GAP: migration wave sequence and which of the 28 instances/620 VMs move in which phase — not supplied] — with cost and audit posture tracked as two separate lines, not one blended promise. [PF-1.17 GAP: comparable prior migration of this scale/vendor track record — not supplied]. On cost, the programme's $4,200,000 spend against your $1,850,000 annual run-rate needs its own payback calculation before you can call it a reduction. [PF-2.4 GAP: projected post-migration annual run-rate and payback period — not supplied]. On compliance, the deliverable you should hold the team to is a control set mapped to the DOT audit's actual requirements, evidenced before the audit opens, not asserted after. [PF-2.4 GAP: which DOT audit requirements the new environment addresses and how — not supplied].\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP | PF-1.13 | Current on-prem cost breakdown by category |\n| GAP | PF-1.14 | Source/provenance of the $1,850,000 annual spend figure |\n| REVIEW (commitment) | PF-2.14 | Confirm whether audit-readiness is a firm deliverable (\"will\") or a target (\"may\") |\n| GAP | PF-2.4 | Migration wave sequence: which of the 28 instances / 620 VMs move in which phase |\n| GAP | PF-1.17 | A named, comparable prior migration this vendor can point to as proof |\n| GAP | PF-2.4 | Projected post-migration annual run-rate and payback period against the $4.2M spend |\n| GAP | PF-2.4 | Which specific DOT audit requirements the new environment addresses, and how |\n\nThis draft has real gaps: I don't have your actual cost breakdown, a migration sequence, a post-migration run-rate projection, or the specific DOT requirements this architecture is meant to satisfy — all needed to back the two claims the CFO cares about (spend reduction, clean audit). If you can supply those, I'll tighten this into a version with no open markers.",
+  "activated": true,
+  "lint_violations": 7,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 44482,
+    "cache_read_input_tokens": 35243,
+    "output_tokens": 1391,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 44482,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1052,
+        "cache_read_input_tokens": 35243,
+        "cache_creation_input_tokens": 9239,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9239
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1988946,
+  "duration_ms": 19228,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

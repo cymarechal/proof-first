@@ -1,0 +1,55 @@
+{
+  "run_id": "888ccbe8-0e12-484c-8829-a8c470acbee5",
+  "timestamp": "2026-09-21T08:29:08.973641+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 2,
+  "text": "**RFP and RFI response**\n\nNo customer source material (RFP question text, discovery notes) was supplied for this task, so the provenance override in PF-3.3 cannot fire; every term below is judged by the deletion test alone.\n\nToday, load-matching and carrier-settlement run on 28 on-premises Microsoft SQL Server instances across 620 Hyper-V virtual machines. After migration, both systems run on Google Compute Engine with Cloud SQL for PostgreSQL as the data layer, inside a stated 2-year, $4,200,000 programme.\n\nThe migration moves in phases mapped to VM and database groupings, not as a single cutover event. Each phase carries its own rollback point, so a failed validation on one instance group does not block or reverse work already completed on another. [PF-2.4 GAP: the phase count, sequencing logic, and per-phase VM/instance groupings were not supplied and are not stated here.]\n\nThe buyer's next compliance audit opens in 6 months from today. The migration plan sequences work so that the systems under audit scope remain on their current, already-audited platform until after that audit closes, and moves to Google Cloud only once the audit window has passed. [PF-2.4 GAP: which systems fall inside the audit's scope, and whether load-matching or carrier-settlement is among them, was not supplied.]\n\nCutover for each phase follows dual-run validation: the target Cloud SQL for PostgreSQL instance runs in parallel with the source SQL Server instance, and output is compared before traffic switches. [PF-1.17: this comparable requires a named validation method and tooling the vendor can actually produce — none was supplied.] [PF-2.4 GAP: the comparison method, tooling, and acceptance threshold for declaring a match were not supplied.]\n\nRollback for each phase reverts traffic to the source SQL Server instance and Hyper-V VM group, which stays live and unmodified until its phase's cutover is confirmed. [PF-2.4 GAP: the maximum time window in which rollback must be executable was not supplied.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Phase count, sequencing logic, per-phase groupings not stated | PF-2.4 | The buyer's or vendor's actual phase breakdown for the 28 instances / 620 VMs |\n| Audit scope (which systems) not stated | PF-2.4 | Confirmation of whether load-matching/carrier-settlement fall inside the 6-month audit's scope |\n| Validation method/tooling for dual-run comparison not named | PF-1.17 / PF-2.4 | A named, checkable comparison method and tool the vendor will use for cutover validation |\n| Rollback time window not stated | PF-2.4 | The maximum allowable rollback window per phase |",
+  "activated": true,
+  "lint_violations": 6,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35806,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 1639,
+    "output_tokens_details": {
+      "thinking_tokens": 701
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35806,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1639,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35806,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35806
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.16276759999999998,
+  "duration_ms": 23033,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

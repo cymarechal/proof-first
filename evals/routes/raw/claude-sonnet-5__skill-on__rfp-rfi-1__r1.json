@@ -1,0 +1,55 @@
+{
+  "run_id": "a486c93d-3e9a-48b4-b6e4-588ed12eb17c",
+  "timestamp": "2026-09-21T08:22:32.011191+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "artifact_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 1,
+  "text": "**This is an RFP answer.**\n\nNo customer source material — discovery notes, prior statements from the buyer, or a supplied RFP document beyond the question text itself — was provided for this task. The provenance override in PF-3.3 cannot fire; every term below is judged by the deletion test alone.\n\nYour load-matching and carrier-settlement systems run today on 28 on-premises Microsoft SQL Server instances across 620 Hyper-V virtual machines. Every one of those VMs is patched, backed up, and licensed independently, and every one of them sits inside the audit boundary your compliance team walks through in six months. This proposal moves that estate to Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, inside your two-year, $4,200,000 programme, so the systems your carriers and shippers depend on run on infrastructure Google patches, replicates, and backs up as a managed service. [PF-1.1][PF-1.2]\n\n**Migration approach**\n\nWe group the 28 SQL Server instances into discrete migration waves by application dependency, not by server count, so load-matching and carrier-settlement move as complete, testable units rather than as 620 individually-lifted VMs. [PF-1.9] Each wave follows the same four steps: schema and data-type conversion from SQL Server to PostgreSQL, continuous data replication into Cloud SQL to keep the target in sync with the live on-premises database, application-layer validation against the replicated data, and a scheduled cutover for that wave alone. Compute for each converted application deploys to Google Compute Engine ahead of its own cutover window, so the wave's validation runs against production-equivalent infrastructure before any traffic moves. [PF-1.5]\n\nWave sequencing itself — which of the 28 instances moves first, and how many waves the programme runs — depends on dependency mapping between load-matching and carrier-settlement components that has not yet been performed against your environment. [PF-2.4 GAP: wave count and sequencing — requires a dependency and data-volume assessment of the 28 SQL Server instances, not yet conducted]\n\n**Cutover plan**\n\nEach wave's cutover follows a fixed sequence: replication lag is confirmed at zero before traffic moves, the application is switched to the Cloud SQL target, a defined validation window confirms load-matching and carrier-settlement transactions post correctly, and the source SQL Server instance is placed in a rollback-ready state until validation closes. [PF-1.5] If validation fails, traffic reverts to the on-premises instance and the wave is rescheduled rather than forced through. [PF-4.3]\n\nYour compliance audit opens in approximately six months, before this two-year programme completes. [PF-1.2] We sequence early waves to move systems within scope of that audit first, so the audit finds workloads either fully migrated and stable on Google Cloud, or untouched on their current, already-audited on-premises configuration — never mid-cutover. [PF-1.25] Confirming which of the 28 instances fall inside the six-month audit's scope is a precondition for finalizing that sequencing. [PF-2.4 GAP: audit scope by system — requires the buyer to confirm which of the 28 instances are in scope for the audit opening ~2027-03-21]\n\n**Metrics**\n\nCutover success for each wave is measured against replication lag at time of switchover and transaction-validation pass rate during the post-cutover window. Neither has a stated baseline yet, since current replication tooling and transaction volumes for the 28 instances have not been supplied. [PF-1.13][PF-2.11 GAP: replication lag and transaction-volume baselines — requires measurement against the live SQL Server estate before the programme starts]\n\n**Differentiator**\n\nWave-based cutover with a defined rollback state at each step means a failed validation on one wave never blocks or reverts systems already cut over in prior waves — each of the 28 instances carries its own independent go/no-go decision. [PF-1.21]\n\n**Outcome**\n\nFor the team accountable to your compliance audit, this sequencing means the audit reviews a set of systems each in one clear state — migrated or not yet started — rather than a fleet mid-transition. [PF-1.25]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Wave count and sequencing not yet defined | PF-2.4 | Dependency and data-volume assessment of the 28 SQL Server instances |\n| Audit scope by system not yet confirmed | PF-2.4 | Buyer confirmation of which instances fall inside the ~2027-03-21 audit |\n| Replication lag and transaction-volume baselines missing | PF-2.11 | Measurement against the live SQL Server estate before programme start |",
+  "activated": true,
+  "lint_violations": 13,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28602,
+    "cache_read_input_tokens": 50928,
+    "output_tokens": 2618,
+    "output_tokens_details": {
+      "thinking_tokens": 772
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28602,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 2322,
+        "cache_read_input_tokens": 35189,
+        "cache_creation_input_tokens": 9152,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9152
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.15078160000000002,
+  "duration_ms": 33795,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

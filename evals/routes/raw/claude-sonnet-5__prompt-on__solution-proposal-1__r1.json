@@ -1,0 +1,55 @@
+{
+  "run_id": "e3c18690-e20a-4c03-889f-03d28c48b1c1",
+  "timestamp": "2026-09-21T08:29:31.062774+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 1,
+  "text": "Solution proposal — Architecture\n\nEvery one of the 620 virtual machines in the estate runs on Hyper-V today, and the 28 SQL Server instances that back them share that same host layer, which means a host-level constraint on one becomes a ceiling on the other. The migration moves that entire estate onto Google Cloud in two coordinated tracks: the general compute population onto Google Compute Engine, and the 28 SQL Server instances onto Cloud SQL for PostgreSQL as a managed data layer, so the database stops carrying host-management work that a managed service already does. Compute Engine receives the 620 virtual machines as the direct successor to Hyper-V, preserving the current one-VM-to-one-workload shape so the migration changes where a VM runs, not how the workload is structured. Cloud SQL for PostgreSQL takes over the 28 SQL Server instances as a managed replacement, moving instance patching, backup, and failover off the team that today does that work by hand on Hyper-V hosts. Because compute and data-layer components will now live inside a single new Google Cloud project rather than a single Hyper-V cluster, the proposal wraps that project in a VPC Service Controls perimeter from the outset, so the governance boundary the on-premises estate lacked is established before the first workload lands rather than retrofitted after. The result is a target state where the same 620-VM, 28-instance estate runs with a managed data layer and a defined governance perimeter it did not have on Hyper-V.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-1.21 GAP: no differentiator evidenced] | PF-1.21 | A comparable, verifiable proof that this Compute Engine / Cloud SQL / VPC Service Controls approach beats a named alternative — not supplied in the task context |\n| [MC-1 GAP: no baseline for current-state cost or performance] | MC-1 | The buyer's own stated cost or performance baseline for the current Hyper-V/SQL Server estate — not supplied |\n| [MC-21 GAP: no risk treatment stated] | MC-21 | The material risks of this migration (e.g. SQL Server-to-PostgreSQL engine compatibility) and how each is treated — not supplied |",
+  "activated": true,
+  "lint_violations": 8,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35759,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 759,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35759,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 759,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35759,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35759
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1537796,
+  "duration_ms": 10951,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

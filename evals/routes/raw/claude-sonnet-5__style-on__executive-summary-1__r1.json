@@ -1,0 +1,55 @@
+{
+  "run_id": "53ab8769-3111-421f-a12f-664bac8a0e3f",
+  "timestamp": "2026-09-21T08:24:46.183030+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 1,
+  "text": "Executive summary\n\nDiane's own numbers frame this: $1,850,000 in annual technology spend that she is measured on reducing, and a DOT compliance audit opening in 6 months, on 2027-03-21. The 28 SQL Server instances and 620 Hyper-V VMs behind load-matching and carrier settlement are the estate this spend and that audit both run through today. This document proposes migrating that estate to Google Compute Engine and Cloud SQL for PostgreSQL over a 2-year, $4,200,000 programme — a shift from the current on-premises footprint to a managed cloud platform, not a re-hosting exercise. [PF-1.13 GAP: current $1,850,000 spend has no stated breakdown by infrastructure, licensing, and operations, so no baseline exists yet for how much of it this programme is meant to reduce or by when]\n\nYou should expect the programme to run against your two named priorities, not architecture on its own terms. [PF-2.14 REVIEW (commitment): confirm before this ships whether the programme commits to a specific reduction against the $1,850,000 baseline, and by what date, rather than reducing spend as a general direction] On the audit, the programme's relevance is that carrier-settlement data and its controls move onto Cloud SQL for PostgreSQL ahead of the 6-month window opening; [PF-2.17 REVIEW (compliance): confirm what DOT-relevant certifications or controls Google Cloud and this programme actually hold today, since Google's own compliance status cannot be asserted here] and [PF-1.17 GAP: no named comparable migration of this scale — 28 SQL Server instances, 620 VMs — has been supplied as a verifiable proof point for the $4,200,000, 2-year plan]. Before you sign, the team will bring you the full spend baseline breakdown and the specific reduction target this programme commits to, so both of your stated measures have numbers attached rather than direction alone.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| current $1,850,000 spend has no baseline breakdown | PF-1.13 | itemized breakdown of the $1,850,000 by infrastructure/licensing/ops, and the specific reduction target/date this programme commits to |\n| \"programme run against your two named priorities\" commitment framing | PF-2.14 | confirm whether a specific spend-reduction figure/date is being promised, or reduction is directional only |\n| DOT-relevant certification/control status of Google Cloud and this programme | PF-2.17 | confirmed list of certifications/controls actually held today, mapped to DOT audit requirements |\n| no comparable migration proof point for the $4.2M/2-year plan | PF-1.17 | a named, verifiable comparable migration of similar scale, or explicit acknowledgment none exists yet |",
+  "activated": true,
+  "lint_violations": 7,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35932,
+    "cache_read_input_tokens": 14707,
+    "output_tokens": 947,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35932,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 947,
+        "cache_read_input_tokens": 14707,
+        "cache_creation_input_tokens": 35932,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35932
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1561434,
+  "duration_ms": 12128,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

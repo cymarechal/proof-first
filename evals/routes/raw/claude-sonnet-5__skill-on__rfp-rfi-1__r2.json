@@ -1,0 +1,55 @@
+{
+  "run_id": "90b931fb-c50a-4a79-87ff-a0f2e56a6d27",
+  "timestamp": "2026-09-21T08:22:52.996502+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "skill-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "artifact_sha": "fadc48613f71fb29d55b42f70805225f9087a2b9",
+  "repeat": 2,
+  "text": "**RFP answer**\n\nYou are running load-matching and carrier-settlement on 28 SQL Server instances across 620 Hyper-V VMs, and your next compliance audit opens in six months (2027-03-21) [PF-3.3: \"compliance audit,\" retained — buyer context]. Your $4,200,000, two-year programme must move that estate onto Google Compute Engine and Cloud SQL for PostgreSQL without a settlement outage the audit would catch mid-migration.\n\nMigration runs in three phases, sequenced against your audit date rather than an arbitrary calendar.\n\n**Phase 1 — Assessment and landing zone (months 1–3).** We inventory the 28 SQL Server instances and 620 Hyper-V VMs, classify each by workload type — load-matching versus carrier-settlement — and dependency graph, then group them into migration waves ordered by audit relevance. Instances that fall inside audit scope move first, so they are stable on Cloud SQL for PostgreSQL well before 2027-03-21 [PF-2.14 REVIEW (commitment): \"move first\" implies a sequencing commitment tied to a compliance deadline — confirm this ordering is contractually workable before it ships]. In parallel, we stand up the target landing zone on Google Compute Engine and Cloud SQL for PostgreSQL, including networking, IAM, and backup configuration.\n\n**Phase 2 — Wave-based migration with schema conversion (months 3–18).** Each wave follows the same pattern: convert the SQL Server schema to PostgreSQL-compatible DDL, replicate data using change-data-capture to keep source and target in sync, validate row counts and business-rule outputs against the source system, then cut the wave over. [PF-2.11 GAP: no per-wave duration or number of waves supplied — schedule granularity beyond the two-year total was not provided]. Carrier-settlement workloads, given their financial-reconciliation function, get a dedicated parallel-run window before cutover; load-matching workloads, being less audit-sensitive, follow a shorter validate-and-cut pattern [PF-1.9: capability stated as what each workload type needs before naming the GCE/Cloud SQL delivery mechanism].\n\n**Phase 3 — Decommission and closeout (months 18–24).** Once every wave is validated on Google Cloud and the source Hyper-V VMs are confirmed unused for a defined observation period, we decommission the 620 VMs and the 28 SQL Server instances. [PF-2.11 GAP: length of the post-cutover observation window before decommissioning was not supplied by the buyer].\n\n**Cutover plan.** Each wave's cutover is a scheduled maintenance window: replication is allowed to reach zero lag, the source is frozen, a final validation pass compares source and target, and traffic is switched to the Cloud SQL for PostgreSQL target. [PF-2.11 GAP: no maximum acceptable downtime or RTO/RPO figure for load-matching or carrier-settlement was supplied — this should be confirmed with the buyer before commitment]. A rollback path — reverting traffic to the still-frozen SQL Server source — stays available until the post-cutover validation window closes for that wave, so a failed cutover does not become a settlement-data incident.\n\nThis wave structure means load-matching and carrier-settlement move independently, each validated against its own source before cutover, so no wave carries risk it did not itself introduce — and the waves inside audit scope land with runway to spare before 2027-03-21.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| \"compliance audit,\" retained | PF-3.3 | Confirm this is the buyer's own term from source material, not inferred |\n| \"move first\" sequencing commitment | PF-2.14 | Confirm audit-scope-first wave ordering is contractually workable |\n| No per-wave duration or wave count | PF-2.11 | Buyer or internal planning figure for number of waves and cadence |\n| Post-cutover observation window length | PF-2.11 | Defined retention/observation period before decommissioning source VMs |\n| RTO/RPO or max downtime figures | PF-2.11 | Buyer's acceptable downtime for load-matching vs. carrier-settlement |",
+  "activated": true,
+  "lint_violations": 11,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 28569,
+    "cache_read_input_tokens": 50928,
+    "output_tokens": 1709,
+    "output_tokens_details": {
+      "thinking_tokens": 26
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28569,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1431,
+        "cache_read_input_tokens": 35189,
+        "cache_creation_input_tokens": 9119,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 9119
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1415596,
+  "duration_ms": 19580,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

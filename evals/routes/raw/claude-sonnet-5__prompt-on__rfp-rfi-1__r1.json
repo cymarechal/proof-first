@@ -1,0 +1,55 @@
+{
+  "run_id": "a9db9a70-36b3-419a-8fb6-ce927e0b41b2",
+  "timestamp": "2026-09-21T08:28:44.307052+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 1,
+  "text": "**Solution proposal**\n\nMigration proceeds wave-by-wave across the 28 SQL Server instances and 620 Hyper-V VMs, sequencing non-critical workloads first and load-matching and carrier-settlement last, so cutover risk concentrates on the systems with the most rehearsal behind them by the time they move.\n\nEach wave follows four stages: assess and replicate, validate, rehearse, cut over. Assessment inventories the source instance's schema, dependencies, and data volume and stands up continuous replication into Cloud SQL for PostgreSQL. Validation runs schema-conversion checks and reconciles row counts and checksums between source and target before any cutover is scheduled. Rehearsal executes a full dry-run cutover against a non-production Cloud SQL for PostgreSQL target, timing each step so the team knows the actual cutover window before committing to it. Cutover freezes writes on the source instance, applies the final replication delta, and repoints the application layer at the Google Compute Engine-hosted service, with a defined rollback to the source instance if validation fails post-cutover.\n\nLoad-matching and carrier-settlement carry the account's most acute cutover risk, since a failed settlement run has direct financial exposure — [PF-2.4 GAP: no current settlement-run failure tolerance or acceptable downtime window has been supplied; this should be captured during discovery and used to size the cutover window and rollback trigger for these two systems specifically]. These two systems are scheduled inside the programme's final quarter, after every other wave has proven the rehearsal-to-cutover pattern against production-equivalent load, and their cutover window is confirmed only after a rehearsal run has met the recovery-time target agreed with the buyer.\n\nThe cutover plan for each wave is scheduled outside the buyer's settlement processing peaks, uses parallel run (source and target both live and reconciled) for a defined verification period before the source instance is decommissioned, and requires a stated go/no-go checkpoint with the buyer prior to each production cutover — [PF-2.14 REVIEW (commitment): confirm the parallel-run duration and go/no-go decision owner before this ships, since both are commitments this response is making to the evaluation committee]. Given the buyer's next compliance audit opens in 6 months, the two-year programme places instances relevant to that audit's scope earliest in the wave sequence, and the audit's data-residency and access-log requirements are validated against the Google Compute Engine and Cloud SQL for PostgreSQL target configuration before any in-scope instance cuts over — [PF-2.4 GAP: which specific instances fall inside the 6-month audit's scope has not been supplied and is needed to build the actual wave sequence].\n\n---\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP | PF-2.4 | Acceptable downtime/failure tolerance for load-matching and carrier-settlement, to size their cutover window and rollback trigger |\n| REVIEW (commitment) | PF-2.14 | Confirm parallel-run duration and go/no-go decision owner before this response ships |\n| GAP | PF-2.4 | List of instances falling inside the 6-month compliance audit's scope, to sequence the wave plan |",
+  "activated": true,
+  "lint_violations": 10,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35808,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 1089,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35808,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1089,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35808,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35808
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1572756,
+  "duration_ms": 14284,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

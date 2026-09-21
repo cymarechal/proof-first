@@ -1,0 +1,55 @@
+{
+  "run_id": "01858f33-8d3c-43ec-b868-b002a476d4c3",
+  "timestamp": "2026-09-21T08:25:23.376010+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "rfp-rfi",
+  "scenario_id": "rfp-rfi-1",
+  "scenario_prompt": "Write the response to this scored RFP question, worth 25% of the RFP's overall technical score: \"Describe the migration approach and cutover plan.\" Context: the migration moves load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances, 620 Hyper-V virtual machines) onto Google Cloud (Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer), within a 2-year, $4,200,000 programme, with proposals due 2026-11-15 and the buyer's next compliance audit opening in 6 months. Return only the answer text, no section headers beyond what the answer itself needs.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 0,
+  "text": "**RFP answer**\n\nMigration approach and cutover plan: this response is drafted from the RFP question text alone — no discovery notes or additional customer source material were supplied, so the provenance override in PF-3.3 cannot fire, and every term below is judged by the deletion test alone.\n\nYour load-matching and carrier-settlement systems run today on 28 on-premises Microsoft SQL Server instances across 620 Hyper-V virtual machines. The programme moves both systems to Google Compute Engine and Cloud SQL for PostgreSQL over 2 years within a $4,200,000 budget, with your compliance audit opening in 6 months — inside the migration window, not after it.\n\n**Approach: wave-based, dependency-ordered migration, sequenced to clear the audit first.** Load-matching and carrier-settlement are migrated as separate waves, each broken into estate discovery, schema conversion, data replication, and validation. Wave order is set by which systems fall inside the audit's scope, so the highest-audit-relevance workloads cut over before the 6-month audit opens; systems outside audit scope move in later waves within the 2-year window. [MC-21 GAP: the review process — security, procurement, legal — that this document must clear before the first wave starts is not stated in the RFP text supplied; naming the reviewer and their turnaround time would let us commit the pre-audit wave to a specific date.]\n\n**Schema and engine conversion.** Each Hyper-V-hosted SQL Server instance is assessed individually — schema, stored procedures, and T-SQL-specific logic converted to PostgreSQL-compatible equivalents ahead of cutover, with conversion output validated against source-system behavior before any instance is scheduled for cutover. [PF-2.1: the count of instances carrying T-SQL-specific logic requiring manual conversion, versus straightforward schema ports, has not been supplied — [PF-2.4 GAP: per-instance conversion complexity breakdown — would need a schema audit of the 28 instances before this proposal can commit to a wave-by-wave schedule].]\n\n**Data replication and cutover mechanics.** For each instance, continuous replication runs from the source SQL Server instance into the target Cloud SQL for PostgreSQL instance ahead of cutover, so cutover itself is a traffic switch — not a bulk data copy — minimizing the write-freeze window. Each cutover carries a defined rollback path: traffic reverts to the source instance if post-cutover validation fails. [PF-2.14 REVIEW (commitment): the write-freeze duration and the rollback trigger threshold are commitment-shaped and need confirmation from the delivery team before this ships — a stated freeze window becomes a warranty once it's in the proposal.]\n\n**Validation before and after each cutover.** Before cutover, replicated data is reconciled against the source instance. After cutover, load-matching and carrier-settlement transaction outputs are compared against pre-migration baselines on the same instance for an agreed validation period before that instance's source infrastructure is decommissioned. [MC-1 GAP: the current baseline for acceptable transaction-output variance during validation — e.g., settlement discrepancy rate — was not stated in the RFP text; this would need to come from your team measuring current-state settlement accuracy before validation thresholds can be set.]\n\n**Sequencing 28 instances and 620 VMs across a fixed budget and audit date.** [MC-16 GAP: the RFP text supplied does not state how many bidders are competing, the scoring weights across evaluation criteria, or the proposal submission date, though the prompt gives 2026-11-15 as the due date — confirming the scoring rubric would let this section mirror your own evaluation structure rather than a generic one.] Within the 6-month pre-audit window, the highest-priority waves are scoped to the instances and VMs feeding the audited systems; the remaining instances and VMs are sequenced across the balance of the 2-year, $4,200,000 programme. [PF-2.4 GAP: which of the 28 instances and 620 VMs fall inside audit scope has not been supplied — a scope list from your team is what turns this into a committed wave schedule rather than a general sequencing principle.]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| MC-21 GAP | MC-21 | Named review owner(s) and turnaround time for the reviews (security/procurement/legal) that gate the first migration wave |\n| PF-2.4 GAP | PF-2.4 | Per-instance breakdown of the 28 SQL Server instances by conversion complexity (straightforward schema port vs. T-SQL-specific logic requiring rework) |\n| PF-2.14 REVIEW (commitment) | PF-2.14 | Confirmation of the write-freeze duration and rollback trigger threshold before stating them as commitments |\n| MC-1 GAP | MC-1 | Current-state settlement/transaction-accuracy baseline against which post-cutover validation is measured |\n| MC-16 GAP | MC-16 | Buyer's evaluation criteria, weights, bidder count, and scoring process for this RFP |\n| PF-2.4 GAP | PF-2.4 | List of which of the 28 instances / 620 VMs fall inside the 6-month compliance audit's scope |",
+  "activated": true,
+  "lint_violations": 11,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35876,
+    "cache_read_input_tokens": 14707,
+    "output_tokens": 1781,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35876,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1781,
+        "cache_read_input_tokens": 14707,
+        "cache_creation_input_tokens": 35876,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35876
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1642594,
+  "duration_ms": 23492,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

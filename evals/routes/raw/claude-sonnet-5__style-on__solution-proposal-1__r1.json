@@ -1,0 +1,55 @@
+{
+  "run_id": "4866f0a9-9bfe-4f33-8e3e-d46e850dab70",
+  "timestamp": "2026-09-21T08:26:33.759612+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 1,
+  "text": "Solution proposal\n\nThe migration replaces 620 Hyper-V virtual machines and 28 Microsoft SQL Server instances with a target of Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls as the new project's governance perimeter.\n\nVMware, SQL Server licensing costs, and the migration timeline are not stated in the material supplied for this task. [PF-2.4 GAP: current-state cost, license spend, and cause of the migration — not supplied]\n\nThe 620 Hyper-V virtual machines move to Google Compute Engine, which becomes the buyer's compute layer. [PF-1.9] Compute Engine instance sizing, and whether the move is lift-and-shift or re-platformed, are not stated. [PF-2.4 GAP: target instance sizing and migration method — not supplied]\n\nThe 28 SQL Server instances move to Cloud SQL for PostgreSQL, which becomes the buyer's managed data layer. [PF-1.9] Cloud SQL for PostgreSQL is not binary-compatible with SQL Server, so each instance's stored procedures, T-SQL-specific code, and schema require conversion before cutover; the conversion effort and per-instance complexity are not stated. [PF-2.4 GAP: per-instance schema/procedure conversion scope — not supplied]\n\nVPC Service Controls establishes the security perimeter around the new Google Cloud project, restricting data exfiltration paths for the resources now running inside it — Compute Engine and Cloud SQL for PostgreSQL. [PF-1.9]\n\nNo metric with a stated baseline (downtime tolerance, cutover window, current utilization) was supplied for this migration. [PF-2.13 GAP: baseline metric for the migration — not supplied]\nNo differentiator claim is made here, since no named alternative platform or competing bid was supplied. [PF-2.13 GAP: competing bid or alternative — not supplied]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| GAP | PF-2.4 | Current-state cost, license spend, and stated cause of the migration |\n| GAP | PF-2.4 | Target Compute Engine sizing and migration method (lift-and-shift vs. re-platform) |\n| GAP | PF-2.4 | Per-instance SQL Server → PostgreSQL schema/stored-procedure conversion scope |\n| GAP | PF-2.13 | A metric with baseline (e.g., cutover window, downtime tolerance) |\n| GAP | PF-2.13 | A named alternative or competing bid to ground a differentiator claim |",
+  "activated": true,
+  "lint_violations": 9,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35827,
+    "cache_read_input_tokens": 14707,
+    "output_tokens": 902,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35827,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 902,
+        "cache_read_input_tokens": 14707,
+        "cache_creation_input_tokens": 35827,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35827
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1552734,
+  "duration_ms": 11819,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

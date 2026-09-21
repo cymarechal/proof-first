@@ -1,0 +1,55 @@
+{
+  "run_id": "f0d9a8de-2476-48a3-a71b-7a65aeea53e1",
+  "timestamp": "2026-09-21T08:27:52.672910+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 1,
+  "text": "Executive summary\n\n**No family fits:** this is an executive summary, so I'll apply that family's conventions alongside the family-independent rules.\n\nRight now, 28 SQL Server instances and 620 Hyper-V virtual machines are the infrastructure your load-matching and carrier-settlement systems run on — and they're also the reason your technology spend sits at $1,850,000 a year, the figure you've said you're measured on reducing. That cost pressure lands at the same moment your DOT compliance audit opens, in six months, on the same on-premises estate. A $4,200,000, two-year migration to Google Cloud — Google Compute Engine for compute, Cloud SQL for PostgreSQL for the data layer — replaces that estate with infrastructure sized and licensed to what the business actually uses, rather than what 620 VMs were provisioned for [PF-2.4 GAP: comparable customer figure or vendor benchmark for post-migration run-rate reduction was not supplied]. You should expect the case for this to be made on your terms: the run-rate line you report against, and the audit window you're carrying risk against — not on architecture elegance you haven't asked for.\n\nOver the two-year programme, expect three things from us. First, a migration sequence that gets the carrier-settlement and load-matching systems onto Cloud SQL and Compute Engine without disrupting the operations that depend on them daily. Second, a compliance posture addressed on your timeline: the DOT audit opens in six months, and the migration plan is built to have the systems examiners will look at already stable on the new platform, not mid-cutover [PF-2.14 REVIEW (commitment): confirm systems will be fully migrated and stable ahead of the audit date before this ships]. Third, a running account of spend against the $1,850,000 baseline, so the reduction you're accountable for is visible as it happens, not asserted at the end [PF-1.14 GAP: baseline attribution — confirm whether $1,850,000 is the buyer's own stated figure and its source document]. Where this document states a saving or a delivery date without a number or source next to it, that is marked rather than assumed, so what you take to your board is exactly what we can stand behind.\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| Comparable/benchmark for run-rate reduction | PF-2.4 | A specific figure or comparable case this vendor can produce for expected post-migration savings, or confirmation none exists yet |\n| \"Fully migrated and stable ahead of the audit\" | PF-2.14 | Human confirmation this is a commitment the vendor can keep, not a promise the programme timeline can't support |\n| $1,850,000 baseline source | PF-1.14 | Confirm this figure is the CFO's own stated number and name where it came from (her statement, a budget document, etc.) |",
+  "activated": true,
+  "lint_violations": 8,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35864,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 940,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35864,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 940,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35864,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35864
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1560096,
+  "duration_ms": 14885,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

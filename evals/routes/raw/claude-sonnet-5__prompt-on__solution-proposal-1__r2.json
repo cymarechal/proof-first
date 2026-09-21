@@ -1,0 +1,55 @@
+{
+  "run_id": "2755faae-352d-4631-8c30-676f95cbd56b",
+  "timestamp": "2026-09-21T08:29:48.913908+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "prompt-on",
+  "family": "solution-proposal",
+  "scenario_id": "solution-proposal-1",
+  "scenario_prompt": "Write the architecture section of a solution proposal, telling the migration as a narrative from the buyer's current estate to the target platform rather than as a list of components. Context: the current estate is Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines); the target is Google Cloud, using Google Compute Engine for compute, Cloud SQL for PostgreSQL for the migrated data layer, and VPC Service Controls for the new project's governance perimeter. Return only the architecture narrative text.",
+  "artifact_sha": "f7438bd45aba23c0a6cafaaa0a9f5b34b41fce15",
+  "repeat": 2,
+  "text": "Using proof-first to draft this architecture narrative section as a solution proposal.\n\nNo customer source material (discovery quotes, stated pain points) was supplied for this task, so the provenance override in PF-3.3 cannot fire — every term below is judged by the deletion test alone, and no buyer-verbatim wording is retained under that marker.\n\n**Artifact family:** Solution proposal — architecture narrative section.\n\n---\n\n## Architecture\n\nThe estate today runs 28 Microsoft SQL Server instances across 620 virtual machines on Hyper-V — a single hypervisor layer carrying both compute and data as one undifferentiated pool. Every workload, whatever its actual resource profile, is provisioned and patched through that same virtualization boundary, and every database sits inside a general-purpose VM rather than a managed service built for it.\n\nThe proposed target separates those two concerns. Compute moves to Google Compute Engine, so each of the 620 virtual machines is re-provisioned as a Compute Engine instance sized to its own workload rather than inherited from a shared Hyper-V host profile. The data layer moves separately: the 28 SQL Server instances migrate to Cloud SQL for PostgreSQL, replacing self-managed database VMs with a managed engine that takes over patching, backup, and failover as platform responsibility rather than estate-owned operational work.\n\n[PF-1.17 GAP: no comparable, verifiable proof point for the SQL Server–to–PostgreSQL engine migration has been supplied — attach a named prior migration or benchmark before this ships]\n\nGovernance is established at the perimeter rather than inside each workload. VPC Service Controls defines a service perimeter around the new Google Cloud project, so the boundary that decides what can reach the migrated data layer is enforced once, at the project's edge, instead of instance by instance as it is today under Hyper-V.\n\n[PF-1.13 GAP: no baseline has been supplied for how the current Hyper-V estate's governance or access-control posture is measured today, so no before/after comparison can be quantified]\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| No verifiable comparable for the SQL Server-to-PostgreSQL migration | PF-1.17 | A named prior migration or benchmark this vendor can produce as proof |\n| No baseline for current governance/access-control posture | PF-1.13 | The buyer's own stated measure (if any) or confirmation none exists |",
+  "activated": true,
+  "lint_violations": 10,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35761,
+    "cache_read_input_tokens": 15748,
+    "output_tokens": 1304,
+    "output_tokens_details": {
+      "thinking_tokens": 483
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35761,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1304,
+        "cache_read_input_tokens": 15748,
+        "cache_creation_input_tokens": 35761,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35761
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1592376,
+  "duration_ms": 16247,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

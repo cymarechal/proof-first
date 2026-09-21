@@ -185,6 +185,7 @@ REQUIRED_CAVEATS = (
     'trigger activation',
     'system-prompt proxy',
     'sample size',
+    'scenario coverage',
     'interactive picker',
 )
 
@@ -215,6 +216,14 @@ CAVEAT_TEXT = {
         'observed range as noise, and read "not distinguished" as exactly that -- not as '
         '"equivalent." Every mean is rounded to one decimal place; the unrounded values remain '
         'recoverable from evals/routes/raw/.'
+    ),
+    'scenario coverage': (
+        'Scenario coverage: the run authorised at this plan\'s spend checkpoint was the reduced '
+        'matrix -- one scenario per artifact family rather than the two per family the committed '
+        'scenario set holds. All four families are covered, but with a single scenario each a '
+        'family-general effect cannot be separated from that one scenario\'s own quirks. It also '
+        'means the skill-on arm here is not directly comparable with the eight-scenario skill-on '
+        'arm in evals/benchmark/RESULTS.md, so no cross-check against Phase 5\'s run is offered.'
     ),
     'interactive picker': (
         'Interactive picker unobserved: a headless session has no /config picker. Whether a human '
