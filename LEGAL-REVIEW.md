@@ -13,7 +13,23 @@ would survive a challenge, and nobody should rely on it as though it did.
 
 Its companion files: `NOTICES.md` states the posture a reader is entitled to rely on; `SOURCES.md`
 lists the approved sources and their provenance; this file is the dated evidence behind both. It is
-append-only — later reviews add sections, they do not rewrite earlier ones.
+append-only in its findings: later reviews add sections, and a check that was run, or was not run,
+stays recorded as it was — which is why `## Human observations` sections 1 to 3 are still here under
+headings marking them superseded rather than deleted when section 4 replaced them.
+
+A statement found false against this repository's own files is the one exception, and it is
+corrected in place rather than appended around. The condition is that the correction says what was
+corrected, on what date, and against which file, so a reader can see the change rather than discover
+it by diffing. Three corrections in this file were made on that basis: the id-6 acronym reasoning
+(2026-09-21, commit 0b8a865, which removed 32 lines and added 64), the PF-1 counterweight and its
+downstream statements (2026-09-21, plan 06-06), and the four reproduction-boundary figures and
+citations corrected in the same round. The rule was restated on 2026-09-21 to match, because the
+earlier wording forbade what this round and the one before it had already done for good reason. The
+alternative considered and not taken was to keep the wording and restore each superseded passage
+under a dated heading, the way sections 1 to 3 were kept. It was rejected on the distinction this
+paragraph draws: a record of what was and was not done is evidence and is preserved, while a reading
+that was simply wrong about a file in this repository is not evidence of anything and preserving it
+raises the cost of every later read.
 
 Where a lookup failed, the failure is recorded as a failure. An unconfirmed fact is a disclosed gap,
 never an assumed one.
