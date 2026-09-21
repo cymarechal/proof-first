@@ -40,7 +40,7 @@ ownership per `NOTICES.md`.
 
 | Title | Author or publisher | Kind | Status | Where |
 |---|---|---|---|---|
-| "MEDDICC: The Ultimate Guide to Staying One Step Ahead in the Complex Sale" | Andy Whyte | book | unverified | to confirm at LEG-04 |
+| "MEDDICC: The Ultimate Guide to Staying One Step Ahead in the Complex Sale" | Andy Whyte | book | verified | https://openlibrary.org/books/OL38629171M (retrieved 2026-09-21) |
 | Public overview page describing the qualification checklist's dimensions | A public claimant to the marks in this family | public page | unverified | to confirm at LEG-04 |
 
 ## Commercial teaching sources
