@@ -4,9 +4,11 @@ An agent skill for technical presales writing that replaces adjectives with spec
 
 ## Before and after
 
-Below: an unrevised draft, then a rewrite. The rewrite's numbers come from the one shared
-canonical deal brief this repository ships. One full pair, reproduced from
-`examples/before-after.md`:
+Below: an unrevised draft, then a rewrite. The rewrite's numbers come from
+`examples/deal-brief.md`, the canonical deal brief every worked example in this repository cites.
+(`evals/benchmark/bench-deal-brief.md` is a second, separate brief, used only to prompt the
+benchmark's sessions so they never see the one the examples are written against.) One full pair,
+reproduced from `examples/before-after.md`:
 
 **RFP and RFI response**
 
@@ -127,14 +129,19 @@ What exists today:
 - `examples/deal-brief.md` — the one canonical fictional deal every worked example cites.
 - `evals/pressure-tests.md` — the trigger-pressure-test method and its 14 recorded observations.
 - `evals/lint.py` — the stdlib-only mechanical proxy linter the benchmark counts with.
-- `evals/trigger/run_trigger_test.py` — a stdlib-only, self-testing runner that drives one live
-  session per phrasing and reads activation from the session's own event stream.
-- `evals/trigger/RESULTS-trigger.md` — the recorded run: 9 of 9 must-fire phrasings activated the
-  skill, and 2 of 5 near-miss phrasings activated it when they should not have, with caveats
-  stated in the file.
+- `evals/trigger/run_trigger_test.py` — a stdlib-only, self-testing runner that drives live
+  sessions per phrasing and reads activation from each session's own event stream.
+- `evals/trigger/RESULTS-trigger.md` — three runs against the shipped skill description. The
+  current one is Arm B, the paired n=5 control measured 2026-09-20 on `claude-sonnet-5`: the skill
+  activated in 45 of 45 must-fire sessions, and over-fired in 9 of 25 must-not-fire sessions — two
+  near-miss phrasings account for all nine, at 5 of 5 and 4 of 5, and the other three over-fired 0
+  of 5. Arm B is the description that ships. The file's earlier single-observation run is superseded
+  by it, and the Arm A block records a longer description that was measured and then reverted, so
+  Arm A describes nothing this repository ships. Caveats are stated in the file, and the over-fire
+  residual is open as CAT-10 (`.planning/WINDOWS.md` entry 24).
 - `evals/conformance/run_conformance.py` — a stdlib-only, self-testing scorer that drives live
   sessions against the shipped skill and checks whether each one names its artifact family before
-  drafting, the write-mode conformance contract this repository calls MOD-04.
+  its first rule marker, the write-mode conformance contract this repository calls MOD-04.
 - `evals/conformance/RESULTS-mod04.md` — a MOD-04 write-mode conformance run, with its own caveats
   stated in the file.
 - `evals/routes/run_routes.py` — a stdlib-only, self-testing runner that measures whether the four
@@ -151,10 +158,18 @@ What exists today:
 - `NOTICES.md` — the trademark and attribution posture.
 - `SOURCES.md` — the approved-source list and the paraphrase boundary.
 - `tools/check_repo.py` — a stdlib-only checker enforcing all of the above, wired into CI.
+- `tools/generate_derivatives.py` — the generator that writes the output style and the system
+  prompt from the skill content, with a `--check` mode CI runs to fail a stale derivative.
+- `.github/workflows/ci.yml` — the one CI job; it runs the checker, its self-test and mutation
+  test, every eval script's self-test, and the derivative check.
 - `.claude-plugin/` — the Claude Code plugin manifests (`plugin.json`, `marketplace.json`).
 - `output-styles/proof-first.md` — the output style.
 - `prompts/system-prompt.md` — the paste-able system prompt.
 - `examples/before-after.md` — the worked before-and-after examples.
+- `evals/proxy-sources.md` — the published source for every term `evals/lint.py` counts as a proxy.
+- `evals/benchmark/scenarios.json` — the eight benchmark prompts, two per artifact family.
+- `evals/benchmark/bench-deal-brief.md` — the separate deal brief the benchmark's sessions are
+  prompted with, kept apart from `examples/deal-brief.md` so no session sees the examples' brief.
 
 What does not exist yet:
 
@@ -202,9 +217,12 @@ wants to judge it themselves.
 
 <!-- claim-region:end -->
 
-This repository discloses one measured v1 limitation: whether a live write-mode session names its
-artifact family before its first rule citation, reproducible from the committed, stdlib-only
-`evals/conformance/run_conformance.py` script.
+This repository discloses several measured v1 limitations rather than one, and they are spread
+across the sections above: the benchmark result in the claim region, the trigger over-fire residual
+in `evals/trigger/RESULTS-trigger.md` (CAT-10), and the route run that did not distinguish its
+three arms in `evals/routes/RESULTS-routes.md`. The rest of this section covers one more — whether
+a live write-mode session names its artifact family before its first rule marker, reproducible from
+the committed, stdlib-only `evals/conformance/run_conformance.py` script.
 
 Measured 2026-09-16, under the anchored scorer,
 across five committed fixtures: `claude-sonnet-5` conformed in 3 of 10 scoreable sessions
