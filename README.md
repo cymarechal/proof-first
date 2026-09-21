@@ -125,6 +125,7 @@ What exists today:
 - `skills/proof-first/references/worked-examples.md` — the 28 worked ✗/✓ pairs, keyed by rule ID.
 - `examples/deal-brief.md` — the one canonical fictional deal every worked example cites.
 - `evals/pressure-tests.md` — the trigger-pressure-test method and its 14 recorded observations.
+- `evals/lint.py` — the stdlib-only mechanical proxy linter the benchmark counts with.
 - `evals/trigger/run_trigger_test.py` — a stdlib-only, self-testing runner that drives one live
   session per phrasing and reads activation from the session's own event stream.
 - `evals/trigger/RESULTS-trigger.md` — the recorded run: 9 of 9 must-fire phrasings activated the
@@ -133,8 +134,16 @@ What exists today:
 - `evals/conformance/run_conformance.py` — a stdlib-only, self-testing scorer that drives live
   sessions against the shipped skill and checks whether each one names its artifact family before
   drafting, the write-mode conformance contract this repository calls MOD-04.
-- `evals/conformance/RESULTS-mod04.md` — this repository's one committed measurement, a MOD-04
-  write-mode conformance run, with its own caveats stated in the file.
+- `evals/conformance/RESULTS-mod04.md` — a MOD-04 write-mode conformance run, with its own caveats
+  stated in the file.
+- `evals/routes/run_routes.py` — a stdlib-only, self-testing runner that measures whether the four
+  install routes deliver equivalent behaviour.
+- `evals/routes/RESULTS-routes.md` — the recorded route-equivalence run, published as a null
+  result with its own caveats stated in the file.
+- `evals/benchmark/run_benchmark.py` — the stdlib-only skill-on/skill-off benchmark runner and its
+  free, offline `--report-only` recompute.
+- `evals/benchmark/RESULTS.md` — the benchmark's committed figures, regenerable from the committed
+  raw records.
 - `LICENSE` — the MIT grant.
 - `NOTICES.md` — the trademark and attribution posture.
 - `SOURCES.md` — the approved-source list and the paraphrase boundary.
@@ -146,8 +155,49 @@ What exists today:
 
 What does not exist yet:
 
-- A headline persuasion or quality claim in this README. The benchmark that could source one has
-  run (see below); deciding what this README states on the strength of it is Phase 6's work.
+- Any human evaluation. No human evaluator has scored any text this repository produces. Every
+  judged figure below is one language model's rating against a rubric.
+- Any measurement outside Anthropic-hosted models. Every figure here comes from `claude-opus-5` and
+  `claude-sonnet-5`; nothing establishes that any of it transfers to another vendor's model.
+- Any claim that this skill makes documents more persuasive. The benchmark measured that directly
+  and found the opposite — see the claim region below.
+
+### What the benchmark measured
+
+<!-- claim-region:start -->
+
+The benchmark ran on 2026-09-18 across `claude-opus-5` and `claude-sonnet-5` and recorded 96
+generations. Each scenario was drafted twice, once with the skill loaded and once without, and the
+two drafts were judged blind against each other in both orders, with the orders averaged before a
+pair was scored. That gives 48 both-orders-averaged pairs per judged dimension. Figures below are
+regenerable offline with `python3 evals/benchmark/run_benchmark.py --report-only`.
+
+On evidence, the skill-on draft won 45 pairs, tied 1 and lost 2, measured 2026-09-18 across
+`claude-opus-5` and `claude-sonnet-5`.
+
+On clarity, the skill-on draft won 32 pairs, tied 3 and lost 13, measured 2026-09-18 across
+`claude-opus-5` and `claude-sonnet-5`.
+
+On persuasive force, the skill-on draft lost 38 pairs. It won 7 and tied 3. The judge preferred the
+un-skilled draft in four pairs out of five, measured 2026-09-18 across `claude-opus-5` and
+`claude-sonnet-5`, and the direction is the same for both models rather than driven by one.
+
+The mechanical proxy count does not move in one direction at all: across 16 (model, scenario) cells
+measured 2026-09-18, the count is lower with the skill on in 8 cells, equal in 1 and higher in 7.
+`claude-opus-5` improves and `claude-sonnet-5` worsens, so the two models move opposite ways.
+
+What the persuasive-force result does and does not establish, for the 2026-09-18 run across
+`claude-opus-5` and `claude-sonnet-5`: it is one language model's rating against a rubric, and no
+human evaluator scored any text. The skill-off condition also received a materially shorter prompt
+than the skill-on condition, so prompt length is not held constant between the two arms. Both
+caveats are stated in full, with four others, in `evals/benchmark/RESULTS.md`.
+
+One reading of the gap — that the skill trades persuasive framing for evidence density — is an
+untested hypothesis, not a measurement. Nothing in the 2026-09-18 run across `claude-opus-5` and
+`claude-sonnet-5` tests it. The per-generation texts are in `evals/benchmark/raw/` for a reader who
+wants to judge it themselves.
+
+<!-- claim-region:end -->
 
 This repository discloses one measured v1 limitation: whether a live write-mode session names its
 artifact family before its first rule citation, reproducible from the committed, stdlib-only
@@ -176,14 +226,13 @@ before this project's own scorer-anchoring fix (see that file's "Scorer anchorin
 above — including the file's earlier, superseded `claude-opus-5` sessions, none of which sit
 behind an anchored figure this README states.
 
-This is not the persuasion benchmark. That one — skill-on/skill-off, across `claude-opus-5` and
-`claude-sonnet-5`, with both-orders judge scoring — ran on 2026-09-18 and recorded 96 generations;
-its figures and caveats are in `evals/benchmark/RESULTS.md`, reproducible from the committed
-`evals/benchmark/run_benchmark.py`. Read that file before citing anything from it: its mechanical
-proxy counts do not move in one direction, so it does not hand this README a clean headline number.
-No persuasion or quality claim is made anywhere in this repository today. Any number this README
-ever carries will be sourced from those committed results, and will state the model versions and
-the date it was produced.
+The conformance limitation above is a separate measurement from the persuasion benchmark reported
+in the claim region, and the two are never combined into one figure. Every number this README
+carries is sourced from a committed results file under `evals/`, states the model versions and the
+date it was produced, and is checked by `tools/check_repo.py` — `readme-claim-unsourced` fails the
+build on a claim-region number that appears in no committed results file, and
+`readme-claim-unanchored` fails it on a claim-region paragraph that carries a number without a
+model string and a date.
 
 ## Keeping derivatives in sync
 
@@ -233,6 +282,11 @@ proof-first/
 │   ├── trigger/
 │   │   ├── run_trigger_test.py
 │   │   └── RESULTS-trigger.md
+│   ├── routes/
+│   │   ├── run_routes.py
+│   │   ├── raw/
+│   │   ├── probe/
+│   │   └── RESULTS-routes.md
 │   └── benchmark/
 │       ├── run_benchmark.py
 │       ├── scenarios.json
