@@ -141,5 +141,8 @@ section's fallback covers that case, and the ambiguity is reported, not resolved
 
 It mints no rule number, so nothing in it can be cited as one.
 
-It is not evidence that a convention wins deals or improves scores; no benchmark has run, and
-this repository makes measured claims or none.
+It is not evidence that a convention wins deals or improves scores. The benchmark this
+repository has run measured whole documents written with the skill against documents written
+without it, and scored them with a language model against a rubric. It isolates no single
+convention in this file, and it measures no commercial outcome. This repository makes measured
+claims or none.

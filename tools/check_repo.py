@@ -939,6 +939,27 @@ Violation codes implemented in this file:
                       regression path: a regeneration or a revert
                       putting the known stale sentence back while the
                       measurement that falsifies it sits in the tree.
+  benchmark-run-claim-stale - the same regression, one literal over.
+                      Fires when BENCHMARK_RESULTS_PATH exists in the
+                      tree -- that is, when a benchmark HAS run -- and a
+                      file in BENCHMARK_CLAIM_PATHS still carries the
+                      literal STALE_BENCHMARK_RUN_CLAIM. One violation
+                      per offending file. Scans the generated
+                      derivatives AND the skill sources they are
+                      generated from, because this sentence originated
+                      in a source and a derivative-only scan stays
+                      silent until the next regeneration. Matches
+                      case-insensitively, unlike its sibling, because
+                      the sentence is hand-written prose rather than
+                      generator output and can plausibly return
+                      capitalised. Returns no violation before any read
+                      when BENCHMARK_RESULTS_PATH does not exist: with
+                      no benchmark committed the sentence is true.
+                      Declared ceiling: literal-substring presence and
+                      nothing more -- it does not read the results
+                      file's contents, does not judge whether the
+                      replacement sentence is accurate, and cannot see
+                      the same false claim restated in other words.
 """
 import argparse
 import datetime
@@ -4263,6 +4284,26 @@ ROUTES_RESULTS_PATH = 'evals/routes/RESULTS-routes.md'
 # different sentence this code deliberately does not judge.
 STALE_COMPARISON_CLAIM = 'No benchmark has compared'
 
+# The benchmark results file whose existence falsifies STALE_BENCHMARK_RUN_CLAIM.
+# Same shape as ROUTES_RESULTS_PATH above: a relative POSIX string joined onto
+# repo_root at call time, so a fixture root is checked against its own tree.
+BENCHMARK_RESULTS_PATH = 'evals/benchmark/RESULTS.md'
+
+# The sibling stale claim, found by round-2 UAT on 2026-09-21 in
+# skills/proof-first/references/artifact-patterns.md and carried verbatim into
+# both derivatives. Unlike STALE_COMPARISON_CLAIM this sentence is hand-written
+# prose in a skill source rather than generator output, so a regression can
+# plausibly restore it capitalised at a sentence start; it is matched
+# case-insensitively for that reason, and that is the only deliberate difference
+# between the two literals' matching discipline.
+STALE_BENCHMARK_RUN_CLAIM = 'no benchmark has run'
+
+# What the benchmark-run claim is scanned in: the generated derivatives AND the
+# skill sources they are generated from. The sentence originated in a source, so
+# scanning derivatives alone would stay silent until the next regeneration --
+# which is precisely the window in which the false sentence shipped.
+BENCHMARK_CLAIM_PATHS = DERIVATIVE_PATHS + DERIVATIVE_SOURCE_NAMES
+
 
 def check_derivative_comparison_claim(repo_root):
     """Fire when the route-equivalence measurement exists and a generated
@@ -4305,9 +4346,52 @@ def check_derivative_comparison_claim(repo_root):
     return violations
 
 
+def check_stale_benchmark_run_claim(repo_root):
+    """Fire when the benchmark results file exists and a shipped skill source
+    or a generated derivative still asserts that no benchmark has run.
+
+    The sibling of check_derivative_comparison_claim, and deliberately the
+    same shape: a two-sided literal-substring presence conjunction, gated on
+    the existence of the evidence file that falsifies the sentence. Returns
+    an empty list before reading anything when BENCHMARK_RESULTS_PATH does
+    not exist -- with no benchmark committed the sentence is true and there
+    is nothing to report.
+
+    Two deliberate differences from its sibling, both of them because this
+    sentence is hand-written prose rather than generator output. It matches
+    case-insensitively, so a regression restoring the sentence at the start
+    of a sentence is still caught. And it scans BENCHMARK_CLAIM_PATHS --
+    the derivatives plus the skill sources they are generated from -- rather
+    than the derivatives alone, because the origin of the sentence is a
+    source file and a source-only regression would otherwise stay invisible
+    until the next regeneration.
+
+    Declared ceiling: literal-substring presence, nothing more. It does not
+    read BENCHMARK_RESULTS_PATH's contents, does not check that whatever
+    replaced the sentence is accurate, does not check that any file points
+    at the results, and cannot see the same false claim restated in other
+    words."""
+    violations = []
+    if not (repo_root / BENCHMARK_RESULTS_PATH).exists():
+        return violations
+    needle = STALE_BENCHMARK_RUN_CLAIM.lower()
+    for rel in BENCHMARK_CLAIM_PATHS:
+        path = repo_root / rel
+        if not path.exists():
+            continue
+        if needle in path.read_text(encoding='utf-8').lower():
+            violations.append((rel, (
+                f"benchmark-run-claim-stale {rel} still states "
+                f"'{STALE_BENCHMARK_RUN_CLAIM}', but {BENCHMARK_RESULTS_PATH} exists in this "
+                f"tree and records a benchmark that ran -- state what the benchmark does and "
+                f"does not establish rather than denying that it happened"
+            )))
+    return violations
+
+
 DERIVATIVE_CHECK_CODES = [
     'skill-derivative-stale', 'derivative-rule-coverage-incomplete',
-    'derivative-comparison-claim-stale',
+    'derivative-comparison-claim-stale', 'benchmark-run-claim-stale',
 ]
 
 
@@ -4315,6 +4399,7 @@ def run_derivative_checks(repo_root):
     violations = []
     violations += check_skill_derivative_stale(repo_root)
     violations += check_derivative_comparison_claim(repo_root)
+    violations += check_stale_benchmark_run_claim(repo_root)
     numbering_path = repo_root / 'NUMBERING.md'
     if not numbering_path.exists():
         return violations
@@ -5027,6 +5112,26 @@ def _mutate_derivative_comparison_claim(root):
     )
 
 
+def _mutate_stale_benchmark_run_claim(root):
+    """Append the pre-06-06 'no benchmark has run' sentence back onto the
+    copied real skills/proof-first/references/artifact-patterns.md, mutating
+    only the copy.
+
+    Appending rather than replacing, for the same reason as its sibling: the
+    sentence was corrected in 06-06 Task 3, so there is no occurrence left in
+    the real tree to edit in place. Putting it back into the skill source is
+    the exact regression this code exists to catch, and it is the source
+    rather than a derivative deliberately -- that is the path the real defect
+    took, and the path the sibling code could not see."""
+    path = root / 'skills/proof-first/references/artifact-patterns.md'
+    text = path.read_text(encoding='utf-8')
+    path.write_text(
+        text + f"\nIt is not evidence that a convention wins deals; "
+        f"{STALE_BENCHMARK_RUN_CLAIM}.\n",
+        encoding='utf-8',
+    )
+
+
 def _mutate_readme_output_style_destination(root):
     """Delete every line of the copied real README.md containing the
     shorter, project-level destination literal
@@ -5257,6 +5362,7 @@ MUTATIONS = [
     ('readme-layout-legend-drift', "insert a sentence explaining a quoted 'planned' marker into the real README.md's Repository layout section prose, which the real tree never uses", _mutate_readme_layout_legend_drift),
     ('readme-output-style-destination-missing', "delete every line of the real README.md containing the project-level output-style destination directory", _mutate_readme_output_style_destination),
     ('derivative-comparison-claim-stale', "append the pre-04-15 'No benchmark has compared' sentence back onto the real output-styles/proof-first.md, while evals/routes/RESULTS-routes.md sits in the tree disproving it", _mutate_derivative_comparison_claim),
+    ('benchmark-run-claim-stale', "append the pre-06-06 'no benchmark has run' sentence back onto the real skills/proof-first/references/artifact-patterns.md, while evals/benchmark/RESULTS.md sits in the tree recording 96 generations", _mutate_stale_benchmark_run_claim),
 ]
 
 
@@ -6632,6 +6738,35 @@ def _comparison_derivative(carries_stale_claim):
     return body
 
 
+def _benchrun_claim_file(carries_stale_claim):
+    """A minimal artifact-patterns-shaped body for benchmark-run-claim-stale's
+    fixtures. Its contents are otherwise irrelevant: the check tests only
+    whether the literal is present, so the fixture says that plainly rather
+    than dressing itself up as a real reference file."""
+    body = "# Artifact families (fixture stand-in)\n\nThis project makes measured claims or none.\n"
+    if carries_stale_claim:
+        body += (
+            "It is not evidence that a convention wins deals or improves scores; "
+            f"{STALE_BENCHMARK_RUN_CLAIM}.\n"
+        )
+    else:
+        body += (
+            f"A benchmark is committed at {BENCHMARK_RESULTS_PATH}; read it for what was "
+            "measured and what bounds the finding.\n"
+        )
+    return body
+
+
+def _benchrun_results_file():
+    """A stand-in for the committed benchmark report. Its CONTENTS are
+    irrelevant to check_stale_benchmark_run_claim, which tests only that the
+    path exists."""
+    return (
+        "# Benchmark (fixture stand-in)\n\n"
+        "This file's existence is the whole signal. The check does not read it.\n"
+    )
+
+
 def _comparison_results_file():
     """A stand-in for the committed route-equivalence report. Its CONTENTS
     are irrelevant to check_derivative_comparison_claim, which tests only
@@ -7074,6 +7209,9 @@ def self_test():
         comparison_good_root = tmp_root / 'comparison_good'
         comparison_bad_root = tmp_root / 'comparison_bad'
         comparison_no_results_root = tmp_root / 'comparison_no_results'
+        benchrun_good_root = tmp_root / 'benchrun_good'
+        benchrun_bad_root = tmp_root / 'benchrun_bad'
+        benchrun_no_results_root = tmp_root / 'benchrun_no_results'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -7514,6 +7652,23 @@ def self_test():
         _write(comparison_no_results_root / DERIVATIVE_PATHS[0], _comparison_derivative(True))
         _write(comparison_no_results_root / DERIVATIVE_PATHS[1], _comparison_derivative(True))
 
+        # benchrun_good_root / benchrun_bad_root / benchrun_no_results_root
+        # (benchmark-run-claim-stale, Phase 6 06-06): the same two-sided
+        # conjunction as its sibling above, so the same three roots. The bad
+        # root carries the stale sentence in a SKILL SOURCE rather than a
+        # derivative -- that is the path the real 2026-09-21 defect took, and
+        # the path the sibling code cannot see.
+        _write(benchrun_good_root / BENCHMARK_RESULTS_PATH, _benchrun_results_file())
+        _write(benchrun_good_root / DERIVATIVE_SOURCE_NAMES[3], _benchrun_claim_file(False))
+        _write(benchrun_good_root / DERIVATIVE_PATHS[0], _benchrun_claim_file(False))
+
+        _write(benchrun_bad_root / BENCHMARK_RESULTS_PATH, _benchrun_results_file())
+        _write(benchrun_bad_root / DERIVATIVE_SOURCE_NAMES[3], _benchrun_claim_file(True))
+        _write(benchrun_bad_root / DERIVATIVE_PATHS[0], _benchrun_claim_file(False))
+
+        _write(benchrun_no_results_root / DERIVATIVE_SOURCE_NAMES[3], _benchrun_claim_file(True))
+        _write(benchrun_no_results_root / DERIVATIVE_PATHS[0], _benchrun_claim_file(True))
+
         # readme_install_good_root / readme_install_bad_root
         # (readme-install-path-missing, readme-before-after-order, Phase 4
         # 04-04): the good root's README.md carries all three ordering
@@ -7712,6 +7867,9 @@ def self_test():
         comparison_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(comparison_good_root)}
         comparison_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(comparison_bad_root)}
         comparison_no_results_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(comparison_no_results_root)}
+        benchrun_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(benchrun_good_root)}
+        benchrun_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(benchrun_bad_root)}
+        benchrun_no_results_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(benchrun_no_results_root)}
 
         readme_output_style_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_good_root)}
         readme_output_style_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_bad_root)}
@@ -7741,6 +7899,7 @@ def self_test():
             | readme_layout_bad_codes
             | readme_output_style_bad_codes
             | comparison_bad_codes
+            | benchrun_bad_codes
             | claim_unsourced_codes | claim_unanchored_codes
             | badge_bad_codes | tree_stale_codes
         )
@@ -7843,6 +8002,20 @@ def self_test():
             all_ok = False
         if 'derivative-comparison-claim-stale' in good_codes:
             print("FAIL: derivative-comparison-claim-stale fired on a fixture root shipping no derivative files")
+            all_ok = False
+
+        # benchmark-run-claim-stale assertions (Phase 6, 06-06 Task 3).
+        if 'benchmark-run-claim-stale' in benchrun_good_codes:
+            print("FAIL: benchmark-run-claim-stale fired on a benchmark results file with no stale claim")
+            all_ok = False
+        if 'benchmark-run-claim-stale' not in benchrun_bad_codes:
+            print("FAIL: benchmark-run-claim-stale did not fire on a skill source carrying the stale claim beside a committed benchmark")
+            all_ok = False
+        if 'benchmark-run-claim-stale' in benchrun_no_results_codes:
+            print("FAIL: benchmark-run-claim-stale fired on the stale claim with no benchmark results file -- the sentence is true there")
+            all_ok = False
+        if 'benchmark-run-claim-stale' in good_codes:
+            print("FAIL: benchmark-run-claim-stale fired on a fixture root shipping no skill sources and no derivatives")
             all_ok = False
 
         if 'readme-output-style-destination-missing' in readme_output_style_good_codes:
