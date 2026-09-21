@@ -28,8 +28,8 @@ originating consultancy. It supplies the concepts this repository's rule spine p
 
 | Title | Author or publisher | Kind | Status | Where |
 |---|---|---|---|---|
-| Public overview of the framework's own consultancy site | Force Management | public page | unverified | to confirm at LEG-04 |
-| Public founder/practitioner commentary on the framework | Force Management (published under its own principals' bylines) | public page | unverified | to confirm at LEG-04 |
+| Public overview of the framework's own consultancy site | Force Management | public page | verified | https://www.forcemanagement.com/offerings/b2b-sales-message-consulting (retrieved 2026-09-21) |
+| Public founder/practitioner commentary on the framework | Force Management (published under its own principals' bylines) | public page | verified | https://www.forcemanagement.com/blog/why-sales-reps-struggle-with-metrics-in-the-sales-conversation (retrieved 2026-09-21) |
 
 ## Qualification checklist sources
 
@@ -41,7 +41,7 @@ ownership per `NOTICES.md`.
 | Title | Author or publisher | Kind | Status | Where |
 |---|---|---|---|---|
 | "MEDDICC: The Ultimate Guide to Staying One Step Ahead in the Complex Sale" | Andy Whyte | book | verified | https://openlibrary.org/books/OL38629171M (retrieved 2026-09-21) |
-| Public overview page describing the qualification checklist's dimensions | A public claimant to the marks in this family | public page | unverified | to confirm at LEG-04 |
+| Public overview page describing the qualification checklist's dimensions | A public claimant to the marks in this family | public page | verified | https://meddicc.com/meddpicc-sales-methodology-and-process (retrieved 2026-09-21) |
 
 ## Commercial teaching sources
 
@@ -50,8 +50,8 @@ originating research and its named authors.
 
 | Title | Author or publisher | Kind | Status | Where |
 |---|---|---|---|---|
-| "The Challenger Sale: Taking Control of the Customer Conversation" | Matthew Dixon and Brent Adamson | book | unverified | to confirm at LEG-04 |
-| "The Challenger Customer: Selling to the Hidden Influencer Who Can Multiply Your Results" | Brent Adamson, Matthew Dixon, Pat Spenner, and Nick Toman | book | unverified | to confirm at LEG-04 |
+| "The Challenger Sale: Taking Control of the Customer Conversation" | Matthew Dixon and Brent Adamson | book | verified | https://openlibrary.org/books/OL24886401M (retrieved 2026-09-21) |
+| "The Challenger Customer: Selling to the Hidden Influencer Who Can Multiply Your Results" | Brent Adamson, Matthew Dixon, Pat Spenner, and Nick Toman | book | verified | https://openlibrary.org/books/OL27219998M (retrieved 2026-09-21) |
 
 ## Out of bounds
 
