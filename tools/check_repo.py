@@ -780,6 +780,31 @@ Violation codes implemented in this file:
                       no filesystem access, so a README naming the
                       directory in a different notation is invisible to
                       it.
+  derivative-comparison-claim-stale - the generated derivatives
+                      (DERIVATIVE_PATHS) make a factual claim about
+                      whether any benchmark has compared a session
+                      driven by a derivative against a session with the
+                      skill folder installed. Fires when
+                      ROUTES_RESULTS_PATH exists in the tree -- that is,
+                      when such a comparison IS committed -- and a
+                      present derivative still carries the literal
+                      STALE_COMPARISON_CLAIM asserting that none has.
+                      One violation per offending derivative, naming the
+                      file, the literal and the results path that
+                      contradicts it. Returns no violation before any
+                      read when ROUTES_RESULTS_PATH does not exist: with
+                      no comparison committed, the derivatives' claim is
+                      true and this code has nothing to say. Declared
+                      ceiling: this is a two-sided literal-substring
+                      presence conjunction and nothing more. It does not
+                      read ROUTES_RESULTS_PATH's contents, does not
+                      check that the replacement sentence is accurate,
+                      does not check that the derivatives point at the
+                      results file, and cannot see the same false claim
+                      restated in different words. It closes exactly one
+                      regression path: a regeneration or a revert
+                      putting the known stale sentence back while the
+                      measurement that falsifies it sits in the tree.
 """
 import argparse
 import hashlib
@@ -3481,12 +3506,71 @@ def check_derivative_rule_coverage(allocated, repo_root):
     return violations
 
 
-DERIVATIVE_CHECK_CODES = ['skill-derivative-stale', 'derivative-rule-coverage-incomplete']
+# The committed route-equivalence measurement (Phase 4, 04-15). Its mere
+# existence is what makes the derivatives' old "no benchmark has compared"
+# sentence false, which is the whole conjunction check_derivative_comparison_claim
+# tests. Stored as a relative POSIX string, joined onto repo_root at call time,
+# so a fixture root is checked against its own tree and never the real one.
+ROUTES_RESULTS_PATH = 'evals/routes/RESULTS-routes.md'
+
+# The exact literal the pre-04-15 generator preamble emitted. Matched as a
+# substring, case-sensitively, with no normalisation -- the sentence is
+# generator output, so it either comes back byte-identical or it is a
+# different sentence this code deliberately does not judge.
+STALE_COMPARISON_CLAIM = 'No benchmark has compared'
+
+
+def check_derivative_comparison_claim(repo_root):
+    """Fire when the route-equivalence measurement exists and a generated
+    derivative still asserts that no such comparison has been run.
+
+    Returns an empty list before reading any derivative when
+    ROUTES_RESULTS_PATH does not exist: with no comparison committed, the
+    derivatives' claim is true and there is nothing to report. Otherwise
+    reads each present derivative raw -- no strip_fences, because the
+    preamble is prose outside any fence and stripping would change nothing
+    except the offsets -- and emits one violation per file still carrying
+    STALE_COMPARISON_CLAIM.
+
+    Declared ceiling: a two-sided literal-substring presence conjunction.
+    It does not read the results file's contents, does not check that
+    whatever replaced the sentence is accurate, does not check that a
+    derivative points at the results file at all, and cannot see the same
+    false claim restated in other words. What it does close is the one
+    regression path that matters here: the generator's preamble is
+    regenerated on every release, and a revert or a bad merge putting the
+    stale sentence back while the measurement sits in the tree would ship a
+    derivative that contradicts the repository's own committed evidence.
+    That is worth a code precisely because a reader of the sentence has no
+    way to tell whether it is still true."""
+    violations = []
+    results_path = repo_root / ROUTES_RESULTS_PATH
+    if not results_path.exists():
+        return violations
+    for rel in DERIVATIVE_PATHS:
+        path = repo_root / rel
+        if not path.exists():
+            continue
+        if STALE_COMPARISON_CLAIM in path.read_text(encoding='utf-8'):
+            violations.append((rel, (
+                f"derivative-comparison-claim-stale {rel} still states "
+                f"'{STALE_COMPARISON_CLAIM}', but {ROUTES_RESULTS_PATH} exists in this tree "
+                f"and is exactly such a comparison -- regenerate the derivatives from "
+                f"tools/generate_derivatives.py rather than editing this file"
+            )))
+    return violations
+
+
+DERIVATIVE_CHECK_CODES = [
+    'skill-derivative-stale', 'derivative-rule-coverage-incomplete',
+    'derivative-comparison-claim-stale',
+]
 
 
 def run_derivative_checks(repo_root):
     violations = []
     violations += check_skill_derivative_stale(repo_root)
+    violations += check_derivative_comparison_claim(repo_root)
     numbering_path = repo_root / 'NUMBERING.md'
     if not numbering_path.exists():
         return violations
@@ -4160,6 +4244,25 @@ def _mutate_readme_layout_legend_drift(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_derivative_comparison_claim(root):
+    """Append the stale comparison sentence to the copied real
+    output-styles/proof-first.md, mutating only the copy.
+
+    Appending rather than replacing is deliberate: the sentence this code
+    watches for was deleted from the generator in 04-15 Task 4C, so there is
+    no occurrence left in the real tree to edit in place. Putting it back is
+    exactly the regression the code exists to catch -- a revert or a bad
+    merge restoring the pre-04-15 preamble while the measurement that
+    falsifies it sits in evals/routes/RESULTS-routes.md."""
+    path = root / DERIVATIVE_PATHS[0]
+    text = path.read_text(encoding='utf-8')
+    path.write_text(
+        text + f"\n{STALE_COMPARISON_CLAIM} a session driven by this file against a session "
+        f"with the skill folder installed.\n",
+        encoding='utf-8',
+    )
+
+
 def _mutate_readme_output_style_destination(root):
     """Delete every line of the copied real README.md containing the
     shorter, project-level destination literal
@@ -4291,6 +4394,7 @@ MUTATIONS = [
     ('readme-example-lead-distance', "insert plain filler lines after the real README.md's title line, pushing its first ✗ line past the frozen 20-line ceiling", _mutate_readme_example_lead_distance),
     ('readme-layout-legend-drift', "insert a sentence explaining a quoted 'planned' marker into the real README.md's Repository layout section prose, which the real tree never uses", _mutate_readme_layout_legend_drift),
     ('readme-output-style-destination-missing', "delete every line of the real README.md containing the project-level output-style destination directory", _mutate_readme_output_style_destination),
+    ('derivative-comparison-claim-stale', "append the pre-04-15 'No benchmark has compared' sentence back onto the real output-styles/proof-first.md, while evals/routes/RESULTS-routes.md sits in the tree disproving it", _mutate_derivative_comparison_claim),
 ]
 
 
@@ -5628,6 +5732,37 @@ def _no_stamp_derivative():
     )
 
 
+def _comparison_derivative(carries_stale_claim):
+    """A minimal derivative body for derivative-comparison-claim-stale's
+    fixtures. Carries no stamp and no rule headings -- skill-derivative-stale
+    and derivative-rule-coverage-incomplete fire on these roots and are
+    asserted on elsewhere; what these fixtures isolate is whether the
+    comparison claim is present."""
+    body = "Generated preamble. This project publishes measured claims or none.\n"
+    if carries_stale_claim:
+        body += (
+            f"{STALE_COMPARISON_CLAIM} a session driven by this file against a session with "
+            f"the skill folder installed.\n"
+        )
+    else:
+        body += (
+            f"A route comparison is committed at {ROUTES_RESULTS_PATH}; read it for what was "
+            f"measured and what bounds the finding.\n"
+        )
+    return body
+
+
+def _comparison_results_file():
+    """A stand-in for the committed route-equivalence report. Its CONTENTS
+    are irrelevant to check_derivative_comparison_claim, which tests only
+    that the path exists -- the fixture says so plainly rather than
+    implying the check reads it."""
+    return (
+        "# Route equivalence (fixture stand-in)\n\n"
+        "This file's existence is the whole signal. The check does not read it.\n"
+    )
+
+
 def _good_skill_family_gate():
     """A SKILL.md whose self-check section names both anchors the
     family-line gate requires -- the silent case for
@@ -5906,6 +6041,10 @@ def self_test():
         readme_output_style_good_root = tmp_root / 'readme_output_style_good'
         readme_output_style_bad_root = tmp_root / 'readme_output_style_bad'
         readme_output_style_no_route_root = tmp_root / 'readme_output_style_no_route'
+
+        comparison_good_root = tmp_root / 'comparison_good'
+        comparison_bad_root = tmp_root / 'comparison_bad'
+        comparison_no_results_root = tmp_root / 'comparison_no_results'
 
         _write(bad_root / 'NUMBERING.md', _bad_numbering())
         _write(bad_root / 'skills' / 'SKILL.md', "See PF-9.9 and MC-1 for details.\n")
@@ -6230,6 +6369,26 @@ def self_test():
         _write(derivative_bad_root / DERIVATIVE_PATHS[0], _stale_derivative(_derivative_bad_digest))
         _write(derivative_bad_root / DERIVATIVE_PATHS[1], _no_stamp_derivative())
 
+        # comparison_good_root / comparison_bad_root / comparison_no_results_root
+        # (derivative-comparison-claim-stale, Phase 4 04-15): the code is a
+        # two-sided conjunction, so it takes three roots to prove rather than
+        # two. The good root ships the results file and derivatives that do
+        # not carry the stale sentence. The bad root ships the results file
+        # and one derivative that does. The third root ships the stale
+        # sentence in BOTH derivatives and NO results file -- the case where
+        # the sentence is simply true, and the one a presence-only check
+        # would false-positive on.
+        _write(comparison_good_root / ROUTES_RESULTS_PATH, _comparison_results_file())
+        _write(comparison_good_root / DERIVATIVE_PATHS[0], _comparison_derivative(False))
+        _write(comparison_good_root / DERIVATIVE_PATHS[1], _comparison_derivative(False))
+
+        _write(comparison_bad_root / ROUTES_RESULTS_PATH, _comparison_results_file())
+        _write(comparison_bad_root / DERIVATIVE_PATHS[0], _comparison_derivative(True))
+        _write(comparison_bad_root / DERIVATIVE_PATHS[1], _comparison_derivative(False))
+
+        _write(comparison_no_results_root / DERIVATIVE_PATHS[0], _comparison_derivative(True))
+        _write(comparison_no_results_root / DERIVATIVE_PATHS[1], _comparison_derivative(True))
+
         # readme_install_good_root / readme_install_bad_root
         # (readme-install-path-missing, readme-before-after-order, Phase 4
         # 04-04): the good root's README.md carries all three ordering
@@ -6382,6 +6541,10 @@ def self_test():
         readme_layout_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_layout_good_root)}
         readme_layout_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_layout_bad_root)}
 
+        comparison_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(comparison_good_root)}
+        comparison_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(comparison_bad_root)}
+        comparison_no_results_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(comparison_no_results_root)}
+
         readme_output_style_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_good_root)}
         readme_output_style_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_bad_root)}
         readme_output_style_no_route_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_no_route_root)}
@@ -6409,6 +6572,7 @@ def self_test():
             | readme_lead_late_codes | readme_lead_none_codes
             | readme_layout_bad_codes
             | readme_output_style_bad_codes
+            | comparison_bad_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -6497,6 +6661,20 @@ def self_test():
             all_ok = False
 
         # readme-output-style-destination-missing assertions (Phase 4, 04-13).
+        # derivative-comparison-claim-stale assertions (Phase 4, 04-15).
+        if 'derivative-comparison-claim-stale' in comparison_good_codes:
+            print("FAIL: derivative-comparison-claim-stale fired on a results file with no stale claim")
+            all_ok = False
+        if 'derivative-comparison-claim-stale' not in comparison_bad_codes:
+            print("FAIL: derivative-comparison-claim-stale did not fire on a derivative carrying the stale claim beside a committed results file")
+            all_ok = False
+        if 'derivative-comparison-claim-stale' in comparison_no_results_codes:
+            print("FAIL: derivative-comparison-claim-stale fired on the stale claim with no results file -- the sentence is true there")
+            all_ok = False
+        if 'derivative-comparison-claim-stale' in good_codes:
+            print("FAIL: derivative-comparison-claim-stale fired on a fixture root shipping no derivative files")
+            all_ok = False
+
         if 'readme-output-style-destination-missing' in readme_output_style_good_codes:
             print("FAIL: readme-output-style-destination-missing fired on the known-good output-style fixture")
             all_ok = False

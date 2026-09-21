@@ -31,10 +31,11 @@ lost by leaving it out here.
 
 Installing the skill folder at skills/proof-first/ is the fuller route: it can read
 the omitted reference file on request and keeps every reference file addressable by
-name. This project publishes measured claims or none. No benchmark has compared a
-session driven by this file against a session with the skill folder installed, and
-nothing written here should be read as a claim about what such a comparison would
-find.
+name. This project publishes measured claims or none. A benchmark has compared a
+session driven by this file against a session with the skill folder installed:
+evals/routes/RESULTS-routes.md records what was measured, what it found, and the
+caveats that bound it. Read that file rather than assuming an outcome in either
+direction from this paragraph.
 
 # Proof First
 
