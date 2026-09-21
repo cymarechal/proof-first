@@ -1,12 +1,16 @@
 ---
 phase: 06-legal-review-gate-launch
-status: human_needed
-score: "2/2 must-haves verified by automated means; 6 deliverables await human judgement"
+status: gaps_found
+score: "2/2 must-haves verified by automated means; 6 human items performed 2026-09-21 — 3 passed, 3 issues"
 verified: 2026-09-21
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 22
 human_verification: 6
+human_verification_performed: 6
+human_verification_passed: 3
+human_verification_issues: 3
+uat_round: "/gsd-verify-work 06, 2026-09-21"
 ---
 
 # Phase 6 Verification: Legal Review Gate & Launch
@@ -108,6 +112,36 @@ work; each is a judgement `SOURCES.md` itself states no tool in this project's s
 
 Items 5 and 6 are recorded in `LEGAL-REVIEW.md` § Human observations as explicitly not performed,
 with the structural reason. That is the honest state, not a gap this phase left untried.
+
+
+## Human verification — PERFORMED 2026-09-21, 3 passed / 3 issues
+
+The six items above were performed by `/gsd-verify-work 06` and are no longer outstanding. Two of
+the three reasons this file gave for not performing them had expired and were re-checked rather
+than honoured: five independent headless readers supplied the "no cold reader available" half, and
+an interactive Claude Code session driven in a pty supplied the "no `/config` picker" half. Results
+and evidence are in `06-UAT.md`; the three failures are planned in `06-05-PLAN.md`.
+
+| # | Item | Result |
+|---|---|---|
+| 1 | Six sources in bounds, nothing reproduced | **pass** — all six public, `mos.meddicc.com` correctly not cited, no run of source prose at N=6 |
+| 2 | Reproduction-boundary reasoning for ids 3 and 6 | **issue (major)** — id-6's premise is false against `NUMBERING.md`; the ruling half is sound |
+| 3 | LEGAL-REVIEW.md does not read as legal advice | **issue (major)** — parts of it do; the disclaimer does not reach the verdict layer |
+| 4 | README claim region reads as an honest mixed result | **pass** — "not a burial, and not close to one" |
+| 5 | Output style listed and selectable in `/config` | **pass** — listed as entry 7, selection persists to `settings.local.json`, two controls |
+| 6 | Cold read of README | **issue (major)** — three checkably-false statements, each contradicted by a committed file |
+
+**This changes Success Criterion 2's standing.** It was recorded VERIFIED on the reading that every
+claim and badge in README derives only from committed results stating model versions and date. The
+cold read found that README:231-233 asserts exactly that, universally, and that the assertion is
+false — `tools/check_repo.py`:405-415's own docstring says the region is bounded "because README
+legitimately carries numbers that are not measured claims." The enforced claim region is sound; the
+sentence claiming the discipline extends past it is not. The criterion is not withdrawn here, but
+it should not be read as covering that sentence, and `06-05-PLAN.md` Task 1 corrects it.
+
+**All ten CI commands were green throughout** (`check_repo.py` 0 violations, `--mutation-test` 56
+codes discrimination-proven, seven `evals/` self-tests and `generate_derivatives.py --check` rc=0),
+which is the fourth consecutive instance of WINDOWS.md id 17's pattern.
 
 ## What is honestly still open after this phase
 
