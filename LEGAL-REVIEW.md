@@ -380,10 +380,18 @@ observed on the day, in both directions.
 4. **No registration number is recorded for Command of the Message or for the Challenger marks.** The
    TSDR API gate blocked bulk lookup, and none was pursued through other channels. `NOTICES.md`
    makes no claim that depends on one.
-5. **The per-rule reproduction judgement is permanent, not closable.** `SOURCES.md` states no tool in
+5. **The PF-1 sub-block labels** — the seven Command of the Message elements frozen in
+   `NUMBERING.md`. Examined for the first time at this review under `## Reproduction boundary` and
+   left open as `WINDOWS.md` id 29, on two questions: whether an internal ID registry counts as
+   shipping the list, and whether `SOURCES.md`'s fourth prong is answered by attribution or only by
+   renaming. Renaming the seven is the cheap alternative and costs nothing a reader depends on.
+6. **Two live questions inside the id-6 disposition** — whether the MC list's expression is thin
+   enough to carry the conclusion, and where "Economic Buyer" and "Paper Process" sit on the fourth
+   prong. Either is a reason to reopen id 6.
+7. **The per-rule reproduction judgement is permanent, not closable.** `SOURCES.md` states no tool in
    this stack performs it. Every future rule added under a `PF-` or `MC-` block needs the same read
    this review gave PF-0.1, PF-3.1, and the MC block names.
-6. **This record is not legal advice and never becomes it.** If this repository's exposure ever needs
+8. **This record is not legal advice and never becomes it.** If this repository's exposure ever needs
    a professional answer, this file is the input to that conversation, not a replacement for it.
 
 ## Launch
@@ -439,11 +447,14 @@ never run end to end and this record continues to say so.
 
 ## Human observations
 
-Three things about this repository cannot be checked by anything in it. This section records what
-was and was not observed on 2026-09-21, and is deliberately explicit about which of the three did
-not happen, because two of them structurally could not happen in the session that ran this phase.
+Three things about this repository cannot be checked by anything in it. Sections 1 to 3 below
+record what the 06-02 review session observed and, explicitly, which of the three it could not
+perform. **All three were performed later the same day by a different session; section 4 records
+what they returned, and it supersedes the three "not performed" findings above.** Sections 1 to 3
+are kept as written because this file is append-only, and because the reasons they give for not
+performing the checks are the reasons the next session had to test rather than inherit.
 
-### 1. Output style in the `/config` picker — NOT OBSERVED
+### 1. Output style in the `/config` picker — NOT OBSERVED AT 06-02 (superseded by § 4)
 
 Date: 2026-09-21. Platform: Darwin 25.6.0 (macOS). Destination directory README states:
 `~/.claude/output-styles/`.
@@ -462,7 +473,7 @@ the file appears in a picker and can be selected for a session.
 **Ledger effect:** id 16 stays **open**. DIST-03 stays `implementation shipped; the delivery half is
 MEASURED, the /config half UNVERIFIED`.
 
-### 2. Cold read of README — NOT PERFORMED AS A COLD READ
+### 2. Cold read of README — NOT PERFORMED AS A COLD READ AT 06-02 (superseded by § 4)
 
 Date: 2026-09-21.
 
@@ -498,7 +509,7 @@ writes the checks that match what they meant.
 **Ledger effect:** ids 12 and 17 stay **open**, with the reason naming that no cold reader was
 available in this round and that a self-read was performed and found nothing checkably false.
 
-### 3. DIST-06 prose read — PERFORMED, BUT NOT COLD
+### 3. DIST-06 prose read — PERFORMED AT 06-02, BUT NOT COLD (superseded by § 4)
 
 Date: 2026-09-21.
 
@@ -516,6 +527,51 @@ time is exactly the judgement this record cannot make about itself.
 
 **Ledger effect:** id 12 stays **open**, carrying the specific question above for whoever performs the
 cold read.
+
+### 4. All three, performed 2026-09-21 by `/gsd-verify-work 06`
+
+This section supersedes sections 1 to 3. Two of the three reasons those sections give for not
+performing the checks had expired, and were re-checked rather than honoured.
+
+**The `/config` picker — observed.** An interactive Claude Code 2.1.267 session on Darwin 25.6.0 was
+driven in a pty and its rendered terminal output captured, scoped to a throwaway project's own
+`.claude/output-styles/` so that no operator configuration directory was touched. The picker lists
+`proof-first` as entry 7 with its `description` frontmatter rendered as the entry's summary.
+Selecting it set the row to `proof-first`, the value survived closing and reopening the panel, and
+it was written to `.claude/settings.local.json` as `{"outputStyle": "proof-first"}` — so it outlives
+the session, which README understates rather than overstates. Two controls: pressing Esc without
+confirming left the row at `default` and wrote nothing, and a run that landed on `Explanatory`
+confirmed `Explanatory`. What this does not establish: the observation was made by automation
+reading a terminal rather than by a human eye, on one platform, against the project-scoped directory
+rather than `~/.claude/output-styles/`. `WINDOWS.md` id 16's closure condition is written as a human
+observation; whoever owns that entry decides whether a captured render of the real picker satisfies
+it. **Ledger effect:** id 16 stays open, with what was observed recorded in its reason.
+
+**The cold read — performed.** Five independent readers were run as separate headless `claude -p`
+sessions in a scratch directory holding only the files under review, each on a neutral brief that
+did not name the wanted answer, each writing to its own output file. None had written the text it
+read, and the README contradiction hunt was given to two of them independently so their findings
+could be cross-checked. Every finding was re-verified against the repository before being recorded;
+one was refuted on verification and is recorded as refuted.
+
+**What the cold read returned.** Three checkably-false README statements, none of which the 06-02
+self-read in section 2 found — which is the point, and is `WINDOWS.md` id 17's thesis demonstrated
+for a fourth consecutive round. All ten CI commands were green while the three false statements were
+in the tree. The three: README's claim that every number it carries is sourced, model- and
+date-stamped and checked by `tools/check_repo.py`, which `check_repo.py`'s own docstring contradicts
+for anything outside the claim region; a four-route count for `run_routes.py`, whose `ROUTES` tuple
+holds three; and the superseded n=1 trigger figures carried as the recorded run. Section 2's
+self-read reached the third of these and dismissed it as Arm A, the reverted treatment — the
+superseding figure is Arm B, the control that ships. All three are corrected in 06-05.
+**Ledger effect:** ids 12 and 17 stay open and close on those corrections; the "no reader available"
+premise is cleared and must not be reused.
+
+**The DIST-06 prose question — answered.** Section 3 named one question the author was the wrong
+person to judge: whether the claim region reads as an honest report of a mixed result or a defensive
+one. A reader who had not written it returned PASS — "an honest report of a mixed result, not a
+burial, and not close to one" — noting that the loss is pre-announced, stated in its own sentence,
+given more sentence-level prominence than the two wins, and has its cheapest excuse foreclosed.
+**Ledger effect:** id 12 stays open on the three false statements above, not on this question.
 
 ## Ledger disposition
 
