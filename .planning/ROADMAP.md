@@ -307,16 +307,25 @@ Plans:
 
 **Plans**:
 
+- [x] 06-01-PLAN.md
+- [ ] 06-02-PLAN.md
+- [ ] 06-03-PLAN.md
+- [ ] 06-04-PLAN.md
+
 **Wave 1**
-- [ ] 06-01 — Tracer: one source row confirmed against a live page, recorded with provenance, and `source-row-unconfirmed` enforcing it
+
+- [x] 06-01 — Tracer: one source row confirmed against a live page, recorded with provenance, and `source-row-unconfirmed` enforcing it
 
 **Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 06-02 — The legal review gate: five remaining source rows, three rights-holders reconfirmed, `LEGAL-REVIEW.md`, and two more codes
 
 **Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 06-03 — README states what the benchmark supports: pooled totals rendered, a delimited claim region, four codes
 
 **Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 06-04 — Launch gate: the publish decision, the install observations, the human reads, the ledger sweep
 
 Cross-cutting constraints:
@@ -337,7 +346,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
 | 5. Evaluation Harness | 3/3 | Complete    | 2026-09-20 |
-| 6. Legal Review Gate & Launch | 0/TBD | Not started | - |
+| 6. Legal Review Gate & Launch | 1/4 | In Progress|  |
 
 ---
 *Roadmap created: 2026-09-10*
