@@ -1,46 +1,57 @@
 ---
 phase: 04-distribution-worked-examples
-verified: 2026-09-18T11:25:00Z
+verified: 2026-09-21T15:30:00Z
 status: human_needed
-score: "4/5 roadmap success criteria VERIFIED (structural); 1/5 (#3) correctly routes to human/behavioral verification by explicit project design"
+score: "5/5 roadmap success criteria addressed: 4 VERIFIED, 1 (#3) MEASURED AND NOT ESTABLISHED — the comparison ran and returned a null result, which answers the criterion's question without satisfying its wording"
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
-  round: 5
+  round: 6
   previous_status: human_needed
   previous_score: "4/5 roadmap success criteria VERIFIED (structural); 1/5 (#3) correctly routes to human/behavioral verification by explicit project design"
+  supersedes: "Rounds 1-5 of this file, retained in full below this frontmatter. Round 6 changes the frontmatter and appends its own section; it does not rewrite the earlier narrative, which remains the record of how the 47-code gate, CR-01, and gaps G-04-1 through G-04-8 were closed."
   gaps_closed:
-    - "G-04-3 — examples/before-after.md:20's Solution proposal column no longer claims AWS Control Tower governs Halverton Mutual's on-premises VMware/Oracle estate (Control Tower governs AWS accounts, not on-premises VMs). Re-scoped to 'the new account structure', now agreeing with deal-brief.md:22 and worked-examples.md:32. The Demo column's fabricated two-attribution Feld quotation is collapsed to one attribution, one quotation, verbatim against deal-brief.md:70 including the em dash; the misdirected PF-2.14 'delivery date' marker now names the commitment the sentence actually makes. Both PF-1.9 capability-first shape and PF-3.3 term-level marking — the two things this test was originally written to check — had already passed; the defect fixed here was a third, unanticipated one introduced by the earlier PF-1.9 recast (f8ebf78)."
-    - "G-04-4 — README.md no longer claims routes 3 and 4 both 'work today, from a local clone'. Route 3 (output style) is repaired to state its missing copy step (`mkdir -p ~/.claude/output-styles && cp output-styles/proof-first.md ~/.claude/output-styles/`) and destination, distinguished from route 4 (system prompt paste), which needs no step. A new discrimination-proven code, readme-output-style-destination-missing (48th), fails the build if that destination disappears again. Four of five secondary defects (lead-in layout mismatch, opaque rule-namespace pointer, duplicate placeholder disclosure, unbroken Status paragraph) folded in; the fifth (Status section's position/density) is explicitly deferred with a stated reason, not dropped."
-    - "G-04-8 (round 5) — README.md:83 asserted 'this repository's own environment drives no live harness session', a universal negative the same page disproves at lines 111-113 and 134-137; run_conformance.py:216 builds a real `claude -p` invocation. Introduced by 63b5dfa, this phase's OWN G-04-4 fix, while trying to disclose what the new check could not prove. Narrowed by 04-14 to the interactive case, in README.md and in BOTH copies inside WINDOWS.md entry 16 (rendered table and JSON) — fixing only the README would have left the falsehood in the ledger entry that tracks that very disclosure. Replacement text fact-checked assertion-by-assertion against source by the orchestrator: /config listing unobserved (true), repository does drive headless `claude -p` sessions (true), the ## Status figure comes from them (true), a headless session has no /config picker (true). Also removed examples/before-after.md:27's unevidenced 'delivers automated failover' deliverable claim, in a two-line diff, replaced with migration scope traceable to deal-brief.md:27,35,37,70."
+    - "G-04-9 — 04-UAT.md test 2 had read `blocked — deferred by design` since the phase began, with `Owner: Phase 5`, on the stated ground that it waited on Phase 5's benchmark. Phase 5 completed 2026-09-18. The premise expired and the item did not: it carried the same blocked status and the same completed owner through four subsequent gap-closure rounds, with a green gate throughout, while prompts/system-prompt.md kept emitting the generated sentence `No benchmark has compared a session driven by this file against a session with the skill folder installed`. 04-15 ran the comparison. The root cause recorded is a deferral whose stated blocking reason nothing re-read when the dependency landed — a class no code in this stack can see, because tools/check_repo.py's codes are presence and drift checks over shipped content, not staleness checks over planning premises."
   gaps_remaining: []
   regressions: []
-  mechanisation_refused: "No 49th code. A `claude -p` presence code WAS measured and would have passed this repo's red-then-green bar (README had zero occurrences), and was refused anyway: unlike 04-13's destination string — which a reader needs, because a route missing it is unexecutable — a token naming the headless mechanism proves nothing a reader needs and cannot distinguish a correctly-scoped disclosure from an over-broad one that mentions the mechanism elsewhere. Cross-sentence semantic contradiction is entailment over two phrasings, not pattern matching. The refusal and its two rejected alternatives are recorded in tools/check_repo.py's module docstring and WINDOWS entry 17, so it is not relitigated. This is the CR-01 lesson applied for the third time rather than restated."
-  pattern_observed: "Two consecutive rounds had a FIX introduce the next defect: f8ebf78's PF-1.9 recast produced G-04-3's false Control Tower scope, and 63b5dfa's G-04-4 repair produced G-04-8's false universal negative. Both were written carefully, both passed a green 47/48-code gate, both were caught only by an independent cold read. The gate catches structure; cold reads catch truth."
-  stopping_rule: "Approved by the user 2026-09-18, after Phase 04 ran 10 gap-closure plans against 4 build plans. A cold-read finding blocks only if it is CHECKABLY FALSE — a product credited with what it does not do, a route that does not work as written, a page contradicting itself. Merely improvable prose routes to WINDOWS/backlog. All three gaps this session cleared that bar; the deferred observations under UAT tests 3 and 4 (the PF-3.3 span width, 'four harness classes', 'At minimum:', Status density, the unobtainable clone URL) do not. No further adversarial prose read was run on 04-14's repaired text — the orchestrator fact-checked it against source instead."
-  phase_closure_note: "Phase 04 cannot reach UAT-green from inside Phase 04. UAT tests 1 and 2 map to roadmap success criteria 2 and 3, which require a published repository (Phase 6, LEG-04) and the persuasion benchmark (Phase 5). Both were authored as `verification: backstop` truths precisely so no checker could mark them passed early. Status stays human_needed by design, with WINDOWS entries 11, 12, 16 and 17 carrying the open items. The unblocking work is Phase 5, not another verify round."
+  finding_direction: "The measurement came back null and is published as null. Three routes, 36 headless claude-sonnet-5 sessions at --effort low, 4 artifact families x 3 repeats, zero unscoreable. Mechanical proxy counts: skill-on 7.9 [1-14], style-on 7.1 [3-11], prompt-on 6.3 [1-10]. Every pair of arms overlaps, so the routes were not distinguished. That is a weaker statement than the criterion's own word `equivalent`, and separation_verdict() in evals/routes/run_routes.py enforces the distinction in code — it will only assert a difference between arms on non-overlapping observed ranges, so the refusal to overstate is mechanical rather than a matter of the author's restraint at writing time."
+  unexpected_finding: "The activation asymmetry, which no prior round had separated out and which matters more for choosing a route than the prose counts do. style-on reached the artifact-family line in 12 of 12 sessions and carried rule markers in 11 of 12. skill-on carried markers in only 9 of 12, because the installed skill must first be triggered while an output style and a pasted prompt are unconditionally on once selected. This is CAT-10's disclosed trigger residual (WINDOWS entry 24, Phase 2, open) surfacing inside a different measurement. It also confounds the null result: skill-on's arm pools 3 sessions of effectively unrouted output, which pulls that arm toward the baseline. Disclosed on the arm that carries it, in the report and in README, rather than averaged away."
+  mechanisation_registered: "A 49th code, derivative-comparison-claim-stale, registered and discrimination-proven in both directions (mutation-test PASS: 49 codes, CONTROL 0 unexpected, no FIRE-ONLY line). It fires only on the conjunction — evals/routes/RESULTS-routes.md exists AND a derivative still carries the literal `No benchmark has compared` — which needed three fixture roots rather than two, because a conjunction check must also prove it stays silent on `A without B`. This is the opposite call from round 5's refusal and the difference is stated: round 5 declined a code for cross-sentence semantic contradiction, which is entailment over two phrasings; this is a literal-substring presence conjunction with a declared ceiling, guarding a sentence whose truth a reader has no way to evaluate unaided."
+  requirement_moved: "DIST-05 moved to complete this round, on evidence exercised rather than asserted: skill-derivative-stale and `generate_derivatives.py --check` both enforce regeneration and both are in CI, the re-sync step is documented at README's `## Keeping derivatives in sync`, and 04-15 changed the generator and regenerated both derivatives through it with --check exiting 0. DIST-03 and DIST-04 stay unchecked with their notes rewritten to say what is now measured and what is not. EX-02, DIST-01, DIST-02 and DIST-06 are untouched by this round."
+  stopping_rule: "Unchanged from round 5 and still approved: a cold-read finding blocks only if it is CHECKABLY FALSE. Applied this round to 04-15's own output — a cold read of evals/routes/RESULTS-routes.md found two figures a fresh evaluator would misread (skill-on's highest mean, which pools 3 never-activated sessions; style-on's 12/12 conformant against 11/12 activated, which is not an arithmetic error). Both were corrected in the renderer, not the file, in commit 8a14222. No figure changed."
+  honest_limit_of_this_round: "The cold read of 04-15's report was performed by the same party that produced the report. That is weaker than the independent cold reads that caught G-04-3, G-04-4 and G-04-8, every one of which was found by a reader who had not written the text. This is recorded as coverage item D5 in 04-15-SUMMARY.md with human_judgment: true, and it is the single largest gap in this round's own confidence."
 overrides: []
 gaps: []
 deferred:
   - truth: "A live install (npx skills add / claude plugin marketplace add) succeeds against the published repository"
     addressed_in: "Phase 6 (LEG-04 launch gate)"
-    evidence: "WINDOWS.md entry 11 (open, unchanged): publish location is frozen as the disclosed <owner>/<repo> placeholder; no git remote exists."
+    evidence: "WINDOWS.md entry 11 (open, unchanged): publish location is frozen as the disclosed <owner>/<repo> placeholder; no git remote exists. Untouched by round 6."
   - truth: "A live Claude Code session actually lists and applies the copied output style through /config"
     addressed_in: "Phase 6 (LEG-04 launch gate)"
-    evidence: "WINDOWS.md entry 16 (new this round, unrun-verify): readme-output-style-destination-missing proves README names the correct destination directory; it does not and cannot observe a live harness session listing or applying the style. This repository's own environment drives no live Claude Code session."
+    evidence: "WINDOWS.md entry 16 (open, narrowed by round 6). What changed: the style's CONTENT is now proven to reach a live session — 04-15 copied it into a headless session's own .claude/output-styles/, named it in that session's .claude/settings.json, and the session cited rule markers an unrouted control did not (evals/routes/probe/). What remains unobserved is exactly the picker: a headless session has no /config, and nothing in this repository can drive an interactive one. The entry is narrower than it was, not closed."
+  - truth: "Pasting prompts/system-prompt.md into a harness that is not Claude Code behaves as the measured arm did"
+    addressed_in: "Not scheduled — needs a non-Claude harness this repository cannot drive"
+    evidence: "WINDOWS.md entry 28 (new, round 6). The prompt-on arm used --append-system-prompt-file against headless Claude Code. That is the closest observable stand-in for route 4 and is not route 4."
+  - truth: "The null result between arms is attributable to the routes rather than to run-to-run variance, or to the trigger asymmetry between them"
+    addressed_in: "Not scheduled — costs sessions, not code"
+    evidence: "WINDOWS.md entry 28 (new, round 6). n=3 per cell, one model, one effort, one scenario per family after the reduced matrix was authorised at 04-15's spend checkpoint. The skill-on arm additionally carries 3 never-activated sessions inside its own mean."
 human_verification:
   - test: "Once a real repository/owner exists: run `npx skills add <real-owner>/<real-repo>` and `claude plugin marketplace add <real-owner>/<real-repo> && claude plugin install proof-first@proof-first`."
     expected: "Both commands resolve and install the skill/plugin, including a marketplace.json whose plugin entry is mechanically known-complete (CR-01, closed round 3)."
-    why_human: "No git remote is configured; a live install is a network-and-harness behavior no file-reading checker can observe. Unchanged this round — 04-12/04-13 did not touch either manifest."
-  - test: "Drive a live Claude Code session with `output-styles/proof-first.md` copied to `~/.claude/output-styles/` (per README's now-stated route 3) and selected, and a second live session in a harness with `prompts/system-prompt.md` pasted as the system prompt. Compare both against a session with the skill folder installed on the same task."
-    expected: "All three routes apply the same rule text, the same completeness audit, and the same artifact-family conventions, producing comparably disciplined output. Separately, confirm the copied style actually appears in `/config` and applies — the one link WINDOWS entry 16 tracks as unobserved in this environment."
-    why_human: "Authored as a `verification: backstop` truth in 04-03-PLAN.md precisely so no automated check marks it passed before Phase 5's benchmark runs. Unchanged in substance; WINDOWS entry 16 is new bookkeeping for a residual this item already covered, not a new requirement."
-  - test: "Have a person unfamiliar with this project re-read examples/before-after.md's four after-columns, focused on the two columns 04-12 repaired: the Solution proposal column's AWS Control Tower governance claim (line 20) and the Demo column's Marcus Feld quotation and PF-2.14 marker (line 34)."
-    expected: "The Control Tower claim is now true of the product and consistent with deal-brief.md:22 / worked-examples.md:32 (governs the new account structure, not the on-premises estate); the Feld quotation reads as one recorded utterance, not a reconstructed two-part transcript; each after column overall still reads as an applied rewrite grounded in the deal brief, not a paraphrase of the rule text."
-    why_human: "Authored as a `verification: backstop` truth in 04-02-PLAN.md — product-scope truth and quotation-fidelity-as-experienced-by-a-reader are semantic judgments no regex in this stack performs. G-04-3's specific defect is fixed and independently reproduced by this verifier (grep-level: 'on-premises estate' governance phrasing now absent, 'governance across the new account structure' present once, Feld's utterance appears once verbatim); the broader backstop truth (does the rewrite genuinely read as applied, not restated) still requires a cold human read."
-  - test: "Have a first-time reader open README.md cold, follow route 3's now-stated copy step (`mkdir -p ~/.claude/output-styles && cp output-styles/proof-first.md ~/.claude/output-styles/`), and report whether the Install section is now actionable without cross-referencing other files, and whether the lead-in genuinely reads as leading with a real example."
-    expected: "A prospective evaluator understands what the skill does and how to install it within the first screen or two, with no confusion about which of the four routes to pick, and can now execute route 3 to completion using only what README states (up to the point this repository can observe: the file lands in the scanned directory)."
-    why_human: "DIST-06's prose-quality half — WINDOWS.md entry 12 (open, narrowed this round: the false 'works today' claim and missing copy step, G-04-4's primary defect, are fixed; what remains open is whether the prose reads well to a cold reader, not whether the steps are complete). Independently reproduced by this verifier: 'work today, from a local clone' no longer appears; the destination directory appears twice; readme-output-style-destination-missing (48th code) now fails the build if the destination is removed again."
+    why_human: "No git remote is configured; a live install is a network-and-harness behavior no file-reading checker can observe. Unchanged by round 6 — 04-15 touched neither manifest."
+  - test: "On a real machine, copy output-styles/proof-first.md to ~/.claude/output-styles/, open an interactive Claude Code session, and confirm the style appears in the /config picker and applies once selected."
+    expected: "The style is listed under its own name and, once selected, stays on for the whole session."
+    why_human: "Narrowed by round 6 and still open. The style's content is now proven to reach a headless session; the interactive picker is the one remaining link, and a headless session has none. WINDOWS entry 16."
+  - test: "Have someone who has not read 04-15-PLAN.md and did not write the report read evals/routes/RESULTS-routes.md cold, as a technical evaluator would."
+    expected: "The headline verdict is no stronger than the tables beneath it support; nothing in the Honest caveats section is contradicted elsewhere in the file; the regenerated derivative preamble claims no equal outcome the report did not find; and neither the Mechanical proxy counts table nor the Family-line conformance table leads the reader to a conclusion the data does not carry."
+    why_human: "This is the check the phase's own history says matters most: G-04-3, G-04-4 and G-04-8 were each found by an independent cold read against a green gate. The read performed this round was done by the party that wrote the report and produced two corrections (8a14222); it is not a substitute for an independent one. Recorded as D5 in 04-15-SUMMARY.md."
+  - test: "Have a person unfamiliar with this project re-read examples/before-after.md's four after-columns."
+    expected: "Each after column reads as an applied rewrite grounded in the deal brief, not a paraphrase of the rule text."
+    why_human: "EX-02's `verification: backstop` half, unchanged by round 6 — 04-15 modified no example file (`git diff --stat -- examples/` is empty across every commit in this round)."
+  - test: "Have a first-time reader open README.md cold and report whether the Install section is actionable without cross-referencing other files."
+    expected: "A prospective evaluator picks a route and follows it without confusion."
+    why_human: "DIST-06's prose-quality half — WINDOWS.md entry 12, open. Round 6 added two paragraphs to this section (routes 3 and 4's measurement statements), which makes a fresh read more valuable than it was, not less."
+
 ---
 
 # Phase 4: Distribution & Worked Examples Verification Report
@@ -238,3 +249,69 @@ remaining mechanically-closable gap.
 
 *Verified: 2026-09-18T08:10:00Z*
 *Verifier: Claude (gsd-verifier)*
+
+
+---
+
+# Round 6 — 2026-09-21: criterion 3 measured
+
+**Plan:** `04-15`, gap-closure round 5. 7 commits, 51 files (45 of them committed measurement
+records), 40 live sessions costing $6.34.
+
+**What changed:** Phase 4's one never-measured roadmap success criterion was measured. Criterion 3
+asks that a user "can turn the discipline on permanently as an output style, or paste a
+system-prompt version in a harness with no skill support, and get equivalent behavior either way."
+Rounds 1 through 5 correctly routed this to human/behavioral verification. Round 6 does not route
+it — it runs it.
+
+## The five criteria after this round
+
+| # | Criterion | Verdict |
+|---|---|---|
+| 1 | Before/after pairs per artifact family, after column citing shipped rule numbers | VERIFIED — 4 family sections, 10 distinct allocated tokens, `before-after-family-missing` and `before-after-citation-missing` both enforce it |
+| 2 | Install via skills CLI with one command, and as a Claude Code plugin from a manifest in this repo | VERIFIED structurally, live install deferred to Phase 6 (WINDOWS 11) |
+| 3 | Output style or pasted system prompt, equivalent behavior either way | **MEASURED AND NOT ESTABLISHED** — see below |
+| 4 | A documented re-sync step regenerates both derivatives whenever SKILL.md changes | VERIFIED and exercised this round; DIST-05 moved to complete |
+| 5 | README leads with before/after pairs and states an install path for every supported harness | VERIFIED structurally, prose quality deferred (WINDOWS 12) |
+
+## Criterion 3, stated precisely
+
+The comparison ran. It did not find what the criterion's wording asks for, and it did not find the
+opposite either.
+
+| route | n | activated | family-line conformant | proxy mean | range |
+|---|---|---|---|---|---|
+| skill-on | 12 | 9 | 8 | 7.9 | 1-14 |
+| style-on | 12 | 11 | 12 | 7.1 | 3-11 |
+| prompt-on | 12 | 8 | 9 | 6.3 | 1-10 |
+
+Every pair of arms overlaps on the proxy count, so the measurement did not distinguish the three
+routes. The criterion says "equivalent." The records support "not distinguished at n=3." Those are
+different claims and only the second one is available, so this verification reports the second one
+and marks the criterion addressed rather than satisfied.
+
+Reading the criterion charitably — as asking whether a user choosing route 3 or route 4 is worse
+off than a user who installed the skill folder — the answer this run supports is that no penalty
+was detected, under caveats the report states in full. Reading it literally, as a positive
+equivalence finding, it is not established and cannot be at this sample size.
+
+## What the measurement found that nobody asked for
+
+The activation asymmetry is the round's most useful result and it is not about prose at all. The
+installed skill must be triggered and was not in 3 of its 12 sessions; the output style and the
+pasted prompt are unconditionally on. For a user deciding between routes, that is a more actionable
+fact than any of the proxy means above — and it means skill-on's arm contains unrouted output,
+which is why its mean cannot be read as "the skill writes worst."
+
+## Why this round still ends `human_needed`
+
+Not for the reason the previous five rounds did. Criterion 3's mechanical half is now done; what
+remains is a different set:
+
+- The `/config` picker (WINDOWS 16, narrowed not closed).
+- A published repository (WINDOWS 11, untouched).
+- README's prose quality (WINDOWS 12, untouched).
+- Round 6's own honest limit: the cold read of the new report was done by the party that wrote it.
+  Every prose defect this phase actually caught — G-04-3, G-04-4, G-04-8 — was found by a reader
+  who had not written the text, against a gate that was green at the time. That pattern is the best
+  evidence in this file about what this round's self-review is worth.

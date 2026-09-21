@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 current_phase: 04
 current_phase_name: Distribution & Worked Examples
-status: planned
-stopped_at: "Phase 04 re-planned 2026-09-21. 04-15 is gap-closure round 5: the route-equivalence measurement UAT test 2 was blocked on, now that Phase 5 has shipped the live-harness machinery it was waiting for."
-last_updated: "2026-09-21T06:02:29.827Z"
+status: verified
+stopped_at: "Phase 04 executed and verified 2026-09-21 (round 6). 04-15 measured route equivalence: 36 live sessions did not distinguish the three distribution routes, published as a null result. Phase stays human_needed — /config picker, published repo, README prose, and an independent cold read of the new report."
+last_updated: "2026-09-21T15:35:00Z"
 state_head: 5e6341897db3b5e2b7fdc5f5eacefd70303bea6a
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 52
-  completed_plans: 51
+  completed_plans: 52
   percent: 67
 last_activity: 2026-09-21
-last_activity_desc: Phase 04 planned — 04-15 measures whether the output style and the pasted system prompt deliver the skill's discipline (DIST-03, DIST-04)
+last_activity_desc: "Phase 04 verified round 6 — criterion 3 measured for the first time; routes not distinguished at n=3, DIST-05 moved to complete, DIST-03/04 stay unchecked with measured reasons"
 ---
 
 # Project State
@@ -27,9 +27,18 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 04 (Distribution & Worked Examples) — READY TO EXECUTE
-Plan: 15 of 15 (14 executed; 04-15 planned 2026-09-21, not yet executed)
-Status: planned — gap-closure round 5, one plan, `autonomous: false` (it carries a spend checkpoint)
+Phase: 04 (Distribution & Worked Examples) — VERIFIED (round 6), status human_needed
+Plan: 15 of 15 executed (04-15 completed 2026-09-21)
+Status: verified — 4 of 5 roadmap criteria VERIFIED; criterion 3 MEASURED AND NOT ESTABLISHED
+
+04-15 ran the comparison criterion 3 had waited on since the phase began. Three distribution routes,
+36 headless sessions, four artifact families: the measurement did not distinguish them (skill-on 7.9
+[1-14], style-on 7.1 [3-11], prompt-on 6.3 [1-10], every pair overlapping). Published as a null
+result, not as equivalence. The useful finding was elsewhere — the installed skill must be triggered
+and was not in 3 of 12 sessions, while the output style and pasted prompt are unconditionally on.
+
+DIST-05 moved to complete. DIST-03 and DIST-04 stay unchecked with measured reasons. WINDOWS entry
+28 carries the four limits that bound the null result; entries 11, 12 and 16 are unchanged.
 
 Phases 1, 2, 3 and 5 are complete. Phase 4 is the only one still open before Phase 6, and it is
 open on one thing: roadmap success criterion 3 — "User can turn the discipline on permanently as an
