@@ -252,12 +252,14 @@ Process" are not — both are terms of art this family put into circulation, and
 verbatim as block labels. This review does not find those two off the prong. What it records instead
 is where they sit: they are index terms in `NUMBERING.md`'s registry and nowhere else that ships.
 Neither string occurs in `completeness-audit.md` at all — its headings are MC ids plus rule titles
-written in this repository's own words — and repo-wide the two appear only in `NUMBERING.md`, in
-this file, and in `check_repo.py`'s fixtures. `NOTICES.md` carries the attribution for the family,
-and no rule text under them is taken from a source. That narrower fact is better for this entry than
-the one it replaces, not worse: the two terms of art reach no shipped reader-facing prose. A
-stricter reading of prong 4 would rename both. This review did not, and the choice is recorded here
-rather than left implicit.
+written in this repository's own words — and across the shipped tree the two appear only in
+`NUMBERING.md`, in this file, and in `check_repo.py`'s fixtures. They also appear throughout
+`.planning/`, which is tracked in this repository; what they do not reach is any rule body, worked
+example or reader-facing instruction. `NOTICES.md` carries the attribution for the family, and no
+rule text under them is taken from a source. That narrower fact is better for this entry than the
+one it replaces, not worse: the two terms of art reach no shipped reader-facing prose. A stricter
+reading of prong 4 would rename both. This review did not, and the choice is recorded here rather
+than left implicit.
 
 **What the 2026-04-21 ruling contributes.** On that date a US federal court held that MEDDPICC is
 generic — that the term names a methodology rather than identifying one source of training services.
@@ -675,8 +677,10 @@ scope is corrected; id 16 is unaffected.
 ## Ledger disposition
 
 Every entry in this project's cross-phase defect register, and what was decided about it at the
-Phase 6 launch gate on 2026-09-21. The register itself lives under `.planning/`, which a reader of
-this repository cannot see, so it is reproduced here in full: 32 entries, none left undecided.
+Phase 6 launch gate on 2026-09-21. The register itself is `.planning/WINDOWS.md`, which is tracked
+in this repository and which README cites by entry number — but `.planning/` is this project's own
+working record rather than published documentation, and a reader has no reason to go looking there.
+It is reproduced here in full for that reason: 32 entries, none left undecided.
 
 Four labels, and the fourth was added at this round because the first three did not describe what
 had actually happened to two entries:
