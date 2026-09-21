@@ -305,7 +305,25 @@ Plans:
   1. A legal review gate passes before public launch, with MEDDIC-family trademark status (including the MEDDPICC genericness ruling) reconfirmed against current sources.
   2. Every claim and badge in README derives only from committed benchmark results in RESULTS.md, stating model versions and date.
 
-**Plans**: TBD
+**Plans**:
+
+**Wave 1**
+- [ ] 06-01 — Tracer: one source row confirmed against a live page, recorded with provenance, and `source-row-unconfirmed` enforcing it
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 06-02 — The legal review gate: five remaining source rows, three rights-holders reconfirmed, `LEGAL-REVIEW.md`, and two more codes
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 06-03 — README states what the benchmark supports: pooled totals rendered, a delimited claim region, four codes
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 06-04 — Launch gate: the publish decision, the install observations, the human reads, the ledger sweep
+
+Cross-cutting constraints:
+
+- No check this phase adds may make a network call, and no command may be added to `.github/workflows/ci.yml` that does. Lookups happen once at execution time; the committed record is what CI reads.
+- Every violation code this phase registers carries a `MUTATIONS` entry in the same commit and is reported discrimination-proven, never merely registered.
+- No claim may outrun the evidence — the seven overclaims named in `06-RESEARCH.md` § Decision 6 are prohibited across all four plans.
 
 ## Progress
 
