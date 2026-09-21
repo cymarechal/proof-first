@@ -6,9 +6,9 @@ An agent skill for technical presales writing that replaces adjectives with spec
 
 Below: an unrevised draft, then a rewrite. The rewrite's numbers come from
 `examples/deal-brief.md`, the canonical deal brief every worked example in this repository cites.
-(`evals/benchmark/bench-deal-brief.md` is a second, separate brief, used only to prompt the
-benchmark's sessions so they never see the one the examples are written against.) One full pair,
-reproduced from `examples/before-after.md`:
+(`evals/benchmark/bench-deal-brief.md` is a second, separate brief, which grounds the benchmark's
+scenarios and shares no company, person, platform or figure with the one the examples are written
+against.) One full pair, reproduced from `examples/before-after.md`:
 
 **RFP and RFI response**
 
@@ -176,8 +176,11 @@ What exists today:
 - `examples/before-after.md` — the worked before-and-after examples.
 - `evals/proxy-sources.md` — the published source for every term `evals/lint.py` counts as a proxy.
 - `evals/benchmark/scenarios.json` — the eight benchmark prompts, two per artifact family.
-- `evals/benchmark/bench-deal-brief.md` — the separate deal brief the benchmark's sessions are
-  prompted with, kept apart from `examples/deal-brief.md` so no session sees the examples' brief.
+- `evals/benchmark/bench-deal-brief.md` — the separate deal brief that grounds the benchmark's
+  scenarios, kept apart from `examples/deal-brief.md` so no session sees the examples' brief. The
+  sessions are prompted with `scenarios.json`'s prompts; the brief is what those prompts were
+  written from, and `run_benchmark.py --self-test` is the only place it is read at run time, to
+  assert it shares no named entity with `examples/deal-brief.md`.
 
 What does not exist yet:
 
