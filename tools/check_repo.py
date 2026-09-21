@@ -3770,8 +3770,13 @@ README_OUTPUT_STYLE_PATH = 'output-styles/proof-first.md'
 
 # The two directories Claude Code scans for output styles: the user-level
 # one and a project's own. Provenance: 04-UAT.md test 4,
-# orchestrator-verified -- this environment has no live network access to
-# cite a documentation URL. The project-level form is a substring of the
+# orchestrator-verified; the project-level form was corroborated again on
+# 2026-09-21 by a driven interactive session whose /config picker listed a
+# style installed into a project's own .claude/output-styles/
+# (LEGAL-REVIEW.md, Human observations section 4). Phase 4 gave this
+# environment's lack of live network access as the reason no documentation
+# URL is cited here; that premise has since expired (ledger row 18) and no
+# URL has been cited since. The project-level form is a substring of the
 # user-level form ('.claude/output-styles/' sits inside
 # '~/.claude/output-styles/'), so a README naming only the user-level
 # directory already satisfies check_readme_output_style_destination for

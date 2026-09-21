@@ -7,9 +7,14 @@ transaction is unintended. The migration source and target platforms named in la
 real products, cited only where a benchmark scenario genuinely needs a concrete technical noun.
 This brief shares no company, person, platform, or figure with `examples/deal-brief.md` — it
 grounds Phase 5's benchmark scenarios, which must not reuse the shared deal's facts (see
-`05-RESEARCH.md` Decision 2). This environment has no live network access, so the name-collision
-web search Phase 1 ran for `examples/deal-brief.md`'s nine invented names could not be repeated
-here for this brief's names; that is an open, disclosed unrun-verify item, not a completed check.
+`05-RESEARCH.md` Decision 2). The name-collision web search Phase 1 ran for
+`examples/deal-brief.md`'s nine invented names was run for this brief's ten names on 2026-09-21, in
+Phase 6 plan 06-02. None of its five invented parties collided with a real entity; three of its five
+invented persons share an exact name with real people in unrelated, neutral roles. Every outcome is
+recorded name by name in `LEGAL-REVIEW.md`'s `## Name collisions` section, which routed two
+collisions for a rename decision before wider distribution — neither of them from this brief. The
+Phase 5 note that this environment had no live network access, and that the search was therefore an
+open unrun-verify item, was true when written and is no longer.
 
 ## The deal in one paragraph
 
