@@ -330,3 +330,129 @@ never run end to end and this record continues to say so.
 |---|---|---|---|
 | 1 | `npx skills add` … | Not run — no published location to install from | Not tested |
 | 2 | `claude plugin marketplace add` … | Not run — same reason | Not tested |
+
+## Human observations
+
+Three things about this repository cannot be checked by anything in it. This section records what
+was and was not observed on 2026-09-21, and is deliberately explicit about which of the three did
+not happen, because two of them structurally could not happen in the session that ran this phase.
+
+### 1. Output style in the `/config` picker — NOT OBSERVED
+
+Date: 2026-09-21. Platform: Darwin 25.6.0 (macOS). Destination directory README states:
+`~/.claude/output-styles/`.
+
+**Not performed.** `WINDOWS.md` id 16's closure condition is a human seeing the copied style listed
+in Claude Code's `/config` picker and selecting it. The session executing this phase is
+non-interactive and has no picker to open. Copying the file into `~/.claude/output-styles/` would
+have produced the setup without the observation, so it was not done either — it would have changed
+the operator's own configuration directory for no verification gain.
+
+`04-15` already measured the part of this route that a script can reach: the style's content does
+arrive in a live session, and an unrouted control on the same prompt cited none of this project's
+rule markers (`evals/routes/probe/`). What stays unobserved is the single word *permanently* — that
+the file appears in a picker and can be selected for a session.
+
+**Disposition:** id 16 stays **open**. DIST-03 stays `implementation shipped; the delivery half is
+MEASURED, the /config half UNVERIFIED`.
+
+### 2. Cold read of README — NOT PERFORMED AS A COLD READ
+
+Date: 2026-09-21.
+
+**Not performed as specified.** `WINDOWS.md` id 17 records three consecutive rounds in which
+`check_repo.py` reported zero violations and a cold human reader found a false sentence on the first
+pass, and records the deliberate refusal to build a fuzzy-proxy gate for that class. Its method is a
+reader who did not write the text. This round's README edits were written by the same agent that
+would have read them, and no independent reader was available to this session, so the condition the
+entry actually turns on was not met.
+
+**What was performed instead, recorded as what it is:** an author's self-read backed by a mechanical
+cross-reference of every checkable README claim against the shipped files. Twelve claims were
+checked: the 31-rule catalog count against `SKILL.md`'s rule headings; the 28 worked pairs against
+`worked-examples.md`; every path in the `## Repository layout` tree and every backticked path in
+"What exists today" against the filesystem; all nine pooled tallies and the direction count against
+`evals/benchmark/RESULTS.md`'s rendered tables; the trigger summary against
+`evals/trigger/RESULTS-trigger.md`'s totals; and the absence of the two sentences 06-03 superseded.
+
+**Result: no checkably-false statement found.** Four apparent findings all proved to be defects in
+the checking script rather than in README — three compared a README figure against the first
+matching row in `RESULTS.md`, which is a per-cell row rather than the pooled one, and the fourth
+required the literal substrings `9 of 9` and `2 of 5` to appear in `RESULTS-trigger.md`, which
+expresses the same totals per row and in a `## Totals` block instead. That file's second and third
+blocks record a must-fire regression, which initially read as a README omission; it is Arm A, a
+treatment that was measured and then **reverted**, so README's summary correctly describes the
+configuration that actually ships.
+
+This is the same class as `WINDOWS.md` entries 13, 14, 15, 26 and 27: a verification script authored
+alongside the work disagreed with correct shipped content. It is recorded rather than hidden, and it
+is also the reason a self-read is not accepted as a substitute — a reader checking their own text
+writes the checks that match what they meant.
+
+**Disposition:** ids 12 and 17 stay **open**, with the reason naming that no cold reader was
+available in this round and that a self-read was performed and found nothing checkably false.
+
+### 3. DIST-06 prose read — PERFORMED, BUT NOT COLD
+
+Date: 2026-09-21.
+
+Assessment by the author of this round's edits, therefore not independent. README does lead with the
+before/after example: `## Before and after` is the first section after the title, and
+`readme-example-lead-distance` holds its first ✗ line inside a frozen 20-line ceiling. The Install
+section names four routes and states which of them resolve; after this phase's deferral it still
+truthfully says the publish location is a placeholder.
+
+One thing a cold reader should be asked specifically, and which the author is the wrong person to
+judge: whether the new claim region reads as an honest report of a mixed result or as a defensive
+one. It states 38 losses in its own sentence and then states the caveats — the order was chosen
+deliberately — but whether it *reads* that way to someone encountering the project for the first
+time is exactly the judgement this record cannot make about itself.
+
+**Disposition:** id 12 stays **open**, carrying the specific question above for whoever performs the
+cold read.
+
+## Ledger disposition
+
+Every entry in this project's cross-phase defect register, and what was decided about it at the
+Phase 6 launch gate on 2026-09-21. The register itself lives under `.planning/`, which a reader of
+this repository cannot see, so it is reproduced here in full: 28 entries, none left undecided.
+
+`Fixed` means the defect is gone from shipped content. `Waived` means it was measured, disclosed
+and accepted, with the measurement named. `Open — v2` means it is a real gap with a named owner
+and a stated closure condition, deliberately not carried as if it were finished.
+
+| id | Phase | What it records | Disposition | Why |
+|---|---|---|---|---|
+| 1 | 01 | Name-collision search for examples/deal-brief.md's invented names | **Fixed** | Re-run in 06-02; a collision was found and is routed as a new open item. |
+| 2 | 01 | D-07/P-05 boundary check (no sentence compares two real products or co | **Fixed** | Closed in an earlier phase. |
+| 3 | 02 | Reproduction-boundary read of PF-0.1/PF-3.1 against SOURCES.md | **Fixed** | Closed by 06-02's reasoned disposition in this file. |
+| 4 | 02 | D-31 trigger pressure-test | **Fixed** | Closed in an earlier phase. |
+| 5 | 02 | CAT-08 token half | **Fixed** | Closed in an earlier phase. |
+| 6 | 03 | The eight MC dimension names and their MC-1..MC-40 range order | **Fixed** | Closed by 06-02's reasoned disposition in this file. |
+| 7 | 03 | 03-05's single standalone-audit re-check (docs/B-proposal-section | **Fixed** | Closed in an earlier phase. |
+| 8 | 03 | MOD-04 anchored remeasurement (03-12), the first measurement of this r | **Waived** | Closed in an earlier phase. |
+| 9 | 03 | Residual source label outside 03-05's scope | **Fixed** | Closed in an earlier phase. |
+| 10 | 03 | Self-test behavior case 11 in evals/conformance/run_conformance | **Fixed** | Closed in an earlier phase. |
+| 11 | 04 | Publish location frozen as the placeholder <owner>/<repo> | **Open — v2** | Publication deferred 2026-09-21 by operator decision; closes on substitution AND an observed install. |
+| 12 | 04 | DIST-06's prose-quality half, unchecked by any code here | **Open — v2** | No cold reader available this round; a self-read found nothing checkably false. Carries one named question. |
+| 13 | 04 | 04-04 plan expected a third results-pointer occurrence that never existed | **Waived** | Plan-authored probe error; the shipped README was always correct. |
+| 14 | 04 | 04-07 plan's word-spelled-cardinal counts disagreed with the shipped regex | **Waived** | Plan-authored measurement error; the shipped docstring states the corrected figures. |
+| 15 | 04 | 04-10 plan's import probe matched a docstring prose line as an import | **Waived** | Plan-authored probe error; the AST-based stdlib check confirms the real import set. |
+| 16 | 04 | DIST-03's /config half: style listed and selectable, unobserved | **Open — v2** | No /config picker in a non-interactive session; closes on a human observation. |
+| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | No cold reader available; twelve checkable claims cross-referenced, none false. The proxy-gate refusal stands. |
+| 18 | 05 | Name-collision search for bench-deal-brief.md's invented names | **Fixed** | Closed by 06-02's searches; the premise that this environment has no network had expired. |
+| 19 | 05 | Whether the eight benchmark scenarios are realistic presales tasks | **Waived** | Backstop judgement no tool here performs; scenarios are committed and readable. |
+| 20 | 05 | aggregate() pools per-order records instead of averaging pairs first | **Open — v2** | Not fixed here: the fix moves a published figure. 06-03 provably did not inherit it. |
+| 21 | 05 | Raw-record key omits effort, judge_model and judge_effort | **Open — v2** | No v1 requirement depends on a re-run at a changed configuration. |
+| 22 | 05 | A wholly-failed generation cell is dropped with no unscoreable count | **Open — v2** | No committed cell is affected; the risk is a future run losing one silently. |
+| 23 | 05 | DISALLOWED_TOOLS omits WebSearch and WebFetch | **Waived** | Measured: web_search_requests=0 and web_fetch_requests=0 across all 96 records. |
+| 24 | 02 | CAT-10 over-broad trigger description | **Open — v2** | First lever tested live and refuted, then reverted; the next lever is named. |
+| 25 | 05 | README asserted its own benchmark had not run | **Fixed** | Closed by 06-03: README now states what the benchmark supports. |
+| 26 | 02 | 02-10 plan's git-diff removed-lines probe always printed >=1 | **Waived** | Plan-authored probe artifact; the substantive check printed empty throughout. |
+| 27 | 02 | 02-10 plan's whole-file phrase count returned 15 against 14 | **Waived** | Plan-authored probe artifact; the table-scoped count was correct at 14. |
+| 28 | 04 | Route-equivalence measured and not distinguished | **Waived** | Measured null result published with its four named limits. |
+
+Counts after this sweep: **11 fixed, 9 waived, 8 open**, totalling 28 — matching
+`.planning/WINDOWS.md`'s own frontmatter exactly. The eight open entries are the four routed to v2
+with owners (20, 21, 22, 24) and the four that turn on a human observation this session could not
+make (11, 12, 16, 17). None of the eight is open with an empty reason.
