@@ -36,17 +36,46 @@ detail: |
 
 ### 2. Output style, system prompt and installed skill produce equivalent behavior
 expected: All three distribution routes apply the same rule text, the same completeness audit, and the same artifact-family conventions, producing comparably disciplined output.
-result: blocked — deferred by design
+result: measured — not distinguished at n=3; no equivalence claim made
+retest_round: 5
+retest_verdict: measured, inconclusive on the equivalence half
 detail: |
-  Authored in 04-03-PLAN.md as a `verification: backstop` truth precisely so no
-  automated check can mark it passed before a benchmark runs. This project
-  publishes measured claims or no claims.
+  Unblocked and run. The `blocked — deferred by design` premise this item carried
+  since the phase began was "waits on Phase 5's benchmark." Phase 5 completed; the
+  premise expired and the item did not become true on its own. Gap G-04-9 records
+  that, and 04-15 ran the measurement.
 
   The structural half IS proven and unchanged: both derivatives are generator
   output, reproduce byte-for-byte, carry the identical sha256 stamp, and cover
   all 39 rule headings plus all four family headings.
 
-  Owner: Phase 5.
+  The behavioral half is now measured rather than asserted, and the honest verdict
+  is weaker than the expectation above. 36 headless `claude-sonnet-5` sessions at
+  `--effort low`, 3 routes x 4 scenarios (one per family) x 3 repeats, zero
+  unscoreable. Mechanical proxy counts: skill-on 7.9 [1-14], style-on 7.1 [3-11],
+  prompt-on 6.3 [1-10]. Every pair of arms overlaps, so this run did NOT
+  distinguish the three routes. "Not distinguished at n=3" is not "equivalent" and
+  04-15 refuses to publish the stronger word. The expectation as written asks for
+  a positive equivalence finding; what the records support is the absence of a
+  detected difference, which is a different thing.
+
+  Activation, which the earlier framing did not separate out, turned out to matter
+  more than the prose counts: style-on reached the artifact-family line in 12 of
+  12 and activated in 11 of 12, while skill-on activated in only 9 of 12 because
+  it must first be triggered. The routes that are unconditionally on are not
+  handicapped the way the installed skill is. That is a real, recorded asymmetry
+  and it is the reason a null result between the arms cannot be read as a clean
+  statement about rule delivery.
+
+  Evidence: `evals/routes/RESULTS-routes.md`, recomputing from 36 committed
+  records under `evals/routes/raw/` plus 4 activation-probe records under
+  `evals/routes/probe/`.
+
+  Residual, routed not closed: WINDOWS.md entry 28 (what this run cannot see —
+  the trigger asymmetry, one scenario per family, the headless proxy for route 4,
+  and n=3 on one model). The `/config` picker stays unobserved under entry 16.
+
+  Owner: was Phase 5; measurement delivered by 04-15.
 
 ### 3. Each after column demonstrates its cited rule rather than restating it
 expected: Each after column reads as an applied rewrite grounded in the deal brief, not a paraphrase of the rule text; PF-1.9 genuinely leads with capability; PF-3.3 marks a term, not a full quotation.
@@ -320,10 +349,36 @@ passed: 2
 issues: 0
 pending: 0
 skipped: 0
-blocked: 2
+blocked: 1
+measured_inconclusive: 1
 retest_round_2: "test 3 re-read PASS (G-04-3 closed); test 4 re-read: G-04-4 closed but new gap G-04-8 opened"
+retest_round_5: "test 2 unblocked and measured (G-04-9 closed): 36 live sessions did not distinguish the three distribution routes, so the equivalence half is answered with a null result rather than the positive finding the test expected. Counted as measured_inconclusive, not as passed. Test 1 stays blocked on a published repository (Phase 6, LEG-04)"
 
 ## Gaps
+
+- gap_id: G-04-9
+  status: resolved
+  resolved_by: 04-15-PLAN.md
+  resolved_at: 2026-09-21
+  test: 2
+  truth: "Whether the output style and the pasted system prompt deliver the skill's discipline is decided by a committed measurement, not by an assertion in prose or by an indefinite deferral."
+  reason_original: "Test 2 read `blocked — deferred by design` from the phase's first UAT round onward, on the stated ground that it 'waits on Phase 5's benchmark' and with `Owner: Phase 5`. Phase 5 completed on 2026-09-18, shipping evals/benchmark/run_benchmark.py, a 96-generation live run, and the whole pattern for driving isolated headless `claude -p` sessions and scoring them offline. The blocking premise expired at that moment. The item did not notice: it kept its blocked status and its Phase 5 owner through four subsequent gap-closure rounds, and prompts/system-prompt.md kept emitting the generated sentence 'No benchmark has compared a session driven by this file against a session with the skill folder installed' — true when written, false-by-omission once the machinery to run that comparison existed and went unused."
+  severity: major
+  regression_of: "none — a stale blocker, not a defect in shipped content"
+  root_cause: "A deferral recorded its reason as a dependency ('waits on Phase 5') but nothing re-read that reason when the dependency landed. Phase 5 delivered the capability test 2 was waiting for and closed as its own phase; no step in either phase's closure re-examined the items that had named it as their unblocker. The blocked status was correct on the day it was written and was never re-derived afterwards."
+  contributing_cause: "No code can see this class. tools/check_repo.py's codes are per-file presence and drift checks over shipped content; none of them reads a planning artifact's stated blocking premise and asks whether it still holds. The gate was green across the whole period the deferral was stale, exactly as it was green across G-04-3 and G-04-8."
+  artifacts:
+    - path: ".planning/phases/04-distribution-worked-examples/04-UAT.md"
+      line: 39
+      issue: "result: blocked — deferred by design, on an expired premise, with Owner: Phase 5 after Phase 5 completed."
+    - path: "prompts/system-prompt.md"
+      line: null
+      issue: "Generated preamble asserted no such comparison existed, long after the means to run one did."
+  missing:
+    - "RESOLVED: 04-15 built evals/routes/run_routes.py, proved all three routes switch on against an unrouted control (4 probe sessions), ran a 36-session reduced matrix after an authorised spend checkpoint, and published evals/routes/RESULTS-routes.md."
+    - "RESOLVED: the derivative preamble now points at the measurement, and the 49th violation code derivative-comparison-claim-stale fails the build if the old denial returns while the results file exists."
+    - "NOT CLOSED, routed to WINDOWS.md entry 28: the measurement did not distinguish the routes, and four named limits bound that null result. Closing any of them costs more sessions, not more code."
+  debug_session: ""
 
 - gap_id: G-04-8
   status: resolved

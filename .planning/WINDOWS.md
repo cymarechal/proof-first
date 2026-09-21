@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 19
+open_count: 20
 waived_count: 1
 fixed_count: 7
-total_count: 27
-last_updated: 2026-09-20T09:08:30.560Z
+total_count: 28
+last_updated: 2026-09-21T00:00:00.000Z
 ---
 
 # Broken Windows Ledger
@@ -367,6 +367,18 @@ last_updated: 2026-09-20T09:08:30.560Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-20T09:08:30.560Z",
+    "resolved_at": null
+  },
+  {
+    "id": 28,
+    "kind": "unrun-verify",
+    "phase": "04",
+    "file": "evals/routes/RESULTS-routes.md",
+    "line": null,
+    "description": "04-15 measured route equivalence and did not distinguish the three distribution routes: 36 headless claude-sonnet-5 sessions at --effort low, 3 routes x 4 scenarios x 3 repeats, every pair of arms overlapping on the mechanical proxy count (skill-on 7.9 [1-14], style-on 7.1 [3-11], prompt-on 6.3 [1-10]). What stays UNOBSERVED after this run, and is what this entry tracks: (a) the arms are not a level playing field -- skill-on must be triggered and was not in 3 of 12 sessions, while style-on and prompt-on are unconditionally on, so a null result between them is partly a statement about trigger behaviour (CAT-10, entry 24) rather than about rule delivery; (b) the reduced matrix authorised at the spend checkpoint carries one scenario per family, so a family-general effect cannot be separated from that scenario's quirks and no cross-check against Phase 5's eight-scenario arm is available; (c) prompt-on is a headless --append-system-prompt-file proxy, and no harness other than Claude Code was driven; (d) n=3 per cell on one model at one effort cannot distinguish a small real difference from run-to-run variance. Closing any of these needs more spend, not more code. Entries 11, 12, 16 and 17 are untouched by this run and stay open where they are routed.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-21T00:00:00.000Z",
     "resolved_at": null
   }
 ]

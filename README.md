@@ -88,13 +88,25 @@ runs headless `claude -p`, and the conformance figure under `## Status` comes fr
 but a headless session has no `/config` picker, so the picker is the one link in this route nothing
 here exercises.
 
+What is now observed is the rest of the route. `evals/routes/run_routes.py` copied this file into a
+headless session's own `.claude/output-styles/`, named it in that session's `.claude/settings.json`,
+and the session cited this project's rule markers where an unrouted control session on the same
+prompt cited none. Twelve sessions under this route reached the artifact-family line; see
+`evals/routes/RESULTS-routes.md`.
+
 **4. System prompt** — `prompts/system-prompt.md` is a paste-able system prompt for a harness with
 no skill support: paste it whole into a system-prompt field, an `AGENTS.md`, or an equivalent.
 
 The output style and the system prompt carry the same rule text, the same completeness audit, and
-the same artifact-family conventions as the skill, proven by a check in this repository; whether a
-session driven by either reaches the same conclusions as one with the skill folder installed has
-not been measured, and this repository publishes measured claims or none.
+the same artifact-family conventions as the skill, proven by a check in this repository. Whether a
+session driven by either behaves like one with the skill folder installed is now measured rather
+than asserted: 36 headless sessions, three routes, four artifact families, recorded in
+`evals/routes/RESULTS-routes.md`. That run did not distinguish the three routes — every pair of
+arms has overlapping observed ranges on the mechanical proxy count — which is a weaker statement
+than equivalence and is the only one the records support. Read the caveats there before reading
+anything else into it; one of them matters for choosing between routes. The installed skill has to
+be triggered and was not in 3 of its 12 sessions, while the output style and the pasted prompt are
+unconditionally on once selected.
 
 ## Status
 
