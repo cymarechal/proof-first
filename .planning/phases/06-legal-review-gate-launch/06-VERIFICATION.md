@@ -1,19 +1,21 @@
 ---
 phase: 06-legal-review-gate-launch
-status: human_needed
-score: "2/2 must-haves verified; 6 human items performed — 3 passed, 3 issues, all 3 closed by 06-05; the closures need one independent read"
+status: gaps_found
+score: "2/2 must-haves verified; 9 human items performed across 2 rounds — 4 passed, 5 issues; round 1's 3 gaps closed by 06-05, round 2's independent read of those closures opened 2 new ones"
 verified: 2026-09-21
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 22
-human_verification: 6
-human_verification_performed: 6
-human_verification_passed: 3
-human_verification_issues: 3
-uat_round: "/gsd-verify-work 06, 2026-09-21"
+human_verification: 9
+human_verification_performed: 9
+human_verification_passed: 4
+human_verification_issues: 5
+uat_round: "/gsd-verify-work 06 round 2, 2026-09-21"
 gap_closure_round: "06-05, 2026-09-21 — G-06-2, G-06-3, G-06-6 closed"
 gaps_closed: 3
-gaps_open: 0
+gaps_open: 2
+gaps_open_ids: [G-06-7, G-06-9]
+round_2_note: "Five independent headless readers re-asked round 1's tests 2, 3 and 6 of the corrected files. Test 8 (opinion register) passed. Tests 7 and 9 found 14 checkably-false statements the corrections left or introduced, with all ten CI commands green throughout — the fifth consecutive round of WINDOWS id 17's pattern."
 ---
 
 # Phase 6 Verification: Legal Review Gate & Launch
