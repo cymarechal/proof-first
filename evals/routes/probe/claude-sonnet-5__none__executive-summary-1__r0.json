@@ -1,0 +1,55 @@
+{
+  "run_id": "f6afcb4d-14be-452d-bf80-a5da4b328462",
+  "timestamp": "2026-09-21T06:19:48.773905+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "none",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": null,
+  "repeat": 0,
+  "text": "Cyril, the case for moving off Hyper-V and SQL Server now is straightforward: the 620-VM on-prem footprint and 28 SQL Server instances are locking in cost and risk you can retire directly against the two numbers you're accountable for. Against the $1,850,000 annual technology baseline, this programme targets the load-matching and carrier-settlement systems that carry the heaviest licensing, hardware refresh, and datacenter overhead in that spend — moving compute to Google Compute Engine and consolidating the database layer onto Cloud SQL for PostgreSQL removes SQL Server licensing costs and the hardware lifecycle tied to 620 VMs, replacing them with metered infrastructure you can right-size. Just as important, the DOT compliance audit opening in six months gives this programme a hard, external deadline: settlement and load-matching data is exactly what an auditor will pull, and a migration executed mid-audit-cycle is a controllable risk only if the data layer, access controls, and audit trails are stabilized well before examiners arrive — that argues for sequencing the carrier-settlement workload's cutover early in the two-year plan rather than last.\n\nOver the $4,200,000, two-year programme, expect the spend to buy three things you can hold the team to: a phased cutover (starting with lower-risk workloads and validating data integrity and access controls before touching settlement systems ahead of the audit), a reduction in the run-rate portion of technology spend as SQL Server licensing and Hyper-V hardware costs wind down and are replaced by Compute Engine and Cloud SQL consumption you can forecast and trend quarter over quarter, and a documented, auditable data and access trail on the new PostgreSQL platform that should materially de-risk the DOT review. You should expect the first two to three months to show cost before savings — dual-running legacy and cloud environments during migration — with the run-rate reduction becoming visible in reporting once workloads decommission on-prem, and you should ask the programme team for a monthly readout tying migration milestones directly to both the $1,850,000 spend target and audit-readiness checkpoints, so the six-month DOT window isn't the point you first learn whether settlement data is audit-ready.",
+  "activated": false,
+  "lint_violations": 5,
+  "conformance_verdict": "no-family",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 35096,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 731,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 35096,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 731,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 35096,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 35096
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.147698,
+  "duration_ms": 16152,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}

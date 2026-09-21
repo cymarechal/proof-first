@@ -27,6 +27,27 @@ rendered report:
   that limit in full in its own module docstring; this file reuses that
   statement rather than restating it in weaker words.
 
+Activation, settled by measurement on 2026-09-21 before any matrix spend
+(records committed under evals/routes/probe/, one session per row, all on
+executive-summary-1 at claude-sonnet-5 --effort low):
+
+  route      activated  family-line verdict
+  none       False      no-family
+  skill-on   True       rule-before-family
+  style-on   True       conformant
+  prompt-on  True       conformant
+
+All three routes discriminate against the unrouted control on both signals,
+so all three stay in ROUTES and none is dropped. The output style was proven
+on the FIRST activation form tried -- STYLE_ACTIVATION_FORMS[0],
+'settings-json': the style file copied into the session's
+.claude/output-styles/ with a .claude/settings.json naming it. The two
+fallback forms 'settings-flag' and 'settings-local-json' were never needed
+and are therefore untested against a live session; they remain in the tuple
+as the probe's escalation path, not as proven configurations. A headless
+`claude -p` session does honour a project-scoped output style, which was
+UNVERIFIED in this environment until this probe ran.
+
 It imports only the Python standard library: argparse, datetime, importlib,
 json, pathlib, re, shutil, subprocess, sys, tempfile, uuid. No
 package-manager dependency is introduced by this file or by the CI job that

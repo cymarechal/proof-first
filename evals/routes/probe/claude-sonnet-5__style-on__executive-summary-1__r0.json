@@ -1,0 +1,55 @@
+{
+  "run_id": "90a9f499-e394-4fb3-9bb8-03ef954da067",
+  "timestamp": "2026-09-21T06:20:35.314200+00:00",
+  "model": "claude-sonnet-5",
+  "canonical_model": "claude-sonnet-5",
+  "effort": "low",
+  "route": "style-on",
+  "family": "executive-summary",
+  "scenario_id": "executive-summary-1",
+  "scenario_prompt": "Write a two-paragraph executive summary addressed directly to a fictional buyer's Chief Financial Officer, recommending a cloud migration. Context: a mid-market freight brokerage firm is moving its load-matching and carrier-settlement systems off on-premises Microsoft SQL Server (28 instances) running on Hyper-V (620 virtual machines) onto Google Cloud, targeting Google Compute Engine for compute and Cloud SQL for PostgreSQL for the data layer, over a 2-year, $4,200,000 programme. The CFO has stated she is measured on reducing the current $1,850,000 annual technology spend and on a clean DOT compliance audit, which opens in 6 months. Cover why this matters to her now and what she should expect from the programme. Return only the summary text, two paragraphs, no headers.",
+  "artifact_sha": "55f09873be0fbd87e457143fa1b0a13b47ef45b8",
+  "repeat": 0,
+  "text": "Executive summary\n\nDiane, you're measured on cutting the $1,850,000 annual technology spend and on a clean DOT compliance audit that opens in six months — this proposal is built against those two figures, not against architecture. Your 28 SQL Server instances and 620-VM Hyper-V estate currently sit on that $1,850,000 run rate [PF-1.14: source — buyer-stated figure]; the plan replaces that estate with Google Compute Engine and Cloud SQL for PostgreSQL over 24 months for $4,200,000 [PF-2.2: source — programme budget as stated]. [PF-2.11 GAP: no vendor-supplied percentage or dollar reduction to the $1,850,000 run rate has been measured yet; do not infer one from the programme cost alone]. Because your audit window opens in six months, the load-matching and carrier-settlement systems carry the compliance exposure, and any commitment about audit readiness inside that window needs your own confirmation before it ships [PF-2.14 REVIEW (commitment): confirm whether \"clean audit\" can be promised on this timeline given the migration is still in flight].\n\nWhat you should expect from the programme: a capability mapping from your current SQL Server/Hyper-V estate to Compute Engine and Cloud SQL for PostgreSQL, a stated risk treatment for anything that cannot be retired before the audit opens, and a spend trajectory tied to your $1,850,000 baseline rather than to feature claims [PF-1.9: capability — running load-matching and carrier-settlement workloads on managed infrastructure — stated ahead of the product named as its means]. [PF-2.13 GAP: no differentiator over a named alternative has been supplied for this summary — none is claimed here]. [PF-2.4: no proof point or comparable migration reference has been supplied — cut rather than invented].\n\n## Unresolved before this document is sent\n\n| Marker | Rule | What is needed |\n|---|---|---|\n| [PF-1.14: source — buyer-stated figure] | PF-1.14 | Confirm $1,850,000 is Diane's own stated figure, not assumed |\n| [PF-2.2: source — programme budget as stated] | PF-2.2 | Confirm $4,200,000/2-year figure's source document |\n| [PF-2.11 GAP] | PF-2.11 | A measured or targeted reduction percentage/dollar figure against the $1,850,000 baseline |\n| [PF-2.14 REVIEW (commitment)] | PF-2.14 | Confirm whether any audit-readiness date/promise can be stated given the 6-month window |\n| [PF-2.13 GAP] | PF-2.13 | A named differentiator this vendor can support versus a named alternative |\n| [PF-2.4] | PF-2.4 | A proof point or comparable migration this vendor can actually produce |",
+  "activated": true,
+  "lint_violations": 6,
+  "conformance_verdict": "conformant",
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 50639,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 952,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 50639,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 952,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 50639,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 50639
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.21208000000000002,
+  "duration_ms": 16032,
+  "cli_version": null,
+  "verdict": "generated",
+  "reason": null
+}
