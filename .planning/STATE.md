@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
-current_phase: 02
-current_phase_name: Rule Catalog & Integrity — SKILL.md Core
-status: completed
-stopped_at: "Phase 02 complete (11/11 plans). Closed 2026-09-20 by explicit project-owner override over CAT-10's open over-fire residual; CAT-10 and WINDOWS id 24 route to Phase 6."
-last_updated: "2026-09-20T09:54:42.303Z"
-last_activity: 2026-09-20
-last_activity_desc: Phase 02 closed — 02-11 fixed the fail-open scope-hash guard (CR-01); CAT-10 residual accepted and disclosed
-state_head: 2009e8aabbd369d2a614d1acb4f5d373934f59bc
+current_phase: 04
+current_phase_name: Distribution & Worked Examples
+status: planned
+stopped_at: "Phase 04 re-planned 2026-09-21. 04-15 is gap-closure round 5: the route-equivalence measurement UAT test 2 was blocked on, now that Phase 5 has shipped the live-harness machinery it was waiting for."
+last_updated: "2026-09-21T06:02:29.827Z"
+state_head: 5e6341897db3b5e2b7fdc5f5eacefd70303bea6a
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 51
+  total_plans: 52
   completed_plans: 51
   percent: 67
+last_activity: 2026-09-21
+last_activity_desc: Phase 04 planned — 04-15 measures whether the output style and the pasted system prompt deliver the skill's discipline (DIST-03, DIST-04)
 ---
 
 # Project State
@@ -23,33 +23,43 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** A technical evaluator finishes the document believing the author genuinely understands their problem — because complex things were made simple without being made wrong.
-**Current focus:** Phase 02 — Rule Catalog & Integrity — SKILL.md Core
+**Current focus:** Phase 04 — Distribution & Worked Examples
 
 ## Current Position
 
-Phase: 02 (Rule Catalog & Integrity — SKILL.md Core) — COMPLETE, 11/11 plans
-Plan: 11 of 11 (02-11 gap-closure plan complete)
-Status: closed 2026-09-20 by explicit project-owner override; one disclosed residual stays open
+Phase: 04 (Distribution & Worked Examples) — READY TO EXECUTE
+Plan: 15 of 15 (14 executed; 04-15 planned 2026-09-21, not yet executed)
+Status: planned — gap-closure round 5, one plan, `autonomous: false` (it carries a spend checkpoint)
 
-02-11 closed 02-REVIEW.md CR-01, the last unresolved critical finding: the trigger instrument's
-scope-hash guard failed open. `recorded_scope_hash()` searched the whole document instead of the
-`## Scope` section, and the halt read `if bound_hash and bound_hash != live_hash`, which is falsy
-when no binding was found — so a pressure-test file with a missing or malformed hash ran with the
-guard silently skipped. The decision now lives in `scope_binding_verdict()`, an absent binding is
-a refusal, and both halts are covered by self-test cases proven red-then-green by mutation probe.
-No published measurement moved: pressure-tests.md and RESULTS-trigger.md are byte-identical and
-SKILL.md's head-14 digest is still d5dd651a….
+Phases 1, 2, 3 and 5 are complete. Phase 4 is the only one still open before Phase 6, and it is
+open on one thing: roadmap success criterion 3 — "User can turn the discipline on permanently as an
+output style, or paste a system-prompt version in a harness with no skill support, and get
+equivalent behavior either way." That is 04-UAT.md test 2, requirements DIST-03 and DIST-04, and it
+has read `blocked — deferred by design` since the phase began, on the stated ground that it waited
+on Phase 5's benchmark.
 
-Worth carrying forward: the absent-binding self-test case initially passed with its own branch
-removed, because the neighbouring mismatch branch raises too (None != live_hash). The mutation
-probe caught it; the case now asserts on the refusal message. Same failure shape as WINDOWS id 10.
+Phase 5 is done. It shipped `evals/benchmark/run_benchmark.py`, a 96-generation live run, and the
+whole pattern for driving isolated headless `claude -p` sessions and scoring them offline. The
+blocking premise expired; the item did not become true on its own. Phase 5 measured skill-on against
+skill-off and never compared the three distribution routes to each other — `prompts/system-prompt.md`
+says so in its own generated preamble.
 
-CAT-10 is NOT closed and was not made to look closed. The shipped 439-character description still
-fires on 9 of 25 scoreable must-not-fire sessions at n=5, paired. 02-UAT.md test 2 still reads
-`result: issues` with those counts verbatim, and `gsd-tools phase uat-passed 02` still returns
-passed=false on exactly that one check. Phase 2 was marked complete by hand over that verdict, as
-an explicit, dated project-owner decision recorded in 02-VERIFICATION.md `completion_override` —
-the WINDOWS id 8 posture. CAT-10 stays `- [ ]`, WINDOWS id 24 stays open, both route to Phase 6.
+04-15 runs that comparison: three arms (`skill-on`, `style-on`, `prompt-on`) on byte-identical
+prompts from the eight committed benchmark scenarios, scored by `evals/lint.py`'s `lint()` and
+`evals/conformance/run_conformance.py`'s `score_transcript()`. Roughly $10 and half an hour behind a
+blocking spend checkpoint.
+
+One thing is genuinely unknown and the plan is built around it: whether a headless `claude -p`
+session honours a project-scoped output style at all. Two free probes were inconclusive. Task 2
+settles it with a six-session activation probe against an unrouted control, and has a written
+refusal branch — if no activation form discriminates, `style-on` is dropped from the matrix and the
+refusal is recorded, rather than an arm being run anyway and reported as if the route were on.
+
+What 04-15 does NOT close, unchanged: DIST-01 and DIST-02 need a published repository (Phase 6,
+LEG-04, WINDOWS entry 11); the interactive `/config` listing stays unobserved (entry 16); README
+prose quality stays with end-of-phase UAT (entry 12); cross-sentence contradiction stays refused
+(entry 17).
+
 
 ## Performance Metrics
 

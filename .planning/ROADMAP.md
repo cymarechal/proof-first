@@ -203,7 +203,7 @@ Plans:
   4. A documented re-sync step exists that regenerates the output style and system prompt whenever SKILL.md changes.
   5. Reader opens a README that leads with before/after pairs and states an install path for every supported harness.
 
-**Plans**: 11/11 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap, plus 2 gap-closure plans (04-12, 04-13) planned from 04-UAT.md's two remaining major gaps, plus 1 gap-closure plan (04-14) planned from 04-UAT.md's round-2 re-read, which closed both of those and opened one new major gap
+**Plans**: 11/11 plans executed, plus 6 gap-closure plans (04-05 .. 04-10) planned from 04-UAT.md's seven gaps, plus 1 gap-closure plan (04-11) planned from 04-VERIFICATION.md's single remaining gap, plus 2 gap-closure plans (04-12, 04-13) planned from 04-UAT.md's two remaining major gaps, plus 1 gap-closure plan (04-14) planned from 04-UAT.md's round-2 re-read, which closed both of those and opened one new major gap, plus 1 plan (04-15) planned 2026-09-21 once Phase 5's completion unblocked 04-UAT.md test 2 — the one roadmap success criterion (#3) never measured
 
 Plans:
 **Wave 1**
@@ -262,6 +262,10 @@ Plans:
 **Gap closure, round 4** *(04-UAT.md status `diagnosed`, one major gap opened by round 3's own repair; run with `/gsd-execute-phase 4 --gaps-only`)*
 
 - [x] 04-14-PLAN.md — README self-contradiction: the false universal negative written by 04-13's own fix narrowed to the interactive case it actually describes, the verbatim copy in WINDOWS entry 16 corrected with it, and the mechanisability question answered with a recorded refusal rather than a 49th code — cross-sentence semantic contradiction is not regex-checkable and a code claiming it would be the CR-01 overstatement a third time; plus three folded-in README credibility defects and one unevidenced deliverable claim in the flagship example (G-04-8; 48 codes, unchanged)
+
+**Gap closure, round 5** *(04-UAT.md test 2 unblocked: the Phase 5 dependency it was deferred on is complete; run with `/gsd-execute-phase 4 --gaps-only`)*
+
+- [ ] 04-15-PLAN.md — Route equivalence, measured rather than asserted: `evals/routes/run_routes.py` drives three arms (`skill-on`, `style-on`, `prompt-on`) over the eight committed benchmark scenarios on byte-identical prompts, scores each session with `evals/lint.py`'s `lint()` and `evals/conformance/run_conformance.py`'s `score_transcript()`, and publishes `evals/routes/RESULTS-routes.md` from committed records only; an activation probe against an unrouted control proves each arm is switched on before any matrix spend, and any arm that cannot be proven on is dropped and refused in writing rather than run anyway; then the generated derivative preamble's "No benchmark has compared" claim, the README's route 3/4 paragraphs, COVERAGE.md and the ledger are made true, with a 49th code holding the preamble claim to the results file (G-04-9; DIST-03, DIST-04, DIST-05; 48 -> 49 codes, or 48 with a recorded refusal). Not autonomous: Task 3 is a blocking spend checkpoint (~$10, ~30 min).
 
 ### Phase 5: Evaluation Harness
 
