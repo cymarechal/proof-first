@@ -51,7 +51,8 @@ reordering.
 
 **Mark:** Command of the Message
 
-**Rights-holder:** Force Management.
+**Rights-holder:** Force Management, which uses the mark in its own name on its own public pages.
+No change of holder was found when this statement was last reviewed.
 
 **Non-affiliation:** This project is not affiliated with, endorsed by, sponsored by, or connected
 to Force Management.
@@ -60,7 +61,7 @@ to Force Management.
 in its own words and reproduces no training material, no course content, and no proprietary
 diagram belonging to Force Management.
 
-Last reviewed: 2026-09-10
+Last reviewed: 2026-09-21
 
 ### MEDDIC, MEDDICC, and related marks
 
@@ -71,6 +72,16 @@ file does not attribute them to a single holder. This repository makes no claim 
 validity of any mark in this family and no claim about the outcome of any proceeding, and a
 determination about one spelling in the family is not treated here as covering another.
 
+Recorded as public record, observed on the review date below. In *MEDDICC Ltd. v. 01 Consulting
+LLC*, No. 2:24-cv-01836 (E.D. Pa.), before Chief Judge Wendy Beetlestone and filed 2024-04-30, the
+court granted summary judgment on 2026-04-21, holding MEDDPICC generic, dismissing the
+counterclaims with prejudice, and directing the USPTO to cancel Registration No. 6,489,058, held by
+Darius Lahoutifard of 01 Consulting LLC. On the review date that docket carried no termination date
+and its most recent entry was dated 2026-09-14, and the USPTO register still recorded Registration
+No. 6,489,058 as live. These are facts about a proceeding, not a position in it: the two sentences
+above stand unchanged, the proceeding reached one registration of one spelling, and nothing here
+is a prediction of where it ends.
+
 **Non-affiliation:** This project is not affiliated with, endorsed by, or sponsored by any party
 claiming rights in these marks.
 
@@ -78,13 +89,17 @@ claiming rights in these marks.
 its own words and reproduces no training material, no course content, and no proprietary diagram
 belonging to any claimant.
 
-Last reviewed: 2026-09-10
+Last reviewed: 2026-09-21
 
 ### Challenger
 
 **Mark:** Challenger (the Challenger Sale methodology).
 
-**Rights-holder:** Challenger Inc. and its trademark successors.
+**Rights-holder:** The Challenger business and its trademark successors. On the review date below
+the Challenger site was operating under the corporate name Challenger Performance Optimization,
+Inc. and identifying itself as part of Richardson Sales Performance, which announced its
+acquisition of Challenger in September 2024. The successor clause is retained deliberately, so this
+statement stays true through the next change of hands rather than having to be corrected after it.
 
 **Non-affiliation:** This project is not affiliated with, endorsed by, sponsored by, or connected
 to Challenger Inc. or its trademark successors.
@@ -93,7 +108,7 @@ to Challenger Inc. or its trademark successors.
 words and reproduces no training material, no course content, and no proprietary diagram belonging
 to Challenger Inc. or its trademark successors.
 
-Last reviewed: 2026-09-10
+Last reviewed: 2026-09-21
 
 None of the three statements above positions this project as a version, an implementation, an
 edition, or an automation of the named framework — each states only that concepts associated with
