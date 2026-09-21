@@ -937,6 +937,67 @@ def judge_summary(records):
     return {'tallies': tallies, 'excluded_pairs': excluded_pairs, 'unscoreable': unscoreable}
 
 
+def pooled_summary(summary):
+    """Pool judge_summary()'s per-cell tallies into one win/tie/loss total
+    per dimension.
+
+    Consumes judge_summary()'s OWN output -- the paired path, where each
+    pair's two judge orders were averaged by average_orders() before being
+    compared once. It never touches load_raw_records()'s per-order records.
+    That distinction is the whole point of this function, not an
+    implementation detail: .planning/WINDOWS.md id 20 records aggregate()'s
+    mean/range table pooling per-order records, which makes that table's
+    figures partly an artifact of judge position rather than of the
+    condition. The pooled totals README quotes must not inherit that, or
+    RESULTS.md's own position-bias caveat would be false about the most
+    prominent figure in the repository.
+
+    Pooling a tally of pairs is addition, and addition of the per-cell
+    tallies is exactly the column sum of the rendered table -- which
+    self_test() asserts directly rather than trusting.
+
+    Returns {dimension: {'wins': n, 'ties': n, 'losses': n}} for every
+    dimension in JUDGE_DIMENSIONS, zeroed when there are no tallies.
+    """
+    pooled = {dim: {'wins': 0, 'ties': 0, 'losses': 0} for dim in JUDGE_DIMENSIONS}
+    for by_dim in (summary or {}).get('tallies', {}).values():
+        for dim in JUDGE_DIMENSIONS:
+            tally = by_dim.get(dim)
+            if not tally:
+                continue
+            for outcome in ('wins', 'ties', 'losses'):
+                pooled[dim][outcome] += tally[outcome]
+    return pooled
+
+
+def mechanical_directions(mechanical):
+    """Count how many (model, scenario) cells have a lower, equal or higher
+    mean mechanical violation count with the skill on.
+
+    A count, never a rate: 16 cells does not support a percentage, and
+    printing one would be the overclaim 06-RESEARCH.md warns about dressed
+    as arithmetic. Cells missing either condition are skipped rather than
+    assumed equal.
+
+    Returns {'lower': n, 'equal': n, 'higher': n}.
+    """
+    by_cell = {}
+    for (model, scenario_id, condition), stats in (mechanical or {}).items():
+        by_cell.setdefault((model, scenario_id), {})[condition] = stats['mean']
+    directions = {'lower': 0, 'equal': 0, 'higher': 0}
+    for means in by_cell.values():
+        if 'skill-off' not in means or 'skill-on' not in means:
+            continue
+        off, on = means['skill-off'], means['skill-on']
+        if on < off:
+            directions['lower'] += 1
+        elif on == off:
+            directions['equal'] += 1
+        else:
+            directions['higher'] += 1
+    return directions
+
+
 def _load_lint_module():
     """Load evals/lint.py's `lint` function by reading and exec'ing its
     source, rather than importing it as a package.
@@ -1146,6 +1207,15 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
                 f"| {model} | {scenario_id} | {condition} | {stats['n']} | {stats['mean']:.1f} "
                 f"| {stats['min']}-{stats['max']} |"
             )
+        lines.append('')
+        directions = mechanical_directions(aggregated['mechanical'])
+        cell_total = directions['lower'] + directions['equal'] + directions['higher']
+        lines.append(
+            f"Per-cell direction, skill-on against skill-off, over {cell_total} (model, scenario) "
+            f"cells: {directions['lower']} lower, {directions['equal']} equal, "
+            f"{directions['higher']} higher. Stated as a count and not a rate -- "
+            f"{cell_total} cells does not support a percentage."
+        )
     lines.append('')
 
     lines.append(RESULTS_SECTION_HEADINGS[1])
@@ -1185,6 +1255,21 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
                     f"| {model} | {scenario_id} | {dim} | {tally['wins']} | {tally['ties']} "
                     f"| {tally['losses']} |"
                 )
+        lines.append('')
+        pooled = pooled_summary(judge_summary_data)
+        pair_total = sum(pooled[JUDGE_DIMENSIONS[0]].values())
+        lines.append(
+            f"Pooled across every cell above, {pair_total} both-orders-averaged pairs per "
+            f"dimension, each pair's two judge orders averaged before it was compared once:"
+        )
+        lines.append('')
+        lines.append('| Dimension | Wins | Ties | Losses |')
+        lines.append('|---|---|---|---|')
+        for dim in JUDGE_DIMENSIONS:
+            tally = pooled[dim]
+            lines.append(
+                f"| {dim} | {tally['wins']} | {tally['ties']} | {tally['losses']} |"
+            )
     lines.append('')
 
     excluded_pairs = (judge_summary_data or {}).get('excluded_pairs', 0)
@@ -2120,6 +2205,9 @@ def self_test():
     fixture_records = load_raw_records(fixture_raw_dir)
     fixture_agg = aggregate(fixture_records)
     fixture_judge_summary = judge_summary(fixture_records)
+    fixture_records_first_pair = sorted(
+        {(r['model'], r['scenario_id'], r['repeat']) for r in fixture_records if 'judge_model' in r}
+    )[0]
     fixture_models = sorted({r['model'] for r in fixture_records if 'judge_model' not in r})
     fixture_gen_count = sum(1 for r in fixture_records if 'judge_model' not in r)
     doc1 = build_results_md(
@@ -2147,6 +2235,113 @@ def self_test():
         all_ok = False
     else:
         cases_exercised.append('win-tie-loss-rows-shuffle-invariant')
+
+    # --- pooled totals equal the rendered per-cell table's column sums.
+    # Asserted against the table's own emitted rows, not against
+    # pooled_summary() called twice -- a bug shared by both would otherwise
+    # cancel out and the assertion would prove nothing. ---
+    pooled = pooled_summary(fixture_judge_summary)
+    cell_row_re = re.compile(
+        r'^\| (\S+) \| (\S+) \| (' + '|'.join(JUDGE_DIMENSIONS) + r') \| (\d+) \| (\d+) \| (\d+) \|$'
+    )
+    from_table = {dim: {'wins': 0, 'ties': 0, 'losses': 0} for dim in JUDGE_DIMENSIONS}
+    for line in doc1.splitlines():
+        match = cell_row_re.match(line)
+        if not match:
+            continue
+        _model, _scenario, dim, wins, ties, losses = match.groups()
+        from_table[dim]['wins'] += int(wins)
+        from_table[dim]['ties'] += int(ties)
+        from_table[dim]['losses'] += int(losses)
+    if from_table != pooled:
+        print(f'FAIL: pooled totals {pooled} do not equal the rendered per-cell column sums {from_table}')
+        all_ok = False
+    else:
+        cases_exercised.append('pooled-totals-equal-per-cell-column-sums')
+
+    # --- a pair missing one order is absent from BOTH the per-cell table
+    # and the pooled totals, and is still counted by the excluded-pairs
+    # line. Dropping a pair from one but not the other would let the pooled
+    # row and the table it claims to sum disagree. ---
+    one_order_records = [
+        r for r in fixture_records
+        if 'judge_model' not in r
+        or not (r['model'] == fixture_records_first_pair[0]
+                and r['scenario_id'] == fixture_records_first_pair[1]
+                and r['repeat'] == fixture_records_first_pair[2]
+                and r['order'] == 2)
+    ]
+    dropped_summary = judge_summary(one_order_records)
+    dropped_pooled = pooled_summary(dropped_summary)
+    full_pairs = sum(pooled[JUDGE_DIMENSIONS[0]].values())
+    dropped_pairs = sum(dropped_pooled[JUDGE_DIMENSIONS[0]].values())
+    if dropped_summary['excluded_pairs'] < 1 or dropped_pairs != full_pairs - 1:
+        print(
+            f'FAIL: dropping one order left {dropped_pairs} pooled pairs against {full_pairs - 1} '
+            f'expected, with excluded_pairs={dropped_summary["excluded_pairs"]}'
+        )
+        all_ok = False
+    else:
+        cases_exercised.append('pooled-excludes-pair-missing-an-order')
+
+    # --- paired-path discrimination: pairing-then-tallying and pooling-
+    # then-tallying give DIFFERENT answers on this fixture, and the render
+    # must match the paired one. Order 1 has skill-on ahead; order 2 has it
+    # behind by more. Averaged first, the pair is a loss. Tallied per order
+    # and pooled, it is one win and one loss. Without this assertion a
+    # refactor could quietly reintroduce .planning/WINDOWS.md id 20's
+    # per-order pooling into the one figure README quotes. ---
+    def _judgement(order, on_score, off_score):
+        return {
+            'judge_model': JUDGE_MODEL, 'model': 'model-x', 'scenario_id': 'scenario-x',
+            'repeat': 1, 'order': order, 'verdict': 'scored',
+            'scores': {
+                dim: {'skill-on': on_score, 'skill-off': off_score}
+                for dim in JUDGE_DIMENSIONS
+            },
+        }
+
+    discriminating = [_judgement(1, 8, 6), _judgement(2, 4, 9)]
+    paired = pooled_summary(judge_summary(discriminating))
+    per_order_wins = sum(
+        1 for r in discriminating
+        if r['scores'][JUDGE_DIMENSIONS[0]]['skill-on'] > r['scores'][JUDGE_DIMENSIONS[0]]['skill-off']
+    )
+    per_order_losses = len(discriminating) - per_order_wins
+    paired_result = (paired[JUDGE_DIMENSIONS[0]]['wins'], paired[JUDGE_DIMENSIONS[0]]['losses'])
+    if (per_order_wins, per_order_losses) == paired_result:
+        print(
+            'FAIL: the paired-versus-pooled fixture does not discriminate -- both paths agree, '
+            'so this assertion cannot detect per-order pooling'
+        )
+        all_ok = False
+    elif paired_result != (0, 1):
+        print(
+            f'FAIL: pooled totals took the per-order path -- expected the paired result (0 wins, '
+            f'1 loss) but got {paired_result[0]} wins, {paired_result[1]} losses'
+        )
+        all_ok = False
+    else:
+        cases_exercised.append('pooled-uses-paired-path-not-per-order-pool')
+
+    # --- mechanical direction counts sum to the number of complete cells
+    # and are rendered as a count, never a rate. ---
+    fixture_directions = mechanical_directions(fixture_agg.get('mechanical'))
+    fixture_cells = len({
+        (model, scenario_id)
+        for (model, scenario_id, _condition) in (fixture_agg.get('mechanical') or {})
+    })
+    if sum(fixture_directions.values()) != fixture_cells:
+        print(
+            f'FAIL: mechanical direction counts sum to {sum(fixture_directions.values())} '
+            f'against {fixture_cells} complete cells'
+        )
+        all_ok = False
+    elif 'does not support a percentage' not in doc1:
+        print('FAIL: the rendered direction line does not state that the cell count cannot support a rate')
+        all_ok = False
+    else:
+        cases_exercised.append('mechanical-direction-counts-sum-to-cells')
 
     missing_headings = [h for h in RESULTS_SECTION_HEADINGS if h not in doc1]
     missing_caveats = _missing_required_caveats(doc1)

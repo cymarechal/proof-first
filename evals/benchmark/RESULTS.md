@@ -37,6 +37,8 @@ Measured 2026-09-18 across claude-opus-5, claude-sonnet-5 (96 generations record
 | claude-sonnet-5 | solution-proposal-2 | skill-off | 3 | 6.3 | 6-7 |
 | claude-sonnet-5 | solution-proposal-2 | skill-on | 3 | 6.3 | 4-8 |
 
+Per-cell direction, skill-on against skill-off, over 16 (model, scenario) cells: 8 lower, 1 equal, 7 higher. Stated as a count and not a rate -- 16 cells does not support a percentage.
+
 ## Judged persuasion
 
 | Model | Scenario | Condition | Dimension | n | Mean | Range |
@@ -190,6 +192,14 @@ Win/tie/loss (skill-on vs skill-off, averaged across both judge orders), rows in
 | claude-sonnet-5 | solution-proposal-2 | evidence | 3 | 0 | 0 |
 | claude-sonnet-5 | solution-proposal-2 | clarity | 2 | 0 | 1 |
 | claude-sonnet-5 | solution-proposal-2 | persuasive_force | 0 | 0 | 3 |
+
+Pooled across every cell above, 48 both-orders-averaged pairs per dimension, each pair's two judge orders averaged before it was compared once:
+
+| Dimension | Wins | Ties | Losses |
+|---|---|---|---|
+| evidence | 45 | 1 | 2 |
+| clarity | 32 | 3 | 13 |
+| persuasive_force | 7 | 3 | 38 |
 
 Excluded pairs (missing an order, or an order present but not scored): 0.
 
