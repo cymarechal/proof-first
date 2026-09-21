@@ -20,6 +20,7 @@ jobs:
           python3 evals/conformance/run_conformance.py --self-test
           python3 evals/lint.py --self-test
           python3 evals/benchmark/run_benchmark.py --self-test
+          python3 evals/routes/run_routes.py --self-test
           python3 evals/trigger/run_trigger_test.py --self-test
           python3 evals/trigger/stats.py --self-test
           python3 tools/generate_derivatives.py --check
