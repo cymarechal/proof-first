@@ -20,6 +20,8 @@ Did the rule catalog reach the session at all. A record is `activated` when its 
 
 Violation counts from `evals/lint.py`'s `lint()`, the same instrument scoring every arm. Lower is fewer proxy violations, and a proxy count is not a compliance verdict.
 
+Read this table against the Activation table above before drawing anything from the ordering. Each arm's cell pools every scoreable session in that arm, including any session in which the route never activated. A route that did not activate in some of its sessions is carrying unrouted output inside its own mean, which pulls that arm toward the unrouted baseline rather than away from it.
+
 | Route | n | Mean violations | Min | Max |
 |---|---|---|---|---|
 | skill-on | 12 | 7.9 | 1 | 14 |
@@ -29,6 +31,8 @@ Violation counts from `evals/lint.py`'s `lint()`, the same instrument scoring ev
 ## Family-line conformance
 
 Verdicts from `evals/conformance/run_conformance.py`'s `score_transcript()`: whether the artifact-family line reached the output, and whether a rule marker preceded it. Reported separately from the counts above and never blended with them into one score.
+
+`conformant` means a family phrase appeared in the opening window with no rule marker before it -- which includes a session that cited no rule at all. It is therefore not a count of rule-citing sessions, and a `conformant` total may legitimately exceed the same arm's activated count in the Activation table. The two tables answer different questions and are not expected to agree.
 
 | Route | n | conformant | no-family | rule-before-family |
 |---|---|---|---|---|

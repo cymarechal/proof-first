@@ -827,6 +827,14 @@ def build_routes_results_md(aggregated, model, effort, routes, as_of_date,
         'arm. Lower is fewer proxy violations, and a proxy count is not a compliance verdict.'
     )
     lines.append('')
+    lines.append(
+        'Read this table against the Activation table above before drawing anything from the '
+        'ordering. Each arm\'s cell pools every scoreable session in that arm, including any '
+        'session in which the route never activated. A route that did not activate in some of '
+        'its sessions is carrying unrouted output inside its own mean, which pulls that arm '
+        'toward the unrouted baseline rather than away from it.'
+    )
+    lines.append('')
     lines.append('| Route | n | Mean violations | Min | Max |')
     lines.append('|---|---|---|---|---|')
     for route in routes:
@@ -845,6 +853,14 @@ def build_routes_results_md(aggregated, model, effort, routes, as_of_date,
         'Verdicts from `evals/conformance/run_conformance.py`\'s `score_transcript()`: whether '
         'the artifact-family line reached the output, and whether a rule marker preceded it. '
         'Reported separately from the counts above and never blended with them into one score.'
+    )
+    lines.append('')
+    lines.append(
+        '`conformant` means a family phrase appeared in the opening window with no rule marker '
+        'before it -- which includes a session that cited no rule at all. It is therefore not a '
+        'count of rule-citing sessions, and a `conformant` total may legitimately exceed the '
+        'same arm\'s activated count in the Activation table. The two tables answer different '
+        'questions and are not expected to agree.'
     )
     lines.append('')
     verdict_names = sorted({v for route in routes for v in conformance.get(route, {})})
