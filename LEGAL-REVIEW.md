@@ -203,9 +203,10 @@ more than the conclusion it was supporting. The eight blocks give the initials M
 C — **MEDDPPCC**, which is not MEDDIC, MEDDICC or MEDDPICC. This repository ships "Pain", not
 "Identify Pain", so position 6 contributes P and not I. Nor is the sequence forced even where the
 letters do line up: Decision Criteria and Decision Process both give D, and Champion and Competition
-both give C, so four of the eight positions could be swapped with no change to any spelling. The
-order is therefore a choice this repository made, at least in part, and the prong has to be answered
-on that footing rather than on a mnemonic that the shipped block names do not spell.
+both give C, and Paper Process and Pain both give P, so six of the eight positions could be swapped
+with no change to any spelling. The order is therefore a choice this repository made, at least in
+part, and the prong has to be answered on that footing rather than on a mnemonic that the shipped
+block names do not spell.
 
 **Prong 1 — a contiguous run of a source's own wording.** Does not apply. The unit in question is a
 row of eight labels of one or two words each in a range table. There is no run of sentence-level
@@ -227,16 +228,20 @@ repository's own ID-range registry. No diagram, figure or visual arrangement fro
 reproduced anywhere in this repository.
 
 **Prong 4 — a term coined by a source and adopted here as this repository's own label.** This prong
-engages and the earlier draft never reached it, although its own step 3 described the eight names
-as "labels for the blocks", which is the prong's own language. Applied honestly, the eight split.
+engages and the earlier draft never reached it, although its own step 3 described the eight names as
+"labels for the blocks", which is the prong's own language. Applied honestly, the eight split.
 "Metric", "Pain", "Champion", "Competition", "Decision Criteria" and "Decision Process" are ordinary
 business English that stands on its own outside this framework family. "Economic Buyer" and "Paper
 Process" are not — both are terms of art this family put into circulation, and both are adopted here
 verbatim as block labels. This review does not find those two off the prong. What it records instead
-is where they sit: they are index terms in `NUMBERING.md`'s registry and block headings in
-`completeness-audit.md`, `NOTICES.md` carries the attribution for the family, and no rule text under
-them is taken from a source. A stricter reading of prong 4 would rename both. This review did not,
-and the choice is recorded here rather than left implicit.
+is where they sit: they are index terms in `NUMBERING.md`'s registry and nowhere else that ships.
+Neither string occurs in `completeness-audit.md` at all — its headings are MC ids plus rule titles
+written in this repository's own words — and repo-wide the two appear only in `NUMBERING.md`, in
+this file, and in `check_repo.py`'s fixtures. `NOTICES.md` carries the attribution for the family,
+and no rule text under them is taken from a source. That narrower fact is better for this entry than
+the one it replaces, not worse: the two terms of art reach no shipped reader-facing prose. A
+stricter reading of prong 4 would rename both. This review did not, and the choice is recorded here
+rather than left implicit.
 
 **What the 2026-04-21 ruling contributes.** On that date a US federal court held that MEDDPICC is
 generic — that the term names a methodology rather than identifying one source of training services.
@@ -265,7 +270,7 @@ Neither of the two entries above reached this. `WINDOWS.md` id 3 read the PF-0.1
 wording; id 6 read the MC dimension list. Nothing read `NUMBERING.md`'s PF-1 carve-up, and on
 `SOURCES.md`'s own definition it is the stronger instance of what id 6 examined.
 
-What is there: `NUMBERING.md`:26-40 divides `PF-1`'s reserved range into "seven named sub-blocks,
+What is there: `NUMBERING.md`:31-45 divides `PF-1`'s reserved range into "seven named sub-blocks,
 one per Command of the Message element" and freezes them in a table in this order — Before scenario,
 After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, Positive Business
 Outcomes. The prose names the source on the table's face.
