@@ -279,3 +279,54 @@ observed on the day, in both directions.
    this review gave PF-0.1, PF-3.1, and the MC block names.
 6. **This record is not legal advice and never becomes it.** If this repository's exposure ever needs
    a professional answer, this file is the input to that conversation, not a replacement for it.
+
+## Launch
+
+Decision date: 2026-09-21
+
+Decision: **DEFER PUBLICATION.**
+
+The operator was presented with three options at the launch checkpoint — publish to a real public
+location now, create the remote private first, or defer — and chose to defer.
+
+Nothing was substituted. The publish location in `.claude-plugin/plugin.json`,
+`.claude-plugin/marketplace.json` and `README.md`'s install commands remains the disclosed
+placeholder `<owner>/<repo>`, and `publish-location-drift` stays silent because all four occurrences
+still agree with each other. No git remote was created. No commit left this machine.
+
+**Why this is recorded rather than retried.** Publication is the one action in this project that
+cannot be undone: a deleted public repository stays in search indexes, in forks, and in archive
+snapshots. What would become permanently public here includes this diligence record, written by a
+non-lawyer, naming three trademark rights-holders and describing a federal proceeding that was still
+under motion practice on the review date. Deferring forecloses nothing and spends nothing.
+
+**What stays open as a result**, stated plainly rather than absorbed into the phase's close:
+
+| Item | State after this decision |
+|---|---|
+| `WINDOWS.md` id 11 — publish-location placeholder | Open. Reason updated to name this deferral and its date. Closes when a real location is substituted **and verified**. |
+| DIST-01 — `npx skills add` | `implementation shipped; live-install reliability UNVERIFIED`. There is nothing to install from. |
+| DIST-02 — `claude plugin marketplace add` | Same. |
+
+The legal review gate itself is unaffected: it is a gate on content, not on publication, and
+`Gate status: PASSED` above records that it passed on 2026-09-21. Roadmap criterion 1 asks that the
+gate pass *before* public launch; deferring launch satisfies that ordering trivially and the
+machine check that enforces it — a configured remote requires a passed gate — is green in the
+no-remote direction.
+
+### Install verification
+
+**Not run. Recorded as skipped, with the reason.**
+
+Both route observations require a repository that resolves for an unauthenticated user. With
+publication deferred there is nothing to resolve against, so neither `npx skills add` nor
+`claude plugin marketplace add` was run, and neither DIST-01 nor DIST-02 changes state.
+
+A skipped verification recorded as skipped is honest. A skipped verification recorded as passed is
+the defect this project has flagged twice, and it is not introduced here. These two routes have
+never run end to end and this record continues to say so.
+
+| Route | Command README prints | Status on 2026-09-21 | Verdict |
+|---|---|---|---|
+| 1 | `npx skills add` … | Not run — no published location to install from | Not tested |
+| 2 | `claude plugin marketplace add` … | Not run — same reason | Not tested |
