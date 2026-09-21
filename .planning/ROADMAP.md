@@ -309,7 +309,7 @@ Plans:
 
 - [x] 06-01-PLAN.md
 - [x] 06-02-PLAN.md
-- [ ] 06-03-PLAN.md
+- [x] 06-03-PLAN.md
 - [ ] 06-04-PLAN.md
 
 **Wave 1**
@@ -318,7 +318,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 06-02 — The legal review gate: five remaining source rows, three rights-holders reconfirmed, `LEGAL-REVIEW.md`, and two more codes
+- [x] 06-02 — The legal review gate: five remaining source rows, three rights-holders reconfirmed, `LEGAL-REVIEW.md`, and two more codes
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -346,7 +346,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
 | 5. Evaluation Harness | 3/3 | Complete    | 2026-09-20 |
-| 6. Legal Review Gate & Launch | 2/4 | In Progress|  |
+| 6. Legal Review Gate & Launch | 3/4 | In Progress|  |
 
 ---
 *Roadmap created: 2026-09-10*
