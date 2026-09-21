@@ -402,6 +402,54 @@ Violation codes implemented in this file:
                       judgement SOURCES.md's own "What counts as
                       reproduction" section states no tool in this stack
                       performs, and this check is not the exception.
+  source-gate-incomplete - LEGAL-REVIEW.md declares the frozen line
+                      `Gate status: PASSED` while at least one SOURCES.md
+                      row still reads `unverified`; also fires when
+                      LEGAL-REVIEW.md exists and carries no readable
+                      `Gate status:` line, or more than one, since an
+                      unreadable gate is neither a passed gate nor a silent
+                      one. The marker is compared byte for byte after
+                      stripping leading and trailing whitespace, with no
+                      case folding -- the attribution pointer's equality
+                      discipline, for the same reason. Silent when
+                      LEGAL-REVIEW.md does not exist, so a repository that
+                      has not yet run a review is not retroactively in
+                      violation. Declared ceiling (no fetch): no network
+                      call; it reads two committed files. Declared ceiling
+                      (frozen literal, not prose): a review record that
+                      describes a pass in prose without that exact line is
+                      not detected -- the marker is frozen rather than
+                      fuzzy-matched on purpose, because a fuzzy match over
+                      prose is the fuzzy-proxy build gate
+                      .planning/WINDOWS.md id 17 records this repository
+                      measuring and refusing. Declared ceiling (no
+                      semantics): it does not judge whether the review
+                      behind a declared pass was any good, only whether the
+                      list it declares a pass over is complete.
+  framework-statement-stale-review - a NOTICES.md framework statement
+                      carries no `Last reviewed:` line, one that does not
+                      parse as ISO-8601, or one whose date precedes
+                      LEGAL-REVIEW.md's `Review date:`. Fires once per
+                      offending statement with the framework name as its
+                      subject, so two stale statements are two
+                      distinguishable rows under the (code, subject) sort.
+                      A date on or after the review date is silent -- later
+                      is fine, earlier is the defect. Silent when
+                      LEGAL-REVIEW.md is absent or carries no parseable
+                      review date, because there is nothing to compare
+                      against and inventing a comparison would make the
+                      code fire for a reason it cannot name; silent when
+                      NOTICES.md is absent, because
+                      framework-statement-missing owns that condition.
+                      Declared ceiling (no fetch): no network call.
+                      Declared ceiling (date, not truth): it does not judge
+                      whether a statement is correct, only whether it
+                      carries a date consistent with the review claiming to
+                      have produced it -- a thoroughly wrong statement
+                      re-dated today passes. Declared ceiling (coverage):
+                      it reads the `Last reviewed:` line only; the
+                      `Paraphrase boundary:` element stays unchecked by any
+                      code in this module.
   plugin-manifest-version-mismatch - a .claude-plugin/plugin.json or
                       .claude-plugin/marketplace.json states a `version`
                       that disagrees with skills/*/SKILL.md's frontmatter
@@ -1651,13 +1699,228 @@ def check_source_row_unconfirmed(repo_root):
     violations.sort(key=lambda v: v[1])
     return violations
 
+LEGAL_REVIEW_PATH = 'LEGAL-REVIEW.md'
 
-SOURCES_CHECK_CODES = ['source-row-unconfirmed']
+# One frozen line, compared byte for byte after stripping leading and
+# trailing whitespace, with no case folding -- the same equality discipline
+# check_pointer applies to the attribution pointer, and for the same reason:
+# a gate marker a reader could satisfy three different ways is not a marker.
+GATE_STATUS_PREFIX = 'Gate status:'
+GATE_STATUS_PASSED = 'PASSED'
+GATE_STATUS_VALUES = ('PASSED', 'OPEN', 'FAILED')
+
+_REVIEW_DATE_RE = re.compile(r'^Review date: (\d{4}-\d{2}-\d{2})$', re.M)
+
+# Heading -> the name reported as the violation's subject, so two stale
+# statements produce two distinguishable rows under the (code, subject) sort.
+FRAMEWORK_STATEMENT_HEADINGS = (
+    ('### Command of the Message', 'Command of the Message'),
+    ('### MEDDIC, MEDDICC, and related marks', 'MEDDIC/MEDDICC'),
+    ('### Challenger', 'Challenger'),
+)
+
+_LAST_REVIEWED_RE = re.compile(r'^Last reviewed: (.+)$', re.M)
+
+
+def _framework_section(text, heading):
+    """Bound one framework statement from its heading to the next '### ' or
+    '## ' heading -- the same bounding check_framework_statements() uses.
+    Returns None when the heading is absent."""
+    heading_idx = text.find(heading)
+    if heading_idx == -1:
+        return None
+    next_section = len(text)
+    for pattern in ('### ', '## '):
+        idx = text.find('\n' + pattern, heading_idx + 1)
+        if idx != -1 and idx < next_section:
+            next_section = idx
+    return text[heading_idx:next_section]
+
+
+def _review_date(repo_root):
+    """Parse LEGAL-REVIEW.md's single 'Review date: YYYY-MM-DD' line.
+    Returns None when the file is absent or carries no parseable date --
+    both are 'nothing to compare against', not a violation on their own."""
+    path = repo_root / LEGAL_REVIEW_PATH
+    if not path.exists():
+        return None
+    match = _REVIEW_DATE_RE.search(path.read_text(encoding='utf-8'))
+    if not match:
+        return None
+    try:
+        return datetime.date.fromisoformat(match.group(1))
+    except ValueError:
+        return None
+
+
+def check_source_gate_incomplete(repo_root):
+    """Check that LEGAL-REVIEW.md cannot declare the approved-source gate
+    passed while SOURCES.md still carries an unconfirmed row (LEG-04).
+
+    check_source_row_unconfirmed() above asserts that an individual row
+    claiming confirmation names its evidence. It says nothing about
+    completeness -- a review record could declare a pass over a file with
+    five rows still reading 'unverified' and no check would notice. This
+    code closes that half.
+
+    Reads the gate marker by scanning LEGAL-REVIEW.md's lines for
+    GATE_STATUS_PREFIX, stripping leading and trailing whitespace, and
+    comparing the remainder byte for byte against GATE_STATUS_VALUES with no
+    case folding. Fires when exactly one such line reads PASSED and any
+    SOURCES.md row's Status cell reads 'unverified', naming the count.
+
+    Also fires when LEGAL-REVIEW.md exists and carries no gate line at all,
+    or carries more than one: an unreadable gate is not a passed gate, and
+    it is not a silent one either -- silence there would let the marker be
+    deleted to route around the check.
+
+    Silent when LEGAL-REVIEW.md does not exist, so a repository that has not
+    yet run a review is not retroactively in violation.
+
+    Declared ceiling (no fetch): this check performs no network call. It
+    reads two committed files and nothing else.
+
+    Declared ceiling (frozen literal, not prose): a declared pass is read as
+    one exact line. A review record that describes a pass in prose without
+    that line is not detected. The marker is a frozen string rather than a
+    fuzzy phrase match on purpose -- a fuzzy match over prose would be
+    exactly the fuzzy-proxy build gate .planning/WINDOWS.md id 17 records
+    this repository measuring and refusing.
+
+    Declared ceiling (no semantics): it does not judge whether the review
+    behind a declared pass was any good, only whether the file it declares a
+    pass over is complete."""
+    violations = []
+    review_path = repo_root / LEGAL_REVIEW_PATH
+    if not review_path.exists():
+        return violations
+    subject = str(review_path.relative_to(repo_root))
+
+    gate_values = []
+    for line in review_path.read_text(encoding='utf-8').splitlines():
+        stripped = line.strip()
+        if stripped.startswith(GATE_STATUS_PREFIX):
+            gate_values.append(stripped[len(GATE_STATUS_PREFIX):].strip())
+
+    if len(gate_values) != 1 or gate_values[0] not in GATE_STATUS_VALUES:
+        violations.append((subject, (
+            f"source-gate-incomplete {LEGAL_REVIEW_PATH} carries {len(gate_values)} readable "
+            f"'{GATE_STATUS_PREFIX}' line(s) with value(s) {gate_values or 'none'}; exactly one "
+            f"reading {' or '.join(GATE_STATUS_VALUES)} is required -- an unreadable gate is not "
+            f"a passed gate"
+        )))
+        return violations
+
+    if gate_values[0] != GATE_STATUS_PASSED:
+        return violations
+
+    sources_path = repo_root / SOURCES_PATH
+    if not sources_path.exists():
+        return violations
+    sections = split_sections(sources_path.read_text(encoding='utf-8'))
+    unverified = 0
+    for heading in SOURCES_TABLE_HEADINGS:
+        if heading not in sections:
+            continue
+        for row in table_rows(sections[heading]):
+            if len(row) == SOURCES_ROW_CELLS and row[3] == 'unverified':
+                unverified += 1
+
+    if unverified:
+        violations.append((subject, (
+            f"source-gate-incomplete {LEGAL_REVIEW_PATH} declares "
+            f"'{GATE_STATUS_PREFIX} {GATE_STATUS_PASSED}' while {unverified} {SOURCES_PATH} "
+            f"row(s) still read unverified"
+        )))
+    return violations
+
+
+def check_framework_statement_stale_review(repo_root):
+    """Check that each NOTICES.md framework statement carries a review date
+    consistent with the review that claims to have produced it (LEG-04).
+
+    A bare date bump is indistinguishable in a diff from a review that
+    actually happened. This code ties every statement's 'Last reviewed:'
+    line to LEGAL-REVIEW.md's single 'Review date:' line, so a statement
+    left unread while the review record was re-dated is a build failure.
+
+    Fires once per statement that carries no 'Last reviewed:' line, one that
+    does not parse as ISO-8601, or one whose date precedes the review date.
+    The framework name is the violation's subject, so two stale statements
+    produce two distinguishable rows under the live run's (code, subject)
+    sort. A statement dated on or after the review date is silent -- later
+    is fine, earlier is the defect.
+
+    Silent when LEGAL-REVIEW.md does not exist or carries no parseable
+    review date: there is nothing to compare against, and inventing a
+    comparison would make the code fire for a reason it cannot name. Silent
+    when NOTICES.md does not exist -- framework-statement-missing owns that
+    condition and firing here too would double-report one defect.
+
+    Declared ceiling (no fetch): this check performs no network call.
+
+    Declared ceiling (date, not truth): it does not judge whether a
+    statement is correct, only whether it carries a date and whether that
+    date is consistent with the review claiming to have produced it. A
+    thoroughly wrong statement re-dated today passes this check.
+
+    Declared ceiling (coverage): it reads the 'Last reviewed:' line only.
+    The 'Paraphrase boundary:' element remains unchecked by any code in this
+    module -- check_framework_statements() asserts 'Non-affiliation' and
+    'Rights-holder' and does not reach it."""
+    violations = []
+    review_date = _review_date(repo_root)
+    if review_date is None:
+        return violations
+    notices_path = repo_root / 'NOTICES.md'
+    if not notices_path.exists():
+        return violations
+    text = notices_path.read_text(encoding='utf-8')
+
+    for heading, name in FRAMEWORK_STATEMENT_HEADINGS:
+        section = _framework_section(text, heading)
+        if section is None:
+            continue  # framework-statement-missing owns an absent statement
+        match = _LAST_REVIEWED_RE.search(section)
+        if not match:
+            violations.append((name, (
+                f"framework-statement-stale-review NOTICES.md {name} statement carries no "
+                f"'Last reviewed:' line to compare against {LEGAL_REVIEW_PATH}'s review date "
+                f"{review_date.isoformat()}"
+            )))
+            continue
+        raw = match.group(1).strip()
+        try:
+            stated = datetime.date.fromisoformat(raw)
+        except ValueError:
+            violations.append((name, (
+                f"framework-statement-stale-review NOTICES.md {name} statement's "
+                f"'Last reviewed:' value {raw!r} does not parse as an ISO-8601 date"
+            )))
+            continue
+        if stated < review_date:
+            violations.append((name, (
+                f"framework-statement-stale-review NOTICES.md {name} statement was last "
+                f"reviewed {stated.isoformat()}, before {LEGAL_REVIEW_PATH}'s review date "
+                f"{review_date.isoformat()} -- the review that claims to have produced it "
+                f"did not re-read it"
+            )))
+    violations.sort(key=lambda v: (v[0], v[1]))
+    return violations
+
+
+SOURCES_CHECK_CODES = [
+    'source-row-unconfirmed',
+    'source-gate-incomplete',
+    'framework-statement-stale-review',
+]
 
 
 def run_sources_checks(repo_root):
     violations = []
     violations += check_source_row_unconfirmed(repo_root)
+    violations += check_source_gate_incomplete(repo_root)
+    violations += check_framework_statement_stale_review(repo_root)
     return violations
 
 
@@ -3815,6 +4078,11 @@ MUTATION_SOURCES = (
     # discrimination-proven -- this repository's named recurring defect, recorded
     # as .planning/WINDOWS.md id 10.
     'SOURCES.md',
+    # 06-02: source-gate-incomplete reads LEGAL-REVIEW.md's gate marker and
+    # framework-statement-stale-review reads its review date. Without the file here
+    # neither code has anything to mutate, and both would be registered but not
+    # discrimination-proven.
+    'LEGAL-REVIEW.md',
 )
 
 
@@ -3833,7 +4101,10 @@ def _copy_repo_subset(repo_root, dest):
     without it in this tuple the mutation copy has no file to mutate. No
     other check reads SOURCES.md -- unlisted-figure scans only examples/
     and skills/, and the pointer checks read only the carrier paths
-    NOTICES.md lists -- so this widening likewise changes nothing else."""
+    NOTICES.md lists -- so this widening likewise changes nothing else.
+    'LEGAL-REVIEW.md' was added by 06-02 for the same reason again:
+    source-gate-incomplete and framework-statement-stale-review both read it,
+    and no other check does."""
     for name in MUTATION_SOURCES:
         src = repo_root / name
         if not src.exists():
@@ -4536,6 +4807,33 @@ def _mutate_source_row_unconfirmed(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_source_gate_incomplete(root):
+    """Flip one real SOURCES.md row's Status back to `unverified` while the
+    real LEGAL-REVIEW.md keeps declaring the gate PASSED -- the defect this
+    code exists to catch: a pass declared over a list that is not finished."""
+    path = root / SOURCES_PATH
+    lines = path.read_text(encoding='utf-8').splitlines()
+    idx = next(
+        i for i, line in enumerate(lines)
+        if line.startswith('| ') and '| verified |' in line
+    )
+    lines[idx] = lines[idx].replace('| verified |', '| unverified |', 1)
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_framework_statement_stale_review(root):
+    """Roll one real NOTICES.md statement's `Last reviewed:` date back to
+    2026-09-10, the date it carried before this review, while
+    LEGAL-REVIEW.md keeps its later review date -- the defect being a
+    statement the review claims to have re-read and did not."""
+    path = root / 'NOTICES.md'
+    text = path.read_text(encoding='utf-8')
+    lines = text.splitlines()
+    idx = next(i for i, line in enumerate(lines) if line.startswith('Last reviewed: '))
+    lines[idx] = 'Last reviewed: 2026-09-10'
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -4551,6 +4849,8 @@ MUTATIONS = [
     ('readme-results-pointer-missing', "delete every line of README.md containing the results-pointer path", _mutate_readme_results_pointer_missing),
     ('results-breakdown-count-mismatch', "raise the real results file's Arm A no-family bullet's stated count above its own enumeration sum", _mutate_results_breakdown_count_mismatch),
     ('source-row-unconfirmed', "strip the real SOURCES.md's one confirmed row back to its pre-confirmation placeholder while leaving its status reading verified", _mutate_source_row_unconfirmed),
+    ('source-gate-incomplete', "flip one real SOURCES.md row back to unverified while LEGAL-REVIEW.md keeps declaring the gate PASSED", _mutate_source_gate_incomplete),
+    ('framework-statement-stale-review', "roll one real NOTICES.md statement's Last reviewed date back behind LEGAL-REVIEW.md's review date", _mutate_framework_statement_stale_review),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
     ('catalog-id-drift', "delete one PF data row from references/checklist.md's PF rules table", _mutate_catalog_id_drift),
     ('catalog-opening-rule-count', "add a second PF-0 rule to NUMBERING.md and checklist.md, violating CAT-03's exactly-one requirement", _mutate_catalog_opening_rule_count),
@@ -4780,6 +5080,24 @@ Test pointer string.
 - `carrier-missing.md`
 - `carrier-dup.md`
 - `carrier-lookalike.md`
+
+## Framework statements
+
+The three headings below are present but carry neither the non-affiliation nor the
+rights-holder language, and each is dated before the review that claims to have read it --
+so framework-statement-missing and framework-statement-stale-review both fire on this root.
+
+### Command of the Message
+
+Last reviewed: 2026-09-10
+
+### MEDDIC, MEDDICC, and related marks
+
+Last reviewed: 2026-09-10
+
+### Challenger
+
+Last reviewed: 2026-09-10
 """
 
 
@@ -6058,14 +6376,28 @@ def _good_sources():
     ])
 
 
+def _good_sources_all_verified():
+    """_good_sources() with no unverified rows left -- the completeness
+    direction source-gate-incomplete must stay silent on when a gate
+    declares PASSED."""
+    return _sources_table([
+        '| "A confirmed book" | An author | book | verified | https://example.com/a (retrieved 2026-09-21) |',
+        '| "A confirmed page" | A publisher | public page | verified | https://example.com/b (retrieved 2026-09-21) |',
+    ])
+
+
 def _bad_sources():
     """Three firing directions at once: a verified row with no URL, a
     verified row with a URL but no retrieval date, and a verified row
-    whose date is well-shaped but not a real calendar date."""
+    whose date is well-shaped but not a real calendar date. The fourth row
+    is unverified -- out of scope for source-row-unconfirmed, so it does
+    not change this fixture's count of three, and present so that pairing
+    this file with a PASSED gate gives source-gate-incomplete a trigger."""
     return _sources_table([
         '| "No URL at all" | An author | book | verified | to confirm at LEG-04 |',
         '| "URL but no date" | An author | book | verified | https://example.com/c |',
         '| "URL and an impossible date" | An author | book | verified | https://example.com/d (retrieved 2026-13-45) |',
+        '| "Still unconfirmed" | An author | book | unverified | to confirm at LEG-04 |',
     ])
 
 
@@ -6086,6 +6418,36 @@ def _two_offending_sources():
         '| "Zulu row" | An author | book | verified | to confirm at LEG-04 |',
         '| "Alpha row" | An author | book | verified | to confirm at LEG-04 |',
     ])
+
+
+def _legal_review(gate='PASSED', review_date='2026-09-21'):
+    """A minimal LEGAL-REVIEW.md carrying exactly one gate line and one
+    review-date line -- the two markers both 06-02 codes read."""
+    return (
+        "# Fixture legal review\n\n"
+        f"Review date: {review_date}\n\n"
+        f"Gate status: {gate}\n\n"
+        "This fixture is not legal advice.\n"
+    )
+
+
+def _notices_statements(dates):
+    """The three framework statements, bounded exactly as NOTICES.md bounds
+    them, each carrying the Last reviewed date supplied for it. A None date
+    omits the line entirely -- the no-date firing direction."""
+    out = ["## Framework statements\n"]
+    for heading, date in zip(
+        ('Command of the Message', 'MEDDIC, MEDDICC, and related marks', 'Challenger'),
+        dates,
+    ):
+        out.append(f"### {heading}\n")
+        out.append(f"**Mark:** {heading}\n")
+        out.append("**Rights-holder:** A holder.\n")
+        out.append("**Non-affiliation:** This project is not affiliated with the holder.\n")
+        out.append("**Paraphrase boundary:** Restated in this repository's own words.\n")
+        if date is not None:
+            out.append(f"Last reviewed: {date}\n")
+    return "\n".join(out)
 
 
 def _capitalized_skill_family_gate():
@@ -6249,6 +6611,17 @@ def self_test():
         sources_bad_root = tmp_root / 'sources_bad'
         sources_malformed_root = tmp_root / 'sources_malformed'
         sources_two_root = tmp_root / 'sources_two'
+
+        gate_clean_root = tmp_root / 'gate_clean'
+        gate_incomplete_root = tmp_root / 'gate_incomplete'
+        gate_open_root = tmp_root / 'gate_open'
+        gate_unreadable_root = tmp_root / 'gate_unreadable'
+        gate_double_root = tmp_root / 'gate_double'
+        stale_clean_root = tmp_root / 'stale_clean'
+        stale_two_root = tmp_root / 'stale_two'
+        stale_nodate_root = tmp_root / 'stale_nodate'
+        stale_unparseable_root = tmp_root / 'stale_unparseable'
+        stale_noreview_root = tmp_root / 'stale_noreview'
         results_bad_root = tmp_root / 'results_bad'
 
         family_capitalized_root = tmp_root / 'family_capitalized'
@@ -6309,6 +6682,7 @@ def self_test():
         _write(bad_root / 'carrier-lookalike.md', "Test pointer string.\n")
         _write(bad_root / 'LICENSE', _bad_license())
         _write(bad_root / SOURCES_PATH, _bad_sources())
+        _write(bad_root / LEGAL_REVIEW_PATH, _legal_review())
 
         _write(good_root / 'NUMBERING.md', _good_numbering())
         _write(good_root / 'skills' / 'SKILL.md', "See PF-0.1 for details.\n")
@@ -6316,7 +6690,10 @@ def self_test():
         _write(good_root / 'NOTICES.md', _good_notices())
         _write(good_root / 'carrier-ok.md', "Test pointer string.\n")
         _write(good_root / 'LICENSE', _good_license())
-        _write(good_root / SOURCES_PATH, _good_sources())
+        # No LEGAL-REVIEW.md here on purpose: _good_notices()'s statements
+        # carry no 'Last reviewed:' line, and both 06-02 codes are specified
+        # to stay silent with no review record to compare against.
+        _write(good_root / SOURCES_PATH, _good_sources_all_verified())
 
         # Third and fourth scratch roots isolate the two `pointer-unparseable`
         # triggers so each fires alone, on its own root, and stays silent on
@@ -6540,6 +6917,49 @@ def self_test():
         _write(sources_bad_root / SOURCES_PATH, _bad_sources())
         _write(sources_malformed_root / SOURCES_PATH, _malformed_sources())
         _write(sources_two_root / SOURCES_PATH, _two_offending_sources())
+
+        # Gate-completeness fixtures (source-gate-incomplete, 06-02).
+        # gate_clean_root declares PASSED over a fully verified list;
+        # gate_incomplete_root declares PASSED over a list with an
+        # unverified row; gate_open_root declares OPEN over that same
+        # incomplete list, which is honest and must stay silent;
+        # gate_unreadable_root has no gate line and gate_double_root has
+        # two -- neither is a passed gate and neither may be silent.
+        _write(gate_clean_root / LEGAL_REVIEW_PATH, _legal_review())
+        _write(gate_clean_root / SOURCES_PATH, _good_sources_all_verified())
+        _write(gate_incomplete_root / LEGAL_REVIEW_PATH, _legal_review())
+        _write(gate_incomplete_root / SOURCES_PATH, _good_sources())
+        _write(gate_open_root / LEGAL_REVIEW_PATH, _legal_review(gate='OPEN'))
+        _write(gate_open_root / SOURCES_PATH, _good_sources())
+        _write(gate_unreadable_root / LEGAL_REVIEW_PATH,
+               "# Fixture legal review\n\nReview date: 2026-09-21\n")
+        _write(gate_unreadable_root / SOURCES_PATH, _good_sources_all_verified())
+        _write(gate_double_root / LEGAL_REVIEW_PATH,
+               _legal_review() + "\nGate status: OPEN\n")
+        _write(gate_double_root / SOURCES_PATH, _good_sources_all_verified())
+
+        # Stale-review fixtures (framework-statement-stale-review, 06-02).
+        # stale_clean_root's three statements all carry the review date;
+        # stale_two_root rolls two of them back, pinning both the
+        # multiple-offender count and the (code, subject) order;
+        # stale_nodate_root omits one date line entirely;
+        # stale_unparseable_root carries a well-shaped impossible date;
+        # stale_noreview_root ships statements but no LEGAL-REVIEW.md, so
+        # there is nothing to compare against and the code must stay silent.
+        _write(stale_clean_root / LEGAL_REVIEW_PATH, _legal_review())
+        _write(stale_clean_root / 'NOTICES.md',
+               _notices_statements(('2026-09-21', '2026-09-22', '2026-09-21')))
+        _write(stale_two_root / LEGAL_REVIEW_PATH, _legal_review())
+        _write(stale_two_root / 'NOTICES.md',
+               _notices_statements(('2026-09-10', '2026-09-21', '2026-09-10')))
+        _write(stale_nodate_root / LEGAL_REVIEW_PATH, _legal_review())
+        _write(stale_nodate_root / 'NOTICES.md',
+               _notices_statements(('2026-09-21', None, '2026-09-21')))
+        _write(stale_unparseable_root / LEGAL_REVIEW_PATH, _legal_review())
+        _write(stale_unparseable_root / 'NOTICES.md',
+               _notices_statements(('2026-09-21', '2026-13-45', '2026-09-21')))
+        _write(stale_noreview_root / 'NOTICES.md',
+               _notices_statements(('2026-09-10', '2026-09-10', '2026-09-10')))
 
         # Case-insensitivity fixture (skill-family-line-gate-missing,
         # 03-REVIEW.md WR-02 gap closure): family_capitalized_root's
@@ -6779,6 +7199,23 @@ def self_test():
         sources_two_violations = [
             line for _, line in run_all_checks(sources_two_root)
             if line.startswith('source-row-unconfirmed ')
+        ]
+
+        def _codes(root):
+            return {line.split(' ', 1)[0] for _, line in run_all_checks(root)}
+
+        gate_clean_codes = _codes(gate_clean_root)
+        gate_incomplete_codes = _codes(gate_incomplete_root)
+        gate_open_codes = _codes(gate_open_root)
+        gate_unreadable_codes = _codes(gate_unreadable_root)
+        gate_double_codes = _codes(gate_double_root)
+        stale_clean_codes = _codes(stale_clean_root)
+        stale_nodate_codes = _codes(stale_nodate_root)
+        stale_unparseable_codes = _codes(stale_unparseable_root)
+        stale_noreview_codes = _codes(stale_noreview_root)
+        stale_two_violations = [
+            (subject, line) for subject, line in run_all_checks(stale_two_root)
+            if line.startswith('framework-statement-stale-review ')
         ]
 
         family_capitalized_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_capitalized_root)}
@@ -7231,6 +7668,49 @@ def self_test():
             all_ok = False
         if 'source-row-unconfirmed' in results_good_codes:
             print("FAIL: source-row-unconfirmed fired on a fixture root shipping no sources file")
+            all_ok = False
+
+        # Gate-completeness assertions (source-gate-incomplete, 06-02).
+        if 'source-gate-incomplete' in gate_clean_codes:
+            print("FAIL: source-gate-incomplete fired on a PASSED gate over a fully verified source list")
+            all_ok = False
+        if 'source-gate-incomplete' not in gate_incomplete_codes:
+            print("FAIL: source-gate-incomplete did not fire on a PASSED gate over a list with unverified rows")
+            all_ok = False
+        if 'source-gate-incomplete' in gate_open_codes:
+            print("FAIL: source-gate-incomplete fired on an OPEN gate, which makes no completeness claim")
+            all_ok = False
+        if 'source-gate-incomplete' not in gate_unreadable_codes:
+            print("FAIL: source-gate-incomplete did not fire on a review record carrying no Gate status line")
+            all_ok = False
+        if 'source-gate-incomplete' not in gate_double_codes:
+            print("FAIL: source-gate-incomplete did not fire on a review record carrying two Gate status lines")
+            all_ok = False
+        if 'source-gate-incomplete' in results_good_codes:
+            print("FAIL: source-gate-incomplete fired on a fixture root shipping no LEGAL-REVIEW.md")
+            all_ok = False
+
+        # Stale-review assertions (framework-statement-stale-review, 06-02).
+        if 'framework-statement-stale-review' in stale_clean_codes:
+            print("FAIL: framework-statement-stale-review fired on statements dated on or after the review date")
+            all_ok = False
+        if 'framework-statement-stale-review' not in stale_nodate_codes:
+            print("FAIL: framework-statement-stale-review did not fire on a statement carrying no Last reviewed line")
+            all_ok = False
+        if 'framework-statement-stale-review' not in stale_unparseable_codes:
+            print("FAIL: framework-statement-stale-review did not fire on a Last reviewed value that is not a real date")
+            all_ok = False
+        if 'framework-statement-stale-review' in stale_noreview_codes:
+            print("FAIL: framework-statement-stale-review fired with no LEGAL-REVIEW.md to compare against")
+            all_ok = False
+        if len(stale_two_violations) != 2:
+            print(f"FAIL: framework-statement-stale-review produced {len(stale_two_violations)} violations for two stale statements, expected 2")
+            all_ok = False
+        elif stale_two_violations != sorted(stale_two_violations):
+            print("FAIL: framework-statement-stale-review reported two stale statements out of (subject, message) order")
+            all_ok = False
+        elif len({s for s, _ in stale_two_violations}) != 2:
+            print("FAIL: framework-statement-stale-review reported two stale statements under one subject, so they cannot be told apart")
             all_ok = False
 
         # Plugin-manifest-version assertions.
