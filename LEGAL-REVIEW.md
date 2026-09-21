@@ -617,11 +617,66 @@ burial, and not close to one" — noting that the loss is pre-announced, stated 
 given more sentence-level prominence than the two wins, and has its cheapest excuse foreclosed.
 **Ledger effect:** id 12 stays open on the three false statements above, not on this question.
 
+### 5. Round 2, performed 2026-09-21 by `/gsd-verify-work 06`, re-reading the round-1 corrections
+
+Section 4's readers found three false README statements, which 06-05 corrected. This section records
+what happened when the same question was asked again of the corrected files, by readers who had not
+written the corrections.
+
+**What the readers were asked.** Five independent readers, run as separate headless `claude -p`
+sessions on `claude-opus-5` in a scratch directory holding the committed tree with `.planning/` and
+`.claude/` removed. Each was given a neutral brief that did not name the wanted answer, and each
+wrote to its own output file. None had written the text it read. The README contradiction hunt went
+to two of them independently, as in round 1, so their findings could be cross-checked against each
+other. Three questions were asked: whether any sentence in the restated id-6 disposition and the new
+PF-1 section is falsifiable from a committed file; whether this file's headings, bolded lead-ins and
+Disposition cells, read alone, state a legal conclusion; and whether a cold read of the corrected
+README finds a checkably-false statement.
+
+**What they returned.** The second question passed on its own criterion: the reduced read yields an
+activity log and asserts nothing about this repository's exposure. The other two returned fourteen
+checkably-false statements between them — six in this file, eight in README — every one re-verified
+against the committed file it contradicts before being recorded. Findings that were reasoning
+critiques rather than checkable falsehoods were recorded as observations, not gaps.
+
+**Three things about the round worth recording.** The most serious finding was in this file: the
+PF-1 counterweight asserted the seven-element list appears in no shipped file, when
+`skills/proof-first/SKILL.md`, the output style and the system prompt each carry it as a set in the
+table's order — an error that propagated into `## What remains open` item 5 and ledger row 29, and
+that understated both the exposure and the remedy. One finding shipped to installed users: a
+sentence in the skill's `artifact-patterns.md`, carried verbatim into both derivatives, stated that
+no benchmark had run. And one defect was created by the round that was sent to fix defects: 06-05
+wrote the `/config` observation into this file while leaving README asserting the picker had not
+been observed, so two committed files said opposite things about the same observation.
+
+**The one reader claim this round refuted.** A reader called
+`**Result: no checkably-false statement found.**` a stale bolded verdict outranking its own
+correction. Its heading — which the reduced read includes — is
+`### 2. Cold read of README — NOT PERFORMED AS A COLD READ AT 06-02 (superseded by § 4)`. The
+supersession is disclosed in an element the reduced read reads, so this is a salience judgement, not
+a stale statement. Recorded as refuted rather than as a gap.
+
+**All ten CI commands were green again while every one of the fourteen false statements was in the
+tree.** Run 2026-09-21 from `.github/workflows/ci.yml`: `check_repo.py --self-test` PASS,
+`--mutation-test` PASS at 56 codes discrimination-proven, `check_repo.py` **0 violations**, and the
+seven self-tests in `evals/` and `tools/generate_derivatives.py --check` all rc=0. This is the fifth
+consecutive round matching `WINDOWS.md` id 17's pattern, and the first in which a gap-closure round
+contradicted a file it had written in the same round.
+
+**All fourteen are corrected in 06-06**, which also re-ran the ten commands: all green, with
+`--mutation-test` at 57 codes discrimination-proven. The one new code is
+`benchmark-run-claim-stale`, added because one of the fourteen was a fixed string and the guard for
+its sibling literal already existed; the other thirteen were left to reading, for the reason id 17
+records.
+
+**Ledger effect:** ids 12 and 17 stay open and carry this round's findings in their reasons; id 29's
+scope is corrected; id 16 is unaffected.
+
 ## Ledger disposition
 
 Every entry in this project's cross-phase defect register, and what was decided about it at the
 Phase 6 launch gate on 2026-09-21. The register itself lives under `.planning/`, which a reader of
-this repository cannot see, so it is reproduced here in full: 29 entries, none left undecided.
+this repository cannot see, so it is reproduced here in full: 32 entries, none left undecided.
 
 Four labels, and the fourth was added at this round because the first three did not describe what
 had actually happened to two entries:
@@ -652,12 +707,12 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 9 | 03 | Residual source label outside 03-05's scope | **Fixed** | Closed in an earlier phase. |
 | 10 | 03 | Self-test behavior case 11 in evals/conformance/run_conformance | **Fixed** | Closed in an earlier phase. |
 | 11 | 04 | Publish location frozen as the placeholder <owner>/<repo> | **Open — v2** | Publication deferred 2026-09-21 by operator decision; closes on substitution AND an observed install. |
-| 12 | 04 | DIST-06's prose-quality half, unchecked by any code here | **Open — v2** | Cold read PERFORMED 2026-09-21 by two independent readers; the named question returned PASS. Stays open on the three false README statements they found (G-06-6), corrected in 06-05. |
+| 12 | 04 | DIST-06's prose-quality half, unchecked by any code here | **Open — v2** | Cold read PERFORMED 2026-09-21, twice: round 1's two readers returned PASS on the named question, and round 2's five re-read the corrections. Stays open on the statements they found — three in round 1 (G-06-6, corrected in 06-05) and fourteen in round 2 (G-06-7 and G-06-9, corrected in 06-06). Closes when a round returns none. |
 | 13 | 04 | 04-04 plan expected a third results-pointer occurrence that never existed | **Waived** | Plan-authored probe error; the shipped README was always correct. |
 | 14 | 04 | 04-07 plan's word-spelled-cardinal counts disagreed with the shipped regex | **Waived** | Plan-authored measurement error; the shipped docstring states the corrected figures. |
 | 15 | 04 | 04-10 plan's import probe matched a docstring prose line as an import | **Waived** | Plan-authored probe error; the AST-based stdlib check confirms the real import set. |
 | 16 | 04 | DIST-03's /config half: style listed and selectable, unobserved | **Open — v2** | Observed 2026-09-21 in a driven interactive session: the picker lists `proof-first` and selection persists to disk. Automation read the terminal, not a human eye; the owner decides whether that meets a condition written as a human observation. |
-| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | Fourth round of the pattern, now measured: ten CI commands green while two cold readers found three false README statements. The proxy-gate refusal stands. Closes with G-06-6. |
+| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | Fifth round of the pattern: ten CI commands green while five cold readers found fourteen false statements, including one written by the gap-closure round that was fixing the previous four. The proxy-gate refusal stands for the semantic half; the one fixed-string case got a code (`benchmark-run-claim-stale`). Closes with G-06-6, G-06-7 and G-06-9. |
 | 18 | 05 | Name-collision search for bench-deal-brief.md's invented names | **Fixed** | Closed by 06-02's searches; the premise that this environment has no network had expired. |
 | 19 | 05 | Whether the eight benchmark scenarios are realistic presales tasks | **Waived** | Backstop judgement no tool here performs; scenarios are committed and readable. |
 | 20 | 05 | aggregate() pools per-order records instead of averaging pairs first | **Open — v2** | Not fixed here: the fix moves a published figure. 06-03 provably did not inherit it. |
@@ -670,11 +725,16 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 27 | 02 | 02-10 plan's whole-file phrase count returned 15 against 14 | **Waived** | Plan-authored probe artifact; the table-scoped count was correct at 14. |
 | 28 | 04 | Route-equivalence measured and not distinguished | **Waived** | Measured null result published with its four named limits. |
 | 29 | 06 | PF-1's seven Command of the Message sub-block labels, in NUMBERING.md and in the shipped skill | **Open — v2** | Opened at this review. The counterweight recorded when the row was opened — that the list appears only in an internal registry — was false, corrected by 06-06: SKILL.md:63 and both derivatives name all seven in the table's order. The first of its two questions is answered by that fact; stays open on prong 4. Renaming now costs three files and a regeneration. |
+| 30 | 06 | README's claim region says "drafted twice" without the 3 repeats | **Open — v2** | Not a falsehood — no committed file contradicts it — but two consecutive rounds of cold readers tripped on it. Recorded rather than dropped. |
+| 31 | 06 | Two reasoning critiques of the id-6 prong answers | **Open — v2** | Judgements about argument quality, not checkable falsehoods: prong 2 leans on a thinness test `SOURCES.md` does not state, and prong 4 records position instead of disposing. |
+| 32 | 06 | `evals/proxy-sources.md`'s two source rows were never re-fetched | **Open — v2** | The last file whose provenance rested on the expired no-network premise. Restated in the past tense by 06-06; re-fetching was out of that round's scope. |
 
-Counts after this sweep: **9 fixed, 2 closed on reasoning, 9 waived, 9 open**, totalling 29.
-`.planning/WINDOWS.md`'s frontmatter reads `fixed_count: 11, waived_count: 9, open_count: 9,
-total_count: 29` — the same 29 entries, with the two `closed on reasoning` rows folded into its
-`fixed` count for want of a fourth state. The nine open entries are the four routed to v2 with
-owners (20, 21, 22, 24), the one opened at this review (29), and four that turn on someone's
-decision rather than on more work (11, 12, 16, 17). None of the nine is open with an empty
-reason.
+Counts after this sweep: **9 fixed, 2 closed on reasoning, 9 waived, 12 open**, totalling 32.
+`.planning/WINDOWS.md`'s frontmatter reads `fixed_count: 11, waived_count: 9, open_count: 12,
+total_count: 32` — the same 32 entries, with the two `closed on reasoning` rows folded into its
+`fixed` count for want of a fourth state. The twelve open entries are the four routed to v2 with
+owners (20, 21, 22, 24), the one opened at this review (29), four that turn on someone's decision
+rather than on more work (11, 12, 16, 17), and three opened by round 2's gap closure (30, 31, 32).
+None of the twelve is open with an empty reason in this table; 30, 31 and 32 carry their reason in
+their `WINDOWS.md` description rather than in a separate field, since they were opened rather than
+re-dispositioned.
