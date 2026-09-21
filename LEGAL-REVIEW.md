@@ -2,8 +2,6 @@
 
 Review date: 2026-09-21
 
-Gate status: PASSED
-
 ## What this document is, and what it is not
 
 This is a diligence record. A non-lawyer read public sources, recorded what was found, and recorded
@@ -19,6 +17,30 @@ append-only — later reviews add sections, they do not rewrite earlier ones.
 
 Where a lookup failed, the failure is recorded as a failure. An unconfirmed fact is a disclosed gap,
 never an assumed one.
+
+## What this review found, in one place
+
+**LEG-04 source list complete. Content items still needing a decision: 2.**
+
+Gate status: PASSED
+
+That token is a machine-checked fact with a narrow meaning, and it sits here rather than at the top
+of the file because an earlier revision put it above the disclaimer, where a skimming reader met it
+before being told what this document is. `tools/check_repo.py`'s `source-gate-incomplete` code
+defines what it asserts and nothing more: that no row in `SOURCES.md` still reads `unverified`. The
+checker's own text says it "does not judge whether the review behind a declared pass was any good,
+only whether the list it declares a pass over is complete."
+
+So: every check named below was performed on 2026-09-21 and its outcome written down, including the
+two lookups that failed. That is the whole of what the token means here, and it is not a statement
+that the content is clear to publish.
+
+Two named content items are open and routed to `.planning/WINDOWS.md` for a decision before wider
+distribution — **Ardent Digital** and **Gina Almeida**, both under `## Name collisions`. The
+reproduction-boundary section ends on two live questions rather than a finding, and `WINDOWS.md` id
+29 is open against the PF-1 sub-block list. A reader who wants one sentence should take this one:
+the diligence was done and written down by a non-lawyer, and some of it points at decisions nobody
+has made yet.
 
 ## Command of the Message — Force Management
 
@@ -135,7 +157,8 @@ cited.
 
 ### WINDOWS.md id 3 — the `SOURCES.md` reproduction-boundary read against PF-0.1 and PF-3.1
 
-**Disposition: closed, boundary not crossed.**
+**Read at this review:** PF-0.1 and PF-3.1 re-read against `SOURCES.md`'s definition. Neither
+rule was changed. The entry is closed in the ledger on the reasoning below.
 
 `SOURCES.md` defines reproduction as a contiguous run of a source's own wording, a source's own
 ordered list reproduced in its order, a source's diagram, or a term coined by a source and adopted
@@ -152,7 +175,9 @@ single operation. Neither adopts a coined term as this repository's own label: P
 PF-3.1 uses "the deletion test", and both are ordinary descriptive English for the operation being
 performed rather than a distinctive coinage lifted from a source. The concepts underneath — that a
 proposal should start from the buyer's situation, and that unevidenced abstraction should be cut —
-are stated publicly at this level of generality by many sources and by none exclusively.
+are stated publicly at this level of generality by several of the sources `SOURCES.md` lists, which
+is what was read here. This review makes no assertion about what any third party does or does not
+hold.
 
 Where the reasoning stops: this is a judgement about wording and structure, made by reading the two
 rules against the definition. It is not an assertion that no source anywhere phrases a comparable
@@ -160,7 +185,10 @@ instruction similarly, and it is not a copyright opinion.
 
 ### WINDOWS.md id 6 — the eight MC dimension names and the MC-1 to MC-40 range order
 
-**Disposition: closed, with the boundary of the reasoning stated.**
+**Read at this review:** the eight block names and their order re-read against `SOURCES.md`'s
+four prongs, and the earlier entry's reasoning corrected where it was falsifiable. No name and no
+order was changed. The entry is closed in the ledger on the reasoning below, which ends on two live
+questions.
 
 The question is narrow and real: `NUMBERING.md` freezes eight dimension blocks — Metric, Economic
 Buyer, Decision Criteria, Decision Process, Paper Process, Pain, Champion, Competition — in that
@@ -231,7 +259,7 @@ prong-2 judgement that the expression is thin, and the prong-4 position of "Econ
 
 ### The PF-1 sub-block list — the seven Command of the Message elements
 
-**Disposition: examined at this review; not closed.**
+**Read at this review for the first time. Left open in the ledger.**
 
 Neither of the two entries above reached this. `WINDOWS.md` id 3 read the PF-0.1 and PF-3.1 rule
 wording; id 6 read the MC dimension list. Nothing read `NUMBERING.md`'s PF-1 carve-up, and on
@@ -312,10 +340,12 @@ named real entity was found but not that name.
 | Devon Okafor | `evals/benchmark/bench-deal-brief.md` | No collision |
 | **Helena Marsh** | `evals/benchmark/bench-deal-brief.md` | **Collision.** A named education executive and campaigner |
 
-**Disposition.** One party collision and five person collisions were found. Both files already
-state on their face that their parties are invented, which is the disclaimer that makes a
-coincidental name a coincidence rather than a depiction. No character is attributed a real person's
-biography, employer, or conduct, and no named party is set against a real competitor.
+**What the search returned:** one party collision and five person collisions. What the two files
+state, quoted rather than characterised: each says on its face that it is invented for illustration
+and that any resemblance to a real company, person, or transaction is unintended. Read against the
+collisions, no character is attributed a real person's biography, employer, or conduct, and no named
+party is set against a real competitor. Whether those statements are sufficient for any particular
+name is a question this review does not answer.
 
 That said, the two collisions worth acting on are **Ardent Digital** and **Gina Almeida**, and
 neither is closed by this review. Ardent Digital is cast as the incumbent being displaced and a
@@ -384,8 +414,8 @@ under motion practice on the review date. Deferring forecloses nothing and spend
 | DIST-01 — `npx skills add` | `implementation shipped; live-install reliability UNVERIFIED`. There is nothing to install from. |
 | DIST-02 — `claude plugin marketplace add` | Same. |
 
-The legal review gate itself is unaffected: it is a gate on content, not on publication, and
-`Gate status: PASSED` above records that it passed on 2026-09-21. Roadmap criterion 1 asks that the
+The legal review gate itself is unaffected: it is a gate on content, not on publication, and the
+summary above records that its checks were run and recorded on 2026-09-21. Roadmap criterion 1 asks that the
 gate pass *before* public launch; deferring launch satisfies that ordering trivially and the
 machine check that enforces it — a configured remote requires a passed gate — is green in the
 no-remote direction.
@@ -429,7 +459,7 @@ arrive in a live session, and an unrouted control on the same prompt cited none 
 rule markers (`evals/routes/probe/`). What stays unobserved is the single word *permanently* — that
 the file appears in a picker and can be selected for a session.
 
-**Disposition:** id 16 stays **open**. DIST-03 stays `implementation shipped; the delivery half is
+**Ledger effect:** id 16 stays **open**. DIST-03 stays `implementation shipped; the delivery half is
 MEASURED, the /config half UNVERIFIED`.
 
 ### 2. Cold read of README — NOT PERFORMED AS A COLD READ
@@ -465,7 +495,7 @@ alongside the work disagreed with correct shipped content. It is recorded rather
 is also the reason a self-read is not accepted as a substitute — a reader checking their own text
 writes the checks that match what they meant.
 
-**Disposition:** ids 12 and 17 stay **open**, with the reason naming that no cold reader was
+**Ledger effect:** ids 12 and 17 stay **open**, with the reason naming that no cold reader was
 available in this round and that a self-read was performed and found nothing checkably false.
 
 ### 3. DIST-06 prose read — PERFORMED, BUT NOT COLD
@@ -484,38 +514,50 @@ one. It states 38 losses in its own sentence and then states the caveats — the
 deliberately — but whether it *reads* that way to someone encountering the project for the first
 time is exactly the judgement this record cannot make about itself.
 
-**Disposition:** id 12 stays **open**, carrying the specific question above for whoever performs the
+**Ledger effect:** id 12 stays **open**, carrying the specific question above for whoever performs the
 cold read.
 
 ## Ledger disposition
 
 Every entry in this project's cross-phase defect register, and what was decided about it at the
 Phase 6 launch gate on 2026-09-21. The register itself lives under `.planning/`, which a reader of
-this repository cannot see, so it is reproduced here in full: 28 entries, none left undecided.
+this repository cannot see, so it is reproduced here in full: 29 entries, none left undecided.
 
-`Fixed` means the defect is gone from shipped content. `Waived` means it was measured, disclosed
-and accepted, with the measurement named. `Open — v2` means it is a real gap with a named owner
-and a stated closure condition, deliberately not carried as if it were finished.
+Four labels, and the fourth was added at this round because the first three did not describe what
+had actually happened to two entries:
+
+- `Fixed` — the defect is gone from shipped content.
+- `Waived` — it was measured, disclosed and accepted, with the measurement named.
+- `Closed on reasoning` — nothing shipped changed and nothing was measured; the entry asked a
+  judgement question, the judgement is written out in this file, and the entry closes on that
+  reasoning. Ids 3 and 6 are the two. They were previously booked `Fixed`, which the definition
+  above does not fit: no shipped content changed for either.
+- `Open — v2` — a real gap with a named owner and a stated closure condition, not carried as if it
+  were finished.
+
+`.planning/WINDOWS.md`'s own schema has three states, not four, so it records ids 3 and 6 as
+`fixed`. The divergence is deliberate and named here rather than left for a reader to trip over:
+this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 
 | id | Phase | What it records | Disposition | Why |
 |---|---|---|---|---|
 | 1 | 01 | Name-collision search for examples/deal-brief.md's invented names | **Fixed** | Re-run in 06-02; a collision was found and is routed as a new open item. |
 | 2 | 01 | D-07/P-05 boundary check (no sentence compares two real products or co | **Fixed** | Closed in an earlier phase. |
-| 3 | 02 | Reproduction-boundary read of PF-0.1/PF-3.1 against SOURCES.md | **Fixed** | Closed by 06-02's reasoned disposition in this file. |
+| 3 | 02 | Reproduction-boundary read of PF-0.1/PF-3.1 against SOURCES.md | **Closed on reasoning** | No shipped content changed. Closed on 06-02's read, restated at 06-05. Recorded as `fixed` in WINDOWS.md, which has no fourth state. |
 | 4 | 02 | D-31 trigger pressure-test | **Fixed** | Closed in an earlier phase. |
 | 5 | 02 | CAT-08 token half | **Fixed** | Closed in an earlier phase. |
-| 6 | 03 | The eight MC dimension names and their MC-1..MC-40 range order | **Fixed** | Closed by 06-02's reasoned disposition in this file. |
+| 6 | 03 | The eight MC dimension names and their MC-1..MC-40 range order | **Closed on reasoning** | No shipped content changed. 06-05 corrected the acronym premise the earlier reasoning rested on and restated it; ends on two live questions. Recorded as `fixed` in WINDOWS.md, which has no fourth state. |
 | 7 | 03 | 03-05's single standalone-audit re-check (docs/B-proposal-section | **Fixed** | Closed in an earlier phase. |
 | 8 | 03 | MOD-04 anchored remeasurement (03-12), the first measurement of this r | **Waived** | Closed in an earlier phase. |
 | 9 | 03 | Residual source label outside 03-05's scope | **Fixed** | Closed in an earlier phase. |
 | 10 | 03 | Self-test behavior case 11 in evals/conformance/run_conformance | **Fixed** | Closed in an earlier phase. |
 | 11 | 04 | Publish location frozen as the placeholder <owner>/<repo> | **Open — v2** | Publication deferred 2026-09-21 by operator decision; closes on substitution AND an observed install. |
-| 12 | 04 | DIST-06's prose-quality half, unchecked by any code here | **Open — v2** | No cold reader available this round; a self-read found nothing checkably false. Carries one named question. |
+| 12 | 04 | DIST-06's prose-quality half, unchecked by any code here | **Open — v2** | Cold read PERFORMED 2026-09-21 by two independent readers; the named question returned PASS. Stays open on the three false README statements they found (G-06-6), corrected in 06-05. |
 | 13 | 04 | 04-04 plan expected a third results-pointer occurrence that never existed | **Waived** | Plan-authored probe error; the shipped README was always correct. |
 | 14 | 04 | 04-07 plan's word-spelled-cardinal counts disagreed with the shipped regex | **Waived** | Plan-authored measurement error; the shipped docstring states the corrected figures. |
 | 15 | 04 | 04-10 plan's import probe matched a docstring prose line as an import | **Waived** | Plan-authored probe error; the AST-based stdlib check confirms the real import set. |
-| 16 | 04 | DIST-03's /config half: style listed and selectable, unobserved | **Open — v2** | No /config picker in a non-interactive session; closes on a human observation. |
-| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | No cold reader available; twelve checkable claims cross-referenced, none false. The proxy-gate refusal stands. |
+| 16 | 04 | DIST-03's /config half: style listed and selectable, unobserved | **Open — v2** | Observed 2026-09-21 in a driven interactive session: the picker lists `proof-first` and selection persists to disk. Automation read the terminal, not a human eye; the owner decides whether that meets a condition written as a human observation. |
+| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | Fourth round of the pattern, now measured: ten CI commands green while two cold readers found three false README statements. The proxy-gate refusal stands. Closes with G-06-6. |
 | 18 | 05 | Name-collision search for bench-deal-brief.md's invented names | **Fixed** | Closed by 06-02's searches; the premise that this environment has no network had expired. |
 | 19 | 05 | Whether the eight benchmark scenarios are realistic presales tasks | **Waived** | Backstop judgement no tool here performs; scenarios are committed and readable. |
 | 20 | 05 | aggregate() pools per-order records instead of averaging pairs first | **Open — v2** | Not fixed here: the fix moves a published figure. 06-03 provably did not inherit it. |
@@ -527,8 +569,12 @@ and a stated closure condition, deliberately not carried as if it were finished.
 | 26 | 02 | 02-10 plan's git-diff removed-lines probe always printed >=1 | **Waived** | Plan-authored probe artifact; the substantive check printed empty throughout. |
 | 27 | 02 | 02-10 plan's whole-file phrase count returned 15 against 14 | **Waived** | Plan-authored probe artifact; the table-scoped count was correct at 14. |
 | 28 | 04 | Route-equivalence measured and not distinguished | **Waived** | Measured null result published with its four named limits. |
+| 29 | 06 | PF-1's seven Command of the Message sub-block labels in NUMBERING.md | **Open — v2** | Opened at this review. Examined for the first time under `## Reproduction boundary`; left open on two named questions, with renaming as the cheap alternative. |
 
-Counts after this sweep: **11 fixed, 9 waived, 8 open**, totalling 28 — matching
-`.planning/WINDOWS.md`'s own frontmatter exactly. The eight open entries are the four routed to v2
-with owners (20, 21, 22, 24) and the four that turn on a human observation this session could not
-make (11, 12, 16, 17). None of the eight is open with an empty reason.
+Counts after this sweep: **9 fixed, 2 closed on reasoning, 9 waived, 9 open**, totalling 29.
+`.planning/WINDOWS.md`'s frontmatter reads `fixed_count: 11, waived_count: 9, open_count: 9,
+total_count: 29` — the same 29 entries, with the two `closed on reasoning` rows folded into its
+`fixed` count for want of a fourth state. The nine open entries are the four routed to v2 with
+owners (20, 21, 22, 24), the one opened at this review (29), and four that turn on someone's
+decision rather than on more work (11, 12, 16, 17). None of the nine is open with an empty
+reason.
