@@ -114,9 +114,14 @@ than asserted: 36 headless sessions, three measured arms, four artifact families
 same skill folder installed and so collapse into one `skill-on` arm. That run did not distinguish
 the three arms — every pair has overlapping observed ranges on the mechanical proxy count — which
 is a weaker statement than equivalence and is the only one the records support. Read the caveats
-there before reading anything else into it; one of them matters for choosing between routes. The
-installed skill has to be triggered and was not in 3 of its 12 sessions, while the output style and
-the pasted prompt are unconditionally on once selected.
+there before reading anything else into it; one of them matters for choosing between routes.
+
+The installed skill has to be triggered, while the output style and the pasted prompt are
+unconditionally loaded once selected. The activation column does not separate the three arms on that
+basis: the rule catalog reached 9 of 12 `skill-on` sessions, 11 of 12 `style-on` and 8 of 12
+`prompt-on`. Its metric is whether a session emitted a rule marker, which cannot tell a route that
+failed to load from one that loaded and was not cited — so it bounds the loading difference rather
+than measuring it.
 
 ## Status
 
