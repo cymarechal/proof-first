@@ -31,7 +31,7 @@
     {
       "number": "6",
       "name": "Legal Review Gate & Launch",
-      "status": "pending"
+      "status": "in_progress"
     }
   ],
   "next": {
@@ -39,5 +39,5 @@
     "label": "Advance to the next step (verify)",
     "reason": "Phase 6 of 6 · 67% · ready to verify"
   },
-  "updated_at": "2026-09-21T09:19:41.514Z"
+  "updated_at": "2026-09-21T10:18:11.891Z"
 }
