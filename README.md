@@ -41,7 +41,9 @@ two that are Claude Code's own, and one for a harness with no skill support.
 Routes 1 and 2 name the publish-location placeholder `<owner>/<repo>`, which stands for wherever
 this repository is published. Neither resolves until it is published. The placeholder is
 deliberate and disclosed: `publish-location-drift` in `tools/check_repo.py` fails the build if any
-command or manifest carrying it stops agreeing with the others.
+command or manifest carrying it stops naming the same GitHub owner segment as the others. The
+checker states its own ceiling — it compares owner segments only, so a repository-name-only drift
+under an unchanged owner is not detected.
 
 Route 4 runs from a local clone with no step beyond the clone: `prompts/system-prompt.md` is a
 committed file, and pasting it is the whole action. Route 3 runs from a local clone too, but it
