@@ -375,6 +375,33 @@ Violation codes implemented in this file:
                       be counted the way its author intended; and it reads
                       one named path, not every results file that might
                       ever exist.
+  source-row-unconfirmed - a row in one of SOURCES.md's three source
+                      tables is marked `verified` while its Where cell
+                      carries no absolute https:// URL, no
+                      `(retrieved YYYY-MM-DD)` date that parses as a real
+                      calendar date, or neither. Also fires on a row whose
+                      cell count is not the five those tables declare,
+                      naming the parse failure rather than skipping the
+                      row silently. Rows marked `unverified` are out of
+                      scope in every case: an unverified row makes no
+                      provenance claim, so there is nothing yet to check.
+                      Status is compared case-sensitively, consistent with
+                      this module's no-case-folding discipline for the
+                      attribution pointer. Silent when SOURCES.md does not
+                      exist. Declared ceiling (no fetch): this check does
+                      not fetch the recorded URL. A URL that has rotted,
+                      moved, or never resolved reads identical here to a
+                      live one -- the lookup happens once, by hand, when
+                      the row is confirmed, and CI reads only the
+                      committed record. A build that fails because a third
+                      party had an outage is not a build failure worth
+                      having, so do not "improve" this check by adding a
+                      network call. Declared ceiling (no semantics): it
+                      does not judge whether the source at that URL says
+                      what the row claims. That is the same semantic
+                      judgement SOURCES.md's own "What counts as
+                      reproduction" section states no tool in this stack
+                      performs, and this check is not the exception.
   plugin-manifest-version-mismatch - a .claude-plugin/plugin.json or
                       .claude-plugin/marketplace.json states a `version`
                       that disagrees with skills/*/SKILL.md's frontmatter
@@ -807,6 +834,7 @@ Violation codes implemented in this file:
                       measurement that falsifies it sits in the tree.
 """
 import argparse
+import datetime
 import hashlib
 import json
 import re
@@ -1497,6 +1525,139 @@ RESULTS_CHECK_CODES = ['results-breakdown-count-mismatch']
 def run_results_checks(repo_root):
     violations = []
     violations += check_results_breakdown_count(repo_root)
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# SOURCES.md — approved-source provenance (LEG-04)
+# ---------------------------------------------------------------------------
+
+SOURCES_PATH = 'SOURCES.md'
+
+# The three '## ' headings whose bodies carry source tables. Every other
+# heading in SOURCES.md is prose -- the rule, the reproduction boundary,
+# the out-of-bounds list -- and carries no rows to check. Naming the three
+# rather than scanning every table means a future prose section that
+# happens to contain a Markdown table is not read as a source list.
+SOURCES_TABLE_HEADINGS = (
+    'Message articulation sources',
+    'Qualification checklist sources',
+    'Commercial teaching sources',
+)
+
+# Title | Author or publisher | Kind | Status | Where
+SOURCES_ROW_CELLS = 5
+
+_SOURCES_RETRIEVED_RE = re.compile(r'\(retrieved (\d{4}-\d{2}-\d{2})\)')
+
+
+def check_source_row_unconfirmed(repo_root):
+    """Check that every SOURCES.md row claiming `verified` status records
+    what was read and when, so the approved-source rule that file states
+    ("a concept with no listed source does not ship") is enforced by the
+    build rather than by good intentions (LEG-04).
+
+    Reads the three tables named by SOURCES_TABLE_HEADINGS with the
+    existing split_sections()/table_rows() pair. A row is in scope only
+    when its Status cell is exactly 'verified' after whitespace stripping,
+    compared case-sensitively -- the same no-case-folding discipline this
+    module applies to the attribution pointer. An 'unverified' row is an
+    honest statement that the source has not been confirmed yet; firing on
+    it would make the pre-review state a build failure and would force
+    every row to be confirmed at once.
+
+    An in-scope row must carry both an absolute URL and a retrieval date in
+    its Where cell. The URL test is a plain 'https://' prefix test over
+    whitespace-delimited tokens rather than a general URL regex -- what
+    counts as a well-formed URL is an argument this check does not need to
+    have, and a bare prefix test cannot be satisfied by prose. The date
+    must match '(retrieved YYYY-MM-DD)' AND parse with
+    datetime.date.fromisoformat, so a well-shaped impossibility like
+    2026-13-45 is caught rather than matched.
+
+    A row whose cell count is not SOURCES_ROW_CELLS fires once naming the
+    parse failure. Skipping it silently would let a row that lost its
+    Status column be read as out of scope -- the failure mode a checker
+    exists to prevent.
+
+    Returns no violations when SOURCES.md does not exist, checked before
+    any read: the same declared ceiling every other optional-file check in
+    this module uses, so a fixture root shipping no sources file stays
+    silent and the rest of the suite is not disabled. This is deliberately
+    not the check_license_missing precedent -- SOURCES.md is not required
+    to exist the way LICENSE is.
+
+    Declared ceiling (no fetch): this check does not fetch the recorded
+    URL. A URL that has rotted, moved, or never resolved is
+    indistinguishable here from a live one. The lookup happens once, by
+    hand, at the moment a row is confirmed; CI reads only the committed
+    record and performs no network call. A build that fails because a
+    third party had an outage is not reproducible, so this ceiling is a
+    design decision, not a gap to close.
+
+    Declared ceiling (no semantics): this check does not judge whether the
+    source at that URL says what the row claims. That is the same semantic
+    judgement SOURCES.md's own "What counts as reproduction" section
+    states no tool in this project's stack performs, and this check does
+    not become the exception."""
+    violations = []
+    path = repo_root / SOURCES_PATH
+    if not path.exists():
+        return violations
+    subject = str(path.relative_to(repo_root))
+    sections = split_sections(path.read_text(encoding='utf-8'))
+
+    for heading in SOURCES_TABLE_HEADINGS:
+        if heading not in sections:
+            continue
+        for row in table_rows(sections[heading]):
+            if len(row) != SOURCES_ROW_CELLS:
+                violations.append((subject, (
+                    f"source-row-unconfirmed {SOURCES_PATH} '{heading}' has a row of "
+                    f"{len(row)} cells where {SOURCES_ROW_CELLS} are required, so its "
+                    f"status and provenance cannot be read: {' | '.join(row)}"
+                )))
+                continue
+            title, _publisher, _kind, status, where = row
+            if status != 'verified':
+                continue
+            has_url = any(token.startswith('https://') for token in where.split())
+            date_match = _SOURCES_RETRIEVED_RE.search(where)
+            has_date = False
+            if date_match:
+                try:
+                    datetime.date.fromisoformat(date_match.group(1))
+                except ValueError:
+                    has_date = False
+                else:
+                    has_date = True
+            if has_url and has_date:
+                continue
+            if not has_url and not has_date:
+                missing = "no https:// URL and no valid (retrieved YYYY-MM-DD) date"
+            elif not has_url:
+                missing = "no https:// URL"
+            else:
+                missing = "no valid (retrieved YYYY-MM-DD) date"
+            violations.append((subject, (
+                f"source-row-unconfirmed {SOURCES_PATH} row {title} is marked verified "
+                f"but its Where cell carries {missing}"
+            )))
+
+    # Every violation here shares one subject, so the live run's
+    # (code, subject) sort cannot order them. Sort on the message so two
+    # offending rows report in a fixed order rather than in whatever order
+    # the tables happened to be written.
+    violations.sort(key=lambda v: v[1])
+    return violations
+
+
+SOURCES_CHECK_CODES = ['source-row-unconfirmed']
+
+
+def run_sources_checks(repo_root):
+    violations = []
+    violations += check_source_row_unconfirmed(repo_root)
     return violations
 
 
@@ -3582,6 +3743,7 @@ def run_derivative_checks(repo_root):
 ALL_CHECK_CODES = (
     ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
     + LICENSE_CHECK_CODES + README_CHECK_CODES + RESULTS_CHECK_CODES
+    + SOURCES_CHECK_CODES
     + FRAMEWORK_CHECK_CODES + FRONTMATTER_CHECK_CODES + CATALOG_CHECK_CODES
     + PLUGIN_CHECK_CODES + EXAMPLE_CHECK_CODES + DERIVATIVE_CHECK_CODES
 )
@@ -3599,6 +3761,7 @@ def run_all_checks(repo_root):
     violations += run_license_checks(repo_root)
     violations += run_readme_checks(repo_root)
     violations += run_results_checks(repo_root)
+    violations += run_sources_checks(repo_root)
     violations += run_framework_checks(repo_root)
     violations += run_frontmatter_checks(repo_root)
     violations += run_catalog_checks(repo_root)
@@ -3647,6 +3810,11 @@ KNOWN_OPEN_VIOLATIONS = frozenset()
 MUTATION_SOURCES = (
     'LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools', 'skills',
     'evals', '.claude-plugin', 'output-styles', 'prompts',
+    # 06-01: without SOURCES.md here the mutation harness cannot reach the real
+    # approved-source list, and source-row-unconfirmed would be registered but not
+    # discrimination-proven -- this repository's named recurring defect, recorded
+    # as .planning/WINDOWS.md id 10.
+    'SOURCES.md',
 )
 
 
@@ -3660,7 +3828,12 @@ def _copy_repo_subset(repo_root, dest):
     itself reads anything under evals/ -- every other glob and named-path
     scan in this module targets NUMBERING.md, examples/, tools/, or
     skills/*/SKILL.md paths -- so widening this copy does not change what
-    any other code fires against."""
+    any other code fires against. 'SOURCES.md' was added by 06-01 for the
+    same reason: source-row-unconfirmed reads that one named path, and
+    without it in this tuple the mutation copy has no file to mutate. No
+    other check reads SOURCES.md -- unlisted-figure scans only examples/
+    and skills/, and the pointer checks read only the carrier paths
+    NOTICES.md lists -- so this widening likewise changes nothing else."""
     for name in MUTATION_SOURCES:
         src = repo_root / name
         if not src.exists():
@@ -4344,6 +4517,25 @@ def _mutate_example_rule_narration(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_source_row_unconfirmed(root):
+    """Re-mark the real SOURCES.md's one confirmed row as `verified` with
+    its evidence stripped back to the pre-confirmation placeholder -- the
+    exact defect this code exists to catch: a row hand-edited to claim
+    provenance that was never recorded. Mutating the real file rather than
+    a fixture is what makes the code discrimination-proven instead of
+    merely registered."""
+    path = root / SOURCES_PATH
+    lines = path.read_text(encoding='utf-8').splitlines()
+    idx = next(
+        i for i, line in enumerate(lines)
+        if line.startswith('| ') and '| verified |' in line
+    )
+    cells = lines[idx].strip().strip('|').split('|')
+    cells[-1] = ' to confirm at LEG-04 '
+    lines[idx] = '|' + '|'.join(cells) + '|'
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -4358,6 +4550,7 @@ MUTATIONS = [
     ('license-missing', "delete the LICENSE file from the repository root", _mutate_license_missing),
     ('readme-results-pointer-missing', "delete every line of README.md containing the results-pointer path", _mutate_readme_results_pointer_missing),
     ('results-breakdown-count-mismatch', "raise the real results file's Arm A no-family bullet's stated count above its own enumeration sum", _mutate_results_breakdown_count_mismatch),
+    ('source-row-unconfirmed', "strip the real SOURCES.md's one confirmed row back to its pre-confirmation placeholder while leaving its status reading verified", _mutate_source_row_unconfirmed),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
     ('catalog-id-drift', "delete one PF data row from references/checklist.md's PF rules table", _mutate_catalog_id_drift),
     ('catalog-opening-rule-count', "add a second PF-0 rule to NUMBERING.md and checklist.md, violating CAT-03's exactly-one requirement", _mutate_catalog_opening_rule_count),
@@ -5840,6 +6033,61 @@ def _bad_results_breakdown():
     )
 
 
+def _sources_table(rows):
+    """Wrap source rows in the one heading + header + separator shape
+    check_source_row_unconfirmed() reads, so every fixture below differs
+    only in its rows."""
+    return (
+        "# Fixture sources\n\n"
+        "## Qualification checklist sources\n\n"
+        "| Title | Author or publisher | Kind | Status | Where |\n"
+        "|---|---|---|---|---|\n"
+        + "".join(row + "\n" for row in rows)
+    )
+
+
+def _good_sources():
+    """Every silent direction in one file: a verified row carrying both a
+    URL and a real retrieval date, and two unverified rows -- one whose
+    Where cell is a placeholder and one carrying neither URL nor date --
+    which are out of scope whatever they say."""
+    return _sources_table([
+        '| "A confirmed book" | An author | book | verified | https://example.com/a (retrieved 2026-09-21) |',
+        '| "An unconfirmed page" | A publisher | public page | unverified | to confirm at LEG-04 |',
+        '| "Another unconfirmed page" | A publisher | public page | unverified | https://example.com/b |',
+    ])
+
+
+def _bad_sources():
+    """Three firing directions at once: a verified row with no URL, a
+    verified row with a URL but no retrieval date, and a verified row
+    whose date is well-shaped but not a real calendar date."""
+    return _sources_table([
+        '| "No URL at all" | An author | book | verified | to confirm at LEG-04 |',
+        '| "URL but no date" | An author | book | verified | https://example.com/c |',
+        '| "URL and an impossible date" | An author | book | verified | https://example.com/d (retrieved 2026-13-45) |',
+    ])
+
+
+def _malformed_sources():
+    """A row that lost its Status column, so its provenance cannot be read
+    at all. Skipping it silently would let a row with no status be treated
+    as out of scope -- the failure a checker exists to prevent."""
+    return _sources_table([
+        '| "A row missing a column" | An author | book | https://example.com/e (retrieved 2026-09-21) |',
+    ])
+
+
+def _two_offending_sources():
+    """Two verified rows, both unconfirmed, written in reverse message
+    order so the check's own sort is what puts them back in order rather
+    than the file's row order."""
+    return _sources_table([
+        '| "Zulu row" | An author | book | verified | to confirm at LEG-04 |',
+        '| "Alpha row" | An author | book | verified | to confirm at LEG-04 |',
+    ])
+
+
 def _capitalized_skill_family_gate():
     """A SKILL.md whose self-check section names both family-line anchors
     with initial capitals -- proving check_skill_family_line_gate()'s
@@ -5996,6 +6244,11 @@ def self_test():
         source_label_metric_root = tmp_root / 'source_label_metric'
 
         results_good_root = tmp_root / 'results_good'
+
+        sources_good_root = tmp_root / 'sources_good'
+        sources_bad_root = tmp_root / 'sources_bad'
+        sources_malformed_root = tmp_root / 'sources_malformed'
+        sources_two_root = tmp_root / 'sources_two'
         results_bad_root = tmp_root / 'results_bad'
 
         family_capitalized_root = tmp_root / 'family_capitalized'
@@ -6055,6 +6308,7 @@ def self_test():
         _write(bad_root / 'carrier-dup.md', "Test pointer string.\nSomething else.\nTest pointer string.\n")
         _write(bad_root / 'carrier-lookalike.md', "Test pointer string.\n")
         _write(bad_root / 'LICENSE', _bad_license())
+        _write(bad_root / SOURCES_PATH, _bad_sources())
 
         _write(good_root / 'NUMBERING.md', _good_numbering())
         _write(good_root / 'skills' / 'SKILL.md', "See PF-0.1 for details.\n")
@@ -6062,6 +6316,7 @@ def self_test():
         _write(good_root / 'NOTICES.md', _good_notices())
         _write(good_root / 'carrier-ok.md', "Test pointer string.\n")
         _write(good_root / 'LICENSE', _good_license())
+        _write(good_root / SOURCES_PATH, _good_sources())
 
         # Third and fourth scratch roots isolate the two `pointer-unparseable`
         # triggers so each fires alone, on its own root, and stays silent on
@@ -6270,6 +6525,21 @@ def self_test():
         # isolates the one new code under test.
         _write(results_good_root / RESULTS_BREAKDOWN_PATH, _good_results_breakdown())
         _write(results_bad_root / RESULTS_BREAKDOWN_PATH, _bad_results_breakdown())
+
+        # Sources-provenance fixtures (source-row-unconfirmed, 06-01).
+        # sources_good_root carries every silent direction (a fully
+        # confirmed row, and unverified rows whatever their Where cell
+        # says); sources_bad_root carries the three firing directions;
+        # sources_malformed_root a row whose column count is wrong; and
+        # sources_two_root two offending rows, to pin the output order.
+        # No root here ships NUMBERING.md or skills/, so this set
+        # isolates the one code under test. The absent-file direction
+        # needs no root of its own: results_good_root ships no
+        # SOURCES.md at all and is asserted against below.
+        _write(sources_good_root / SOURCES_PATH, _good_sources())
+        _write(sources_bad_root / SOURCES_PATH, _bad_sources())
+        _write(sources_malformed_root / SOURCES_PATH, _malformed_sources())
+        _write(sources_two_root / SOURCES_PATH, _two_offending_sources())
 
         # Case-insensitivity fixture (skill-family-line-gate-missing,
         # 03-REVIEW.md WR-02 gap closure): family_capitalized_root's
@@ -6500,6 +6770,16 @@ def self_test():
 
         results_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(results_good_root)}
         results_bad_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(results_bad_root)}
+
+        sources_good_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(sources_good_root)}
+        sources_bad_violations = run_all_checks(sources_bad_root)
+        sources_bad_codes = {line.split(' ', 1)[0] for _, line in sources_bad_violations}
+        sources_malformed_violations = run_all_checks(sources_malformed_root)
+        sources_malformed_codes = {line.split(' ', 1)[0] for _, line in sources_malformed_violations}
+        sources_two_violations = [
+            line for _, line in run_all_checks(sources_two_root)
+            if line.startswith('source-row-unconfirmed ')
+        ]
 
         family_capitalized_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(family_capitalized_root)}
 
@@ -6918,6 +7198,39 @@ def self_test():
             all_ok = False
         if 'results-breakdown-count-mismatch' in good_codes:
             print("FAIL: results-breakdown-count-mismatch fired on a fixture root shipping no results file")
+            all_ok = False
+
+        # Sources-provenance assertions.
+        if 'source-row-unconfirmed' in sources_good_codes:
+            print("FAIL: source-row-unconfirmed fired on a sources file whose verified row carries a URL and a retrieval date, or on its unverified rows")
+            all_ok = False
+        if 'source-row-unconfirmed' not in sources_bad_codes:
+            print("FAIL: source-row-unconfirmed did not fire on verified rows missing a URL, a date, or carrying an impossible date")
+            all_ok = False
+        sources_bad_count = sum(
+            1 for _, line in sources_bad_violations
+            if line.startswith('source-row-unconfirmed ')
+        )
+        if sources_bad_count != 3:
+            print(f"FAIL: source-row-unconfirmed fired {sources_bad_count} times on three distinct offending rows, expected 3")
+            all_ok = False
+        if 'source-row-unconfirmed' not in sources_malformed_codes:
+            print("FAIL: source-row-unconfirmed did not fire on a row whose cell count is not the five the source tables declare")
+            all_ok = False
+        if not any(
+            'cells where 5 are required' in line
+            for _, line in sources_malformed_violations
+        ):
+            print("FAIL: source-row-unconfirmed fired on a malformed row without naming the parse failure")
+            all_ok = False
+        if len(sources_two_violations) != 2:
+            print(f"FAIL: source-row-unconfirmed produced {len(sources_two_violations)} violations for two offending rows, expected 2")
+            all_ok = False
+        elif sources_two_violations != sorted(sources_two_violations):
+            print("FAIL: source-row-unconfirmed reported two offending rows out of sorted order")
+            all_ok = False
+        if 'source-row-unconfirmed' in results_good_codes:
+            print("FAIL: source-row-unconfirmed fired on a fixture root shipping no sources file")
             all_ok = False
 
         # Plugin-manifest-version assertions.
