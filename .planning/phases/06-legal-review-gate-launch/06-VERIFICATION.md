@@ -1,7 +1,7 @@
 ---
 phase: 06-legal-review-gate-launch
-status: gaps_found
-score: "2/2 must-haves verified by automated means; 6 human items performed 2026-09-21 — 3 passed, 3 issues"
+status: human_needed
+score: "2/2 must-haves verified; 6 human items performed — 3 passed, 3 issues, all 3 closed by 06-05; the closures need one independent read"
 verified: 2026-09-21
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
@@ -11,6 +11,9 @@ human_verification_performed: 6
 human_verification_passed: 3
 human_verification_issues: 3
 uat_round: "/gsd-verify-work 06, 2026-09-21"
+gap_closure_round: "06-05, 2026-09-21 — G-06-2, G-06-3, G-06-6 closed"
+gaps_closed: 3
+gaps_open: 0
 ---
 
 # Phase 6 Verification: Legal Review Gate & Launch
@@ -157,5 +160,104 @@ against a brief casting her as Associate General Counsel at an insurance firm). 
 `LEGAL-REVIEW.md` § Name collisions with a recommended rename. Not blockers while publication is
 deferred; blockers before it is not.
 
+## Gap-closure round — 06-05, verified 2026-09-21
+
+The three gaps above were closed by plan `06-05` in six task commits (`d67012e`..`36fbf6c`). This
+section re-verifies each against the files, not against the SUMMARY's claims. Nothing above is
+withdrawn or rewritten; the findings stand as recorded and this section records what happened to
+them.
+
+| Gap | Closure condition, from `06-UAT.md` | Re-verified against | Verdict |
+|---|---|---|---|
+| G-06-2 | Restate the id-6 reasoning on grounds that survive `NUMBERING.md`; test the fourth prong; examine the PF-1 list | `LEGAL-REVIEW.md`:186-302, `NUMBERING.md`:9-13 and :64-77, `.planning/WINDOWS.md` id 29 | **closed** |
+| G-06-3 | Move/rename the gate line; reword the two `Disposition:` headings; bound :155 and :187; replace the disclaimer-sufficiency claim; give the ledger a state for judgement closures | `LEGAL-REVIEW.md`:21-43, :160, :188, :262, :343, :520-560 | **closed** |
+| G-06-6 | Bound README:231's claim; correct the route count; carry Arm B; fix the four minor items | `README.md` diff `7e2170d..HEAD` | **closed** |
+
+### G-06-2 — evidence
+
+The false premise is not patched, it is stated as corrected: `LEGAL-REVIEW.md`:199-209 records that
+the eight blocks give **M-E-D-D-P-P-C-C**, that the repository ships "Pain" rather than "Identify
+Pain" so position 6 contributes P, and that Decision Criteria/Decision Process and
+Champion/Competition are letter-ambiguous, making four of eight positions swappable. Re-measured
+against `NUMBERING.md`:68-75 during this pass: correct.
+
+All four `SOURCES.md` prongs are now applied or excluded by name (`:210`, `:215`, `:225`, `:229`).
+Prong 4 is answered honestly rather than favourably — "Economic Buyer" and "Paper Process" are
+recorded as sitting **on** the prong, with the decision not to rename them made explicit. The
+disposition ends on two live questions rather than a finding.
+
+The PF-1 list has a section of its own (`:260`) and is registered as `WINDOWS.md` id 29, open. It is
+examined rather than disposed of, which is what the gap asked for. `NUMBERING.md`:9-13 no longer
+calls the `MC-` namespace "the MEDDICC completeness audit".
+
+### G-06-3 — evidence
+
+The reduced read the gap defines — headings, bolded lead-ins and the ledger `Disposition` column,
+skipping all prose — was re-run mechanically during this pass and carries no legal conclusion. The
+specific replacements: "boundary not crossed" is gone; both `Disposition:` verdicts read
+"Read at this review:"; "by none exclusively" is bounded to the sources actually read; "trading on"
+is gone with the ruling paragraph confined to the trademark question the ruling decided; the
+disclaimer-sufficiency assertion is replaced by what the two files state, with the sufficiency
+question explicitly not answered.
+
+`Gate status: PASSED` stayed `PASSED` and moved from line 5 to line 25, below the disclaimer.
+`tools/check_repo.py`'s `source-gate-incomplete` requires exactly one readable line reading
+`PASSED`, `OPEN` or `FAILED`, and defines `PASSED` narrowly — no `SOURCES.md` row reads
+`unverified`, which is true. The line now sits inside a section that states that definition, quotes
+the code's own "does not judge whether the review behind a declared pass was any good" ceiling, and
+names the two content items open for a decision before wider distribution.
+
+The ledger gained a fourth label, `Closed on reasoning`, for ids 3 and 6 — neither is `Fixed` under
+the file's own definition, and neither was measured, so `Waived` fits no better. The divergence
+from `WINDOWS.md`'s three-state schema is named in the file rather than left for a reader to find.
+
+### G-06-6 — evidence
+
+Each of the three false statements, re-checked against the file that contradicted it:
+
+1. The universal evidence-discipline claim is scoped to the claim region, with the third category
+   neither code reaches named explicitly. Re-read against `tools/check_repo.py`:405-421.
+2. The route count states four install routes and three measured arms in the same sentence, with
+   the collapse explained. `run_routes.py`:113's `ROUTES` tuple holds three.
+3. The superseded n=1 figures are replaced by Arm B: 45 of 45 must-fire, 9 of 25 must-not-fire, two
+   phrasings at 5 of 5 and 4 of 5. **`head -14 skills/proof-first/SKILL.md | shasum -a 256` returns
+   `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`, byte-identical to the hash
+   `RESULTS-trigger.md`:68 records for the Arm B block** — so the figure README carries measures the
+   description that ships.
+
+The four minor items are fixed and each was re-checked against its own source, including the count
+that the round's own draft got wrong: the first draft said three near-miss phrasings accounted for
+the nine over-fires; the table shows two. Corrected before commit.
+
+### Checks
+
+All ten commands `.github/workflows/ci.yml` declares exit 0, re-run after the final edit.
+`grep -c "^- \[x\].*UNVERIFIED" .planning/REQUIREMENTS.md` returns `0`. `.planning/WINDOWS.md`'s
+frontmatter (9 open / 9 waived / 11 fixed / 29 total) matches its 29 entries.
+
+### Why this is `human_needed` and not `passed`
+
+Every gap is closed against its own closure condition, and the automated side is green. What is
+missing is the one thing that found these three gaps in the first place: **a reader who did not
+write the text.** The corrections were written and checked by the same agent, which is precisely
+the weakness `.planning/WINDOWS.md` id 17 has now measured four consecutive times — ten green CI
+commands alongside a false sentence a cold reader caught on the first pass. `WINDOWS.md` ids 12 and
+17 both state their own closure as "closes with G-06-6", and closing them on a self-review would
+repeat the mistake the round exists to correct.
+
+**LEG-04 and LEG-05 stay `[ ]`.** Both annotations name `06-05-PLAN.md` tasks as their closure
+condition and those tasks are done, but `requirements-completed` records implementation, not
+verification, and this file is the verification. They close when an independent read confirms the
+three corrections.
+
+**One item found during this round's verification and deliberately not fixed.** `README.md`:109
+reads "The installed skill has to be triggered and was not in 3 of its 12 sessions, while the output
+style and the pasted prompt are unconditionally on once selected." Both halves are true — `skill-on`
+activated in 9 of 12 — but the contrast invites a reader to take the other two arms as 12 of 12 on
+the same metric, and `RESULTS-routes.md`:15-17 reads `style-on` 11 of 12 and `prompt-on` **8** of
+12. `prompt-on` activates less often than `skill-on`. This is a placement judgement rather than a
+false statement, the same class `06-05-PLAN.md`'s own "Out of scope" section sent to backlog, and it
+is recorded here so the next cold read has it in hand.
+
 ---
-*Verified: 2026-09-21*
+*Verified: 2026-09-21 (gap-closure round 06-05)*

@@ -4,11 +4,18 @@ phase: 06-legal-review-gate-launch
 source: [06-VERIFICATION.md]
 started: 2026-09-21
 updated: 2026-09-21
+rounds: 2
+round_2: "06-05 gap closure — tests 7-9 re-ask tests 2, 3 and 6 of the corrected files"
 ---
 
 ## Current Test
 
-[testing complete]
+number: 7
+name: The id-6 disposition and the PF-1 section hold up to a reader who did not write them
+expected: |
+  No sentence in either is falsifiable from NUMBERING.md or SOURCES.md, and the reasoning
+  actually carries the conclusion it reaches.
+awaiting: user response
 
 ## How these six were performed
 
@@ -267,12 +274,53 @@ evidence: |
   region does not state the 3 repeats, which is what misled the first reader — an under-
   specification, not a falsehood, and not recorded as a gap.
 
+### 7. The id-6 disposition and the PF-1 section hold up to a reader who did not write them
+expected: |
+  Round 2, against `LEGAL-REVIEW.md`:186-302 and `NUMBERING.md`. Gap G-06-2 was found by a reader
+  who checked the disposition's premise against the registry next to it. 06-05 restated the
+  reasoning; this test asks the same question of the restatement, by a reader who did not write it.
+
+  Specifically: (a) is any sentence in the id-6 disposition falsifiable from `NUMBERING.md`, as the
+  MEDDPPCC premise was; (b) do the prong-2 and prong-4 answers actually carry the conclusion, or do
+  they restate the question; (c) the PF-1 section reaches "left open" — is leaving it open the
+  honest reading of its own argument, or is it a finding dressed as an open question.
+result: [pending]
+
+### 8. LEGAL-REVIEW.md's reduced read states no legal conclusion
+expected: |
+  Round 2, against `LEGAL-REVIEW.md`. Read the file's headings, bolded lead-ins and the ledger's
+  Disposition column **alone**, skipping every line of prose. Nothing in that reduced read should
+  state a legal conclusion about this repository's exposure.
+
+  This is gap G-06-3's own test, re-run against the corrected file by a reader who did not make the
+  corrections. Two specific things to judge rather than confirm: whether `Gate status: PASSED`,
+  still present because `source-gate-incomplete` requires it, now reads as the narrow machine-checked
+  fact the surrounding section says it is; and whether `Closed on reasoning` reads as an honest
+  fourth state or as a softer word for the same closure.
+result: [pending]
+
+### 9. A cold read of the corrected README finds no checkably-false statement
+expected: |
+  Round 2, against `README.md`. Gap G-06-6 was three false statements found by two independent
+  readers while all ten CI commands were green. 06-05 corrected them and self-checked. A reader who
+  did not write the corrections reads README against the committed files and reports any statement
+  that a file in this repository contradicts.
+
+  Two known places to press, recorded so they are not rediscovered as new: the rewritten
+  evidence-discipline paragraph at :232-247, which now makes a scoping claim about which numbers
+  are enforced, and :109's activation contrast — "was not in 3 of its 12 sessions, while the output
+  style and the pasted prompt are unconditionally on once selected" — where
+  `evals/routes/RESULTS-routes.md`:15-17 reads style-on 11 of 12 and prompt-on 8 of 12. The second
+  is already recorded as a placement judgement rather than a falsehood; a cold reader deciding
+  otherwise is the finding.
+result: [pending]
+
 ## Summary
 
-total: 6
+total: 9
 passed: 3
 issues: 3
-pending: 0
+pending: 3
 skipped: 0
 blocked: 0
 
