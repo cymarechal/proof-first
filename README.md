@@ -100,13 +100,14 @@ no skill support: paste it whole into a system-prompt field, an `AGENTS.md`, or 
 The output style and the system prompt carry the same rule text, the same completeness audit, and
 the same artifact-family conventions as the skill, proven by a check in this repository. Whether a
 session driven by either behaves like one with the skill folder installed is now measured rather
-than asserted: 36 headless sessions, three routes, four artifact families, recorded in
-`evals/routes/RESULTS-routes.md`. That run did not distinguish the three routes — every pair of
-arms has overlapping observed ranges on the mechanical proxy count — which is a weaker statement
-than equivalence and is the only one the records support. Read the caveats there before reading
-anything else into it; one of them matters for choosing between routes. The installed skill has to
-be triggered and was not in 3 of its 12 sessions, while the output style and the pasted prompt are
-unconditionally on once selected.
+than asserted: 36 headless sessions, three measured arms, four artifact families, recorded in
+`evals/routes/RESULTS-routes.md`. Three arms, not four, because routes 1 and 2 both end with the
+same skill folder installed and so collapse into one `skill-on` arm. That run did not distinguish
+the three arms — every pair has overlapping observed ranges on the mechanical proxy count — which
+is a weaker statement than equivalence and is the only one the records support. Read the caveats
+there before reading anything else into it; one of them matters for choosing between routes. The
+installed skill has to be triggered and was not in 3 of its 12 sessions, while the output style and
+the pasted prompt are unconditionally on once selected.
 
 ## Status
 
@@ -137,7 +138,9 @@ What exists today:
 - `evals/conformance/RESULTS-mod04.md` — a MOD-04 write-mode conformance run, with its own caveats
   stated in the file.
 - `evals/routes/run_routes.py` — a stdlib-only, self-testing runner that measures whether the four
-  install routes deliver equivalent behaviour.
+  install routes deliver equivalent behaviour, across three measured arms: routes 1 and 2 both end
+  with the same skill folder installed, so they collapse into one `skill-on` arm alongside
+  `style-on` and `prompt-on`.
 - `evals/routes/RESULTS-routes.md` — the recorded route-equivalence run, published as a null
   result with its own caveats stated in the file.
 - `evals/benchmark/run_benchmark.py` — the stdlib-only skill-on/skill-off benchmark runner and its
@@ -227,12 +230,24 @@ above — including the file's earlier, superseded `claude-opus-5` sessions, non
 behind an anchored figure this README states.
 
 The conformance limitation above is a separate measurement from the persuasion benchmark reported
-in the claim region, and the two are never combined into one figure. Every number this README
-carries is sourced from a committed results file under `evals/`, states the model versions and the
-date it was produced, and is checked by `tools/check_repo.py` — `readme-claim-unsourced` fails the
-build on a claim-region number that appears in no committed results file, and
+in the claim region, and the two are never combined into one figure.
+
+README carries two kinds of number and enforces one of them. Measured claims live inside the claim
+region, the block delimited above by the frozen pair of `claim-region` HTML comments. Every number
+in that block is sourced from a committed results file under `evals/`, states the model versions
+and the date it was produced, and is checked by `tools/check_repo.py` — `readme-claim-unsourced`
+fails the build on a claim-region number that appears in no committed results file, and
 `readme-claim-unanchored` fails it on a claim-region paragraph that carries a number without a
 model string and a date.
+
+The other kind is inventory: the 31 rules, the 28 worked pairs, the paths in the layout tree. Those
+count what this repository contains rather than measuring model behaviour, so they carry no model
+string and no date, and the two claim-region codes stop at the end marker rather than reaching
+them. Different codes check those — `catalog-count-mismatch`, `readme-layout-tree-stale` and their
+neighbours read the counted artefact and compare. What no code checks is the third case: figures
+quoted from a results file in prose outside the claim region, such as the conformance numbers above.
+Each names the file it came from, so you can check it against that file yourself; `check_repo.py`
+will not do it for you.
 
 ## Keeping derivatives in sync
 
