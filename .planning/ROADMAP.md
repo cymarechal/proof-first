@@ -310,7 +310,7 @@ Plans:
 - [x] 06-01-PLAN.md
 - [x] 06-02-PLAN.md
 - [x] 06-03-PLAN.md
-- [ ] 06-04-PLAN.md
+- [x] 06-04-PLAN.md
 
 **Wave 1**
 
@@ -322,7 +322,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 06-03 — README states what the benchmark supports: pooled totals rendered, a delimited claim region, four codes
+- [x] 06-03 — README states what the benchmark supports: pooled totals rendered, a delimited claim region, four codes
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -346,7 +346,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
 | 5. Evaluation Harness | 3/3 | Complete    | 2026-09-20 |
-| 6. Legal Review Gate & Launch | 3/4 | In Progress|  |
+| 6. Legal Review Gate & Launch | 4/4 | In Progress|  |
 
 ---
 *Roadmap created: 2026-09-10*
