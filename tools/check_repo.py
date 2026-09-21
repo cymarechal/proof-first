@@ -402,6 +402,65 @@ Violation codes implemented in this file:
                       judgement SOURCES.md's own "What counts as
                       reproduction" section states no tool in this stack
                       performs, and this check is not the exception.
+  readme-claim-unsourced - a numeric token inside README.md's claim
+                      region (delimited by the frozen
+                      `<!-- claim-region:start -->` / `<!-- claim-region:end -->`
+                      pair) appears in no file matching
+                      evals/*/RESULTS*.md; also fires once when those
+                      markers are unbalanced or reversed, because an
+                      unbounded region is not an empty one and reading it
+                      as empty would make deleting the end marker a way
+                      around the check. The region is bounded because
+                      README legitimately carries numbers that are not
+                      measured claims. Silent when README carries neither
+                      marker, and when README.md does not exist. Declared
+                      ceiling: matching is substring containment over the
+                      concatenated corpus, so `48` is sourced by any file
+                      containing `1948`. This catches a number invented out
+                      of nothing; it does not prove provenance to the
+                      digit.
+  readme-claim-unanchored - a claim-region paragraph containing a numeric
+                      token carries no exact model version from
+                      CLAIM_MODEL_STRINGS, or no ISO-8601 date, or
+                      neither. Paragraphs are split on blank lines, so the
+                      anchor has to travel with the figure rather than
+                      sitting once at the top of a section. Fires once per
+                      offending paragraph, naming its first line. Silent
+                      with no claim region, with no README.md, and on the
+                      unbalanced-marker condition, which
+                      readme-claim-unsourced reports alone so one broken
+                      region is one violation. Declared ceiling: this
+                      asserts a model string and a date are PRESENT in the
+                      paragraph. It cannot assert they are the model and
+                      date that produced that paragraph's number.
+  readme-badge-unlisted - README.md carries a Markdown image whose URL
+                      contains `badge` or `shields.io`, or ends `.svg`,
+                      and matches no entry in the frozen BADGE_ALLOW_LIST.
+                      The allow-list admits build status and license only:
+                      a CI badge reports that ten offline scripts exited
+                      zero and a license badge states what LICENSE already
+                      states, so neither carries a measured product claim.
+                      Fires once per offending image, naming its URL.
+                      Silent when README.md does not exist. Declared
+                      ceiling: this reads Markdown image syntax only, so a
+                      badge embedded as a raw HTML `<img>` tag is invisible
+                      to it.
+  readme-layout-tree-stale - an immediate subdirectory of evals/ exists on
+                      disk and its name does not appear in README.md's
+                      `## Repository layout` section. Closes the gap
+                      readme-layout-legend-drift's own docstring declares
+                      it does not cover -- whether the tree matches the
+                      filesystem. Scoped to evals/ because that is where
+                      this repository adds families, and to one level
+                      because a full tree diff would fire on __pycache__
+                      and on every future fixture directory; __pycache__
+                      and dot-prefixed names are skipped. Fires once per
+                      missing directory. Silent when README.md or evals/
+                      does not exist. Declared ceiling: it checks that the
+                      name appears somewhere in the section, not that the
+                      entry is correctly placed, that its children are
+                      listed, or that every path the tree names still
+                      exists.
   source-gate-incomplete - LEGAL-REVIEW.md declares the frozen line
                       `Gate status: PASSED` while at least one SOURCES.md
                       row still reads `unverified`; also fires when
@@ -1410,6 +1469,8 @@ README_CHECK_CODES = [
     'readme-results-pointer-missing', 'readme-install-path-missing', 'readme-before-after-order',
     'readme-example-drift', 'readme-example-lead-distance', 'readme-layout-legend-drift',
     'readme-output-style-destination-missing',
+    'readme-claim-unsourced', 'readme-claim-unanchored', 'readme-badge-unlisted',
+    'readme-layout-tree-stale',
 ]
 
 
@@ -1435,6 +1496,265 @@ def run_readme_checks(repo_root):
     violations += check_readme_example_lead_distance(repo_root)
     violations += check_readme_layout_legend_drift(repo_root)
     violations += check_readme_output_style_destination(repo_root)
+    violations += check_readme_claim_unsourced(repo_root)
+    violations += check_readme_claim_unanchored(repo_root)
+    violations += check_readme_badge_unlisted(repo_root)
+    violations += check_readme_layout_tree_stale(repo_root)
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# README.md claim region, badges, and layout-tree currency (LEG-05)
+# ---------------------------------------------------------------------------
+
+CLAIM_REGION_START = '<!-- claim-region:start -->'
+CLAIM_REGION_END = '<!-- claim-region:end -->'
+
+# A maximal run of a digit followed by digits, commas, dots or percent
+# signs. Frozen here so the check is not arguable: '2026-09-18', '38',
+# '7.47', '30.0%' and '48' are one token each.
+_CLAIM_NUMERIC_TOKEN_RE = re.compile(r'\d[\d,.%]*')
+
+# The exact model strings a claim-region paragraph may anchor to. Exact
+# strings, not a pattern: LEG-05 asks for model VERSIONS, and a pattern
+# matching 'claude-*' would accept a family name that names no version.
+CLAIM_MODEL_STRINGS = ('claude-opus-5', 'claude-sonnet-5')
+
+_CLAIM_ISO_DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}')
+
+# Glob for the committed results files a claim-region number may source
+# from. Sorted at read time so the corpus is deterministic.
+CLAIM_SOURCE_GLOB = 'evals/*/RESULTS*.md'
+
+_MARKDOWN_IMAGE_RE = re.compile(r'!\[[^\]]*\]\(([^)]*)\)')
+
+# Badge policy, frozen: build status and license only. Neither carries a
+# measured product claim -- a CI badge reports that ten offline scripts
+# exited zero, and a license badge states what LICENSE already states. No
+# badge may carry a number this repository has not measured, which is why
+# every shields.io endpoint and every dynamic badge is refused rather than
+# reviewed case by case.
+BADGE_ALLOW_LIST = (
+    'actions/workflows/ci.yml/badge.svg',
+    'img.shields.io/badge/License-MIT-',
+)
+
+# Directory under which every immediate subdirectory must appear in
+# README's layout tree, and the names never expected to appear there.
+LAYOUT_TREE_SCAN_DIR = 'evals'
+LAYOUT_TREE_SKIP_DIRS = ('__pycache__',)
+
+
+def _claim_region(repo_root):
+    """Return (region_text, error) for README's claim region.
+
+    error is a message when the markers are unbalanced or out of order --
+    an unbounded region is not an empty one, and reading it as empty would
+    let deleting the end marker switch the check off. (None, None) means
+    README has neither marker, which is silent by design so a README
+    without a claim region is not retroactively in violation."""
+    path = repo_root / 'README.md'
+    if not path.exists():
+        return None, None
+    text = path.read_text(encoding='utf-8')
+    starts = text.count(CLAIM_REGION_START)
+    ends = text.count(CLAIM_REGION_END)
+    if starts == 0 and ends == 0:
+        return None, None
+    if starts != 1 or ends != 1:
+        return None, (
+            f"README.md carries {starts} '{CLAIM_REGION_START}' and {ends} "
+            f"'{CLAIM_REGION_END}' marker(s); exactly one of each is required"
+        )
+    start_idx = text.find(CLAIM_REGION_START)
+    end_idx = text.find(CLAIM_REGION_END)
+    if end_idx < start_idx:
+        return None, (
+            f"README.md's '{CLAIM_REGION_END}' precedes its '{CLAIM_REGION_START}', "
+            f"so the claim region has no readable extent"
+        )
+    return text[start_idx + len(CLAIM_REGION_START):end_idx], None
+
+
+def _claim_numeric_tokens(text):
+    """Every numeric token in text, trailing sentence punctuation stripped.
+    A token that is only punctuation after stripping is discarded."""
+    tokens = []
+    for raw in _CLAIM_NUMERIC_TOKEN_RE.findall(text):
+        token = raw.rstrip('.,')
+        if token:
+            tokens.append(token)
+    return tokens
+
+
+def check_readme_claim_unsourced(repo_root):
+    """Check that every number inside README's claim region appears in a
+    committed results file (LEG-05).
+
+    README legitimately carries numbers that are not measured claims -- a
+    rule count, a worked-pair count, the figures inside the before/after
+    example. A whole-file check would have to whitelist all of those, which
+    is unmaintainable, or be switched off, which is useless. The region is
+    bounded so the check can be strict where strictness means something.
+
+    Fires once per unsourced token, naming it. Also fires once when the
+    markers are unbalanced or reversed, because an unbounded region is not
+    an empty one and reading it as empty would make deleting the end marker
+    a way around the check. Silent when README carries neither marker, and
+    silent when README.md does not exist.
+
+    Declared ceiling (substring matching): a token is sourced if it appears
+    anywhere in the corpus as a substring, so `48` is sourced by any file
+    containing `1948`. This check exists to catch a number invented out of
+    nothing, not to prove provenance to the digit -- the pointer to the
+    results file is what does that."""
+    violations = []
+    region, error = _claim_region(repo_root)
+    if error:
+        return [('README.md', f"readme-claim-unsourced {error}")]
+    if region is None:
+        return violations
+    corpus = ''
+    for path in sorted((repo_root).glob(CLAIM_SOURCE_GLOB)):
+        corpus += path.read_text(encoding='utf-8')
+    for token in sorted(set(_claim_numeric_tokens(region))):
+        if token not in corpus:
+            violations.append(('README.md', (
+                f"readme-claim-unsourced README.md's claim region states {token}, which appears "
+                f"in no file matching {CLAIM_SOURCE_GLOB}"
+            )))
+    return violations
+
+
+def check_readme_claim_unanchored(repo_root):
+    """Check that every claim-region paragraph carrying a number also names
+    an exact model version and an ISO-8601 date (LEG-05).
+
+    A number with no model behind it is a number about nothing, and a
+    number with no date behind it cannot be re-derived. Paragraphs are
+    separated by blank lines, so the anchor has to travel with the figure
+    rather than sitting once at the top of a section a reader may not have
+    read.
+
+    Fires once per offending paragraph, naming its first line. Silent when
+    README carries no claim region and when README.md does not exist; the
+    unbalanced-marker condition is reported by readme-claim-unsourced
+    alone, so one broken region is one violation and not two.
+
+    Declared ceiling (presence, not correspondence): this asserts that a
+    model string and a date are present in the paragraph. It does not and
+    cannot assert that they are the model and the date that produced that
+    paragraph's number."""
+    violations = []
+    region, error = _claim_region(repo_root)
+    if error or region is None:
+        return violations
+    for paragraph in re.split(r'\n\s*\n', region):
+        if not _claim_numeric_tokens(paragraph):
+            continue
+        has_model = any(model in paragraph for model in CLAIM_MODEL_STRINGS)
+        has_date = bool(_CLAIM_ISO_DATE_RE.search(paragraph))
+        if has_model and has_date:
+            continue
+        missing = []
+        if not has_model:
+            missing.append('a model version from ' + '/'.join(CLAIM_MODEL_STRINGS))
+        if not has_date:
+            missing.append('an ISO-8601 date')
+        first_line = next((l.strip() for l in paragraph.splitlines() if l.strip()), '')
+        violations.append(('README.md', (
+            f"readme-claim-unanchored README.md's claim-region paragraph beginning "
+            f"{first_line[:60]!r} states a figure without {' and without '.join(missing)}"
+        )))
+    return violations
+
+
+def check_readme_badge_unlisted(repo_root):
+    """Check that README carries no badge outside the frozen allow-list.
+
+    A badge is read as third-party verification. BADGE_ALLOW_LIST admits
+    build status and license only, because neither asserts anything about
+    document quality. Everything else -- any shields.io endpoint, any
+    dynamic badge, any badge carrying a number -- is refused.
+
+    README carries no images at all today, so this code ships silent and
+    stands as a gate against a future addition rather than a cleanup of an
+    existing one.
+
+    Fires once per offending image, naming its URL. Silent when README.md
+    does not exist.
+
+    Declared ceiling (Markdown syntax only): this sees `![alt](url)`. A
+    badge embedded as a raw HTML `<img>` tag is invisible to it. That is
+    stated rather than papered over with a second regex, because an HTML
+    detector would have to decide what counts as an image element and this
+    check does not need that argument."""
+    violations = []
+    path = repo_root / 'README.md'
+    if not path.exists():
+        return violations
+    for url in _MARKDOWN_IMAGE_RE.findall(path.read_text(encoding='utf-8')):
+        looks_like_badge = (
+            'badge' in url or 'shields.io' in url or url.endswith('.svg')
+        )
+        if not looks_like_badge:
+            continue
+        if any(allowed in url for allowed in BADGE_ALLOW_LIST):
+            continue
+        violations.append(('README.md', (
+            f"readme-badge-unlisted README.md carries a badge image {url} that is not on the "
+            f"frozen allow-list; build status and license badges are permitted because neither "
+            f"carries a measured product claim"
+        )))
+    return violations
+
+
+def check_readme_layout_tree_stale(repo_root):
+    """Check that README's layout tree names every eval family on disk.
+
+    readme-layout-legend-drift's own docstring says it "says nothing about
+    ... whether the tree matches the filesystem". This closes exactly that
+    gap, at one level: every immediate subdirectory of evals/ that exists
+    on disk must appear in README's layout tree. evals/routes/ existed on
+    disk, was referenced twice in README prose, and was absent from the
+    tree -- and nothing caught it.
+
+    Scoped to evals/ because that is where this repository adds families,
+    and to one level because a full tree diff would fire on __pycache__ and
+    on every future fixture directory. __pycache__ and dot-prefixed names
+    are skipped.
+
+    Fires once per missing directory, sorted by name. Silent when README.md
+    or evals/ does not exist.
+
+    Declared ceiling (presence, not placement): it checks that the
+    directory's name appears somewhere in the tree text. It does not check
+    that the entry sits in the right place, that its children are listed,
+    or that every path the tree names still exists -- only that no family
+    on disk is missing from it."""
+    violations = []
+    path = repo_root / 'README.md'
+    scan_dir = repo_root / LAYOUT_TREE_SCAN_DIR
+    if not path.exists() or not scan_dir.is_dir():
+        return violations
+    text = path.read_text(encoding='utf-8')
+    heading_idx = text.find(README_LAYOUT_HEADING)
+    if heading_idx == -1:
+        return violations
+    next_heading = text.find('\n## ', heading_idx + 1)
+    section = text[heading_idx:] if next_heading == -1 else text[heading_idx:next_heading]
+
+    for child in sorted(scan_dir.iterdir()):
+        if not child.is_dir():
+            continue
+        if child.name.startswith('.') or child.name in LAYOUT_TREE_SKIP_DIRS:
+            continue
+        if f'{child.name}/' in section:
+            continue
+        violations.append(('README.md', (
+            f"readme-layout-tree-stale README.md's '{README_LAYOUT_HEADING}' tree does not name "
+            f"{LAYOUT_TREE_SCAN_DIR}/{child.name}/, which exists on disk"
+        )))
     return violations
 
 
@@ -4834,6 +5154,51 @@ def _mutate_framework_statement_stale_review(root):
     path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def _mutate_readme_claim_unsourced(root):
+    """Insert a fabricated figure into the real README's claim region --
+    a number that appears in no committed results file, which is the
+    defect this code exists to catch."""
+    path = root / 'README.md'
+    text = path.read_text(encoding='utf-8')
+    marker = CLAIM_REGION_START
+    idx = text.find(marker) + len(marker)
+    fabricated = (
+        "\n\nMeasured 2026-09-18 across `claude-opus-5` and `claude-sonnet-5`: "
+        "buyers rated the output 91743 points higher.\n"
+    )
+    path.write_text(text[:idx] + fabricated + text[idx:], encoding='utf-8')
+
+
+def _mutate_readme_claim_unanchored(root):
+    """Strip the model strings out of one real claim-region paragraph,
+    leaving its figures standing with nothing behind them."""
+    path = root / 'README.md'
+    text = path.read_text(encoding='utf-8')
+    start = text.find(CLAIM_REGION_START)
+    end = text.find(CLAIM_REGION_END)
+    region = text[start:end]
+    for model in CLAIM_MODEL_STRINGS:
+        region = region.replace(model, 'the tested model')
+    path.write_text(text[:start] + region + text[end:], encoding='utf-8')
+
+
+def _mutate_readme_badge_unlisted(root):
+    """Hang a shields.io badge carrying a number on the real README."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    lines.insert(1, '![quality](https://img.shields.io/badge/quality-98%25-brightgreen.svg)')
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def _mutate_readme_layout_tree_stale(root):
+    """Delete the routes/ line from the real README's layout tree, the
+    exact omission that shipped undetected before this code existed."""
+    path = root / 'README.md'
+    lines = path.read_text(encoding='utf-8').splitlines()
+    kept = [l for l in lines if not (l.strip().endswith('routes/') and '─' in l)]
+    path.write_text('\n'.join(kept) + '\n', encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -4849,6 +5214,10 @@ MUTATIONS = [
     ('readme-results-pointer-missing', "delete every line of README.md containing the results-pointer path", _mutate_readme_results_pointer_missing),
     ('results-breakdown-count-mismatch', "raise the real results file's Arm A no-family bullet's stated count above its own enumeration sum", _mutate_results_breakdown_count_mismatch),
     ('source-row-unconfirmed', "strip the real SOURCES.md's one confirmed row back to its pre-confirmation placeholder while leaving its status reading verified", _mutate_source_row_unconfirmed),
+    ('readme-claim-unsourced', "insert a fabricated figure into the real README's claim region that no committed results file sources", _mutate_readme_claim_unsourced),
+    ('readme-claim-unanchored', "strip the model strings out of the real README's claim region, leaving its figures unanchored", _mutate_readme_claim_unanchored),
+    ('readme-badge-unlisted', "hang a numeric shields.io badge on the real README", _mutate_readme_badge_unlisted),
+    ('readme-layout-tree-stale', "delete the routes/ line from the real README's repository-layout tree", _mutate_readme_layout_tree_stale),
     ('source-gate-incomplete', "flip one real SOURCES.md row back to unverified while LEGAL-REVIEW.md keeps declaring the gate PASSED", _mutate_source_gate_incomplete),
     ('framework-statement-stale-review', "roll one real NOTICES.md statement's Last reviewed date back behind LEGAL-REVIEW.md's review date", _mutate_framework_statement_stale_review),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
@@ -6420,6 +6789,30 @@ def _two_offending_sources():
     ])
 
 
+def _claim_readme(region_body, tree_extra='', images='', markers=True):
+    """A minimal README carrying the layout heading, an optional image, and
+    a claim region built from region_body. markers=False omits the end
+    marker, giving the unbalanced-region direction."""
+    start = CLAIM_REGION_START + '\n' if markers else CLAIM_REGION_START + '\n'
+    end = CLAIM_REGION_END + '\n' if markers else ''
+    return (
+        "# Fixture readme\n\n"
+        + images
+        + start + "\n" + region_body + "\n\n" + end
+        + "\n## Repository layout\n\n"
+        "```\nproof-first/\n├── evals/\n│   └── benchmark/\n"
+        + tree_extra +
+        "```\n"
+    )
+
+
+def _claim_results_corpus(root):
+    """The committed-results corpus a claim-region token may source from,
+    at the one glob CLAIM_SOURCE_GLOB reads."""
+    _write(root / 'evals' / 'benchmark' / 'RESULTS.md',
+           "# Fixture results\n\nMeasured 2026-09-18: 45 wins, 1 tie, 2 losses over 48 pairs.\n")
+
+
 def _legal_review(gate='PASSED', review_date='2026-09-21'):
     """A minimal LEGAL-REVIEW.md carrying exactly one gate line and one
     review-date line -- the two markers both 06-02 codes read."""
@@ -6622,6 +7015,16 @@ def self_test():
         stale_nodate_root = tmp_root / 'stale_nodate'
         stale_unparseable_root = tmp_root / 'stale_unparseable'
         stale_noreview_root = tmp_root / 'stale_noreview'
+
+        claim_clean_root = tmp_root / 'claim_clean'
+        claim_unsourced_root = tmp_root / 'claim_unsourced'
+        claim_unanchored_root = tmp_root / 'claim_unanchored'
+        claim_unbalanced_root = tmp_root / 'claim_unbalanced'
+        claim_nomarker_root = tmp_root / 'claim_nomarker'
+        claim_two_root = tmp_root / 'claim_two'
+        badge_allowed_root = tmp_root / 'badge_allowed'
+        badge_bad_root = tmp_root / 'badge_bad'
+        tree_stale_root = tmp_root / 'tree_stale'
         results_bad_root = tmp_root / 'results_bad'
 
         family_capitalized_root = tmp_root / 'family_capitalized'
@@ -6961,6 +7364,39 @@ def self_test():
         _write(stale_noreview_root / 'NOTICES.md',
                _notices_statements(('2026-09-10', '2026-09-10', '2026-09-10')))
 
+        # README claim-region, badge and layout-tree fixtures (06-03).
+        # Every root below ships the same one-file results corpus so token
+        # sourcing is decided by the region's content, not by the corpus.
+        anchored = "Measured 2026-09-18 across `claude-opus-5`: 45 wins over 48 pairs."
+        for root in (claim_clean_root, claim_unsourced_root, claim_unanchored_root,
+                     claim_unbalanced_root, claim_nomarker_root, claim_two_root,
+                     badge_allowed_root, badge_bad_root, tree_stale_root):
+            _claim_results_corpus(root)
+            (root / 'evals' / 'benchmark').mkdir(parents=True, exist_ok=True)
+
+        _write(claim_clean_root / 'README.md', _claim_readme(anchored))
+        _write(claim_unsourced_root / 'README.md', _claim_readme(
+            anchored + "\n\nMeasured 2026-09-18 across `claude-opus-5`: 91743 points higher."))
+        _write(claim_unanchored_root / 'README.md', _claim_readme(
+            "The skill won 45 of 48 pairs."))
+        _write(claim_unbalanced_root / 'README.md',
+               "# Fixture readme\n\n" + CLAIM_REGION_START + "\n\n" + anchored + "\n")
+        _write(claim_nomarker_root / 'README.md',
+               "# Fixture readme\n\nThe skill won 45 of 48 pairs with no claim region at all.\n")
+        _write(claim_two_root / 'README.md', _claim_readme(
+            "Measured 2026-09-18 across `claude-opus-5`: 91743 points.\n\n"
+            "Measured 2026-09-18 across `claude-opus-5`: 80512 points."))
+        _write(badge_allowed_root / 'README.md', _claim_readme(
+            anchored,
+            images="![build](https://github.com/o/r/actions/workflows/ci.yml/badge.svg)\n"
+                   "![license](https://img.shields.io/badge/License-MIT-green.svg)\n\n"))
+        _write(badge_bad_root / 'README.md', _claim_readme(
+            anchored,
+            images="![quality](https://img.shields.io/badge/quality-98%25-brightgreen.svg)\n\n"))
+        _write(tree_stale_root / 'README.md', _claim_readme(anchored))
+        (tree_stale_root / 'evals' / 'routes').mkdir(parents=True, exist_ok=True)
+        (tree_stale_root / 'evals' / '__pycache__').mkdir(parents=True, exist_ok=True)
+
         # Case-insensitivity fixture (skill-family-line-gate-missing,
         # 03-REVIEW.md WR-02 gap closure): family_capitalized_root's
         # self-check section names both family-line anchors with initial
@@ -7213,6 +7649,22 @@ def self_test():
         stale_nodate_codes = _codes(stale_nodate_root)
         stale_unparseable_codes = _codes(stale_unparseable_root)
         stale_noreview_codes = _codes(stale_noreview_root)
+        claim_clean_codes = _codes(claim_clean_root)
+        claim_unsourced_codes = _codes(claim_unsourced_root)
+        claim_unanchored_codes = _codes(claim_unanchored_root)
+        claim_unbalanced_codes = _codes(claim_unbalanced_root)
+        claim_nomarker_codes = _codes(claim_nomarker_root)
+        badge_allowed_codes = _codes(badge_allowed_root)
+        badge_bad_codes = _codes(badge_bad_root)
+        tree_stale_codes = _codes(tree_stale_root)
+        claim_two_violations = [
+            line for _, line in run_all_checks(claim_two_root)
+            if line.startswith('readme-claim-unsourced ')
+        ]
+        tree_stale_violations = [
+            line for _, line in run_all_checks(tree_stale_root)
+            if line.startswith('readme-layout-tree-stale ')
+        ]
         stale_two_violations = [
             (subject, line) for subject, line in run_all_checks(stale_two_root)
             if line.startswith('framework-statement-stale-review ')
@@ -7290,6 +7742,8 @@ def self_test():
             | readme_layout_bad_codes
             | readme_output_style_bad_codes
             | comparison_bad_codes
+            | claim_unsourced_codes | claim_unanchored_codes
+            | badge_bad_codes | tree_stale_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -7711,6 +8165,67 @@ def self_test():
             all_ok = False
         elif len({s for s, _ in stale_two_violations}) != 2:
             print("FAIL: framework-statement-stale-review reported two stale statements under one subject, so they cannot be told apart")
+            all_ok = False
+
+        # README claim-region assertions (readme-claim-unsourced /
+        # readme-claim-unanchored, 06-03).
+        if 'readme-claim-unsourced' in claim_clean_codes:
+            print("FAIL: readme-claim-unsourced fired on a claim region whose numbers all appear in the results corpus")
+            all_ok = False
+        if 'readme-claim-unanchored' in claim_clean_codes:
+            print("FAIL: readme-claim-unanchored fired on a claim-region paragraph carrying a model string and a date")
+            all_ok = False
+        if 'readme-claim-unsourced' not in claim_unsourced_codes:
+            print("FAIL: readme-claim-unsourced did not fire on a fabricated figure sourced by no results file")
+            all_ok = False
+        if 'readme-claim-unanchored' not in claim_unanchored_codes:
+            print("FAIL: readme-claim-unanchored did not fire on a numeric paragraph with no model string and no date")
+            all_ok = False
+        if 'readme-claim-unsourced' not in claim_unbalanced_codes:
+            print("FAIL: readme-claim-unsourced did not fire on a region with a start marker and no end marker")
+            all_ok = False
+        if 'readme-claim-unanchored' in claim_unbalanced_codes:
+            print("FAIL: readme-claim-unanchored double-reported an unbalanced region that readme-claim-unsourced owns")
+            all_ok = False
+        if 'readme-claim-unsourced' in claim_nomarker_codes or 'readme-claim-unanchored' in claim_nomarker_codes:
+            print("FAIL: a claim-region code fired on a README carrying no claim region at all")
+            all_ok = False
+        if 'readme-claim-unsourced' in good_codes or 'readme-claim-unanchored' in good_codes:
+            print("FAIL: a claim-region code fired on a fixture root shipping no README.md")
+            all_ok = False
+        if len(claim_two_violations) != 2:
+            print(f"FAIL: readme-claim-unsourced produced {len(claim_two_violations)} violations for two fabricated figures, expected 2")
+            all_ok = False
+        elif claim_two_violations != sorted(claim_two_violations):
+            print("FAIL: readme-claim-unsourced reported two unsourced tokens out of sorted order")
+            all_ok = False
+
+        # Badge assertions (readme-badge-unlisted, 06-03).
+        if 'readme-badge-unlisted' in badge_allowed_codes:
+            print("FAIL: readme-badge-unlisted fired on the allow-listed build-status and license badges")
+            all_ok = False
+        if 'readme-badge-unlisted' not in badge_bad_codes:
+            print("FAIL: readme-badge-unlisted did not fire on a numeric shields.io badge")
+            all_ok = False
+        if 'readme-badge-unlisted' in good_codes:
+            print("FAIL: readme-badge-unlisted fired on a fixture root shipping no README.md")
+            all_ok = False
+
+        # Layout-tree assertions (readme-layout-tree-stale, 06-03).
+        if 'readme-layout-tree-stale' not in tree_stale_codes:
+            print("FAIL: readme-layout-tree-stale did not fire on an evals/ subdirectory absent from the layout tree")
+            all_ok = False
+        if len(tree_stale_violations) != 1:
+            print(f"FAIL: readme-layout-tree-stale produced {len(tree_stale_violations)} violations, expected 1 — __pycache__ must be skipped")
+            all_ok = False
+        elif '__pycache__' in tree_stale_violations[0]:
+            print("FAIL: readme-layout-tree-stale reported __pycache__, which it is specified to skip")
+            all_ok = False
+        if 'readme-layout-tree-stale' in claim_clean_codes:
+            print("FAIL: readme-layout-tree-stale fired on a tree naming every evals/ subdirectory on disk")
+            all_ok = False
+        if 'readme-layout-tree-stale' in good_codes:
+            print("FAIL: readme-layout-tree-stale fired on a fixture root shipping no README.md")
             all_ok = False
 
         # Plugin-manifest-version assertions.
