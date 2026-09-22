@@ -2013,7 +2013,7 @@ Round 2: tests 7-9 — 1 passed, 2 issues (G-06-7, G-06-9), both resolved by 06-
 Round 3: tests 10-12 — 0 passed, 3 issues (G-06-10, G-06-11, G-06-12), all closed by 06-07.
 Round 4: tests 13-16 — 0 passed, 4 issues (G-06-13, G-06-14, G-06-15, G-06-16), all closed by 06-08.
 Round 5: tests 17-20 — 0 passed, 4 issues (G-06-17, G-06-18, G-06-19, G-06-20), all closed by 06-09.
-Round 6: tests 21-24 — **1 passed**, 3 issues (G-06-21, G-06-22, G-06-23), open.
+Round 6: tests 21-24 — **1 passed**, 3 issues (G-06-21, G-06-22, G-06-23), addressed by 06-10; closure awaits round 7's independent read.
 
 **Round 6: the count rose and the diagnosis moved.** Twenty-five checkably-false statements, against
 eighteen in round 5, seventeen in round 4, eleven in round 3, fourteen in round 2 and three in
@@ -2524,7 +2524,10 @@ WINDOWS.md id 12's closure condition is a round that returns none; this is not i
 
 - gap_id: G-06-21
   truth: "LEGAL-REVIEW.md's reproduction-boundary material contains no sentence a committed file or a cited source falsifies"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-22
+  resolved_by: "06-10 tasks 1-12 (commits d33b78a, 692e9fb, 7d7f6ac, 5e9b6de, 3710b9a, 2c80f22, aeb8bfc, 9e69ebd, add066d, 331077b, b41b17a, 0154c3a). All twelve LEGAL-REVIEW.md statements corrected against re-run measurements, not against the plan: the three OpenLibrary edition records were re-fetched live, the phrase counts re-derived wrap-tolerantly, and two enumerations dropped rather than re-counted because each had been falsified by the round that wrote it."
   reason: "All eight round-5 corrections hold, and the quoted-string anchors 06-09 substituted for the citations f909d3c broke survived every insertion made after them — the property they were chosen for. Twelve new statements. The sharpest is :188-190: the file's own account of how its six sources were confirmed says three rows matched a bibliographic `by_statement` field exactly, and the MEDDICC record carries no such field and has carried none since 2023, so the claim cannot be rescued as drift. Four more are scope or count absolutes the file states about itself, including one whose supporting grep the file's own later edits falsified, and one — ledger row 15's 'AST-based stdlib check' — that is the identical defect 06-09 deleted at :791-801 in the same round, left standing one screen away."
   severity: major
   test: 22
@@ -2569,7 +2572,10 @@ WINDOWS.md id 12's closure condition is a round that returns none; this is not i
 
 - gap_id: G-06-22
   truth: "No two committed files in this repository state things that cannot both be true"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-22
+  resolved_by: "06-10 tasks 13-20 (commits 411cbb9, 06ddefd, 17534a6, d448ed6, 4dc3eb7, cdf5384, 42595c4, ca6e9d4). The CR-01 banner scoped to the commit boundary it already named; six inverted above/below references corrected, three more than the gap listed; two timeout attributions corrected while the published N_A/M_A and N_B/M_B figures were re-derived and explicitly fenced; the checker docstring pointed at README rather than restating scope; the missing catalogue entry added; ten offline scripts corrected to ten commands; and the three false scope absolutes replaced by the tracer's measured per-path reader lists. Task 20 shipped catalogue_matches_registry() and refused the frozen-map alternative on a measurement."
   reason: "First run of the sweep at two readers. Thirteen findings across four files, eleven outside the two files the named briefs take as their subject, and eight authored in Phases 1 and 3. Two shapes dominate: the scope absolute in tools/check_repo.py — five instances, three of them inside one sixteen-line comment block 06-09 edited and partly corrected — and RESULTS-mod04.md contradicting itself about its own scorer, with a banner declaring every run block unanchored above fourteen anchored ones, and two arms each naming the same session as both the excluded timeout and a counted verdict. The published conformance figures are unaffected; the defect is in attribution prose. The second sweep reader produced four findings the first did not."
   severity: major
   test: 23
@@ -2609,8 +2615,11 @@ WINDOWS.md id 12's closure condition is a round that returns none; this is not i
 
 - gap_id: G-06-23
   truth: "The sentences a gap-closure round adds are checked before the round closes, including those outside its own diff"
-  status: failed
-  reason: "The widened fourth brief paid on its first run, by one finding and measurably: LEGAL-REVIEW:383-384 was authored by 06-08 and returns zero matches in the 06-09 range a diff-scoped brief would have used. Convergence with the file-named readers was 3 of 5, against round 5's 4 of 7. But three findings came from the orchestrator over .planning/, which every reader tree strips — and two of those are inside 06-09's own work and outside any window its self-audit could cover: a command literal falsified by the round's own SUMMARY commit five commits after the audit ran, and a miscount in the UAT record the round was editing but did not re-read. The brief's own range specification is also wrong in two committed files."
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-22
+  resolved_by: "06-10 tasks 21-27 (commits 1c41a2a, 2c0b6c5, 68b411e, 4e8b05c, fc801a9, fa098bc, 508da39, 2f7b978, 3182a3d, 2ee08a1). Range notation corrected at both recorded sites through WINDOWS.md's JSON fence; the fourth brief's finding counts corrected to seven and three; one citation in the round's own finding re-anchored after it was shown not to resolve even at 66322b1. The standing set for round 7 gains a .planning/ brief, the self-audit scope widens to every .planning/ file the round edited, and every closure plan now ends by re-running its committed command literals after the SUMMARY lands. That last rule caught this round twice, and the self-audit caught two more."
+  reason: "The widened fourth brief paid on its first run, by one finding and measurably: LEGAL-REVIEW:383-384 at 66322b1 was authored by 06-08 and returned zero matches in the 06-09 range a diff-scoped brief would have used (pinned to 66322b1 by 06-10; that arm returns 1 at HEAD, because 06-10's task-4 correction re-added the quoted phrase inside the range). Convergence with the file-named readers was 3 of 5, against round 5's 4 of 7. But three findings came from the orchestrator over .planning/, which every reader tree strips — and two of those are inside 06-09's own work and outside any window its self-audit could cover: a command literal falsified by the round's own SUMMARY commit five commits after the audit ran, and a miscount in the UAT record the round was editing but did not re-read. The brief's own range specification is also wrong in two committed files."
   severity: major
   test: 24
   artifacts:
