@@ -473,10 +473,14 @@ JUDGE_SCHEMA = {
 # and never blended into one composite number (EVAL-09).
 RESULTS_SECTION_HEADINGS = ('## Mechanical proxy counts', '## Judged persuasion')
 
-# The five caveats EVAL-10 requires, named as dict keys so build_results_md()
+# The caveats EVAL-10 requires, named as dict keys so build_results_md()
 # builds its caveats section FROM this constant -- the list this file's own
 # self-test checks against cannot silently drift from what the renderer
-# actually emits, because both read the same five keys.
+# actually emits, because both read the same keys. No count is stated here
+# on purpose: a literal above the tuple it counts is what drifted when
+# judge construct validity was added, and len(REQUIRED_CAVEATS) is the
+# only number that cannot. The self-test asserts the rendered bullet count
+# against that len(), so prose is not the record of how many there are.
 REQUIRED_CAVEATS = (
     'position bias',
     'judge-family bias',
@@ -2370,8 +2374,8 @@ def self_test():
     else:
         cases_exercised.append('results-render-fixture-two-headings-all-caveats-byte-identical')
 
-    # --- per-caveat assertion: deleting each of the five caveats in turn
-    # from a COPY of REQUIRED_CAVEATS (never the constant itself) makes the
+    # --- per-caveat assertion: deleting each caveat in REQUIRED_CAVEATS in
+    # turn from a COPY of it (never the constant itself) makes the
     # renderer omit exactly that caveat, and _missing_required_caveats()
     # (checked against the real, full REQUIRED_CAVEATS) names it. Proves
     # the caveats section is built FROM the constant, not hardcoded prose
@@ -2387,6 +2391,32 @@ def self_test():
             per_caveat_ok = False
     if per_caveat_ok:
         cases_exercised.append('per-caveat-drift-guard')
+
+    # --- caveat-count assertion (06-08): the rendered `## Honest caveats`
+    # section emits exactly len(REQUIRED_CAVEATS) bullets. The per-caveat
+    # guard above proves every required key REACHES the section; it cannot
+    # see a seventh bullet the renderer emitted from somewhere else, nor
+    # can it notice a prose sentence claiming a different total. Asserting
+    # against len() rather than a literal is the point: there is no number
+    # in this file for a later edit to leave stale. ---
+    caveat_lines = []
+    in_caveats = False
+    for line in doc1.splitlines():
+        if line.startswith('## Honest caveats'):
+            in_caveats = True
+            continue
+        if in_caveats and line.startswith('## '):
+            break
+        if in_caveats and line.startswith('- '):
+            caveat_lines.append(line)
+    if len(caveat_lines) != len(REQUIRED_CAVEATS):
+        print(
+            f'FAIL: rendered report emitted {len(caveat_lines)} caveat bullet(s), '
+            f'expected len(REQUIRED_CAVEATS)={len(REQUIRED_CAVEATS)}'
+        )
+        all_ok = False
+    else:
+        cases_exercised.append('caveat-count-matches-constant')
 
     # --- no-subprocess assertion: the whole --report-only path (
     # load_raw_records -> aggregate -> build_results_md, via
