@@ -4,10 +4,10 @@ current_phase: 06
 current_phase_name: Legal Review Gate & Launch
 status: awaiting_verification
 stopped_at: >-
-  Round-4 gaps G-06-13..16 closed by 06-08 — 17 tasks, 16 commits, ten CI commands green.
-  Closure is unverified; /gsd-verify-work 06 round 5 with the four-brief standing set is the
-  condition.
-last_updated: "2026-09-22T13:10:00.000Z"
+  Round 5 ran and opened four gaps, G-06-17..20, on eighteen checkably-false statements.
+  06-09-PLAN.md is written and committed, 20 tasks, addressing all four.
+  Next: /gsd-execute-phase 06 --gaps-only.
+last_updated: "2026-09-22T14:30:00.000Z"
 state_head: defa9aabc721607a1ccf68bbc90062ac333fae16
 progress:
   total_phases: 6
@@ -17,22 +17,22 @@ progress:
   percent: 67
 last_activity: 2026-09-22
 last_activity_desc: >-
-  Phase 06 round-4 gap closure (06-08). All four gaps closed across 17 tasks and 16 commits over
-  seven files, all ten CI commands green. The one finding reaching installed users is fixed — both
-  derivatives claimed every worked-examples rule carries its constructive line in SKILL.md, while
-  eight are MC rules a build gate forbids there. Two finding classes got mechanical assertions,
-  caveat-count-matches-constant and no-platform-collision, each mutation-probed against an
-  unmutated control. Task 17's citation gate shipped with its premise reversed by measurement:
-  replayed over the full history it fires zero times, because every citation finding four rounds
-  produced was a line that existed and said something else. It then broke five citations itself and
-  stayed silent on them, so the fix that holds is the anchoring convention — headings and quoted
-  strings for Markdown, symbol names for Python — not the code. The self-audit found eight defects
-  in this round's own added sentences, all fixed inside the round. Verification is human_needed, not
-  passed, because 06-08 wrote the corrections it would be verifying. This round recommends cutting
-  LEGAL-REVIEW.md rather than auditing it again: 159 lines were added to correct 13 sentences.
-  Note: this frontmatter's two long fields are now block scalars — they were plain multi-line
-  scalars containing bare colons, which made STATE.md's frontmatter invalid YAML and is why
-  state-snapshot reported last_activity_desc as null.
+  Phase 06 UAT round 5. Six cold readers across the four-brief standing set, each a separate
+  headless claude -p session on its own copy of the tree with .planning/ removed. Every one of
+  06-08's seventeen corrections holds, checked by readers who did not make them, and the
+  user-facing derivative fix verifies rule by rule — all 28 illustrated rules carry a constructive
+  line in the file the corrected notice names. Eighteen new checkably-false statements, against
+  seventeen last round, so the count did not fall. What changed is the diagnosis. By git blame, ten
+  of the eighteen were authored by a gap-closure round — eight by 06-08, down from 10 of 17, but
+  two by 06-05 and 06-06 that have survived every read since. The fourth standing brief is scoped
+  to the last round's diff and structurally cannot see those, so the rule is not "the closing round
+  is the defect source" but "a closing round is, and the earlier ones are still in the tree". The
+  other eight predate Phase 6's closures entirely, in evals/trigger/, the Launch section,
+  artifact-patterns.md's label inventory and the bench brief's timeline — all reached only by the
+  one brief that names no file. Zero of the eighteen are regressions. The largest finding class is
+  now scope overstatement about a mechanical guard (7 of 18), which 06-08 left to prose discipline
+  while putting code under the smallest class (2 of 18). All ten CI commands were green throughout.
+  06-09's structural task widens the fourth brief from the last diff to 06-05..HEAD.
 ---
 
 # Project State

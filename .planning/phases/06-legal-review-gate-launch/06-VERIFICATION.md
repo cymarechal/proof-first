@@ -1,7 +1,7 @@
 ---
 phase: 06-legal-review-gate-launch
 status: human_needed
-score: "2/2 must-haves verified. Round 4's four gaps (G-06-13..16) are CLOSED by 06-08 across 17 tasks and 16 commits, all ten CI commands green. Closure is NOT verified: every correction is a prose claim about another committed file, and each of the four self-checks so far has missed what an independent reader then found. Requirement checkboxes stay unchecked. Closure condition unchanged — /gsd-verify-work 06 round 5 with the four-brief standing set."
+score: "2/2 must-haves verified. Round 4's four gaps (G-06-13..16) are CLOSED by 06-08 and round 5 confirmed every one of its seventeen corrections holds — checked by six readers who did not make them, plus a rule-by-rule re-verification of the user-facing derivative fix. Round 5 opened four new gaps (G-06-17..20) on eighteen further checkably-false statements; 06-09-PLAN.md addresses all four across 20 tasks. Ten of the eighteen were authored by a gap-closure round — eight by 06-08, and two by 06-05 and 06-06 that have survived every read since, which refutes the last two plans' framing that only the most recent closure is the defect source. Zero are regressions. All ten CI commands green throughout. Requirement checkboxes stay unchecked. Closure condition unchanged — WINDOWS id 12 closes when a round returns none; five have not."
 verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
