@@ -576,10 +576,16 @@ sweeps recorded under that prong — which is where the command belongs, not her
 was written it claimed a command "recorded above" that did not exist: prong 3 was three sentences
 and no command, and no command anywhere in this file bore on diagrams, figures or visual
 arrangements. *Corrected 2026-09-22 (06-09). This correction first said prong 2's was "the only
-recorded whole-repo sweep", which is itself false — the entity check under `## Reproduction
-boundary` and the `Positive Business Outcomes` label sweep are both tree-wide too. Neither bears on
-prong 3's question, which is the claim that actually carries the correction; caught by this round's
-own self-audit.*
+recorded whole-repo sweep", which is itself false — this file records other tree-wide sweeps, and
+none of them bears on prong 3's question, which is the claim that actually carries the correction;
+caught by this round's own self-audit.*
+*Corrected 2026-09-22 (06-10): the 06-09 wording named two of those sweeps as examples, and one of
+them does not exist. There is no "entity check under `## Reproduction boundary`": this file's entity
+searches sit under `## Name collisions`, which is a different section, and `tools/check_repo.py`
+implements no check by that name. Both examples are dropped rather than one repaired, because an
+enumeration of sweeps written into prose is falsified by the next round that adds or removes one —
+the failure this file has now recorded three times — and the sentence's point does not rest on
+them.*
 
 One is carried, and here is why rather than a bare note. `skills/proof-first/references/completeness-audit.md`:12-15
 is described in the first bullet above as expressly declining to concede order provenance; a
