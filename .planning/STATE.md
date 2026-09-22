@@ -5,7 +5,7 @@ current_phase_name: Legal Review Gate & Launch
 status: awaiting_verification
 stopped_at: >-
   Round 5 ran and opened four gaps, G-06-17..20, on eighteen checkably-false statements.
-  06-09-PLAN.md is written and committed, 20 tasks, addressing all four.
+  06-09-PLAN.md is written and committed, 21 tasks, addressing all four.
   Next: /gsd-execute-phase 06 --gaps-only.
 last_updated: "2026-09-22T14:30:00.000Z"
 state_head: defa9aabc721607a1ccf68bbc90062ac333fae16
