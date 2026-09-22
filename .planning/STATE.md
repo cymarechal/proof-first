@@ -3,36 +3,17 @@ gsd_state_version: 1.0
 current_phase: 06
 current_phase_name: Legal Review Gate & Launch
 status: awaiting_verification
-stopped_at: >-
-  Round 5 ran and opened four gaps, G-06-17..20, on eighteen checkably-false statements.
-  06-09-PLAN.md is written and committed, 21 tasks, addressing all four.
-  Next: /gsd-execute-phase 06 --gaps-only.
-last_updated: "2026-09-22T14:30:00.000Z"
-state_head: defa9aabc721607a1ccf68bbc90062ac333fae16
+stopped_at: "06-09 executed: all 21 tasks, 25 task commits plus the summary commit, four round-5 gaps closed at source. Task 18 self-audit found eight further defects in the round's own added sentences and fixed them. All ten CI commands green. Next: phase verification, then /gsd-verify-work 06 for round 6."
+last_updated: "2026-09-22T15:45:00.000Z"
+state_head: 10cfa1e16171720b55c7e521712b89dde06e6cf9
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 60
-  completed_plans: 60
+  total_plans: 61
+  completed_plans: 61
   percent: 67
 last_activity: 2026-09-22
-last_activity_desc: >-
-  Phase 06 UAT round 5. Six cold readers across the four-brief standing set, each a separate
-  headless claude -p session on its own copy of the tree with .planning/ removed. Every one of
-  06-08's seventeen corrections holds, checked by readers who did not make them, and the
-  user-facing derivative fix verifies rule by rule — all 28 illustrated rules carry a constructive
-  line in the file the corrected notice names. Eighteen new checkably-false statements, against
-  seventeen last round, so the count did not fall. What changed is the diagnosis. By git blame, ten
-  of the eighteen were authored by a gap-closure round — eight by 06-08, down from 10 of 17, but
-  two by 06-05 and 06-06 that have survived every read since. The fourth standing brief is scoped
-  to the last round's diff and structurally cannot see those, so the rule is not "the closing round
-  is the defect source" but "a closing round is, and the earlier ones are still in the tree". The
-  other eight predate Phase 6's closures entirely, in evals/trigger/, the Launch section,
-  artifact-patterns.md's label inventory and the bench brief's timeline — all reached only by the
-  one brief that names no file. Zero of the eighteen are regressions. The largest finding class is
-  now scope overstatement about a mechanical guard (7 of 18), which 06-08 left to prose discipline
-  while putting code under the smallest class (2 of 18). All ten CI commands were green throughout.
-  06-09's structural task widens the fourth brief from the last diff to 06-05..HEAD.
+last_activity_desc: "Phase 06 gap closure 06-09, closing round 5. Twenty-one tasks across eight files. G-06-17: README's proxy-source scope bounded to the three registry lists, its output-styles claim scoped to the local clone with the plugin case disclosed as untested, its regeneration trigger corrected to the generator's four reference files. G-06-18: eight LEGAL-REVIEW statements — two citations re-anchored by quoted string after 06-08 broke them, the source-row arithmetic, the surviving retracted phrase, prong 3's missing command now run and recorded, the list/file correction withdrawn because the retired quotation was accurate, a machine check that never existed deleted, seven self-tests corrected to six, and the TSDR \"answered\" claim reconciled with the table's own 401. G-06-19: the citation code's two comments corrected against their own docstring, INIT-EVENTS.md's key set corrected to 24 and asserted by a new run_trigger_test.py self-test case proven with a mutation probe plus unmutated control, the element-label count corrected to fourteen with its counting rule stated, the bench brief's reversed comparison fixed. G-06-20: the last two closing-round statements. Structurally, the fourth standing brief widens from the last round's diff to every gap-closure commit range, and the whole-tree sweep goes from one reader to two with round 6 instructed to measure each reader's unique findings. Task 18's self-audit found eight defects in this round's own prose — five class 1, two class 3, one class 2 — including two self-referential commands that only re-running them after writing them down could catch. All ten CI commands green, 58 mutation codes discrimination-proven, windows status ok at 32 rows."
 ---
 
 # Project State
@@ -47,61 +28,39 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 06 (Legal Review Gate & Launch) — AWAITING VERIFICATION
-Plan: 8 of 8 complete
-Status: Round-4 gaps closed by 06-08; verification is `human_needed`
+Plan: 9 of 9
+Status: All plans summarized; phase gates not yet run
 
-**Next action: `/gsd-verify-work 06` — round 5, with the four-brief standing set.** All eight plans
-have summaries and all four round-4 gaps are closed, but 06-08 wrote the corrections it would be
-verifying, and each of the four self-checks so far has missed what an independent reader then found.
-LEG-04 and LEG-05 stay unchecked; their closure condition is an independent read returning no
-checkably-false statement, which four rounds have not produced.
+**Next action: phase verification, then `/gsd-verify-work 06` for round 6.** All nine plans have
+summaries. 06-09 closed the four round-5 gaps at source and, as every closing round before it has,
+wrote new defects doing so — eight, found by its own task-18 self-audit and fixed before it closed.
+That audit is not a substitute for an independent read: five rounds of cold reads have each found
+what the round's own self-check missed, which is `WINDOWS.md` id 12's standing closure condition and
+the reason LEG-04 and LEG-05 stay unchecked.
 
-**What round 5 should do differently, on this round's evidence rather than its own.** The plan said
-that if round 5 again finds most of its findings in the closing commit's text, the remedy is to cut
-the prose rather than keep correcting it. That threshold is already reached: 06-08 added 159 lines
-to `LEGAL-REVIEW.md` to correct 13 sentences and authored 8 new defects doing it, all caught inside
-the round by its own audit. The file is 1,006 lines. Round 5 should cut it, not audit it.
+**What round 6 runs, and what changed in it.** Six readers across the standing set, now amended in
+`06-UAT.md`'s methodology section and `WINDOWS.md` id 17:
 
-The fourth brief — aimed at the closing commit's own added lines — is mandatory and is the reader
-that would have caught all eight of this round's self-authored defects.
+- `README.md` contradiction hunt — 2 readers
+- `LEGAL-REVIEW.md` reproduction-boundary material — 2 readers
+- Whole-tree sweep, bound to no named file — **2 readers** (was 1), both on the same no-file brief
+  independently, with round 6 recording each reader's unique findings so the marginal value stops
+  being a guess
+- What **any** gap-closure round rewrote — 1 reader, input widened from the last round's diff to
+  `d67012e..HEAD`, the union of every gap-closure commit range
 
-04-15 ran the comparison criterion 3 had waited on since the phase began. Three distribution routes,
-36 headless sessions, four artifact families: the measurement did not distinguish them (skill-on 7.9
-[1-14], style-on 7.1 [3-11], prompt-on 6.3 [1-10], every pair overlapping). Published as a null
-result, not as equivalence. The useful finding was elsewhere — the installed skill must be triggered
-and was not in 3 of 12 sessions, while the output style and pasted prompt are unconditionally on.
+The widening is the round's structural finding. Two of round 5's eighteen were authored by 06-05 and
+06-06, closing rounds 1 and 2, and survived every read since; no diff-scoped brief could see them.
+The rule this phase records is not "the closing round is the defect source" but "a closing round is,
+and the earlier ones are still in the tree." The justifying measurement is pinned to round 5 — 10 of
+18 findings by a gap-closure round, 8 by the last one and 2 by earlier ones — so round 6 can see
+whether widening moved the split.
 
-DIST-05 moved to complete. DIST-03 and DIST-04 stay unchecked with measured reasons. WINDOWS entry
-28 carries the four limits that bound the null result; entries 11, 12 and 16 are unchanged.
-
-Phases 1, 2, 3 and 5 are complete. Phase 4 is the only one still open before Phase 6, and it is
-open on one thing: roadmap success criterion 3 — "User can turn the discipline on permanently as an
-output style, or paste a system-prompt version in a harness with no skill support, and get
-equivalent behavior either way." That is 04-UAT.md test 2, requirements DIST-03 and DIST-04, and it
-has read `blocked — deferred by design` since the phase began, on the stated ground that it waited
-on Phase 5's benchmark.
-
-Phase 5 is done. It shipped `evals/benchmark/run_benchmark.py`, a 96-generation live run, and the
-whole pattern for driving isolated headless `claude -p` sessions and scoring them offline. The
-blocking premise expired; the item did not become true on its own. Phase 5 measured skill-on against
-skill-off and never compared the three distribution routes to each other — `prompts/system-prompt.md`
-says so in its own generated preamble.
-
-04-15 runs that comparison: three arms (`skill-on`, `style-on`, `prompt-on`) on byte-identical
-prompts from the eight committed benchmark scenarios, scored by `evals/lint.py`'s `lint()` and
-`evals/conformance/run_conformance.py`'s `score_transcript()`. Roughly $10 and half an hour behind a
-blocking spend checkpoint.
-
-One thing is genuinely unknown and the plan is built around it: whether a headless `claude -p`
-session honours a project-scoped output style at all. Two free probes were inconclusive. Task 2
-settles it with a six-session activation probe against an unrouted control, and has a written
-refusal branch — if no activation form discriminates, `style-on` is dropped from the matrix and the
-refusal is recorded, rather than an arm being run anyway and reported as if the route were on.
-
-What 04-15 does NOT close, unchanged: DIST-01 and DIST-02 need a published repository (Phase 6,
-LEG-04, WINDOWS entry 11); the interactive `/config` listing stays unobserved (entry 16); README
-prose quality stays with end-of-phase UAT (entry 12); cross-sentence contradiction stays refused
-(entry 17).
+**What is not shipped, deliberately.** No gate for the bench brief's timeline comparison: the
+canonical figures are machine-readable but the brief states the comparison in both orientations, so
+a frozen-literal gate would have to guess which one a sentence uses. Filed as a `WINDOWS.md` id 17
+candidate beside enforcement-scope checking. That is the sixth fuzzy proxy this repository has
+refused.
 
 ## Performance Metrics
 
@@ -282,6 +241,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-21T10:18:12.255Z
-Stopped at: Completed 06-04-PLAN.md
+Last session: 2026-09-22T15:45:00.000Z
+Stopped at: Completed 06-09-PLAN.md
 Resume file: None
