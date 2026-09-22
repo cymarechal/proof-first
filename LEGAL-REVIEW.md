@@ -163,9 +163,14 @@ lookup; it did not need to succeed, because the status view above did.
 **Changed in `NOTICES.md`:** the Rights-holder element gained one paragraph recording the case, the
 docket number, the court, the judge, the filing date, the 2026-04-21 ruling and its holding, the
 registration number, the registrant, the docket's un-terminated state, its most recent entry date,
-and the register's observed state. The two existing sentences — no claim about the outcome of any
-proceeding, and a determination about one spelling not treated as covering another — are unchanged
-and were verified present after the edit. `Last reviewed:` moved to 2026-09-21.
+and the register's observed state. The two clauses of the element's existing second sentence — no
+claim about the outcome of any proceeding, and a determination about one spelling not treated as
+covering another — are unchanged and were verified present after the edit. `Last reviewed:` moved to
+2026-09-21.
+*Corrected 2026-09-22 (06-10): this called them "the two existing sentences". They are two clauses
+of one sentence, which reads in full: "This repository makes no claim about the validity of any mark
+in this family and no claim about the outcome of any proceeding, and a determination about one
+spelling in the family is not treated here as covering another."*
 
 **Deliberately not done.** The holding is not extended to the MEDDIC or MEDDICC spellings. No
 position is taken, stated or implied, on where the proceeding ends. The multi-party-contested
