@@ -432,7 +432,7 @@ its patch. Reader 8's tree is described below.
 **The fifth brief inverts the arrangement, and it is the round's largest result.** Reader 8 was
 given `.planning/` — 187 files — plus the shipped tree and full git history, and asked to find
 statements inside `.planning/` that the repository contradicts. It returned **twelve**, every one
-confirmed. **Twelve of this round's twenty-three findings, 52%, live in `.planning/`** — the surface
+confirmed. **Thirteen of this round's twenty-three findings, 57%, live in `.planning/`** — the surface
 stripped from every reader tree for six consecutive rounds. Three of them (`WINDOWS.md` ids 11, 15
 and 29) are ledger rows whose twins in `LEGAL-REVIEW.md` 06-10 corrected in this very phase, leaving
 the ledger — the source of truth the rendered table is generated from — still wrong. One credits a
@@ -473,11 +473,14 @@ live moved completely.
 | — by **earlier** closures | 2 (11%) | 5 (20%) | **4 (17%)** |
 | Authored by a UAT write-up round | — | — | **3 (13%)** |
 | Predating the closures entirely | 8 (44%) | 16 (64%) | **11 (48%)** |
-| **Living in `.planning/`** | not reachable | 3, orchestrator-only | **12 (52%)** |
+| **Living in `.planning/`** | not reachable | 3, orchestrator-only | **13 (57%)** |
 
-**The shipped tree is converging; the record governing it is not.** Eleven findings are in shipped
-files, down from twenty-two in round 6. Twelve are in `.planning/`, up from three — and the three in
-round 6 were found by the orchestrator noticing, not by any instrument. The fifth brief is the
+**The shipped tree is converging; the record governing it is not.** Ten findings are in shipped
+files, down from twenty-two in round 6. Thirteen are in `.planning/`, up from three — and the three
+in round 6 were found by the orchestrator noticing, not by any instrument.
+*Corrected 2026-09-23: this round's own first write-up said "eleven" and "twelve", and its two
+summary tables said 12 (52%). Counted from the record's own finding headers the split is 10 / 13,
+and 13 of 23 is 57%. The error was in the round that exists to catch this class.* The fifth brief is the
 instrument, and on its first run it found four times what noticing found.
 
 **Three of the twelve are the same defect, and they show the failure mode.** `WINDOWS.md` ids 11, 15
@@ -2374,8 +2377,13 @@ expected: |
   One reader, given `.planning/` plus the shipped tree and full git history, finds no statement
   inside the project's own working record that the repository contradicts. First run of the fifth
   brief (06-10 task 25, change 3).
-result: issue
-reported: "Thirteen checkably-false statements on the brief's first run — 52% of the round, from one reader out of eight, over the one surface no reader has swept in six rounds. Three are ledger rows whose twins 06-10 corrected in this phase while leaving the ledger itself wrong. One credits a gap's closure to a commit reachable from no ref."
+result: skipped
+reason: |
+  Not a retraction: all thirteen findings below are confirmed and stand. Re-scoped to non-blocking
+  backlog by the gate decision of 2026-09-23 (see `## Gate scope decision` below), which bounds the
+  blocking gate to files that ship. `.planning/` is this project's working record, not its product.
+  The thirteen are tracked as backlog and close on their own merits, not on the phase gate.
+reported: "Thirteen checkably-false statements on the brief's first run — 57% of the round, from one reader out of eight, over the one surface no reader has swept in six rounds. Three are ledger rows whose twins 06-10 corrected in this phase while leaving the ledger itself wrong. One credits a gap's closure to a commit reachable from no ref."
 severity: major
 evidence: |
   The reader stated its coverage: every top-level `.planning/` file, all three `COVERAGE.md`s, all of
@@ -2505,13 +2513,75 @@ evidence: |
   write-then-falsify shape change 5 exists for, in the file that records change 5. Superseded by this
   round's own header update; recorded because the mechanism is the finding, not the stale line.
 
+## Gate scope decision — 2026-09-23
+
+**Decided by the project owner, a human, in the round-7 verify session.** Not by the executing agent.
+
+**The decision.** From round 8, the blocking gate is bounded to **files that ship** — everything in
+`git archive HEAD` outside `.planning/` and `.claude/`. Findings inside `.planning/` are recorded,
+tracked and closed on their own merits, but do not block phase completion. The inline
+correction-marker convention in `LEGAL-REVIEW.md` is retired in the same decision.
+
+**What it is grounded in, measured at `ad073b9`.**
+
+| Measurement | Value |
+|---|---|
+| Findings per round, 1→7 | 3, 14, 11, 17, 18, 25, **23** — flat, not converging |
+| Share authored by *a* gap-closure round | 56%, 36%, **39%** over the last three rounds — stable |
+| Shipped-file findings, round 6 → 7 | 22 → **10** — converging |
+| `.planning/` findings, round 6 → 7 | 3 → **13** — diverging |
+| Record prose written vs product prose, whole phase | 7,208 vs 1,959 lines — **3.7x** |
+| Regressions of round 6's 25 corrections found by round 7 | **0** |
+
+    $ git diff --numstat 'd67012e^..HEAD' -- .planning | awk '{s+=$1} END {print s}'
+    7208
+    $ git diff --numstat 'd67012e^..HEAD' -- . ':(exclude).planning' | awk '{s+=$1} END {print s}'
+    1959
+
+**The argument.** Two facts decide it. First, the shipped tree *is* converging and its corrections
+*do* hold — zero of round 6's twenty-five corrections regressed. Second, the record is not
+converging and structurally cannot: it grows at 3.7x the rate of the product, each round adds ~500
+lines of new UAT prose that becomes the next round's audit surface, and every closing round authors
+~40% of the next round's findings. A gate whose scope grows faster than the work it gates has no
+terminating condition.
+
+**What this does not concede.** The thirteen `.planning/` findings are true. `WINDOWS.md` id 15 does
+claim a check that does not exist. A ledger row does cite a blank line. Nothing here is being
+reclassified as acceptable — it is being reclassified as *not a launch blocker*, which is a
+different claim.
+
+**Why LEG-04 in particular.** Its own requirement note records the substantive half as settled: the
+trademark status was reconfirmed against current sources and the docket re-queried. What has held it
+open for seven rounds is prose defects in the document that records that decision, not doubt about
+the decision. The gate stopped measuring publication safety several rounds ago.
+
+**Rejected alternative — keep the current rule.** Honest to the project's "measured claims or no
+claims" constraint, and rejected on the measurement above: no round has returned zero, the count is
+flat across seven rounds, and no mechanism was identified that would make round 8 different from
+round 7. Recording a stopping rule that the evidence says is unreachable is itself a claim this
+project should not make.
+
+**Also retired: the inline correction-marker convention.** It requires quoting the wording a
+correction removes, which puts the retired string back into the tracked tree where the next round's
+sweeps find it. It authored three of this round's twenty-three findings directly, and
+[[WINDOWS id 17]] has now recorded the self-reference three rounds running. Corrections move to git
+history, which already records them with dates and authorship and cannot be falsified by being
+written down.
+
+**Reopening condition.** If a round finds a `.planning/` defect that propagates into a shipped file,
+the scoping is wrong and this decision reopens. Round 7 supplies the first test case in advance:
+`WINDOWS.md` ids 11, 15 and 29 each have a shipped twin in `LEGAL-REVIEW.md`, and in all three the
+shipped twin was already correct — the defect stayed in the record. That is the pattern the scoping
+predicts; a counterexample retires it.
+
+
 ## Summary
 
 total: 29
 passed: 5
-issues: 24
+issues: 23
 pending: 0
-skipped: 0
+skipped: 1
 blocked: 0
 
 Round 1: tests 1-6 — 3 passed, 3 issues (G-06-2, G-06-3, G-06-6), all three resolved by 06-05.
@@ -2520,12 +2590,12 @@ Round 3: tests 10-12 — 0 passed, 3 issues (G-06-10, G-06-11, G-06-12), all clo
 Round 4: tests 13-16 — 0 passed, 4 issues (G-06-13, G-06-14, G-06-15, G-06-16), all closed by 06-08.
 Round 5: tests 17-20 — 0 passed, 4 issues (G-06-17, G-06-18, G-06-19, G-06-20), all closed by 06-09.
 Round 6: tests 21-24 — 1 passed, 3 issues (G-06-21, G-06-22, G-06-23), all closed by 06-10.
-Round 7: tests 25-29 — 0 passed, 5 issues (G-06-25 … G-06-29), 23 findings; first run at five briefs.
+Round 7: tests 25-29 — 0 passed, 4 blocking issues (G-06-25 … G-06-28) + 1 re-scoped to backlog (G-06-29), 23 findings; first run at five briefs. Ten in shipped files, thirteen in `.planning/`.
 
 **Round 7: the count held and the location moved.** Twenty-three checkably-false statements, against
 twenty-five in round 6, eighteen in round 5, seventeen in round 4, eleven in round 3, fourteen in
-round 2 and three in round 1. The shipped tree is converging — eleven findings, down from
-twenty-two. The record that governs it is not: twelve findings, up from three, and the three in
+round 2 and three in round 1. The shipped tree is converging — **ten** findings, down from
+twenty-two. The record that governs it is not: **thirteen** findings, up from three, and the three in
 round 6 were the orchestrator noticing rather than any instrument.
 
 | | Round 5 | Round 6 | Round 7 |
@@ -2536,7 +2606,7 @@ round 6 were the orchestrator noticing rather than any instrument.
 | — by **earlier** closures | 2 (11%) | 5 (20%) | **4 (17%)** |
 | Authored by a UAT write-up round | — | — | **3 (13%)** |
 | Predating the closures entirely | 8 (44%) | 16 (64%) | **11 (48%)** |
-| **Living in `.planning/`** | not reachable | 3 (orchestrator) | **12 (52%)** |
+| **Living in `.planning/`** | not reachable | 3 (orchestrator) | **13 (57%)** |
 | Findings refuted on verification | ≥1 | 3 | **0** |
 
 **The fifth brief is the round's result.** One reader in eight produced thirteen of the
@@ -2547,7 +2617,7 @@ is a class never recorded here before: a gap closure credited to a commit reacha
 which no line-drift check and no cold read could reach.
 
 **Zero refutations is a caution, not an achievement.** Every prior round refuted or corrected at
-least one reader claim. Twelve of this round's findings came from a brief on its first pass over
+least one reader claim. Thirteen of this round's findings came from a brief on its first pass over
 unswept ground, where the unambiguous defects were still unpicked. The number that will mean
 something is the fifth brief's second run.
 
@@ -3132,7 +3202,9 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-29
   truth: "The .planning/ record states nothing the repository contradicts"
-  status: failed
+  status: backlog
+  blocking: false
+  disposition: "Re-scoped to non-blocking backlog by the gate scope decision of 2026-09-23. All thirteen findings are confirmed and stand; they close on their own merits, not on the phase gate. Reopens if a .planning/ defect is shown to propagate into a shipped file."
   reason: "Round 7, first run of the fifth brief (06-10 task 25). 1 reader, 13 findings — 52% of the round from one reader in eight, over the surface stripped from every reader tree for six rounds. Three are ledger rows whose LEGAL-REVIEW.md twins 06-10 corrected while leaving WINDOWS.md — the ledger itself, and the JSON fence the table renders from — wrong: id 15 claims an AST-based stdlib check (no .py imports ast), id 11 states 'all four occurrences' (nine occurrences, three carriers, seven positions), id 29 cites two blank lines as carrying a seven-element list. Id 30 still states the ground LEGAL-REVIEW.md:1160 retracted, and cites RESULTS.md:212 for a sentence at :214. REQUIREMENTS.md:64 calls generate_derivatives.py --check the ninth CI command; it is the tenth, and ci.yml has not changed since the note was written. Phase 6 COVERAGE.md's 'the only matches are' universal has six counterexamples in 278. 06-UAT.md:266 states 1,714 added lines for a range with 1,684 (1,714 is the artifact file's own length). 06-UAT.md:2621 credits G-06-23's closure to fc801a9, reachable from NO ref — an orphaned pre-amend object with a different tree from the on-branch 81495a3 that 06-10-SUMMARY.md:138 records. ROADMAP.md understates two phases' plan counts (10/10 and 11/11 against 11 and 15), leaves a complete 04-15 unchecked, and calls three complete phase-1 plans pending. STATE.md:76 reports 26 plans completed against its own frontmatter's 62."
   severity: major
   test: 29

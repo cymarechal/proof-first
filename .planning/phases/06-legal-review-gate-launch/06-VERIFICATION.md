@@ -13,8 +13,10 @@ human_verification_issues: 24
 uat_round: "/gsd-verify-work 06 round 7, 2026-09-23, against ad073b9"
 gap_closure_round: "06-10, 2026-09-22 — G-06-21..23 closed and CONFIRMED by round 7's independent read: none of round 6's 25 corrections was found regressed. Round 7 (2026-09-23, ad073b9) then opened G-06-25..29 on 23 new findings across five briefs and eight readers. 12 of 23 are in .planning/, found by the new fifth brief on its first run — including three WINDOWS.md ledger rows whose LEGAL-REVIEW.md twins 06-10 corrected while leaving the ledger wrong, and a gap closure credited to a commit reachable from no ref. Planned for closure in 06-11 (written inline; the Agent tool is prohibited in this session). Closure awaits round 8's independent read."
 gaps_closed: 19
-gaps_open: 5
-gaps_open_ids: [G-06-25, G-06-26, G-06-27, G-06-28, G-06-29]
+gaps_open: 4
+gaps_open_ids: [G-06-25, G-06-26, G-06-27, G-06-28]
+gaps_backlog_ids: [G-06-29]
+gate_scope: "shipped files only — decided 2026-09-23 by the project owner; see 06-UAT.md section 'Gate scope decision' and WINDOWS.md id 33"
 round_4_closure:
   plan: 06-08
   tasks: 17
@@ -644,3 +646,23 @@ one. Do not mark the phase complete from this branch.
 
 ---
 *Verified: 2026-09-22 (06-10 gap closure)*
+
+## Acknowledged Gaps
+
+**G-06-29 — the `.planning/` record (13 confirmed findings).** Acknowledged and carried as
+non-blocking backlog under the gate scope decision of 2026-09-23. The findings are not withdrawn:
+`WINDOWS.md` id 15 claims a check that does not exist, id 11 counts a set of four that is nowhere
+four, id 29 cites two blank lines, id 30 states a ground its `LEGAL-REVIEW.md` twin retracted,
+`REQUIREMENTS.md`:64 mis-numbers a CI command, phase 6 `COVERAGE.md` asserts a false universal,
+`06-UAT.md` mis-labels an added-line count and credits a commit reachable from no ref, `ROADMAP.md`
+carries four wrong rows and `STATE.md` one. All are real; none blocks the phase.
+
+**Why this is an acknowledgement and not a pass.** `.planning/` is the project's working record, not
+its product. The gate exists to decide whether this repository is safe and honest to publish, and
+that question is answered by what ships. The measurement behind the scoping — seven rounds flat at
+3--25 findings, shipped-file findings converging 22 → 10 while record findings diverged 3 → 13, and
+3.7x more record prose written than product prose — is recorded in full in `06-UAT.md`.
+
+**What would revoke it:** a `.planning/` defect shown to propagate into a shipped file. All three
+ledger rows that have a shipped twin were checked, and in all three the shipped twin was already
+correct.
