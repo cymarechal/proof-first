@@ -26,8 +26,11 @@ It was built from the following sources, concatenated verbatim in this order:
 
 One source is deliberately left out: skills/proof-first/references/worked-examples.md. That file supplies
 illustration rather than instruction -- every rule it illustrates already carries
-its own constructive line in skills/proof-first/SKILL.md -- so nothing normative is
-lost by leaving it out here.
+its own constructive line in one of the sources listed above: the PF rules in
+skills/proof-first/SKILL.md, the MC rules in
+skills/proof-first/references/completeness-audit.md, which is where this project
+requires every MC rule to be defined. Both files are concatenated in full below, so
+nothing normative is lost by leaving the illustrations out here.
 
 Installing the skill folder at skills/proof-first/ is the fuller route: it can read
 the omitted reference file on request and keeps every reference file addressable by

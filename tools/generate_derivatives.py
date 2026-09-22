@@ -85,8 +85,13 @@ DERIVATIVE_SOURCE_NAMES = (
 
 # Deliberately omitted. worked-examples.md supplies illustration rather
 # than instruction: every rule it illustrates already carries its own
-# constructive **Replace with:** line in SKILL.md, so nothing normative
-# is lost by leaving it out of either derivative.
+# constructive **Replace with:** line in one of the sources above -- the
+# 20 PF rules it illustrates in SKILL.md, the 8 MC rules in
+# completeness-audit.md, because mc-rule-in-skill (check_repo.py) makes
+# an MC rule defined in SKILL.md a build failure and NUMBERING.md routes
+# every MC row to completeness-audit.md. Both files are concatenated
+# into both derivatives, so nothing normative is lost by leaving
+# worked-examples.md out of either.
 OMITTED_SOURCE = 'skills/proof-first/references/worked-examples.md'
 
 # One physical line. Do not wrap it -- a wrapped anchor is the failure
@@ -182,8 +187,11 @@ def _render_preamble():
         f"{sources_list}\n\n"
         f"One source is deliberately left out: {OMITTED_SOURCE}. That file supplies\n"
         "illustration rather than instruction -- every rule it illustrates already carries\n"
-        "its own constructive line in skills/proof-first/SKILL.md -- so nothing normative is\n"
-        "lost by leaving it out here.\n\n"
+        "its own constructive line in one of the sources listed above: the PF rules in\n"
+        "skills/proof-first/SKILL.md, the MC rules in\n"
+        "skills/proof-first/references/completeness-audit.md, which is where this project\n"
+        "requires every MC rule to be defined. Both files are concatenated in full below, so\n"
+        "nothing normative is lost by leaving the illustrations out here.\n\n"
         "Installing the skill folder at skills/proof-first/ is the fuller route: it can read\n"
         "the omitted reference file on request and keeps every reference file addressable by\n"
         "name. This project publishes measured claims or none. A benchmark has compared a\n"
