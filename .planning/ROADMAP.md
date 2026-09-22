@@ -305,9 +305,7 @@ Plans:
   1. A legal review gate passes before public launch, with MEDDIC-family trademark status (including the MEDDPICC genericness ruling) reconfirmed against current sources.
   2. Every claim and badge in README derives only from committed benchmark results in RESULTS.md, stating model versions and date.
 
-**Plans**:
-
-- [x] 06-09-PLAN.md
+**Plans**: 10/10 plans executed — 4 original, plus 6 gap-closure plans (06-05 .. 06-10), one per round of the cold read. The phase is NOT complete: LEG-04 and LEG-05 stay unchecked until a round of independent cold reads returns no checkably-false statement, which is `WINDOWS.md` id 12's standing closure condition. Six rounds have not.
 
 - [x] 06-01-PLAN.md
 - [x] 06-02-PLAN.md
@@ -317,6 +315,8 @@ Plans:
 - [x] 06-06-PLAN.md
 - [x] 06-07-PLAN.md
 - [x] 06-08-PLAN.md
+- [x] 06-09-PLAN.md
+- [x] 06-10-PLAN.md
 
 **Wave 1**
 
@@ -342,6 +342,10 @@ Plans:
 
 - [x] 06-06 — The fourteen checkably-false statements round 2's five independent readers found, including the one that shipped to installed users; one new check code, `benchmark-run-claim-stale`, discrimination-proven
 
+**Gap closure Wave 10** *(closes UAT round 6 — G-06-21, G-06-22, G-06-23)*
+
+- [x] 06-10 — The twenty-five checkably-false statements round 6's seven readers found, across `LEGAL-REVIEW.md`, `evals/conformance/RESULTS-mod04.md`, `tools/check_repo.py` and `SOURCES.md`; the first mechanical guard this phase has shipped against the scope-absolute class (`catalogue_matches_registry()` in `--self-test`), with the wider scope check refused on a measurement; three false scope absolutes replaced by a read-tracer measurement; and a standing set for round 7 that adds a `.planning/` brief, widens the self-audit scope, and re-runs committed command literals after the SUMMARY lands
+
 Cross-cutting constraints:
 
 - No check this phase adds may make a network call, and no command may be added to `.github/workflows/ci.yml` that does. Lookups happen once at execution time; the committed record is what CI reads.
@@ -360,7 +364,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
 | 5. Evaluation Harness | 3/3 | Complete    | 2026-09-20 |
-| 6. Legal Review Gate & Launch | 9/9 | In Progress|  |
+| 6. Legal Review Gate & Launch | 10/10 | In Progress|  |
 
 ---
 *Roadmap created: 2026-09-10*

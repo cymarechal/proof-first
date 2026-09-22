@@ -1,7 +1,7 @@
 ---
 phase: 06-legal-review-gate-launch
 status: human_needed
-score: "2/2 must-haves verified. Round 6 ran the standing set as 06-09 amended it — seven readers, four briefs — and returned 25 checkably-false statements against round 5's 18, opening G-06-21, G-06-22 and G-06-23. The count rose because the briefs reached further back, not because the tree worsened: 16 of 25 predate every gap closure and 8 predate Phase 6, the oldest authored by plan 01-01, the commit that created the checker. The last closing round's share more than halved (06-09 authored 4 of 25, against 06-08's 8 of 18). Both of 06-09's structural changes were measured and both paid: the widened fourth brief reached one finding a diff-scoped brief could not, and the second sweep reader produced four unique findings, 16% of the round. README returned ZERO for the first time in six rounds, two readers cross-checked. All ten CI commands green throughout. Three findings came from the orchestrator over .planning/, which every reader tree strips — a standing harness gap now recorded as a gap-closure item. Requirement checkboxes stay unchecked. Closure condition unchanged — WINDOWS id 12 closes when a round of cold reads returns none; six have not."
+score: "2/2 must-haves verified. Round 6 opened G-06-21, G-06-22 and G-06-23 on 25 checkably-false statements; 06-10 closed all three in 27 tasks across six files and 33 commits. The round shipped the first mechanical guard this phase has put behind its dominant defect class -- catalogue_matches_registry() asserts the checker docstring catalogue against ALL_CHECK_CODES in both directions, and caught the live instance of 57 listed against 58 implemented -- and refused the wider scope check on a measurement rather than a preference. Three false scope absolutes were replaced by a read-tracer measurement of which check_* frame opens which path. Six deviations from the plan, all recorded: two of the plan own figures were falsified by the tree, three same-class defects beyond the gap enumeration were found by checking the instances it listed, and the round self-audit found two in its own added sentences. All ten CI commands green throughout. Requirement checkboxes stay unchecked: 06-10 wrote the corrections a round-7 reader will be verifying, and six consecutive self-checks have each missed what an independent read then found. WINDOWS id 12 closes when a round of cold reads returns none; six have not."
 verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
@@ -11,10 +11,10 @@ human_verification_performed: 24
 human_verification_passed: 5
 human_verification_issues: 19
 uat_round: "/gsd-verify-work 06 round 6, 2026-09-22"
-gap_closure_round: "06-09, 2026-09-22 — G-06-17..20 closed and independently re-read in round 6; all four corrections hold. Round 6 opened G-06-21, G-06-22, G-06-23."
-gaps_closed: 16
-gaps_open: 3
-gaps_open_ids: [G-06-21, G-06-22, G-06-23]
+gap_closure_round: "06-10, 2026-09-22 — G-06-21..23 closed. Round 6's 25 findings corrected across LEGAL-REVIEW.md, SOURCES.md, evals/conformance/RESULTS-mod04.md, tools/check_repo.py, WINDOWS.md and 06-UAT.md. Closure awaits round 7's independent read."
+gaps_closed: 19
+gaps_open: 0
+gaps_open_ids: []
 round_4_closure:
   plan: 06-08
   tasks: 17
@@ -49,6 +49,40 @@ round_5_closure:
     classes: "5 scope overstatement, 2 count-next-to-the-thing, 1 reference resolving to wrong content"
     new_in_kind: "Two self-referential commands -- recording a grep literal in prose changed what that grep returns. Neither was catchable by re-reading the sentence; both needed the command re-run after it was committed."
     note: "Task 18's checklist found 8; the code-review gate then found a 9th in the round's own new assertion, which compared the key set but not the 140-transcript count the sentence it guards also claims. Measured: a probe copy with 40 init events stripped passed the check as shipped."
+round_6_closure:
+  plan: 06-10
+  tasks: 27
+  commits: 33
+  files_changed: 6
+  ci_commands_green: 10
+  new_assertions: ["catalogue_matches_registry -- docstring catalogue vs ALL_CHECK_CODES, both directions"]
+  new_check_codes: []
+  mutation_codes_proven: 58
+  user_facing_findings_fixed: 0
+  self_authored_defects_found_and_fixed: 4
+  method_changes:
+    - "Standing set gains a fifth brief: one reader over .planning/ with the shipped tree available for checking, because three of round 6's findings were invisible to all seven readers by construction"
+    - "Self-audit scope widens from the round's own added sentences to every .planning/ file the round edited"
+    - "Every closure plan ends by re-running the command literals it committed, after the SUMMARY lands"
+  shipped: "catalogue_matches_registry() in --self-test. Exact rather than a proxy: both sides are lists the module already holds, and it re-enters nothing. Mutation-probed against an unmutated sibling control -- control exit 0 with 0 FAIL lines, a deleted catalogue entry and a phantom entry each exit 1 with the expected message."
+  refused: "A frozen path -> reading-checks map asserted without tracing, by scanning each check_* body for the paths it names. Measured against the three readers whose absence produced the round's findings: check_record_citations reaches its paths through CITATION_RECORD_PATHS, check_source_gate_incomplete through SOURCES_PATH and LEGAL_REVIEW_PATH, check_readme_claim_unsourced through CLAIM_SOURCE_GLOB. None carries a path literal in its body, so a static scan would have found zero of the three. Seventh refusal of a fuzzy proxy."
+  deviations:
+    count: 6
+    plan_figures_falsified_by_the_tree: 2
+    same_class_findings_beyond_the_gap_enumeration: 3
+    self_audit_defects_in_the_round_s_own_sentences: 2
+  self_audit:
+    scope: "every sentence the round added, plus every .planning/ file the round edited -- the widened scope this round also wrote into the standing set"
+    defects_found: 2
+    note: "'No set of four exists anywhere in that check' was false -- _owner_segment normalises four GitHub URL forms. 'Edited twice' was taken from the plan rather than from git log -L, which shows three edits after the first absolute went in."
+  post_summary_literal_rerun:
+    literals_rerun: 11
+    moved: 0
+    note: "First execution of the round's own change-5 rule, run after the SUMMARY commit. Nothing moved. The rule had already caught one mid-round: the change-1 measurement moved from 0 to 1 because task 4's correction re-added the quoted phrase inside the range, and all three copies of that figure are now pinned to 66322b1."
+  code_review:
+    findings: 2
+    fixed: 2
+    note: "Both Info, both in the round's own new code: a docstring describing behaviour the pattern did not have, and an unstated dependency on the catalogue being the docstring's last section. The first fix's own first version emitted SyntaxWarning on every checker invocation and was reworded; verified clean under -W error::SyntaxWarning."
 re_verification:
   previous_status: gaps_found
   previous_score: "2/2 must-haves verified. Round 4 ran the four-brief standing set for the first time: all of round 3's corrections hold under independent read, and 17 new checkably-false statements opened 4 gaps (G-06-13..16). Ten of the 17 were authored by the round-3 gap-closure commit itself, up from 4 and 2 in the two rounds before. Requirement checkboxes stay unchecked."
@@ -558,3 +592,55 @@ recorded separately. Do not mark the phase complete from this branch.
 
 ---
 *Verified: 2026-09-22 (06-09 gap closure)*
+
+## Gap-closure round — 06-10, verified 2026-09-22
+
+Round 6's three gaps closed at source. Twenty-seven tasks, six files, 33 commits.
+
+**What closed.**
+
+| Gap | Findings | Closed by |
+|---|---|---|
+| G-06-21 | 12, LEGAL-REVIEW | Tasks 1-12 — the `by_statement` claim corrected to two rows after all three OpenLibrary edition records were re-fetched live; prong 3 quoted as `SOURCES.md` states it; a bullet pointer re-anchored and its direction corrected; the fixture self-contradiction resolved inside one bullet; a sweep enumeration naming a check that does not exist dropped; the phrase-occurrence count replaced by its counting rule; the correction-marker universal restated over the four forms in use; the publish-location count corrected to what the check compares; ledger row 15's AST claim deleted; ledger row 30 given a ground `RESULTS.md` can check; "two existing sentences" corrected to two clauses of one; the unscoped sweep enumeration dropped and the scoped result kept |
+| G-06-22 | 11, sweep | Tasks 13-20 — the CR-01 banner scoped to the commit boundary its own closing paragraph already drew; six inverted `above`/`below` references corrected where the gap listed three; two timeout attributions corrected while the published figures were independently re-derived and fenced; the checker's opening scope sentence pointed at README's enumeration; the missing catalogue entry added; "ten offline scripts" corrected to ten commands; three false scope absolutes replaced by the tracer's measured per-path reader lists |
+| G-06-23 | 2 + the harness | Tasks 21-27 — range notation corrected at both recorded sites through `WINDOWS.md`'s JSON fence; the fourth brief's finding counts corrected to seven and three; one citation in round 6's own finding shown not to resolve even at `66322b1` and re-anchored; the standing set for round 7 recorded with three changes |
+
+**The round's real output is a command, and it is the first of its kind here.** The largest defect
+class round 6 found was the scope absolute — six instances, five in `check_repo.py`, three inside
+one sixteen-line comment block a previous round had already edited. `catalogue_matches_registry()`
+now asserts, in `--self-test`, that the checker's own violation-code catalogue names exactly the
+codes `ALL_CHECK_CODES` registers, in both directions. It is exact rather than a proxy: both sides
+are lists the module already holds. It caught the live instance — 57 listed against 58 implemented.
+
+**What the round refused, and the measurement that refused it.** A frozen `path → reading-checks`
+map, asserted without tracing by scanning each `check_*` body for the paths it names. The three
+readers whose absence from the checker's comments produced this round's findings all reach their
+paths through module constants or a glob and carry no path literal in their bodies, so that scan
+would have found none of them. Producing the map needs the tracer, and the tracer needs the checker
+to run itself. Seventh refusal of a fuzzy proxy; the general scope check stays a candidate, now on
+six instances rather than one.
+
+**Six deviations from the plan, all recorded.** Two of the plan's own figures were falsified by the
+tree — task 15's "second attempt in each case" is right for two of three timeouts and wrong for the
+third, and task 6's "correct to four" was overtaken by task 5 before task 6 ran. Three findings of
+the same class as the gap's own, beyond its enumeration, were found by checking the instances it
+listed. The self-audit found two more in this round's own added sentences.
+
+**The round ran its own new rule against itself, and it paid twice.** Change 5 — re-run every
+committed command literal after the SUMMARY lands — caught the change-1 measurement moving from 0
+to 1, because task 4's correction re-added the quoted phrase inside the measured range; all three
+copies of that figure are now pinned to `66322b1`. The post-SUMMARY pass over eleven literals came
+back clean and is tabled in the SUMMARY.
+
+**This does not close the phase.** 06-10 wrote the corrections a round-7 reader would be verifying,
+and six consecutive self-checks have each missed what an independent read then found. LEG-04 and
+LEG-05 stay unchecked. All ten CI commands green throughout — tenth consecutive round of
+`WINDOWS.md` id 17's pattern, and the first in which code was shipped under one of its classes.
+
+**Next: `/gsd-verify-work 06`** for round 7, against the standing set as this round amended it: five
+briefs, eight readers — the two file-named hunts at two readers each, the whole-tree sweep at two,
+the gap-closure-range brief at one reading `d67012e^..HEAD`, and the new `.planning/` record sweep at
+one. Do not mark the phase complete from this branch.
+
+---
+*Verified: 2026-09-22 (06-10 gap closure)*
