@@ -263,7 +263,13 @@ the word as ordinary business English, so including it would fire on legitimate 
 the order is one "many independent publishers" teach rather than one publisher's: no read of many
 publishers is recorded anywhere in this repository, `SOURCES.md`:41-44 lists two sources for this
 family, and an argumentative clause resting on an unrecorded lookup is the thing this file exists to
-not do. And it no longer says the blocks are "organised around a mnemonic": the correction above
+not do. *Added 2026-09-22 (06-08), because a round-4 reader called "anywhere in this repository" an
+unqualified negative with no recorded sweep — a fair objection to an unsupported absolute.* The
+sweep, run over the whole tracked tree including `.planning/`:
+`git grep -inE 'many (independent )?publishers|multiple publishers|several publishers'`. Every hit
+is this record or the defect register discussing the absence of such a read — `LEGAL-REVIEW.md`,
+`.planning/WINDOWS.md` id 31, and three Phase 6 planning artifacts. No source row, anywhere, backs
+the clause. The negative holds and now has a command behind it. And it no longer says the blocks are "organised around a mnemonic": the correction above
 retired that ground, and a paragraph fifteen lines later cannot spend what the correction withdrew.
 
 Removing all three narrows the prong-2 answer rather than repairing it. What survives is the
@@ -405,21 +411,25 @@ one per Command of the Message element" and freezes them in a table in this orde
 After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, Positive Business
 Outcomes. The prose names the source on the table's face.
 
-Why it is stronger than id 6, point by point. **Three** of the four grounds recorded when this
-section was written did not survive a reader checking them, and are restated here rather than
-quietly dropped. *Corrected 2026-09-22 (06-08): this lead-in said "two". Three of the four bullets
-below carry a dated `*Corrected 2026-09-22:*` marker; the fourth, on the live mark, does not. Count
-the bullets rather than grepping the range — this correction sits inside it.*
+Why it is stronger than id 6, point by point. **Every one** of the four grounds recorded when this
+section was written has been narrowed or restated by a reader checking it, and each is restated here
+rather than quietly dropped — every bullet below carries a dated `*Corrected …*` marker saying what
+changed. *Corrected 2026-09-22 (06-08): this lead-in said "two", and then said "three" earlier in
+this same round. Both were counts of a set the round was still changing: answering the round-4
+reasoning critique on the fourth bullet put a marker on the last bullet that lacked one. The
+sentence now states the property rather than a tally, which is the only version that survives the
+next correction.*
 
 Said plainly, because the heading above claims a comparison and the list no longer supports as much
-of it as it did: what survives is the declared correspondence in `NUMBERING.md` (narrowed — the
-correspondence is declared there, the *order* is not, and has to be argued here exactly as id 6's
-does), the absence of any acronym defence for these seven, and the live unadjudicated mark. The
-fourth ground, that prong 4 engages, is true and no longer distinguishes the two entries at all,
-because prong 4 now engages on both. A reader of round 4 raised exactly this: the "stronger than id
-6" heading rests on fewer grounds than it did when it was written. That is conceded here rather than
-argued away. The heading is kept because the narrowed grounds still point one way and the entry says
-which, not because the original four held.
+of it as it did. What survives, ground by ground: the correspondence **declared** in `NUMBERING.md`
+(narrowed — the correspondence is declared there, the *order* is not, and has to be argued here
+exactly as id 6's does); the absence of any acronym defence for these seven; and the mark's current
+use by its holder with no adjudication found (narrowed from "live and unadjudicated", which claimed
+register status this file does not establish). The fourth ground, that prong 4 engages, is true and
+no longer distinguishes the two entries at all, because prong 4 now engages on both. A reader of
+round 4 raised exactly this: the "stronger than id 6" heading rests on fewer grounds than it did
+when it was written. That is conceded here rather than argued away. The heading is kept because the
+narrowed grounds still point one way and the entry says which, not because the original four held.
 
 - **It names the source on the table's face.** `NUMBERING.md`:33-35 says `PF-1`'s range "is carved
   into seven named sub-blocks, **one per Command of the Message element**". That is a declared
@@ -433,15 +443,36 @@ which, not because the original four held.
   `skills/proof-first/references/completeness-audit.md`:12-15 *does* address order provenance for the
   MC side and expressly declines to concede it; `NUMBERING.md` carries no equivalent sentence for
   PF-1 in either direction.
-- **These seven spell nothing**, and are ordered the way the framework itself sequences them.
+- **These seven spell nothing.**
   *Corrected 2026-09-22:* this point previously contrasted them against MC blocks that "could at
   least be argued to follow a mnemonic that many publishers teach." The correction in the id-6 entry
   retired the mnemonic as a ground there, and prong 2 no longer spends it either. A defence this
   file has withdrawn twice cannot be the thing PF-1 is measured against. What remains is the
   narrower and still-true half: no acronym defence is available for these seven.
-- The mark is live and unadjudicated. `Command of the Message®` is used by Force Management in its
-  own name on its own current public pages (see the section above). There is no genericness holding
-  here of the kind the 2026-04-21 MEDDPICC ruling supplied — no adjudication of any kind was found.
+  *Corrected 2026-09-22 (06-08):* the clause "and are ordered the way the framework itself sequences
+  them" is removed as well, for the reason 06-07 already gave twenty lines away in the id-6 entry:
+  an argumentative clause resting on a lookup nothing in this repository records is the thing this
+  file exists to not do. `SOURCES.md`'s `## Message articulation sources` records two Force
+  Management public pages, and neither is recorded as establishing the seven elements' order. The
+  standard was applied to id 6's "many independent publishers" clause and not to this one in the
+  same file, which is worse than not applying it. Noted for symmetry: the MC side's walk-through
+  order is not in the same position — `SOURCES.md`'s `## Qualification checklist sources` records a
+  published book and a public overview page for that family, so that order has recorded sources even
+  where its provenance is argued. The absence here is specific to this clause.
+- The mark is in current use by its holder, and no adjudication of it was found. `Command of the
+  Message®` is used by Force Management in its own name on its own current public pages (see the
+  section above). There is no genericness holding here of the kind the 2026-04-21 MEDDPICC ruling
+  supplied.
+  *Corrected 2026-09-22 (06-08):* this point read "the mark is live and unadjudicated", which a
+  reader raised twice, correctly. "Live" carries two senses and this file establishes only one of
+  them. **In use:** confirmed, by the two page reads recorded in `## Message articulation sources`.
+  **Live on the register:** not established and not claimed — `## USPTO register lookups` records
+  the Command of the Message registration as "not attempted separately", and the **Not confirmed**
+  paragraph near the top of this file records that no registration number was retrievable for this
+  mark. The point is restated in the sense that is evidenced. "Unadjudicated" is likewise restated
+  as "no adjudication of it was found", because that is the observation; no search of this mark's
+  adjudication history was run separately from the MEDDPICC one, and a negative observation is not
+  a finding that nothing exists.
 - **Prong 4 engages, on all seven.** "Required Capabilities", "Proof Points", "Differentiators" and
   "Positive Business Outcomes" are this framework's own vocabulary for its own blocks, adopted here
   verbatim as `NUMBERING.md` labels; "Before scenario", "After scenario" and "Metrics" are the
@@ -455,6 +486,25 @@ which, not because the original four held.
 What weighs the other way, recorded so this entry is not one-sided: the seven labels are short noun
 phrases; no rule text under them is taken from a source; and `NOTICES.md` carries the attribution
 and the non-affiliation statement.
+
+**The five reasoning critiques round 4's readers raised, and what happened to each (06-08).** Three
+had been raised in two consecutive rounds and are answered in the text above rather than carried a
+third time: id 6's `Closed on reasoning` label against its own definition, answered at
+`## Ledger disposition` by fixing the wording rather than the disposition; this entry's unrecorded
+Force Management read, answered by removing the ordering clause under the same standard 06-07
+applied to id 6; and "live and unadjudicated", answered by restating the point in the one sense this
+file evidences. Prong 3's whole-repo negative was raised once and is also answered, because
+answering it cost one command, recorded above.
+
+One is carried, and here is why rather than a bare note. `skills/proof-first/references/completeness-audit.md`:12-15
+is described in the first bullet above as expressly declining to concede order provenance; a
+round-4 reader read the same lines as routing provenance to the registry instead. Both readings are
+in the text — it says the order is inherited from `NUMBERING.md` (the routing) **and** that it
+states nothing about which order is correct or original for the methodology (the declining). The
+bullet names only the second half, which is incomplete rather than false, and the distinction
+between them does not change what the bullet is doing there. It stays as a recorded observation
+against `WINDOWS.md` id 31 rather than being argued in this entry, on the standing rule that a
+judgement about argument quality belongs on an open ledger row and not in a correction paragraph.
 
 **Correcting this entry's fourth counterweight, 2026-09-21.** When this section was written it
 carried a fourth item on that list: that the seven appear in an internal ID registry rather than in
@@ -880,6 +930,19 @@ had actually happened to two entries:
   judgement question, the judgement is written out in this file, and the entry closes on that
   reasoning. Ids 3 and 6 are the two. They were previously booked `Fixed`, which the definition
   above does not fit: no shipped content changed for either.
+  *Clarified 2026-09-22 (06-08), against a critique two consecutive rounds raised.* A reader
+  objected that id 6 cannot meet this definition while `## What remains open` item 6 carries two of
+  its questions as live, and that the entry's own text concedes prong 4 is "recorded rather than
+  disposed". The objection is right about the wording and the wording is what changes here, not the
+  disposition. This label means **the entry's own question is answered in this file on stated
+  reasoning** — for id 6, whether the eight MC dimension names and their range order cross the
+  reproduction boundary, answered no on grounds the entry sets out. It does **not** mean the entry
+  leaves nothing live. Id 6 leaves two subsidiary questions live, both about how much weight that
+  answer carries rather than about what the answer is, and both are carried as `Open — v2` ledger
+  row 31 with a named closure condition. A reader who reads "closed" as "nothing outstanding" is
+  reading the old wording, not this one. Id 6 is not reopened, because reopening it would say the
+  disposition question is unanswered, which is a different and false claim; the two live questions
+  are where they belong, on an open row, and this file links them from both places.
 - `Open — v2` — a real gap with a named owner and a stated closure condition, not carried as if it
   were finished.
 
