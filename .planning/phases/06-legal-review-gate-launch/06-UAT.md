@@ -255,13 +255,19 @@ unchanged — a separate context, its own copy of the tree, a brief that names n
 authorship of the text under review — but the mechanism is not the one rounds 1-5 used, and this
 entry records that rather than letting the round read as a like-for-like repeat.
 
-**The fourth brief's range as specified is wrong, and the corrected range was run.** The standing
-set above names `d67012e..HEAD`, glossed as "the first commit of the 06-05 closure onward". Those
-are different ranges: `d67012e..HEAD` excludes `d67012e`'s own changes. Demonstrated — the line
+**The fourth brief's range as specified was wrong, and the corrected range was run.** The standing
+set carried into this round — recorded in `WINDOWS.md` id 17 and in this file's own standing-set
+table for the next round, not in the reader table above — named `d67012e..HEAD`, glossed as "the
+first commit of the 06-05 closure onward". Those are different ranges: `d67012e..HEAD` excludes
+`d67012e`'s own changes. Demonstrated — the line
 `36 headless sessions, three measured arms, four artifact families` is live in `README.md` at
 `66322b1`, was added by `d67012e`, and appears as an added line in `d67012e^..HEAD` but not in
-`d67012e..HEAD`. Reader 7 was given `d67012e^..HEAD`, the range the gloss requires: 86 commits,
-1,714 added lines across 15 files outside `.planning/`.
+`d67012e..HEAD`. Reader 7 was given `d67012e^..HEAD`, the range the gloss requires: 86 commits and
+1,714 added lines across 15 files outside `.planning/`, measured at `66322b1`, which was HEAD when
+the reader ran. The figure moves with every later commit and is recorded against that HEAD for
+that reason. *Corrected 2026-09-22 (06-10): this said "the standing set above", which pointed at the
+reader table two paragraphs up; that table has no Input column and names no range. Both sites that
+do carry the range were corrected to the caret form by 06-10 task 21.*
 
 **Three findings came from the orchestrator, not from a reader, and could not have come from one.**
 Every reader tree has `.planning/` stripped, so no reader can check a claim whose subject is a
