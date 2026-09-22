@@ -102,7 +102,10 @@ elsewhere in `examples/` has no matching row here, or if two rows in this table 
 What it matches on is the formatted value and not the key, so where two rows carry the same value —
 `rfp-question-weight-mid` and `rfp-security-weight` both read 20% — the check cannot tell which of
 them a figure means. The key is what says that, and reading it is a reader's job rather than the
-build's. This is the value-collision ceiling `unlisted-figure`'s own docstring declares.
+build's. This is the value-collision ceiling `unlisted-figure`'s own docstring declares, and it
+declares a second one that bears on the sentence above: the check reads currency, percentages and
+ISO dates only, so of the four kinds this table holds, a bare count that drifts between examples is
+held by reading rather than by CI.
 
 | Key | Value | Type | What it is |
 |---|---|---|---|
