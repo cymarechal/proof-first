@@ -193,7 +193,11 @@ What exists today:
 - `output-styles/proof-first.md` — the output style.
 - `prompts/system-prompt.md` — the paste-able system prompt.
 - `examples/before-after.md` — the worked before-and-after examples.
-- `evals/proxy-sources.md` — the published source for every term `evals/lint.py` counts as a proxy.
+- `evals/proxy-sources.md` — the published source for the three term lists
+  `proxy-term-unsourced` governs: `evals/lint.py`'s `PROXY_TERMS`, `SUPERLATIVE_TERMS` and
+  `HEDGE_TERMS`, thirty rows in all. It is not the source for every term the linter counts.
+  `CLAIM_VERBS` and `CONDITION_CUES` are frozen in `evals/lint.py` with their reasons stated
+  there, even though a claim-verb violation message labels the term a proxy.
 - `evals/benchmark/scenarios.json` — the eight benchmark prompts, two per artifact family.
 - `evals/benchmark/bench-deal-brief.md` — the separate deal brief that grounds the benchmark's
   scenarios, kept apart from `examples/deal-brief.md` so no session sees the examples' brief. The
