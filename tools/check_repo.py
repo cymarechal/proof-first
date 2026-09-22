@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """Structural and textual consistency checker for this repository's registries.
 
-This script is a structural and textual consistency check over NUMBERING.md,
-examples/deal-brief.md, and NOTICES.md. It does not read framework source
-material and it cannot judge whether a paraphrase reproduces proprietary
-text — that judgement is Phase 6's legal review gate (LEG-04). It imports
+This script is a structural and textual consistency check over this
+repository's registries and the shipped files that cite them. A live run
+opens 23 files. README.md's "## Repository layout" section enumerates every
+one of them and names what is deliberately not opened; that enumeration is
+the single place this scope is written down, and it is pointed at here
+rather than restated, so there is one statement to keep true instead of two.
+It does not read framework source material and it cannot judge whether a
+paraphrase reproduces proprietary text — that judgement is Phase 6's legal
+review gate (LEG-04). It imports
 only the Python standard library; no package-manager dependency is
 introduced by this file or by the CI job that runs it.
 
