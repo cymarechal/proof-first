@@ -195,6 +195,31 @@ status: complete
 
 - **A correction can falsify its own verify command.** Task 2's first draft quoted the phrase it removed, and the plan's verify command then matched the correction itself. Rewritten to state the prong's real wording without reproducing the wrong one. The same mechanism moved the change-1 measurement at task 4, where reproducing the removed wording is required by the correction convention — handled there by pinning the measurement instead.
 
+## Post-SUMMARY re-run of committed command literals (change 5, first execution)
+
+The rule this round wrote into the standing set was run against this round, after the SUMMARY
+commit `a952906` landed. Eleven command literals were re-run at that HEAD:
+
+| Literal | Prose says | Re-run says |
+|---|---|---|
+| the four-form correction-marker grep over `LEGAL-REVIEW.md` | lists every marker | 43 markers, 0 missed |
+| wrap-tolerant vs line-based count of the PF-1 label phrase | the two disagree by one | 3 vs 2 |
+| `git grep -o '<owner>/<repo>' -- .claude-plugin README.md \| wc -l` | nine | 9 |
+| `git grep -n 'import ast' -- '*.py'` and the `ast.` forms | nothing | nothing |
+| scoped `Command of the Message spine is carved` sweep | exactly three files | 3 |
+| `ade21af^..66322b1` / `d67012e^..66322b1` added-line arms | 0 and 1 | 0 and 1 |
+| `ci.yml` distinct scripts / commands | eight / ten | 8 / 10 |
+| a live run of the checker opens | 23 files | 23 |
+| docstring catalogue vs `ALL_CHECK_CODES` | 58 vs 58, empty diff | 58 vs 58, empty |
+| the two `RESULTS-mod04.md` split counts | 14 and 12 | 14 and 12 |
+| `visual arrangement` outside `.planning/` | nothing | nothing |
+
+Nothing moved. That is the outcome to record, not a reason to skip the step: the rule exists
+because `LEGAL-REVIEW.md`'s sweep count was true when written and false five commits later, and
+this round's own change-1 measurement moved from 0 to 1 mid-round for exactly that reason. The
+mid-round catch is recorded under Decisions Made; this table is the post-SUMMARY pass, and it is
+clean.
+
 ## Next Phase Readiness
 
 - All ten CI commands green: `check_repo.py --self-test` (58 codes), `--mutation-test` (58 discrimination-proven), live run 0 violations, six `evals/` self-tests, and `generate_derivatives.py --check`.

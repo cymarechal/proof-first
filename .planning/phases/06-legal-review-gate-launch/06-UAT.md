@@ -443,7 +443,7 @@ false five commits later, falsified by `10cfa1e` ("docs(06-09): complete gap clo
 self-audit can see that: the audit runs before the SUMMARY exists. The remedy is a final task, run
 after the SUMMARY commit, that re-runs every command literal the round wrote into prose and
 corrects what moved. Round 6's own write-up did this to itself, caught one, and recorded the catch.
-06-10 ran it too, and the sentence it changed is recorded in `06-10-SUMMARY.md`.
+06-10 ran it against itself: mid-round it caught the change-1 measurement moving from 0 to 1, and the post-SUMMARY pass over eleven committed literals came back clean. Both are tabled in `06-10-SUMMARY.md`.
 
 **Both of 06-09's changes stay, and the measurement is what keeps them.** Change 1, the widened
 fourth brief, reached the `LEGAL-REVIEW.md` bullet summarising the two source-coined labels as
