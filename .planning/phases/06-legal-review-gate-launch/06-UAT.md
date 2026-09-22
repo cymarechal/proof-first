@@ -1916,13 +1916,20 @@ evidence: |
   recording it or by what followed, and the first in which the falsifying commit is one the
   self-audit could not have seen.
 
-  **C. `06-UAT.md`:1417 and :1907 — "four of its six findings were also reached … Its two unshared
-  findings are both the same shape."** The evidence block directly beneath `:1417` records **three**
-  numbered findings and **four** converged ones — seven, with three unshared. The third unshared
-  finding, a ledger row's reader count, is also not the same shape as the two it is grouped with.
-  Both figures appear in exactly these two places and did not propagate to `VERIFICATION.md` or
-  `WINDOWS.md`. Written by the round-5 UAT write-up and not re-read by 06-09, which edited the same
-  file in the same round.
+  **C. `06-UAT.md`, test 20's `reported:` line and the matching `reason:` in its gaps block —
+  "four of its six findings were also reached … Its two unshared findings are both the same
+  shape."** The evidence block directly beneath the `reported:` line records **three** numbered
+  findings and **four** converged ones — seven, with three unshared. The third unshared finding, a
+  ledger row's reader count, is also not the same shape as the two it is grouped with. Both figures
+  appear in exactly these two places and did not propagate to `VERIFICATION.md` or `WINDOWS.md`.
+  Written by the round-5 UAT write-up and not re-read by 06-09, which edited the same file in the
+  same round.
+  *Corrected 2026-09-22 (06-10): this finding cited the two sites as `06-UAT.md`:1417 and `:1907`.
+  At `66322b1`, the HEAD this round was written against, `:1417` resolved and `:1907` did not — the
+  second site was at `:1895`, and `:1907` held an unrelated gaps-block line about
+  `check_repo.py`:4479-4480. The citation was wrong when written, in the same file and the same
+  round as the finding it records. Both sites are now named by their field rather than by line, the
+  convention `LEGAL-REVIEW.md` adopted for the same reason.*
 
   **What this says about the diagnosis.** 06-09's task-18 self-audit read its own added sentences
   and found eight defects. It did not read the round-5 UAT record it was editing, and did not
