@@ -1,20 +1,20 @@
 ---
 phase: 06-legal-review-gate-launch
-status: passed
-score: "2/2 must-haves verified; rounds 1 and 2 gap closures all hold under independent read. Round 3 opened 3 gaps across 11 checkably-false statements; all three closed by 06-07, which also widened one mechanical guard and caught 3 further defects in its own new sentences. Requirement checkboxes stay unchecked: this round self-checked, and every self-check so far has missed what an independent reader then found."
+status: gaps_found
+score: "2/2 must-haves verified. Round 4 ran the four-brief standing set for the first time: all of round 3's corrections hold under independent read, and 17 new checkably-false statements opened 4 gaps (G-06-13..16). Ten of the 17 were authored by the round-3 gap-closure commit itself, up from 4 and 2 in the two rounds before. Requirement checkboxes stay unchecked."
 verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 22
-human_verification: 12
-human_verification_performed: 12
+human_verification: 16
+human_verification_performed: 16
 human_verification_passed: 4
-human_verification_issues: 8
-uat_round: "/gsd-verify-work 06 round 3, 2026-09-22"
+human_verification_issues: 12
+uat_round: "/gsd-verify-work 06 round 4, 2026-09-22"
 gap_closure_round: "06-07, 2026-09-22 — G-06-10, G-06-11, G-06-12 closed; not yet independently read"
 gaps_closed: 8
-gaps_open: 0
-gaps_open_ids: []
+gaps_open: 4
+gaps_open_ids: [G-06-13, G-06-14, G-06-15, G-06-16]
 re_verification:
   previous_status: passed
   previous_score: "2/2 must-haves verified; 9 human items performed across 2 rounds — 4 passed, 5 issues; round 1's 3 gaps closed by 06-05, round 2's independent read of those closures opened 2 new ones"
@@ -432,3 +432,45 @@ have each missed what an independent reader then found.
 
 ---
 *Verified: 2026-09-22 (gap-closure round 06-07)*
+
+---
+
+## Round 4 — the four-brief standing set, 2026-09-22
+
+Six readers across four briefs, the set recorded after round 3. `38c873b`, `.planning/` and `.claude/`
+removed, one writer per output file, none had written what it read.
+
+**Round 3's corrections hold.** All seven `LEGAL-REVIEW.md` fixes, both README fixes and all three
+sweep fixes were re-checked by readers who made none of them. The adopted seven-of-eight source-coined
+split was verified line by line — tuple bounds, all seven strings, the violation text, the `metric`
+exclusion, the 03-07 provenance, the LEG-04 routing.
+
+**And the round that made them wrote ten of this round's seventeen findings.**
+
+| Round | Findings | From the previous closing commit |
+|---|---|---|
+| 2 | 14 | 2 |
+| 3 | 11 | 4 |
+| 4 | 17 | **10** |
+
+That is the finding of round 4, and it is about the process rather than the files. Three classes
+account for fourteen of the seventeen: a scope overstatement about a mechanical guard, a citation that
+does not resolve, and a count stated in prose beside the thing it counts. All three are avoidable and
+two are mechanically checkable — which is what 06-08 task 17 attempts, narrowly, with an explicit
+instruction not to ship a half-working gate.
+
+**The new fourth brief justified itself on first use.** Aimed at the closing commit's own 202 added
+lines, it was the highest-yield reader of the round: two findings no other brief could reach, four
+confirmed independently. It is mandatory from here.
+
+**One finding reaches an installed user** and is task 9, ordered first: both derivatives tell the
+reader every rule in the omitted `worked-examples.md` carries a constructive line in `SKILL.md`, while
+eight of them are MC rules that `mc-rule-in-skill` forbids from `SKILL.md`.
+
+All ten CI commands green throughout — seventh consecutive round of `WINDOWS.md` id 17's pattern.
+
+**Next: `/gsd-execute-phase 06 --gaps-only`** against `06-08-PLAN.md`. Do not mark the phase complete
+from this branch.
+
+---
+*Verified: 2026-09-22 (UAT round 4)*

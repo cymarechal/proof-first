@@ -3,25 +3,26 @@ gsd_state_version: 1.0
 current_phase: 06
 current_phase_name: Legal Review Gate & Launch
 status: awaiting_verification
-stopped_at: Completed 06-07-PLAN.md (gap closure, round 3) — awaiting round-4 independent read
-last_updated: "2026-09-22T09:45:00.000Z"
+stopped_at: UAT round 4 complete — 4 gaps open, 06-08-PLAN.md written and ready for /gsd-execute-phase 06 --gaps-only
+last_updated: "2026-09-22T11:30:00.000Z"
 state_head: defa9aabc721607a1ccf68bbc90062ac333fae16
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 59
+  total_plans: 60
   completed_plans: 59
   percent: 67
 last_activity: 2026-09-22
-last_activity_desc: Phase 06 gap closure round 3 — all three round-3 UAT gaps closed across 13 tasks and one
-  commit (908b90b), six files, eleven corrections. The load-bearing one was a decision rather than
-  an edit: LEGAL-REVIEW.md and check_repo.py held opposite classifications of the same eight MC
-  dimension names, each file internally consistent, so no string gate could have caught it; the
-  review adopts the checker's seven-of-eight split, widening the prong-4 concession from two labels
-  to seven without moving the disposition. The benchmark's entity assertion went from four of nine
-  invented names to all nine, discrimination-proven against an unmutated control. The round's own
-  self-audit caught three defects in sentences it had just written. All ten CI commands green.
-  Phase awaits a round-4 independent read with the four-brief standing set now recorded.
+last_activity_desc: Phase 06 UAT round 4 — the first run of the four-brief standing set, six readers. All of
+  round 3's corrections hold under independent read. 17 new checkably-false statements opened
+  G-06-13 through G-06-16, and ten of the seventeen were authored by the round-3 gap-closure commit
+  itself, up from four and two in the rounds before: the closing round is now the largest single
+  source of findings. Three mechanical classes account for fourteen of them. The new fourth brief,
+  aimed at the closing commit's own added lines, was the highest-yield reader on first use. One
+  finding ships to installed users (both derivatives claim every worked-examples rule has a
+  constructive line in SKILL.md; eight are MC rules a build gate forbids there). All ten CI commands
+  green. 06-08-PLAN.md written inline with 17 tasks, including a narrow citation-resolution checker
+  and an explicit instruction not to ship it half-working.
 ---
 
 # Project State
