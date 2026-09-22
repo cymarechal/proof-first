@@ -1,18 +1,18 @@
 ---
 phase: 06-legal-review-gate-launch
 status: human_needed
-score: "2/2 must-haves verified. Round 4's four gaps (G-06-13..16) are CLOSED by 06-08 and round 5 confirmed every one of its seventeen corrections holds — checked by six readers who did not make them, plus a rule-by-rule re-verification of the user-facing derivative fix. Round 5 opened four new gaps (G-06-17..20) on eighteen further checkably-false statements; 06-09-PLAN.md addresses all four across 21 tasks. Ten of the eighteen were authored by a gap-closure round — eight by 06-08, and two by 06-05 and 06-06 that have survived every read since, which refutes the last two plans' framing that only the most recent closure is the defect source. Zero are regressions. All ten CI commands green throughout. Requirement checkboxes stay unchecked. Closure condition unchanged — WINDOWS id 12 closes when a round returns none; five have not."
+score: "2/2 must-haves verified. Round 5's four gaps (G-06-17..20) are CLOSED by 06-09 across 21 tasks and 8 files, addressing all eighteen checkably-false statements, and round 5 confirmed every one of 06-08's seventeen corrections holds. Not yet independently read: 06-09 wrote the corrections a round-6 reader would be verifying, and each of the five self-checks so far has missed what an independent reader then found. The round shipped one new build assertion (INIT-EVENTS.md's init-event key set, mutation-probed with an unmutated control and hardened once by the code-review gate) and one method change: the fourth standing brief now reads every gap-closure commit range rather than only the last round's diff, and the whole-tree sweep runs two readers. Task 18's self-audit found eight further defects in the round's own added sentences and fixed them; the code-review gate found a ninth in its new assertion. All ten CI commands green throughout. Requirement checkboxes stay unchecked. Closure condition unchanged — WINDOWS id 12 closes when a round of cold reads returns none; five have not."
 verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 24
 human_verification: 16
-human_verification_performed: 16
+human_verification_performed: 20
 human_verification_passed: 4
-human_verification_issues: 12
-uat_round: "/gsd-verify-work 06 round 4, 2026-09-22"
-gap_closure_round: "06-08, 2026-09-22 — G-06-13, G-06-14, G-06-15, G-06-16 closed; not yet independently read"
-gaps_closed: 12
+human_verification_issues: 16
+uat_round: "/gsd-verify-work 06 round 5, 2026-09-22"
+gap_closure_round: "06-09, 2026-09-22 — G-06-17, G-06-18, G-06-19, G-06-20 closed; not yet independently read"
+gaps_closed: 16
 gaps_open: 0
 gaps_open_ids: []
 round_4_closure:
@@ -28,6 +28,27 @@ round_4_closure:
   self_authored_defects_found_and_fixed: 8
   measured_verdict: "record-citation-unresolvable fires 0 times across the full history as measured at 06-08 (435 commits, 164 citation-instances, 14 distinct spellings). The citation class four rounds produced is NOT mechanically catchable; the structural fix that holds is the anchoring convention, not the gate."
   recommendation_to_round_5: "Cut LEGAL-REVIEW.md rather than audit it. This round added 159 lines to correct 13 sentences and authored 8 new defects doing so. The plan set that threshold for round 5's evidence; it is reached on round 4's."
+round_5_closure:
+  plan: 06-09
+  tasks: 21
+  commits: 30
+  files_changed: 8
+  ci_commands_green: 10
+  new_assertions: ["init-event key set vs transcripts-cat10.tar.gz"]
+  new_check_codes: []
+  mutation_codes_proven: 58
+  user_facing_findings_fixed: 0
+  self_authored_defects_found_and_fixed: 9
+  method_changes:
+    - "Fourth standing brief widened from the last round's diff to the union of every gap-closure commit range (d67012e..HEAD)"
+    - "Whole-tree sweep taken from one reader to two, both on the same no-file brief, with round 6 recording each reader's unique findings"
+  measured_verdict: "By git blame, 10 of round 5's 18 findings were authored by a gap-closure round -- 8 by the last one and 2 by 06-05 and 06-06, which no diff-scoped brief could see. The rule this phase records is not that the LAST closure is the defect source but that A closure is, and the earlier ones are still in the tree. Pinned to round 5 so round 6 can see whether widening the window moved the split."
+  refused: "No gate for bench-deal-brief.md's timeline comparison. The canonical figures are machine-readable but the brief states the comparison in both orientations, so a frozen-literal gate would have to guess which one a sentence uses. Filed as a WINDOWS id 17 candidate beside enforcement-scope checking -- the sixth fuzzy proxy this repository has refused."
+  self_audit:
+    defects_found: 8
+    classes: "5 scope overstatement, 2 count-next-to-the-thing, 1 reference resolving to wrong content"
+    new_in_kind: "Two self-referential commands -- recording a grep literal in prose changed what that grep returns. Neither was catchable by re-reading the sentence; both needed the command re-run after it was committed."
+    note: "Task 18's checklist found 8; the code-review gate then found a 9th in the round's own new assertion, which compared the key set but not the 140-transcript count the sentence it guards also claims. Measured: a probe copy with 40 init events stripped passed the check as shipped."
 re_verification:
   previous_status: gaps_found
   previous_score: "2/2 must-haves verified. Round 4 ran the four-brief standing set for the first time: all of round 3's corrections hold under independent read, and 17 new checkably-false statements opened 4 gaps (G-06-13..16). Ten of the 17 were authored by the round-3 gap-closure commit itself, up from 4 and 2 in the two rounds before. Requirement checkboxes stay unchecked."
@@ -492,3 +513,48 @@ from this branch.
 
 ---
 *Verified: 2026-09-22 (UAT round 4)*
+
+## Gap-closure round — 06-09, verified 2026-09-22
+
+Round 5's four gaps closed at source. Twenty-one tasks, eight files, 28 commits.
+
+**What closed.**
+
+| Gap | Findings | Closed by |
+|---|---|---|
+| G-06-17 | 3, README | Tasks 1-3 — the proxy-source claim bounded to the three registry lists `proxy-term-unsourced` actually governs; the output-styles claim scoped to route 3's local clone with the plugin case disclosed as untested rather than asserted either way; the regeneration trigger corrected to the generator's four reference files, with the fifth named as not a source |
+| G-06-18 | 8, LEGAL-REVIEW | Tasks 4-11 — two citations re-anchored by quoted string after `f909d3c` broke them; the source-row arithmetic; the surviving retracted phrase; prong 3's missing command run and recorded; the list/file "correction" withdrawn because the retired quotation was accurate; a machine check that never existed deleted; seven self-tests corrected to six at both live sites; the TSDR "answered" claim reconciled with the table's own 401 |
+| G-06-19 | 4, tooling and briefs | Tasks 12-16 — the citation code's block comment and scope comment corrected against their own docstring; `INIT-EVENTS.md`'s key set corrected to 24 and asserted; the element-label count corrected to fourteen with its counting rule stated in the same sentence; the bench brief's reversed comparison fixed |
+| G-06-20 | 2, the closing round's own text | Task 17 — the `strip_fences` comparison dropped after an AST census showed 36 of 51 check functions do not call it; ledger row 12's reader count corrected to one |
+
+**The structural change, and why it is the round's real output.** The fourth standing brief read the
+diff of the round that had just closed. Two of round 5's eighteen findings were authored by 06-05 and
+06-06, closing rounds 1 and 2, and had survived every read since — neither is in the last round's
+diff, so no diff-scoped brief could ever have seen them. The brief now reads the union of every
+gap-closure commit range. The whole-tree sweep goes from one reader to two, because it is the only
+route to text no brief names and three of round 5's oldest findings came through it and nowhere else.
+Both are recorded in `06-UAT.md`'s standing-set section and `WINDOWS.md` id 17, with the justifying
+measurement pinned to round 5 so round 6 can see whether widening moved the split.
+
+**What the round refused.** No gate for the bench brief's timeline comparison. Its canonical figures
+are machine-readable, but the brief states the comparison in both orientations — the programme is
+longer, the window is shorter, both correct — so any frozen-literal gate would have to guess which
+orientation a sentence uses. Filed as a candidate, not shipped. Sixth refusal of a fuzzy proxy.
+
+**Nine defects in the round's own output, found inside the round.** Task 18's self-audit found eight
+— five scope overstatements, two counts, one reference resolving to the wrong section — and the
+code-review gate found a ninth, in the assertion the round had just shipped. Two are new in kind:
+recording a `grep` literal in prose changed what that `grep` returns, twice, and neither was
+catchable by re-reading the sentence. Both needed the command re-run after it was committed.
+
+**This does not close the phase.** 06-09 wrote the corrections a round-6 reader would be verifying,
+and five consecutive self-checks have each missed what an independent read then found. LEG-04 and
+LEG-05 stay unchecked. All ten CI commands green throughout — ninth consecutive round of
+`WINDOWS.md` id 17's pattern.
+
+**Next: `/gsd-verify-work 06`** for round 6, against the amended standing set: six readers, the
+fourth brief reading `d67012e..HEAD`, and two whole-tree sweep readers whose unique findings are
+recorded separately. Do not mark the phase complete from this branch.
+
+---
+*Verified: 2026-09-22 (06-09 gap closure)*
