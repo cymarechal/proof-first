@@ -4763,22 +4763,35 @@ MUTATION_SOURCES = (
 def _copy_repo_subset(repo_root, dest):
     """Copy exactly MUTATION_SOURCES into dest. Never copies .git or
     .planning -- only the repository-relative paths the checker reads.
-    'evals' was added by 03-14 so the real evals/conformance/RESULTS-mod04.md
-    is reachable from the mutation harness, making
-    results-breakdown-count-mismatch discrimination-proven rather than
-    merely registered. No check other than results-breakdown-count-mismatch
-    itself reads anything under evals/ -- every other glob and named-path
-    scan in this module targets NUMBERING.md, examples/, tools/, or
-    skills/*/SKILL.md paths -- so widening this copy does not change what
-    any other code fires against. 'SOURCES.md' was added by 06-01 for the
-    same reason: source-row-unconfirmed reads that one named path, and
-    without it in this tuple the mutation copy has no file to mutate. No
-    other check reads SOURCES.md -- unlisted-figure scans only examples/
-    and skills/, and the pointer checks read only the carrier paths
-    NOTICES.md lists -- so this widening likewise changes nothing else.
-    'LEGAL-REVIEW.md' was added by 06-02 for the same reason again:
-    source-gate-incomplete and framework-statement-stale-review both read it,
-    and no other check does."""
+
+    Three entries were added after the original tuple, each so that one code
+    would be discrimination-proven rather than merely registered: 'evals' by
+    03-14, for results-breakdown-count-mismatch; 'SOURCES.md' by 06-01, for
+    source-row-unconfirmed; and 'LEGAL-REVIEW.md' by 06-02, for
+    source-gate-incomplete and framework-statement-stale-review. Without each
+    path in this tuple the mutation copy has no file for its code to mutate.
+
+    Every one of those widenings also brings other readers into the mutation
+    copy. They are listed rather than denied, because three successive
+    versions of this comment asserted that no other check read these paths and
+    all three assertions were false -- twice while the block was being edited
+    for other reasons. The readers below were measured on 2026-09-22 by running
+    the live checker under a pathlib.Path.read_text wrapper that records the
+    enclosing check_* frame of every read, which is the fact the assertions
+    were making rather than a proxy for it:
+
+      evals/*/RESULTS*.md  readme-claim-unsourced (all four files),
+                           results-breakdown-count-mismatch (RESULTS-mod04.md
+                           only)
+      SOURCES.md           source-row-unconfirmed, source-gate-incomplete,
+                           record-citation-unresolvable
+      LEGAL-REVIEW.md      source-gate-incomplete,
+                           framework-statement-stale-review,
+                           record-citation-unresolvable
+
+    So a widening here is not neutral for the other codes in its row, and a
+    mutation to one of these files can legitimately trip more than the code it
+    was written for."""
     for name in MUTATION_SOURCES:
         src = repo_root / name
         if not src.exists():

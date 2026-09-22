@@ -1,6 +1,6 @@
 # SOURCES.md
 
-Last reviewed: 2026-09-10
+Last reviewed: 2026-09-21
 
 ## The rule
 
