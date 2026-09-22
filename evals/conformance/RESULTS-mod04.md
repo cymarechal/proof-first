@@ -46,7 +46,7 @@ scored `conformant` (or `rule-before-family`) if its drafted body happened to re
 same phrase anywhere downstream. The unbounded search never produces the opposite
 error: it cannot turn a real declaration into a false `no-family`.
 
-**The consequence for every figure above this section.** Both published arms —
+**The consequence for every figure this banner covers.** Both published arms —
 `16/20` (80.0%) in "Arm 1 — post-03-07 skill" and `5/11` (45.5%) in "Arm 2 — paired
 baseline, pre-03-07 skill" — were computed entirely from run blocks produced by this
 unanchored scorer. Both rates are optimistic ceilings on the true conformance rate,
@@ -57,8 +57,8 @@ unanchored bias — but neither individual number should be read as an exact rat
 **These figures cannot be re-scored.** `run_conformance.py`'s `--transcript-dir`
 defaults to a fresh temporary directory, and no run in this file passed an explicit
 `--transcript-dir` pointing into the repository — so every raw transcript that
-produced every run block above was written outside the repository, to a temp
-directory that no longer exists. There is no artifact left to re-run the fixed scorer
+produced the run blocks this banner covers was written outside the repository,
+to a temp directory that no longer exists. There is no artifact left to re-run the fixed scorer
 against. The figures stand as recorded, annotated as optimistic, and are not
 recoverable.
 
@@ -68,9 +68,17 @@ where the write-mode contract actually places the family line — and computes b
 family offset and the marker offset against the same string, closing the same-defect
 class this scorer had already been fixed for twice before (a nonzero-exit session
 scored `no-family`; `_git_blob_sha()` reporting the wrong revision). Every run block
-recorded above this section, including the two dated 2026-09-16 immediately below,
-predates this fix. Any run recorded after commit `7cde49a` is anchored; anything
-above it is not.
+committed before that commit — including the two dated 2026-09-16 that stand immediately
+above `## Combined result (03-08-PLAN.md ...)` — predates this fix. Any run recorded after
+commit `7cde49a` is anchored; anything committed before it is not.
+
+*Corrected 2026-09-22 (06-10): this section carried three references placing the material it
+describes "above" itself. It is the first section in the file; every run block and every arm it
+describes stands below it. The same inversion was found at three more sites while checking these
+-- one in `## Pre-committed disposition rule (03-12)` and two in `## Anchored remeasurement result
+(03-12)` -- and all six are corrected in the same change. Where a direction could be replaced by a
+name or a commit rather than flipped, it was: this file is append-only, so "above" and "below" are
+the least durable way to point at anything in it.*
 
 ## Pre-committed disposition rule (03-12)
 
@@ -102,7 +110,8 @@ speaks to opus-5's behaviour under the anchored scorer.
   `git log --oneline -- skills/proof-first/SKILL.md`, where `5ce0ebb` is `03-11`'s own Task 1
   commit and `c7c1df4` is the commit immediately before it, `03-07`'s). Expected `SKILL.md`
   blob SHA: `9612649e49a331a65c1d8ea9cbdc5f5ea79eb92a` (this is the same blob SHA
-  `03-08-PLAN.md`'s Arm 1 — post-03-07 skill — recorded above, since `03-11` is the only
+  `03-08-PLAN.md`'s Arm 1 — post-03-07 skill — recorded below under
+  `## Combined result (03-08-PLAN.md ...)`, since `03-11` is the only
   plan between `03-07` and now that has touched `SKILL.md`).
 
 Let `N_A` / `M_A` be Arm A's conformant count over its scoreable count, and `N_B` / `M_B`
@@ -751,7 +760,7 @@ Computed by hand from the 23 run blocks appended above between the pre-committed
 anything. This is the first MOD-04 measurement produced entirely under `03-09`'s anchored
 scorer (`FAMILY_LINE_WINDOW_CHARS=400`, both offsets computed against the same stripped
 string) — every figure below is a precise measurement, not an optimistic ceiling, unlike
-every number recorded above the CR-01 banner at the top of this file.
+every number the CR-01 banner at the top of this file covers.
 
 Reproduction command (Arm A):
 `python3 evals/conformance/run_conformance.py --fixtures <fixture> --models claude-sonnet-5 --repeats 1 --timeout 480 --transcript-dir <dir>`
@@ -824,7 +833,7 @@ demonstrably make things better, which is exactly what Branch 4 (not Branch 2 or
 Zero sessions in either arm scored `rule-before-family` — every non-conformant session this
 round scored `no-family` (no family phrase found anywhere in the first 400 characters at
 all, not merely after a rule marker). This is a different residual shape from the
-unanchored-scorer measurements above the CR-01 banner, where `rule-before-family` was the
+unanchored-scorer measurements the CR-01 banner covers, where `rule-before-family` was the
 dominant non-conformant verdict and genuine `no-family` was rare or absent. The anchored
 window is doing exactly the job `03-09` built it to do: several of these `no-family`
 verdicts have a `marker_at` deep in the transcript (up to offset 1176), meaning the model
