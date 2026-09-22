@@ -4492,10 +4492,19 @@ def run_derivative_checks(repo_root):
 # commit -- and this code was silent on both, because the cited lines existed.
 # ---------------------------------------------------------------------------
 
-# The records whose citations are validated. Both already carry `path`:N
-# citations and both are already read by other codes. Scoped to these two
-# because they are where the drift was measured, not because no other file
-# can carry a citation.
+# The records whose citations are validated. Both are already read by other
+# codes. Scoped to these two because they are where the drift was measured,
+# not because no other file can carry a citation -- README.md is in scope
+# because it is where a citation would next be written, not because it
+# carries one today.
+#
+# Corrected 06-09. The first sentence read "Both already carry `path`:N
+# citations", which was never true of README.md. Measured at 06-09 by running
+# this file's own CITATION_RE over both paths: 9 matches in LEGAL-REVIEW.md, 0
+# in README.md, identical before and after strip_fences(). Those figures are
+# pinned to that measurement, not restated as a live count -- the same
+# convention the record-citation-unresolvable docstring uses for its replay,
+# and for the same reason.
 CITATION_RECORD_PATHS = ('LEGAL-REVIEW.md', 'README.md')
 
 # Directories never searched when resolving a bare basename, and never
