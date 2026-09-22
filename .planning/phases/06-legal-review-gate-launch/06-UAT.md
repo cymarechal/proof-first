@@ -447,7 +447,13 @@ fourth brief, reached the `LEGAL-REVIEW.md` bullet summarising the two source-co
 sitting in a production constant "rather than in a fixture" — `:383-384` at `66322b1`, authored by
 06-08's `33569f8` ("fix(06-08): task 14 self-audit — seven defects found in this round's own
 work"). The added-line sweep for that phrase over `ade21af^..HEAD`, the 06-09 range a diff-scoped
-brief would have used, returns 0 matches; the same sweep over `d67012e^..HEAD` returns 1. One finding a diff-scoped brief provably could
+brief would have used, returned 0 matches; the same sweep over `d67012e^..HEAD` returned 1. Both
+figures are pinned to `66322b1`, and they have to be: 06-10's own task-4 correction quotes the
+wording it removed, as this project's correction convention requires, so the phrase is an added
+line inside `ade21af^..HEAD` again and that arm now returns 1 at HEAD. The comparison is a
+statement about what round 6's widening reached, not a live count, and it is recorded against the
+HEAD it was taken at for the same reason change 5 exists. This is change 5 catching the round that
+wrote it, one commit after it was written. One finding a diff-scoped brief provably could
 not see. Change 2, the second sweep reader, produced 4 findings the first did not — 16% of round
 6's 25. Neither exit condition is met: the fourth brief retires when a round's widening reaches
 nothing the narrow range would have, and the second sweep reader retires after **two consecutive**
