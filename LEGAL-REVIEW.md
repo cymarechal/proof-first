@@ -761,9 +761,16 @@ under motion practice on the review date. Deferring forecloses nothing and spend
 
 The legal review gate itself is unaffected: it is a gate on content, not on publication, and the
 summary above records that its checks were run and recorded on 2026-09-21. Roadmap criterion 1 asks that the
-gate pass *before* public launch; deferring launch satisfies that ordering trivially and the
-machine check that enforces it — a configured remote requires a passed gate — is green in the
-no-remote direction.
+gate pass *before* public launch; deferring launch satisfies that ordering trivially.
+*Corrected 2026-09-22 (06-09): this sentence continued "and the machine check that enforces it — a
+configured remote requires a passed gate — is green in the no-remote direction". No such check
+exists, and none ever did. `grep -c subprocess tools/check_repo.py` returns 0, so the checker
+cannot observe a git remote at all. The only code reading the `Gate status:` line is
+`check_source_gate_incomplete`, the sole consumer of `GATE_STATUS_PREFIX`, and it compares that
+line against `SOURCES.md`'s row statuses and nothing else. Every "remote" string in the checker is
+a docstring line describing the SSH URL form inside `publish-location-drift`'s owner normaliser.
+The ordering argument stands on its own and is not weakened by losing a check that was never
+there.*
 
 ### Install verification
 
