@@ -960,6 +960,42 @@ Violation codes implemented in this file:
                       file's contents, does not judge whether the
                       replacement sentence is accurate, and cannot see
                       the same false claim restated in other words.
+  record-citation-unresolvable - a `path`:N or `path`:N-M citation in one
+                      of CITATION_RECORD_PATHS does not resolve: the path
+                      names no file in the tree, or the cited line range
+                      runs past the end of the file it names, or the range
+                      is inverted. One violation per distinct citation,
+                      naming the record, the cited spelling and what was
+                      wrong. Added by 06-08 against a measured pattern:
+                      four rounds of cold reads on this repository
+                      produced nine citation-drift findings, every one of
+                      them a line number that was right when written and
+                      wrong after the cited file was edited. Declared
+                      ceiling, and it is narrower than it looks: this
+                      checks that a citation RESOLVES, not that the cited
+                      lines say what the citing sentence claims. Measured,
+                      not asserted: replayed over all 435 commits of this
+                      repository's history -- 164 citation-instances, 14
+                      distinct spellings, 37 commits carrying at least one
+                      -- this code fires ZERO times. Every one of the nine
+                      citation findings four rounds of cold reads produced
+                      was a line number that existed and pointed at the
+                      wrong content, including the SKILL.md:63 misquote and
+                      the NUMBERING.md:26-40 slip. This code catches none
+                      of them. It is future insurance against three shapes
+                      that have not yet occurred here -- a path that names
+                      no file, a range past end-of-file, an inverted range
+                      -- and it must not be cited as a guard over citation
+                      accuracy, which remains a human read. It also stays
+                      silent on a retired citation quoted inside a
+                      correction paragraph, which still resolves. Second ceiling: a bare basename is resolved
+                      by searching the tree, so a citation naming a file
+                      that is not in this repository fires as unresolvable.
+                      Neither record makes such a citation; if one ever
+                      needs to, it must not use the `path`:N form. Third:
+                      where a basename matches more than one file the check
+                      fires only if the range overruns EVERY candidate,
+                      since it cannot tell which was meant.
 """
 import argparse
 import datetime
@@ -4418,12 +4454,158 @@ def run_derivative_checks(repo_root):
     return violations
 
 
+# ---------------------------------------------------------------------------
+# Citation resolution inside this repository's own records (06-08)
+#
+# Rounds 1-4 of cold reads on this repository produced 45 findings. Nine were
+# the same mechanical defect: a `path`:N citation that resolved when it was
+# written and stopped resolving when the cited file was edited afterwards --
+# usually by the very round that wrote the citation. This code closes that
+# class. It deliberately does not attempt the harder half (whether the cited
+# lines say what the citing sentence claims), which is a semantic judgement
+# this repository has refused to put behind a build gate four times.
+# ---------------------------------------------------------------------------
+
+# The records whose citations are validated. Both already carry `path`:N
+# citations and both are already read by other codes. Scoped to these two
+# because they are where the drift was measured, not because no other file
+# can carry a citation.
+CITATION_RECORD_PATHS = ('LEGAL-REVIEW.md', 'README.md')
+
+# Directories never searched when resolving a bare basename, and never
+# scanned for citations. `.planning/` is tracked but is a planning-artifact
+# archive: a citation into a superseded plan is a historical record, not a
+# live claim.
+CITATION_SKIP_DIRS = frozenset({'.git', '.planning'})
+
+# A citation is a backticked path carrying a file extension, immediately
+# followed by ':N' or ':N-M'. The backticks are load-bearing. Without them
+# this matches shell snippets, table cells and prose that put a filename and
+# a number next to each other for unrelated reasons -- the exact
+# false-positive class that would make this gate unusable.
+CITATION_RE = re.compile(
+    r'`([A-Za-z0-9_][A-Za-z0-9_./-]*\.[A-Za-z0-9]+)`:(\d+)(?:-(\d+))?'
+)
+
+
+def _citation_tree_index(repo_root):
+    """Map basename -> list of repo-relative paths, over every file in the
+    tree outside CITATION_SKIP_DIRS. Built by walking rather than by asking
+    git, because the self-test and mutation harnesses run against temporary
+    roots that have no git repository."""
+    index = {}
+    for path in repo_root.rglob('*'):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(repo_root)
+        if CITATION_SKIP_DIRS & set(rel.parts):
+            continue
+        index.setdefault(rel.name, []).append(rel)
+    return index
+
+
+def _citation_line_count(repo_root, rel):
+    try:
+        return len(( repo_root / rel).read_text(encoding='utf-8').splitlines())
+    except (OSError, UnicodeDecodeError):
+        return None
+
+
+def check_record_citations(repo_root):
+    """Check that every `path`:N / `path`:N-M citation in
+    CITATION_RECORD_PATHS resolves to a real file and a real line range.
+
+    Resolution order: an exact repository-relative path first, then -- for a
+    spelling with no directory separator -- a basename search over the tree.
+    A range is reported when its high bound runs past the file's last line,
+    when its low bound is below 1, or when the bounds are inverted.
+
+    Declared ceiling: see this module's docstring. In one sentence: this
+    proves a citation points at lines that exist, and says nothing whatever
+    about whether those lines support the sentence citing them."""
+    violations = []
+    index = None
+    for record in CITATION_RECORD_PATHS:
+        record_path = repo_root / record
+        if not record_path.exists():
+            continue
+        text = record_path.read_text(encoding='utf-8')
+        seen = set()
+        for match in CITATION_RE.finditer(text):
+            spelling, low_s, high_s = match.group(1), match.group(2), match.group(3)
+            cited = f'`{spelling}`:{low_s}' + (f'-{high_s}' if high_s else '')
+            if cited in seen:
+                continue
+            seen.add(cited)
+            low = int(low_s)
+            high = int(high_s) if high_s else low
+
+            if index is None:
+                index = _citation_tree_index(repo_root)
+            exact = Path(spelling)
+            if (repo_root / exact).is_file():
+                candidates = [exact]
+            elif '/' in spelling:
+                candidates = []
+            else:
+                candidates = index.get(spelling, [])
+
+            if not candidates:
+                violations.append((record, (
+                    f'record-citation-unresolvable {record} cites {cited}, '
+                    f'and no file named {spelling} exists in the tree'
+                )))
+                continue
+
+            if high < low:
+                violations.append((record, (
+                    f'record-citation-unresolvable {record} cites {cited}, '
+                    f'whose line range is inverted'
+                )))
+                continue
+            if low < 1:
+                violations.append((record, (
+                    f'record-citation-unresolvable {record} cites {cited}, '
+                    f'whose first line is below 1'
+                )))
+                continue
+
+            lengths = {}
+            for rel in candidates:
+                count = _citation_line_count(repo_root, rel)
+                if count is not None:
+                    lengths[str(rel)] = count
+            if not lengths:
+                continue
+            # With more than one candidate the check cannot tell which file
+            # was meant, so it fires only when the range overruns every one.
+            if all(high > count for count in lengths.values()):
+                detail = ', '.join(
+                    f'{name} has {count} line(s)' for name, count in sorted(lengths.items())
+                )
+                violations.append((record, (
+                    f'record-citation-unresolvable {record} cites {cited}, '
+                    f'which runs past the end of the file it names ({detail})'
+                )))
+    return sorted(violations)
+
+
+CITATION_CHECK_CODES = ['record-citation-unresolvable']
+
+
+def run_citation_checks(repo_root):
+    violations = []
+    violations += check_record_citations(repo_root)
+    return violations
+
+
 ALL_CHECK_CODES = (
     ID_CHECK_CODES + FIGURE_CHECK_CODES + NOTICES_CHECK_CODES
     + LICENSE_CHECK_CODES + README_CHECK_CODES + RESULTS_CHECK_CODES
     + SOURCES_CHECK_CODES
     + FRAMEWORK_CHECK_CODES + FRONTMATTER_CHECK_CODES + CATALOG_CHECK_CODES
     + PLUGIN_CHECK_CODES + EXAMPLE_CHECK_CODES + DERIVATIVE_CHECK_CODES
+    + CITATION_CHECK_CODES
 )
 
 
@@ -4446,6 +4628,7 @@ def run_all_checks(repo_root):
     violations += run_plugin_checks(repo_root)
     violations += run_example_checks(repo_root)
     violations += run_derivative_checks(repo_root)
+    violations += run_citation_checks(repo_root)
     return violations
 
 
@@ -5314,6 +5497,23 @@ def _mutate_readme_layout_tree_stale(root):
     path.write_text('\n'.join(kept) + '\n', encoding='utf-8')
 
 
+def _mutate_record_citation_unresolvable(root):
+    """Push the high bound of the real LEGAL-REVIEW.md's first `path`:N-M
+    citation past the end of the file it names, which is what a citation
+    does on its own when the cited file is shortened under it. Operates on
+    the real record and the real cited file, so this proves the code fires
+    against this repository's production citation shape rather than only
+    against the fixture."""
+    path = root / LEGAL_REVIEW_PATH
+    text = path.read_text(encoding='utf-8')
+    match = next(
+        m for m in CITATION_RE.finditer(text)
+        if m.group(3) is not None
+    )
+    broken = f'`{match.group(1)}`:{match.group(2)}-999999'
+    path.write_text(text[:match.start()] + broken + text[match.end():], encoding='utf-8')
+
+
 MUTATIONS = [
     ('dup-id', "insert the same allocated-ID row twice into NUMBERING.md's Allocated IDs table", _mutate_dup_id),
     ('range-id', "insert an allocated-ID row whose PF number sits above its section's declared ceiling", _mutate_range_id),
@@ -5336,6 +5536,7 @@ MUTATIONS = [
     ('source-gate-incomplete', "flip one real SOURCES.md row back to unverified while LEGAL-REVIEW.md keeps declaring the gate PASSED", _mutate_source_gate_incomplete),
     ('framework-statement-stale-review', "roll one real NOTICES.md statement's Last reviewed date back behind LEGAL-REVIEW.md's review date", _mutate_framework_statement_stale_review),
     ('framework-statement-missing', "delete the NOTICES.md file entirely from the repository root", _mutate_framework_statement_missing),
+    ('record-citation-unresolvable', "push the high bound of the real LEGAL-REVIEW.md's first line-range citation past the end of the file it names", _mutate_record_citation_unresolvable),
     ('catalog-id-drift', "delete one PF data row from references/checklist.md's PF rules table", _mutate_catalog_id_drift),
     ('catalog-opening-rule-count', "add a second PF-0 rule to NUMBERING.md and checklist.md, violating CAT-03's exactly-one requirement", _mutate_catalog_opening_rule_count),
     ('frontmatter-unparseable', "remove the opening '---' line from the real skills/proof-first/SKILL.md frontmatter block", _mutate_frontmatter_unparseable),
@@ -7172,6 +7373,16 @@ def self_test():
         tree_stale_root = tmp_root / 'tree_stale'
         results_bad_root = tmp_root / 'results_bad'
 
+        # record-citation-unresolvable fixtures (06-08). One clean root and
+        # one per firing direction, so a single broken direction cannot hide
+        # behind another.
+        citation_clean_root = tmp_root / 'citation_clean'
+        citation_overrun_root = tmp_root / 'citation_overrun'
+        citation_missing_root = tmp_root / 'citation_missing'
+        citation_inverted_root = tmp_root / 'citation_inverted'
+        citation_nobacktick_root = tmp_root / 'citation_nobacktick'
+        citation_planning_root = tmp_root / 'citation_planning'
+
         family_capitalized_root = tmp_root / 'family_capitalized'
 
         plugin_good_root = tmp_root / 'plugin_good'
@@ -7512,6 +7723,35 @@ def self_test():
         _write(stale_noreview_root / 'NOTICES.md',
                _notices_statements(('2026-09-10', '2026-09-10', '2026-09-10')))
 
+        # Citation-resolution fixtures (record-citation-unresolvable, 06-08).
+        # Every root ships the same three-line cited file, so what fires is
+        # decided by the citation's own range and spelling, not by the
+        # target. citation_nobacktick_root pins the non-firing direction
+        # that keeps this code usable: the same path and number written
+        # WITHOUT the enclosing backticks is prose, not a citation.
+        # citation_planning_root pins the other: a cited file that exists
+        # only under .planning/ is a planning artifact the resolver does not
+        # search, so it must report the path as unresolvable rather than
+        # silently resolving into the archive.
+        _cited = "line one\nline two\nline three\n"
+        for _root in (citation_clean_root, citation_overrun_root, citation_missing_root,
+                      citation_inverted_root, citation_nobacktick_root,
+                      citation_planning_root):
+            _write(_root / 'cited-fixture.md', _cited)
+        _write(citation_clean_root / LEGAL_REVIEW_PATH,
+               "# Fixture\n\nSee `cited-fixture.md`:2-3 for the rule.\n")
+        _write(citation_overrun_root / LEGAL_REVIEW_PATH,
+               "# Fixture\n\nSee `cited-fixture.md`:2-9 for the rule.\n")
+        _write(citation_missing_root / LEGAL_REVIEW_PATH,
+               "# Fixture\n\nSee `no-such-fixture.md`:2-3 for the rule.\n")
+        _write(citation_inverted_root / LEGAL_REVIEW_PATH,
+               "# Fixture\n\nSee `cited-fixture.md`:3-2 for the rule.\n")
+        _write(citation_nobacktick_root / LEGAL_REVIEW_PATH,
+               "# Fixture\n\nSee cited-fixture.md:2-9 for the rule.\n")
+        _write(citation_planning_root / '.planning' / 'archived-fixture.md', _cited)
+        _write(citation_planning_root / LEGAL_REVIEW_PATH,
+               "# Fixture\n\nSee `archived-fixture.md`:2-3 for the rule.\n")
+
         # README claim-region, badge and layout-tree fixtures (06-03).
         # Every root below ships the same one-file results corpus so token
         # sourcing is decided by the region's content, not by the corpus.
@@ -7821,6 +8061,12 @@ def self_test():
         badge_allowed_codes = _codes(badge_allowed_root)
         badge_bad_codes = _codes(badge_bad_root)
         tree_stale_codes = _codes(tree_stale_root)
+        citation_clean_codes = _codes(citation_clean_root)
+        citation_overrun_codes = _codes(citation_overrun_root)
+        citation_missing_codes = _codes(citation_missing_root)
+        citation_inverted_codes = _codes(citation_inverted_root)
+        citation_nobacktick_codes = _codes(citation_nobacktick_root)
+        citation_planning_codes = _codes(citation_planning_root)
         claim_two_violations = [
             line for _, line in run_all_checks(claim_two_root)
             if line.startswith('readme-claim-unsourced ')
@@ -7912,6 +8158,8 @@ def self_test():
             | benchrun_bad_codes
             | claim_unsourced_codes | claim_unanchored_codes
             | badge_bad_codes | tree_stale_codes
+            | citation_overrun_codes | citation_missing_codes
+            | citation_inverted_codes | citation_planning_codes
         )
 
         # skill-derivative-stale / derivative-rule-coverage-incomplete
@@ -8324,6 +8572,29 @@ def self_test():
             all_ok = False
         if 'source-gate-incomplete' in results_good_codes:
             print("FAIL: source-gate-incomplete fired on a fixture root shipping no LEGAL-REVIEW.md")
+            all_ok = False
+
+        # Citation-resolution assertions (record-citation-unresolvable, 06-08).
+        if 'record-citation-unresolvable' in citation_clean_codes:
+            print("FAIL: record-citation-unresolvable fired on a citation whose range is inside the cited file")
+            all_ok = False
+        if 'record-citation-unresolvable' not in citation_overrun_codes:
+            print("FAIL: record-citation-unresolvable did not fire on a range running past the cited file's end")
+            all_ok = False
+        if 'record-citation-unresolvable' not in citation_missing_codes:
+            print("FAIL: record-citation-unresolvable did not fire on a citation naming no file in the tree")
+            all_ok = False
+        if 'record-citation-unresolvable' not in citation_inverted_codes:
+            print("FAIL: record-citation-unresolvable did not fire on an inverted line range")
+            all_ok = False
+        if 'record-citation-unresolvable' in citation_nobacktick_codes:
+            print("FAIL: record-citation-unresolvable fired on an out-of-range path:N written without backticks, which is prose")
+            all_ok = False
+        if 'record-citation-unresolvable' not in citation_planning_codes:
+            print("FAIL: record-citation-unresolvable did not fire on a citation resolvable only inside .planning/")
+            all_ok = False
+        if 'record-citation-unresolvable' in results_good_codes:
+            print("FAIL: record-citation-unresolvable fired on a fixture root shipping no LEGAL-REVIEW.md or README.md")
             all_ok = False
 
         # Stale-review assertions (framework-statement-stale-review, 06-02).

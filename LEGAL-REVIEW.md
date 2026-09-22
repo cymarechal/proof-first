@@ -283,7 +283,7 @@ engages and the earlier draft never reached it, although its own step 3 describe
 six-and-two: "Metric", "Pain", "Champion", "Competition", "Decision Criteria" and "Decision Process"
 called ordinary business English, and only "Economic Buyer" and "Paper Process" conceded as terms of
 art. That split is the opposite of the one this repository already enforces in code.
-`tools/check_repo.py`:2952-2965 freezes `SOURCE_COINED_LABELS` — `economic buyer`, `paper process`,
+`tools/check_repo.py`'s `SOURCE_COINED_LABELS` tuple freezes — `economic buyer`, `paper process`,
 `decision criteria`, `decision process`, `champion`, `competition`, `pain` — and
 `check_source_label_in_skill_content` (`:2977-3009`) fails the build when any of the seven appears in
 shipped skill content "adopted here as this repository's own unattributed noun (see SOURCES.md's
@@ -328,13 +328,13 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
   `check_repo.py`'s fixtures" was right for Economic Buyer and wrong for Paper Process** —
   `Economic Buyer` is inserted into two fixture builders in that file, `_bad_numbering()` and
   `_mc_numbering_for_count()`, while `grep -in 'paper process' tools/check_repo.py` returns exactly
-  one line, `:2959`, inside `SOURCE_COINED_LABELS`. So the word that failed was **only**. The two
+  one line, and it is inside `SOURCE_COINED_LABELS`. So the word that failed was **only**. The two
   sub-claims the over-correction offered in support stay, because both are true — `:2958-2959` is a
   production constant rather than a fixture, and "Paper Process" occurs in no fixture in that file
   at all — they simply do not establish what that sentence claimed they establish, which was that
   every part of the earlier assertion failed.* The case difference in the briefs' headings is
   not a defence — this repository's own matcher for these exact labels is case-insensitive
-  (`check_repo.py`:2974).
+  (`check_repo.py`'s `_source_label_pattern`, which compiles every label with `re.IGNORECASE`).
 - **"Decision Process" and "Competition" appear in `NUMBERING.md` and nowhere else** outside this
   file and the checker.
 - Neither `completeness-audit.md` nor any other `references/*.md` carries any of the seven; that
@@ -342,8 +342,17 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
 - All seven appear throughout `.planning/`, which is tracked in this repository.
 
 **A note on "ships", because this entry previously used the word two ways in four lines.**
-`README.md`:369-371, under `## Repository layout`, states the published definition: `NOTICES.md`, `SOURCES.md`, `NUMBERING.md`,
-`examples/`, `tools/` and `evals/` "stay at the repository root and never ship to an installed user."
+`README.md`, in the closing paragraph of its `## Repository layout` section, states the published
+definition: `NOTICES.md`, `SOURCES.md`, `NUMBERING.md`, `examples/`, `tools/` and `evals/` "stay at
+the repository root and never ship to an installed user." *Corrected 2026-09-22 (06-08): this cited
+`README.md`:369-371, which was right when written and wrong thirteen lines later once this same
+round lengthened README's checker bullet. Cited by heading and quoted string instead, per the
+convention the `## Reproduction boundary` bullet above already states for the deal briefs. The same
+round then did it again to three `tools/check_repo.py` line citations, by inserting a docstring
+entry above them; those are now anchored to the named constant and function instead. 06-08's
+`record-citation-unresolvable` was silent on every one of the four, because every cited line still
+existed — which is the clearest available demonstration of that code's declared ceiling, and it was
+produced by the commit that added it.*
 On that definition none of the seven reaches an installed user at all, because the only files that do
 are `skills/proof-first/**` and the two derivatives, and the checker holds those clean. Where the
 seven do sit — `NUMBERING.md` and the two deal briefs — is committed and publicly readable, which is
@@ -438,7 +447,7 @@ which, not because the original four held.
   verbatim as `NUMBERING.md` labels; "Before scenario", "After scenario" and "Metrics" are the
   framework's terms for the same three moves. *Corrected 2026-09-22:* this point previously read
   "They are not neutral English the way "Metric" or "Competition" are." `Competition` is one of the
-  seven strings `check_repo.py`:2963 freezes as source-coined, so it was the wrong side of the
+  seven strings `check_repo.py`'s `SOURCE_COINED_LABELS` freezes as source-coined, so it was the wrong side of the
   comparison. Against the corrected id-6 split, prong 4 now engages on both entries — seven of eight
   MC names and all seven PF-1 labels — so this point no longer distinguishes the two entries. It is
   kept because it is true, not because it ranks them.
