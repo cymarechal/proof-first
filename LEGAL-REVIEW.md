@@ -358,7 +358,11 @@ name, which is the only form that survives the next insertion. The passage also
 said "shipped skill content", which is the checker's own phrase for its scope and reads wider than
 that scope is — the two derivatives are shipped skill content and this check never opens them. The
 scope is now stated as the globs the function walks; the derivatives are held by
-`generate_derivatives.py --check`, as the `## Reproduction boundary` bullet above sets out.*
+`generate_derivatives.py --check`, as the **No shipped skill file carries any of the seven** bullet
+below sets out. *Corrected 2026-09-22 (06-10): that pointer read "the `## Reproduction boundary`
+bullet above". The bullet it means is the first of the five under "What follows, checked by
+`git grep -iln`", which stands below this paragraph, not above it. Anchored by its opening words,
+the convention this file already adopted for citations that drift.*
 
 Two positions on the same eight strings, and they were opposites. **This review adopts the
 checker's.** Seven of the eight are source-coined; "Metric" alone is ordinary business English. The
