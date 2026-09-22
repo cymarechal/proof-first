@@ -305,7 +305,7 @@ Plans:
   1. A legal review gate passes before public launch, with MEDDIC-family trademark status (including the MEDDPICC genericness ruling) reconfirmed against current sources.
   2. Every claim and badge in README derives only from committed benchmark results in RESULTS.md, stating model versions and date.
 
-**Plans**: 10/10 plans executed — 4 original, plus 6 gap-closure plans (06-05 .. 06-10), one per round of the cold read. The phase is NOT complete: LEG-04 and LEG-05 stay unchecked until a round of independent cold reads returns no checkably-false statement, which is `WINDOWS.md` id 12's standing closure condition. Six rounds have not.
+**Plans**: 11/11 plans executed — 4 original, plus 7 gap-closure plans (06-05 .. 06-11), one per round of the cold read. The phase is NOT complete: LEG-04 and LEG-05 stay unchecked until a round of independent cold reads returns no checkably-false statement, which is `WINDOWS.md` id 12's standing closure condition. Seven rounds have not.
 
 - [x] 06-01-PLAN.md
 - [x] 06-02-PLAN.md
@@ -317,6 +317,7 @@ Plans:
 - [x] 06-08-PLAN.md
 - [x] 06-09-PLAN.md
 - [x] 06-10-PLAN.md
+- [x] 06-11-PLAN.md
 
 **Wave 1**
 
@@ -364,7 +365,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
 | 5. Evaluation Harness | 3/3 | Complete    | 2026-09-20 |
-| 6. Legal Review Gate & Launch | 10/10 | In Progress|  |
+| 6. Legal Review Gate & Launch | 11/11 | In Progress|  |
 
 ---
 *Roadmap created: 2026-09-10*

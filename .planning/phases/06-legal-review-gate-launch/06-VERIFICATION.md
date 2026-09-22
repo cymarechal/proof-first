@@ -1,8 +1,9 @@
 ---
 phase: 06-legal-review-gate-launch
 status: human_needed
-score: "2/2 must-haves verified. Round 6 opened G-06-21, G-06-22 and G-06-23 on 25 checkably-false statements; 06-10 closed all three in 27 tasks across six files and 33 commits. The round shipped the first mechanical guard this phase has put behind its dominant defect class -- catalogue_matches_registry() asserts the checker docstring catalogue against ALL_CHECK_CODES in both directions, and caught the live instance of 57 listed against 58 implemented -- and refused the wider scope check on a measurement rather than a preference. Three false scope absolutes were replaced by a read-tracer measurement of which check_* frame opens which path. Six deviations from the plan, all recorded: two of the plan own figures were falsified by the tree, three same-class defects beyond the gap enumeration were found by checking the instances it listed, and the round self-audit found two in its own added sentences. All ten CI commands green throughout. Requirement checkboxes stay unchecked: 06-10 wrote the corrections a round-7 reader will be verifying, and six consecutive self-checks have each missed what an independent read then found. WINDOWS id 12 closes when a round of cold reads returns none; six have not."
-verified: 2026-09-22
+score: "2/2 must-haves verified. Round 7 (2026-09-23, against ad073b9) opened G-06-25 through G-06-29 on 23 checkably-false statements across five briefs and eight readers, and confirmed all 25 of round 6's corrections unregressed. The project owner then bounded the blocking gate to files that ship, splitting the round 10 shipped / 13 .planning. 06-11 closed the shipped ten -- G-06-25 through G-06-28 -- in nine tasks and nine fix commits. Its largest change retires LEGAL-REVIEW.md's inline correction-marker convention, which required quoting the wording each correction removed and so wrote retired strings back where the next round's readers checked them as live claims; that convention authored two of round 7's three findings against the file, and removing its 44 markers dissolved both rather than repairing them. The one mechanical change extends publish-location-drift to route 2's in-session install command, proven by a mutation probe against an unmutated control before and after. Two deviations, both recorded: one plan figure was falsified by the record, and two ledger rows went stale inside a blocking task and were corrected ledger-first. The round self-audit found C8's refuted universal surviving in two further places, one of them shipped. All ten CI commands green throughout, re-verified at ad073b9 as well. Requirement checkboxes stay unchecked: 06-11 wrote the corrections a round-8 reader will be verifying, and seven consecutive self-checks have each missed what an independent read then found. WINDOWS id 12 closes when a round of cold reads returns none; seven have not."
+superseded_score_round_6: "2/2 must-haves verified. Round 6 opened G-06-21, G-06-22 and G-06-23 on 25 checkably-false statements; 06-10 closed all three in 27 tasks across six files and 33 commits. The round shipped the first mechanical guard this phase has put behind its dominant defect class -- catalogue_matches_registry() asserts the checker docstring catalogue against ALL_CHECK_CODES in both directions, and caught the live instance of 57 listed against 58 implemented -- and refused the wider scope check on a measurement rather than a preference. Three false scope absolutes were replaced by a read-tracer measurement of which check_* frame opens which path. Six deviations from the plan, all recorded: two of the plan own figures were falsified by the tree, three same-class defects beyond the gap enumeration were found by checking the instances it listed, and the round self-audit found two in its own added sentences. All ten CI commands green throughout. Requirement checkboxes stay unchecked: 06-10 wrote the corrections a round-7 reader will be verifying, and six consecutive self-checks have each missed what an independent read then found. WINDOWS id 12 closes when a round of cold reads returns none; six have not."
+verified: 2026-09-23
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 24
@@ -11,11 +12,12 @@ human_verification_performed: 29
 human_verification_passed: 5
 human_verification_issues: 24
 uat_round: "/gsd-verify-work 06 round 7, 2026-09-23, against ad073b9"
-gap_closure_round: "06-10, 2026-09-22 — G-06-21..23 closed and CONFIRMED by round 7's independent read: none of round 6's 25 corrections was found regressed. Round 7 (2026-09-23, ad073b9) then opened G-06-25..29 on 23 new findings across five briefs and eight readers. 12 of 23 are in .planning/, found by the new fifth brief on its first run — including three WINDOWS.md ledger rows whose LEGAL-REVIEW.md twins 06-10 corrected while leaving the ledger wrong, and a gap closure credited to a commit reachable from no ref. Planned for closure in 06-11 (written inline; the Agent tool is prohibited in this session). Closure awaits round 8's independent read."
-gaps_closed: 19
-gaps_open: 4
-gaps_open_ids: [G-06-25, G-06-26, G-06-27, G-06-28]
+gap_closure_round: "06-11, 2026-09-23 — G-06-25..28 closed, awaiting round 8's independent read. Round 7 (2026-09-23, ad073b9) opened G-06-25..29 on 23 new findings across five briefs and eight readers and confirmed 06-10's 25 corrections unregressed. 13 of the 23 are in .planning/, found by the new fifth brief on its first run — including three WINDOWS.md ledger rows whose LEGAL-REVIEW.md twins 06-10 corrected while leaving the ledger wrong, and a gap closure credited to a commit reachable from no ref. The 2026-09-23 gate-scope decision bounds the blocking gate to shipped files, so 06-11 closed the shipped ten and left the 13 .planning/ findings as tracked backlog under G-06-29. Written and executed inline; the Agent tool is prohibited in this session."
+gaps_closed: 23
+gaps_open: 0
+gaps_open_ids: []
 gaps_backlog_ids: [G-06-29]
+gaps_awaiting_independent_read: [G-06-25, G-06-26, G-06-27, G-06-28]
 gate_scope: "shipped files only — decided 2026-09-23 by the project owner; see 06-UAT.md section 'Gate scope decision' and WINDOWS.md id 33"
 round_4_closure:
   plan: 06-08
@@ -51,6 +53,42 @@ round_5_closure:
     classes: "5 scope overstatement, 2 count-next-to-the-thing, 1 reference resolving to wrong content"
     new_in_kind: "Two self-referential commands -- recording a grep literal in prose changed what that grep returns. Neither was catchable by re-reading the sentence; both needed the command re-run after it was committed."
     note: "Task 18's checklist found 8; the code-review gate then found a 9th in the round's own new assertion, which compared the key set but not the 140-transcript count the sentence it guards also claims. Measured: a probe copy with 40 init events stripped passed the check as shipped."
+round_7_closure:
+  plan: 06-11
+  tasks: 9
+  commits: 11
+  files_changed: 5
+  ci_commands_green: 10
+  ci_commands_green_at_round_7_head: "10 at ad073b9, re-measured by 06-11 — the claim 'ten CI commands green every time' now holds for round 7 as well"
+  new_assertions: []
+  new_check_codes: []
+  mutation_codes_proven: 58
+  user_facing_findings_fixed: 1
+  self_authored_defects_found_and_fixed: 2
+  retired: "LEGAL-REVIEW.md's inline correction-marker convention. 44 markers removed (43 matched by the convention's own grep, plus the *Correction withdrawn* form that grep could not see, which is finding D's fifth form). What each correction established is kept in the file's own voice; what each replaced moves to git history, with `git log -p --follow` and `git log -S` verified to resolve before being written down."
+  shipped: "publish-location-drift extended to route 2's in-session `/plugin marketplace add`, the third of three README commands carrying the <owner>/<repo> placeholder and the only unguarded one. Separate pattern rather than a widened MARKETPLACE_ADD_RE, because that regex is also check_readme_install_paths' route-2 anchor."
+  dissolved_rather_than_fixed: "C3 (the marker-form universal) and C2 (an enumeration existing only inside a marker). C2's measurement was re-derived by AST anyway: 11 hits, 2 module-level, 9 across 6 functions, against the record's 1 and 10-across-7."
+  deviations:
+    count: 2
+    plan_figures_falsified_by_the_record: 1
+    scope_additions_forced_by_a_blocking_task: 1
+    note: "The plan said the marker convention authored findings C, D and E; E is a plain mislabel with no marker involved, so the true figure is two of three. Ledger rows 12 and 17 read 'six rounds' inside the four cells C9 had to touch; seven have run, so both were corrected ledger-first through WINDOWS.md's JSON fence."
+  self_audit:
+    scope: "every sentence the round added, plus every .planning/ file the round edited"
+    defects_found: 2
+    note: "C8's refuted universal survived in WINDOWS.md ledger id 17 and in LEGAL-REVIEW.md's shipped reproduction of it, both written by 06-10 alongside the docstring C8 corrected -- round 7's reproduction-corrected-instead-of-original finding, run in the opposite direction. C5's own rewritten paragraph claimed the build holds four kinds of figure; unlisted-figure holds three."
+  post_summary_literal_rerun:
+    literals_rerun: 19
+    moved: 0
+    note: "Second execution of change 5. Nothing moved. Also re-checked: no [x] stands beside an UNVERIFIED requirement, and LEG-04/LEG-05 read Pending."
+  standing_set_for_round_8:
+    carried_unchanged: "four file-named briefs; whole-tree sweep at two readers; gap-closure-range brief over every closure range; the .planning/ brief; the widened self-audit; the post-SUMMARY literal re-run"
+    change_1: "paid 1 finding in 23, second consecutive round in the twenties. Exit condition not met -- stays."
+    change_2: "second sweep reader returned 2 unique findings (I and J). Nonzero, so the earliest it can retire is after a round 8 that is also zero."
+    change_3: "13 of 23 on its first run. Never had a second."
+    change_5: "reached a window 06-10's own pass could not; run again this round, 19 literals, 0 moved."
+    decision_planning_brief_readers: "Stays at ONE reader. It is the highest-yield brief, and under the 2026-09-23 gate scope everything it finds is non-blocking backlog, so a second reader spends the largest marginal cost where it cannot move the gate. Coverage widens instead at no extra reader: round 8's brief names the three areas round 7's reader declared out of scope -- phases 01-05 plan files read in full, .planning/debug/, and .planning/research/. Revisit if round 8's single reader again returns more than a third of the round."
+    decision_zero_refutations: "No calibration conclusion is drawn from round 7's zero. Rounds 1-6 each refuted or corrected at least one reader claim; round 7 refuted none of 23, but 13 of those came from a brief on its first pass over ground unswept for six rounds -- the condition under which a refutation is least likely, not the one under which reader precision is best shown. Threshold set now so it cannot be set afterwards to fit the result: if round 8 also refutes nothing across two consecutive runs of a brief over already-swept ground, the verification step is what to examine, not the readers."
 round_6_closure:
   plan: 06-10
   tasks: 27
@@ -646,6 +684,65 @@ one. Do not mark the phase complete from this branch.
 
 ---
 *Verified: 2026-09-22 (06-10 gap closure)*
+
+## Gap-closure round — 06-11, verified 2026-09-23
+
+**Round 7's shipped ten, closed. G-06-25 through G-06-28.** Nine tasks, nine fix commits, all ten
+CI commands green throughout. The thirteen `.planning/` findings are carried as G-06-29 backlog
+under the 2026-09-23 gate scope, not withdrawn.
+
+| Gap | Findings | Closed by |
+|---|---|---|
+| G-06-25 | A (README publish-location universal), I (checker docstring's README pointer), K (path-literal universal) | C1, C7, C8 |
+| G-06-26 | F, G (`examples/deal-brief.md` figure keys), H, J (`RESULTS-mod04.md` miscounts) | C5, C6 |
+| G-06-27 | E (Human observations summary label) | C4 |
+| G-06-28 | C, D (the correction-marker convention and what it authored) | C9 |
+
+**The round's largest change is a removal.** `LEGAL-REVIEW.md`'s inline correction-marker convention
+required each in-place correction to quote the wording it removed, which put retired strings back in
+the tracked tree for the next reader to check as live claims. Two of round 7's three findings against
+that file were the mechanism reading back. 44 markers removed — the 43 the convention's own grep
+matched, plus the `*Correction withdrawn …*` form it could not see, which is finding D's fifth form.
+What each correction established stays, in the file's own voice; what each replaced now lives only in
+git history. Both recovery commands were verified to resolve before being written down. This
+dissolved C3 and C2 rather than repairing them, though C2's measurement was re-derived by AST anyway:
+11 `economic buyer` hits, 2 module-level and 9 across 6 functions, against the record's 1 and
+10-across-7, with the seventh named function containing no occurrence at all.
+
+**The one mechanical change** extends `publish-location-drift` to route 2's in-session
+`/plugin marketplace add`. Measured before the edit on a scratch copy with an unmutated control:
+mutating the owner in `npx skills add` fired, mutating it in the in-session command left the checker
+at 0 violations. After: all three command positions fire, control still 0. Extended rather than
+bounded, because narrowing the README sentence would have documented the gap instead of closing it.
+
+**Deviations, both recorded.** The plan said the marker convention authored findings C, D and E; E
+is a plain mislabel with no marker involved, so two of three is the figure the new prose states.
+And ledger rows 12 and 17 read "six rounds" inside the four cells C9 had to touch — seven have run —
+so both were corrected ledger-first through `WINDOWS.md`'s JSON fence, with the rendered table
+reconciled, then in `LEGAL-REVIEW.md`'s reproduction.
+
+**The self-audit at its widened scope found two more.** C8's refuted universal survived in
+`WINDOWS.md` ledger id 17 and in `LEGAL-REVIEW.md`'s shipped reproduction of it, both written by
+06-10 alongside the docstring C8 corrected — round 7's reproduction-corrected-instead-of-original
+finding, run in the opposite direction. And C5's own rewritten paragraph claimed the build holds
+four kinds of figure where `unlisted-figure` holds three.
+
+**Change 5's post-SUMMARY re-run: 19 literals, 0 moved.** Second execution of the rule. Also
+re-checked: no `[x]` stands beside an UNVERIFIED requirement, and LEG-04 and LEG-05 read `Pending`.
+
+**Standing set for round 8** is recorded in full in `06-11-SUMMARY.md` and in this file's
+`round_7_closure.standing_set_for_round_8`. Two questions were decided on the record rather than
+left to the next round: the `.planning/` brief stays at **one** reader with widened coverage, since
+under the gate scope everything it finds is non-blocking; and **no calibration conclusion is drawn
+from round 7's zero refutations**, with the threshold for round 8 set now so it cannot be set
+afterwards to fit the result.
+
+**Next: `/gsd-verify-work 06`** for round 8, against that standing set. Do not mark the phase
+complete from this branch: 06-11 wrote the corrections a round-8 reader will be verifying, and
+seven consecutive self-checks have each missed what an independent read then found.
+
+---
+*Verified: 2026-09-23 (06-11 gap closure)*
 
 ## Acknowledged Gaps
 
