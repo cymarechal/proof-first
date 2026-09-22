@@ -1003,11 +1003,16 @@ Violation codes implemented in this file:
                       silent on a retired citation quoted inside a
                       correction paragraph, which still resolves, and on
                       anything inside a fenced block -- it reads
-                      strip_fences() output, like every other
-                      content-scanning code here, so a fence that
-                      illustrates the `path`:N format is documentation
-                      rather than a citation. Second ceiling: a bare basename is resolved
-                      by searching the tree, so a citation naming a file
+                      strip_fences() output, so a fence that illustrates the
+                      `path`:N format is documentation rather than a
+                      citation. Corrected 06-09: this said "like every other
+                      content-scanning code here", which is false in the
+                      majority direction -- of this file's 51 check_*
+                      functions, 15 call strip_fences and 36 do not, several
+                      of them saying so in their own docstrings. The
+                      sentence needs no comparison and now makes none.
+                      Second ceiling: a bare basename is resolved by
+                      searching the tree, so a citation naming a file
                       that is not in this repository fires as unresolvable.
                       Neither record makes such a citation; if one ever
                       needs to, it must not use the `path`:N form. Third:
