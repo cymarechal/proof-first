@@ -66,8 +66,10 @@ were never in dispute, only what this marker asserted. Making the two docstrings
 separate `check_repo.py` edit with its own risk, and is backlog rather than done here.*
 
 So: every check named below was performed on 2026-09-21 and its outcome written down, including the
-two lookups that failed. That is the whole of what the token means here, and it is not a statement
-that the content is clear to publish.
+register lookup that failed and the one not attempted. *Corrected 2026-09-22 (06-09): this read
+"the two lookups that failed". The table under `## USPTO register lookups` records one failure, the
+HTTP 401, and one row never attempted.* That is the whole of what the token means here, and it is
+not a statement that the content is clear to publish.
 
 Two named content items are open and routed to `.planning/WINDOWS.md` for a decision before wider
 distribution — **Ardent Digital** and **Gina Almeida**, both under `## Name collisions`. The
@@ -127,9 +129,13 @@ MEDDPICC generic as a term for a sales methodology rather than a source identifi
 counterclaims with prejudice, and directed the USPTO to cancel Registration No. 6,489,058, held by
 Darius Lahoutifard of 01 Consulting LLC.
 
-**The register, confirmed — a gap that closed at this review.** The two TSDR endpoints that failed
-during Phase 6 research answered this time. The TSDR status view, on a page stamped by TSDR itself
-as generated 2026-09-21 05:36:50 EDT, records Registration No. 6,489,058 (Serial No. 88845076, mark
+**The register, confirmed — a gap that closed at this review.** The TSDR status view that returned
+HTTP 403 during Phase 6 research answered this time, with HTTP 200. *Corrected 2026-09-22 (06-09):
+this read "The two TSDR endpoints that failed during Phase 6 research answered this time." One
+endpoint answered. The second row of the table under `## USPTO register lookups` returned HTTP 401
+and is recorded below as a failed lookup, so on this file's own vocabulary — where the earlier 503
+and 403 are called failures, and they were HTTP responses too — it did not answer.* On a page
+stamped by TSDR itself as generated 2026-09-21 05:36:50 EDT, it records Registration No. 6,489,058 (Serial No. 88845076, mark
 MEDDPICC, Principal Register, registered 2021-09-21, owner Lahoutifard Darius) with the common
 status descriptor **LIVE/REGISTRATION/Issued and Active** and a most recent prosecution-history
 entry dated 2026-09-21, a Section 8 six-year courtesy reminder. **No cancellation is recorded on the
@@ -690,9 +696,17 @@ recommended action.
 | Reg. No. 6,489,058 status | `https://tsdrapi.uspto.gov/ts/cd/casestatus/rn6489058/info.json` | **HTTP 401** — an API key will be required from October 2 |
 | Command of the Message registration | not attempted separately | The same API gate applies; no registration number is recorded for this mark and none is claimed |
 
-The endpoints that returned HTTP 503 and HTTP 403 during Phase 6 research answered on this attempt.
-That is recorded because the earlier failure was recorded: a lookup's outcome is reported as
-observed on the day, in both directions.
+Of the three lookups Phase 6 research recorded as failures, one was re-attempted here and answered:
+`tsdr.uspto.gov/statusview/rn6489058`, HTTP 403 then, HTTP 200 now. The other two were not
+re-attempted — the status view answering made the `statusview/sn?searchType=rn&searchText=6489058`
+URL that returned HTTP 503 unnecessary, and the `tmsearch.uspto.gov` POST that returned HTTP 405 is
+not a register lookup this review needs. The `tsdrapi.uspto.gov` endpoint in the table above was
+attempted for the first time at this review and returned HTTP 401; it is not a re-attempt of
+anything. *Corrected 2026-09-22 (06-09): this paragraph read "The endpoints that returned HTTP 503
+and HTTP 403 during Phase 6 research answered on this attempt." Both halves were wrong. Only one of
+those two endpoints was re-attempted, and the second endpoint in the table is a different host that
+was never attempted before and did not answer.* The outcomes are recorded because the earlier
+failures were recorded: a lookup's outcome is reported as observed on the day, in both directions.
 
 ## What remains open
 
