@@ -2,6 +2,102 @@
 status: clean
 phase: 06-legal-review-gate-launch
 reviewed: 2026-09-22
+round: gap-closure (06-09)
+scope: source files changed by 06-09's gap commits (384b1ae..HEAD) — tools/check_repo.py, evals/trigger/run_trigger_test.py
+reviewer: inline (orchestrator) — the gsd-code-reviewer subagent was not dispatched
+findings_total: 1
+findings_open: 0
+findings_fixed: 1
+supersedes: 06-REVIEW.md as committed for the 06-08 round (preserved in full below, with its own supersession chain back to 06-05)
+---
+
+# Phase 6 Code Review — gap-closure round (06-09)
+
+**Two source files changed. One finding, in the round's own new assertion, fixed before the round
+closed: the check was narrower than the sentence it guards.**
+
+Twenty-six commits. The executable surface is one new self-test case in
+`evals/trigger/run_trigger_test.py` with two supporting readers (+96 lines); everything in
+`tools/check_repo.py` is comment and docstring text, no behaviour change.
+
+## What was reviewed, and how
+
+| File | Executable change | How it was checked |
+|---|---|---|
+| `evals/trigger/run_trigger_test.py` | `documented_init_key_set()`, `observed_init_key_sets()`, one new `--self-test` case, `EXPECTED_TRANSCRIPT_COUNT` | Three mutation probes on sibling copies outside the repository, each with an unmutated control; every probe asserted on the assertion's own message, not merely on a non-zero exit |
+| `tools/check_repo.py` | none — four comment/docstring corrections | `--self-test`, `--mutation-test` (58 codes discrimination-proven) and a live run, all green before and after; claims in the new comments re-derived by AST census and by running `CITATION_RE` over both record paths |
+
+The review deliberately did not stop at "the self-test passes". A self-test that passes is evidence
+the code runs, not evidence it discriminates — which is why every new assertion this round shipped
+was put under a probe that makes it fail, and a control that keeps it passing.
+
+## Findings
+
+### 1. The new init-event assertion was narrower than the claim it is cited as guarding — FIXED (`c5a5a4f`)
+
+`INIT-EVENTS.md`, as corrected by task 14, says "Every init event in all 140 committed transcripts
+carries 24", and points at `run_trigger_test.py --self-test` as the thing that now holds it. The
+assertion as first shipped compared the key **set** only. A tarball that lost init events entirely
+still yields one distinct key set, so the "every" and the "140" were both unguarded.
+
+Measured rather than reasoned: a probe copy with 40 of the 140 transcripts stripped of their init
+event **passed** the check as shipped.
+
+`observed_init_key_sets()` now returns `(sets, scanned, missing)` and the self-test asserts all
+three. Re-proven on sibling copies:
+
+| Probe | Result |
+|---|---|
+| 40 init events stripped | `rc=1` — "40 of 140 transcripts carry no system/init event, so INIT-EVENTS.md's 'every init event' claim does not hold" |
+| 10 transcripts dropped | `rc=1` — "the committed tarball holds 130 transcripts, not the 140 INIT-EVENTS.md states" |
+| unmutated control | `rc=0`, naming the case |
+
+This is the same class the round spent twenty-one tasks correcting — a claim wider than the check
+behind it — committed by the round that was correcting it. That is the third time this phase a
+closing round has reproduced the defect class it was closing, and it is the argument for the probe
+discipline rather than against it.
+
+## What was checked and found sound
+
+- **`documented_init_key_set()` fails loudly rather than silently.** A missing heading or missing
+  fence raises `ValueError`, which the self-test surfaces as a named failure. Verified with a third
+  probe (heading renamed): `rc=1` through the loud branch, not a silent empty-set pass.
+- **AppleDouble handling is correct and necessary.** The tarball carries `._control` and
+  `._treatment` resource forks that are not valid UTF-8; skipping them by basename is what lets the
+  reader decode. Without the skip the function raises `UnicodeDecodeError` — observed directly while
+  writing it.
+- **`extractfile()` can return `None`** for non-regular members; guarded.
+- **No `extractall`**, so the Python 3.12 extraction-filter deprecation does not apply.
+- **`tools/check_repo.py`'s comment corrections change no behaviour.** `--mutation-test` holds at 58
+  codes discrimination-proven before and after, and the live run stays at 0 violations.
+- **The new comments' own claims re-derive.** 51 `check_*` functions, 15 calling `strip_fences` and
+  36 not, by AST walk; `CITATION_RE` returning 9 matches in `LEGAL-REVIEW.md` and 0 in `README.md`,
+  identical before and after `strip_fences()`, re-measured after every later edit in the round.
+
+## Declared ceiling of this review
+
+It is an inline read by the agent that wrote the code, not an independent one. The two things that
+make it worth more than a self-assurance are that every assertion was put under a mutation probe
+with a control, and that the one finding it produced was found by building a probe that broke the
+new check rather than by re-reading it. Neither substitutes for round 6's cold read, which is this
+phase's standing closure condition.
+
+## Gate
+
+**Clean.** One finding, fixed in its own commit before the round closed. All ten CI commands green
+at `HEAD`.
+
+---
+
+# Superseded: Phase 6 Code Review — gap-closure round (06-08)
+
+The review below was current for the 06-08 round and is preserved verbatim. Its frontmatter, which
+this file's own frontmatter has replaced, read:
+
+```yaml
+status: clean
+phase: 06-legal-review-gate-launch
+reviewed: 2026-09-22
 round: gap-closure (06-08)
 scope: source files changed by 06-08's gap commits (9a2a035..HEAD) — tools/check_repo.py, tools/generate_derivatives.py, evals/benchmark/run_benchmark.py
 reviewer: inline (orchestrator) — the gsd-code-reviewer subagent was not dispatched
@@ -9,7 +105,7 @@ findings_total: 2
 findings_open: 0
 findings_fixed: 2
 supersedes: 06-REVIEW.md as committed for the 06-06 round (preserved in full below); the 06-07 round produced no review at this path
----
+```
 
 # Phase 6 Code Review — gap-closure round (06-08)
 
