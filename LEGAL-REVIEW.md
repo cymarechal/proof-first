@@ -540,8 +540,12 @@ applied to id 6; and "live and unadjudicated", answered by restating the point i
 file evidences. Prong 3's whole-repo negative was raised once and is now also answered, by the two
 sweeps recorded under that prong — which is where the command belongs, not here. When this sentence
 was written it claimed a command "recorded above" that did not exist: prong 3 was three sentences
-and no command, and the only recorded whole-repo sweep was prong 2's, attached to a different
-question. *Corrected 2026-09-22 (06-09).*
+and no command, and no command anywhere in this file bore on diagrams, figures or visual
+arrangements. *Corrected 2026-09-22 (06-09). This correction first said prong 2's was "the only
+recorded whole-repo sweep", which is itself false — the entity check under `## Reproduction
+boundary` and the `Positive Business Outcomes` label sweep are both tree-wide too. Neither bears on
+prong 3's question, which is the claim that actually carries the correction; caught by this round's
+own self-audit.*
 
 One is carried, and here is why rather than a bare note. `skills/proof-first/references/completeness-audit.md`:12-15
 is described in the first bullet above as expressly declining to concede order provenance; a
@@ -788,7 +792,9 @@ exists, and none ever did. `grep -c subprocess tools/check_repo.py` returns 0, s
 cannot observe a git remote at all. The only code reading the `Gate status:` line is
 `check_source_gate_incomplete`, the sole consumer of `GATE_STATUS_PREFIX`, and it compares that
 line against `SOURCES.md`'s row statuses and nothing else. Every "remote" string in the checker is
-a docstring line describing the SSH URL form inside `publish-location-drift`'s owner normaliser.
+a docstring line describing the SSH URL form `git remote -v` prints — two in the module docstring's
+`publish-location-drift` entry, one in `check_plugin_manifest_invalid`'s docstring and two in
+`_owner_segment`'s, the owner normaliser. None of the five is code, and none observes a remote.
 The ordering argument stands on its own and is not weakened by losing a check that was never
 there.*
 
