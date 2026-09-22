@@ -246,6 +246,25 @@ second run, and the threshold is set now so it cannot be set afterwards to fit t
 round 8 also refutes nothing across two consecutive runs of a brief over already-swept ground, the
 verification step is the thing to examine, not the readers.
 
+## Change 5, run after this SUMMARY landed
+
+The rule 06-10 added: re-run every command literal the round commits into prose, *after* the
+SUMMARY is written, because that is the window a round's own pass cannot reach. 06-10's run caught
+one of its own. This round's caught none — nineteen literals re-run at 80641fd, every one holding:
+
+the nine-occurrence placeholder count; the eleven `economic buyer` lines and the AST partition
+behind them (still 2 module-level, 9 across the same 6 functions); the one-line gate-ceiling grep;
+zero fences in all six skill sources; zero `subprocess`; zero `import ast`; the wrap-tolerant
+`Positive Business Outcomes` count at 3 against `grep -c`'s 2; the wrap-tolerant one-per-CotM sweep;
+the scoped spine sweep at exactly the three shipped files; the publishers sweep at this record,
+`WINDOWS.md` and three Phase 6 planning artifacts; the diagram-markup sweep at this file alone; no
+tracked image file; six `evals/` scripts against six `python3 evals/` lines in CI; the README
+enumeration absent from `## Repository layout` and present at `:180`; the ten sonnet sessions and
+the one contaminated among them; both git-history recovery commands; and the marker grep at 0.
+
+Also re-checked after the SUMMARY, against the auto-flip this project has now seen four times: no
+`[x]` stands beside an UNVERIFIED requirement, and LEG-04 and LEG-05 read `Pending`.
+
 ## Closure
 
 Not closed by this plan, and deliberately. The requirement checkboxes stay unchecked and
