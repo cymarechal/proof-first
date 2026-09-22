@@ -2,6 +2,106 @@
 status: clean
 phase: 06-legal-review-gate-launch
 reviewed: 2026-09-22
+round: gap-closure (06-10)
+scope: source files changed by 06-10's gap commits (f2cdd16..HEAD) — tools/check_repo.py is the only file carrying executable code; LEGAL-REVIEW.md, SOURCES.md and evals/conformance/RESULTS-mod04.md are prose records reviewed under the round's own self-audit, not here
+reviewer: inline (orchestrator) — the gsd-code-reviewer subagent was not dispatched
+depth: standard
+files_reviewed: 1
+findings:
+  critical: 0
+  warning: 0
+  info: 2
+  total: 2
+findings_total: 2
+findings_open: 0
+findings_fixed: 2
+supersedes: 06-REVIEW.md as committed for the 06-09 round (preserved in full below, with its own supersession chain back to 06-05)
+---
+
+# Phase 6 Code Review — gap-closure round (06-10)
+
+**Scope.** One file carries executable code this round: `tools/check_repo.py`. The new surface is
+`DOCSTRING_CATALOGUE_MARKER`, `_CATALOGUE_ENTRY_RE`, `docstring_catalogue_codes()`,
+`catalogue_matches_registry()`, and the one call site added at the top of `self_test()`. Everything
+else the round changed in that file is comment and docstring text, reviewed by the round's own
+task-27 self-audit.
+
+**Why no subagent.** This session's instructions prohibit dispatching the Agent tool. The review was
+performed inline against the same checklist, and this line records the deviation rather than letting
+the report imply a dispatch that did not happen — the same disclosure the 06-09 round made.
+
+## Findings
+
+### CR-1 (Info, fixed) — the parser's docstring described behaviour the pattern did not have
+
+`docstring_catalogue_codes()`'s docstring said an entry is "a line beginning with exactly two
+spaces, then the code, then whitespace and a `- ` separator". The pattern used `\s+` for that
+whitespace, which matches a newline, so the separator could match on the *following* line. The
+entry was therefore not necessarily "a line", and the sentence describing the pattern was false
+against the pattern — the exact class this round exists to remove, committed by the round removing
+it.
+
+**Demonstrated** on a constructed sample before the claim was made: against a catalogue fragment
+carrying one normal entry and one whose code was wrapped away from its separator, the original
+pattern returned `['realcode', 'wrappedcode']` and the horizontal-only pattern returned
+`['realcode']`.
+
+**Not a false-pass hazard in either direction**, which is why this is Info and not Warning: an extra
+code and a missing one both fail `catalogue_matches_registry()` loudly, with a message naming the
+code and the side it is missing from. The defect was the description, not the safety.
+
+**Fix.** The class is now `[^\S\n]+` — horizontal whitespace only — so the code matches the
+sentence, and the docstring states that a catalogue entry must not wrap before its separator, plus
+why the general class was rejected.
+
+### CR-2 (Info, fixed) — an unstated dependency on the catalogue being the docstring's last section
+
+The scanned region runs from the catalogue heading to the end of `__doc__`, because the catalogue
+has no terminator. That is correct today — the catalogue *is* the last section, verified: 69,557
+characters follow the heading and all of them are catalogue entries and their continuations. A
+section appended after it would be scanned as catalogue. The function did not say so.
+
+**Fix.** The dependency is now stated in the docstring, with the instruction to keep the catalogue
+last. CR-1's stricter pattern also narrows what appended prose could match.
+
+## Regression check on the fix
+
+The fix touched a pattern the self-test depends on, so the mutation probe was re-run afterwards
+against an unmutated sibling control, all three on copies outside the repository:
+
+| Copy | Mutation | Exit | Output |
+|---|---|---|---|
+| control | none | 0 | 0 FAIL lines, 0 warnings |
+| m1 | `catalog-opening-rule-count` entry deleted from the catalogue | 1 | `FAIL: catalog-opening-rule-count is in ALL_CHECK_CODES but absent from the docstring catalogue` |
+| m2 | `phantom-code-not-registered` added to the catalogue | 1 | `FAIL: phantom-code-not-registered is in the docstring catalogue but absent from ALL_CHECK_CODES` |
+
+The real catalogue still parses to 58 codes against `ALL_CHECK_CODES`'s 58, difference empty in
+both directions.
+
+## One defect the fix introduced and the review caught
+
+The first version of CR-1's docstring wrote the rejected whitespace class as a bare backslash-s
+inside a non-raw docstring. Python emitted `SyntaxWarning: invalid escape sequence` on **every**
+invocation of the checker, including the live CI run. Reworded to name the class in prose instead.
+Verified afterwards: `python3 -W error::SyntaxWarning` imports the module cleanly, and none of
+`--self-test`, `--mutation-test` or the live run emits a warning.
+
+## Verification
+
+All ten commands in `.github/workflows/ci.yml` exit 0 after the fixes:
+`check_repo.py --self-test` (58 codes verified), `--mutation-test` (58 discrimination-proven), the
+live run (0 violations), the six `evals/` self-tests, and `generate_derivatives.py --check`.
+
+---
+
+# Superseded: the 06-09 round
+
+The report below is the previous round's, preserved unchanged.
+
+---
+status: clean
+phase: 06-legal-review-gate-launch
+reviewed: 2026-09-22
 round: gap-closure (06-09)
 scope: source files changed by 06-09's gap commits (384b1ae..HEAD) — tools/check_repo.py, evals/trigger/run_trigger_test.py
 reviewer: inline (orchestrator) — the gsd-code-reviewer subagent was not dispatched

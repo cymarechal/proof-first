@@ -7381,17 +7381,32 @@ def _token_budget_bad_skill():
 
 DOCSTRING_CATALOGUE_MARKER = 'Violation codes implemented in this file:'
 
-_CATALOGUE_ENTRY_RE = re.compile(r'^  ([a-z0-9][a-z0-9-]*)\s+- ', re.M)
+_CATALOGUE_ENTRY_RE = re.compile(r'^  ([a-z0-9][a-z0-9-]*)[^\S\n]+- ', re.M)
 
 
 def docstring_catalogue_codes():
     """Return the set of violation codes this module's own docstring
     catalogue names, parsed out of __doc__ rather than kept as a second
     hand-maintained list. An entry is a line beginning with exactly two
-    spaces, then the code, then whitespace and a '- ' separator; the
-    continuation lines of an entry are indented further and are skipped by
-    that shape. Returns None when the catalogue heading is absent, which
-    the caller reports as a failure rather than treating as an empty set."""
+    spaces, then the code, then horizontal whitespace and a '- ' separator,
+    all on ONE line; the continuation lines of an entry are indented further
+    and are skipped by that shape. The horizontal-only class is deliberate --
+    the general whitespace class would let the separator match on the
+    FOLLOWING line, so a catalogue entry that wrapped its code away from its
+    '- ' would be read as an entry, and a two-space-indented prose line
+    followed by one could be read as a phantom code. A catalogue entry must therefore not wrap before its
+    separator. Neither shape can produce a false pass in either regex: an
+    extra code and a missing one both fail catalogue_matches_registry()
+    loudly. The stricter class is chosen so this docstring describes what the
+    pattern does.
+
+    The scanned region runs from the catalogue heading to the end of __doc__,
+    because the catalogue is the docstring's last section and has no
+    terminator. A section appended after it would be scanned too; keep the
+    catalogue last.
+
+    Returns None when the catalogue heading is absent, which the caller
+    reports as a failure rather than treating as an empty set."""
     doc = __doc__ or ''
     if DOCSTRING_CATALOGUE_MARKER not in doc:
         return None
