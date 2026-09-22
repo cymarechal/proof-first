@@ -231,6 +231,56 @@ inventory until this one. Zero of the eighteen are regressions of an earlier fix
 property of its own new code that the code's own docstring, written in the same batch, denies.
 
 
+## The standing set, as amended by 06-09 — what round 6 must run
+
+Round 5's diagnosis changed the fourth brief's scope, and added a second sweep reader. Both
+decisions are recorded here rather than only in a commit message, because this is the table the
+next round reads.
+
+| Brief | Readers | Input |
+|---|---|---|
+| `README.md` contradiction hunt | 2 | the file |
+| `LEGAL-REVIEW.md` reproduction-boundary material | 2 | the file |
+| Whole-tree sweep, bound to no named file | **2** (was 1; changed 06-09) | the tree, no file named to either reader |
+| What **any** gap-closure round rewrote (amended 06-09; was "the last") | 1 | the union of every gap-closure commit range — `d67012e..HEAD` today, the first commit of the 06-05 closure onward |
+
+**Change 1 — the fourth brief widens past the last round's diff.** Through round 5 this brief was
+given the diff of the round that had just closed. Round 5 proved the blind spot: `README`:196 was
+authored by **06-05**, closing round 1, and `LEGAL-REVIEW`'s "seven self-tests" by **06-06**,
+closing round 2. Both survived every read since, and no diff-scoped brief could ever have seen
+them, because neither is in the last round's diff. The rule this phase has been recording is
+therefore not "the closing round is the defect source" but **"a closing round is, and the earlier
+ones are still in the tree."** The input widens to the union of every gap-closure commit range. It
+costs one session and nothing else: the reader already does this work, it was only looking at a
+smaller window than the defect population occupies.
+
+**The measurement that justifies change 1, pinned to round 5 and not restated as a live count.** At
+round 5 (2026-09-22, commit `398842c`), 10 of 18 findings were authored by a gap-closure round: 8
+by the last one, 06-08, and 2 by earlier ones, 06-05 and 06-06. A future round must be able to see
+whether widening the window moved that split, so these figures stay pinned to round 5 rather than
+being carried forward as a running claim.
+
+**Change 2 — a second sweep reader, and why yes rather than no.** Eight of round 5's eighteen
+findings predate Phase 6's closures entirely, and **every one of them was reached by the single
+sweep reader** — the only brief that names no file. That one reader found four two-file
+contradictions plus the `INIT-EVENTS.md` key set and the element-label count, in
+`evals/trigger/`, the `## Launch` section, `artifact-patterns.md`'s label inventory and the bench
+brief's timeline: places no other brief had ever opened in five rounds. One reader carrying the
+whole unnamed-file surface is a single point of failure over the largest unexplored area, and the
+cost of a second is one session.
+
+The second reader gets **the same no-file brief, independently** — not a narrower one. Naming files
+to it, or partitioning the tree between the two, would collapse it into the file-named briefs and
+destroy the property that makes the sweep valuable. Two readers on one identical unnamed brief is
+the arrangement the `README.md` hunt has used since round 1 precisely so their findings can be
+cross-checked.
+
+This also converts "plausibly high and unmeasured" into measured. Round 6 records how many of the
+second sweep reader's findings the first did not produce, and vice versa. If the marginal yield is
+zero for two consecutive rounds, drop back to one reader and record that; until then the marginal
+value of a second sweep reader is unknown, which is the reason to run it, not the reason to skip
+it.
+
 ## Tests
 
 ### 1. The six confirmed sources are in bounds, and nothing was reproduced from them
