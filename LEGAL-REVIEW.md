@@ -839,11 +839,13 @@ never run end to end and this record continues to say so.
 ## Human observations
 
 Three things about this repository cannot be checked by anything in it. Sections 1 to 3 below
-record what the 06-02 review session observed and, explicitly, which of the three it could not
-perform. **All three were performed later the same day by a different session; section 4 records
-what they returned, and it supersedes the three "not performed" findings above.** Sections 1 to 3
-are kept as written because this file is append-only, and because the reasons they give for not
-performing the checks are the reasons the next session had to test rather than inherit.
+record what the 06-02 review session observed and, explicitly, why none of the three counted: § 1
+was not performed at all, § 2 was not performed as specified, and § 3 was performed but by the
+author of that round's own edits, so it was not independent. **All three were performed
+independently later the same day by a different session; section 4 records what they returned, and
+it supersedes the three findings above.** Sections 1 to 3 are kept as written because this file is
+append-only, and because the reasons they give for not reaching an independent result are the
+reasons the next session had to test rather than inherit.
 
 ### 1. Output style in the `/config` picker — NOT OBSERVED AT 06-02 (superseded by § 4)
 
