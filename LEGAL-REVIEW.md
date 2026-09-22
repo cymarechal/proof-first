@@ -830,8 +830,16 @@ location now, create the remote private first, or defer — and chose to defer.
 
 Nothing was substituted. The publish location in `.claude-plugin/plugin.json`,
 `.claude-plugin/marketplace.json` and `README.md`'s install commands remains the disclosed
-placeholder `<owner>/<repo>`, and `publish-location-drift` stays silent because all four occurrences
-still agree with each other. No git remote was created. No commit left this machine.
+placeholder `<owner>/<repo>`, and `publish-location-drift` stays silent because the three carriers
+it compares still agree.
+*Corrected 2026-09-22 (06-10): this read "all four occurrences still agree with each other". No set
+of four exists anywhere in that check. `PUBLISH_LOCATION_CARRIERS` holds three carriers;
+`_publish_locations_in` reads seven structured positions across them — `homepage` and `repository`
+in `plugin.json`, the same two fields plus `owner.url` in `marketplace.json`'s plugin entry, and the
+argument following `npx skills add ` and `claude plugin marketplace add ` in `README.md`; and the
+literal placeholder occurs nine times, reproducible by
+`git grep -o '<owner>/<repo>' -- .claude-plugin README.md | wc -l`. The check compares one owner
+segment per carrier, not occurrences, so three is the number this sentence needed.* No git remote was created. No commit left this machine.
 
 **Why this is recorded rather than retried.** Publication is the one action in this project that
 cannot be undone: a deleted public repository stays in search indexes, in forks, and in archive
