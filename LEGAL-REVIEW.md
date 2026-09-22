@@ -651,8 +651,21 @@ command, and two other places in this file said "three files and a regeneration"
 addition to three rather than one of them. Neither matched the tree.*
 *Corrected 2026-09-22 (06-08): two further defects. The passage rested the four on
 `git grep -l "Positive Business Outcomes"` over the tracked tree outside `.planning/`, which returns
-five — this record carries the string too, once in the `## Reproduction boundary` quotation and once
-inside the quoted command itself. The provenance sentence is dropped rather than repaired: a grep a
+five files rather than four — this record is the fifth, because it carries the phrase in its own
+prose as well as inside the quoted command.
+*Corrected 2026-09-22 (06-10): that read "once in the `## Reproduction boundary` quotation and once
+inside the quoted command itself", which undercounted. The counting rule matters more than the
+tally, and is why the tally is not repeated in this file's own prose: the two obvious commands
+disagree and both are right about what they measure. `grep -c` is line-based, and one occurrence in
+this file is wrapped across a line break, so it reads one low — which is how three of round 6's five
+readers arrived at a different number from each other. The count that matches the file is a
+wrap-tolerant match over the whole text:
+`python3 -c "import re;print(len(re.findall(r'Positive\s+Business\s+Outcomes', open('LEGAL-REVIEW.md').read())))"`.
+That command adds no occurrence of its own — the regex is written with `\s+` rather than spaces, so
+it matches neither itself nor a line-based grep — which is the only reason it can be recorded here
+at all. The count itself moved inside this very round, when the correction two sections above
+dropped a sentence that carried the phrase; a number written here would have been false before the
+round ended.* The provenance sentence is dropped rather than repaired: a grep a
 file runs against itself will break again the next time this file quotes the phrase, and the four
 citations are individually correct without it. The by-hand citation also read `NUMBERING.md`:39-45,
 which covers the table but not the prose line below it that carries the seventh label; the edit is
