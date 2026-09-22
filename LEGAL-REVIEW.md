@@ -520,11 +520,21 @@ judgement about argument quality belongs on an open ledger row and not in a corr
 carried a fourth item on that list: that the seven appear in an internal ID registry rather than in
 `SKILL.md`, the output style or the system prompt, so nothing a reader of the shipped skill sees
 names them as a set in this order. That is false against this repository's own files. All three
-carry one identical sentence naming all seven in the table's order:
+carry one identical sentence naming all seven in the table's order, opening "The Command of the
+Message spine is carved into seven sub-blocks, each reserved four IDs".
+`grep -rn "Command of the Message spine is carved"` returns exactly those three files.
 
-    skills/proof-first/SKILL.md:63
-    output-styles/proof-first.md:87
-    prompts/system-prompt.md:75
+*Corrected 2026-09-22 (06-09): this passage cited the three by path and line number. Only the
+`SKILL.md` one still resolved. `f909d3c`, the previous round's own first task, added three net
+lines to each derivative's preamble, so both derivative citations came to point at the blank line
+three lines above where the sentence had moved to. Cited by quoted string instead — the convention
+the `## Reproduction boundary` correction above already adopted for the deal briefs, and the
+sibling of the named-constant anchors it adopted for `tools/check_repo.py`. A generated file's line
+numbers move whenever its preamble does, which is exactly the property that makes them the wrong
+anchor there. `record-citation-unresolvable` was silent on both, and could not have seen either,
+twice over: the cited lines existed, and `CITATION_RE` requires backticks around the path, which
+these three citations did not carry. That is a second measured demonstration of that code's
+declared ceiling, and like the first it was produced by the round that shipped it.*
 
 The list ships. It reaches every installed user, and the two derivatives carry it because
 `tools/generate_derivatives.py` copies `SKILL.md`'s line into both.
