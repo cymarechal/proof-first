@@ -844,8 +844,9 @@ Nothing was substituted. The publish location in `.claude-plugin/plugin.json`,
 `.claude-plugin/marketplace.json` and `README.md`'s install commands remains the disclosed
 placeholder `<owner>/<repo>`, and `publish-location-drift` stays silent because the three carriers
 it compares still agree.
-*Corrected 2026-09-22 (06-10): this read "all four occurrences still agree with each other". No set
-of four exists anywhere in that check. `PUBLISH_LOCATION_CARRIERS` holds three carriers;
+*Corrected 2026-09-22 (06-10): this read "all four occurrences still agree with each other". The
+check counts no set of four: the only four it names is `_owner_segment`'s four GitHub URL forms,
+which is a normalisation input and not a count of anything this sentence is about. `PUBLISH_LOCATION_CARRIERS` holds three carriers;
 `_publish_locations_in` reads seven structured positions across them — `homepage` and `repository`
 in `plugin.json`, the same two fields plus `owner.url` in `marketplace.json`'s plugin entry, and the
 argument following `npx skills add ` and `claude plugin marketplace add ` in `README.md`; and the

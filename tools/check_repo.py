@@ -4774,8 +4774,10 @@ def _copy_repo_subset(repo_root, dest):
     Every one of those widenings also brings other readers into the mutation
     copy. They are listed rather than denied, because three successive
     versions of this comment asserted that no other check read these paths and
-    all three assertions were false -- twice while the block was being edited
-    for other reasons. The readers below were measured on 2026-09-22 by running
+    all three assertions were false. The block was edited three times after the
+    first absolute went into it -- 82535c7, c0fca5f and e2e4aa2 -- and each of
+    those edits left the absolutes then standing in place. The readers below
+    were measured on 2026-09-22 by running
     the live checker under a pathlib.Path.read_text wrapper that records the
     enclosing check_* frame of every read, which is the fact the assertions
     were making rather than a proxy for it:
