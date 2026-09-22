@@ -621,11 +621,18 @@ carry one identical sentence naming all seven in the table's order, opening "The
 Message spine is carved into seven sub-blocks, each reserved four IDs".
 `git grep -rln "Command of the Message spine is carved" -- ':!LEGAL-REVIEW.md' ':!.planning'`
 returns exactly those three files and no other. Both exclusions are load-bearing, not tidying.
-Writing the quoted anchor down here put the string into this file, and this round's plan and UAT
-record quote it too, so an unexcluded sweep returns six — three shipped files plus three records
-discussing them. That is the same self-reference the prong-3 sweeps above record, made again by
-the round that recorded it, and caught here by its own self-audit rather than by a sixth cold
-read.
+Writing the quoted anchor down here put the string into this file, and every round that discusses it
+puts it into that round's planning records too, so the unexcluded sweep returns a larger number than
+the scoped one and a different number after each round. The scoped figure is the one stated here,
+because it is the only one that holds still. That is the same self-reference the prong-3 sweeps
+above record, made again by the round that recorded it, and caught here by its own self-audit rather
+than by a sixth cold read.
+*Corrected 2026-09-22 (06-10): this enumerated the unexcluded sweep as "six — three shipped files
+plus three records discussing them". It returned seven before this round began, and it moves again
+with every commit that mentions the anchor — including the SUMMARY of the round that writes the
+number down, which lands after the sentence is already committed. The enumeration is dropped rather
+than re-counted: three rounds running have falsified a self-referential sweep result recorded in
+prose here, and the counterweight rests on the scoped figure, not the unscoped one.*
 
 *Corrected 2026-09-22 (06-09): this passage cited the three by path and line number. Only the
 `SKILL.md` one still resolved. `f909d3c`, the previous round's own first task, added three net
