@@ -278,8 +278,25 @@ is recorded as ledger row 31 and named in `## What remains open`. Prong 2 is the
 entry, and this correction makes it weaker, not stronger.
 
 **Prong 3 — a source's diagram or figure.** Does not apply. `NUMBERING.md`'s MC table is this
-repository's own ID-range registry. No diagram, figure or visual arrangement from any source is
-reproduced anywhere in this repository.
+repository's own ID-range registry. No diagram or figure from any source is reproduced anywhere in
+this repository. *Added 2026-09-22 (06-09), because this was the same shape of unqualified
+whole-repo negative a round-4 reader objected to in prong 2, and that objection applies here
+verbatim.* Two sweeps, both over the whole tracked tree including `.planning/`. For a reproduced
+image or diagram file:
+`git ls-files | grep -iE '\.(png|jpe?g|gif|svg|pdf|webp|bmp|tiff?|eps|ai|drawio|vsdx|puml|mmd)$'`
+returns nothing — this repository tracks no image or diagram file of any kind, from any source or
+of its own. For diagram markup rendered from text:
+`git grep -licE 'mermaid|@startuml|graph (TD|LR|RL|BT)|<svg|flowchart'` returns exactly one file,
+this one, because recording the command here put its own alternatives into the tracked tree. No
+other file matches, and this file's only match is the command itself. The negative now has commands
+behind it.
+
+The prong's "visual arrangement" clause is narrower than either command reaches, and is left as a
+judgement rather than claimed as swept: this repository does carry tables and one layout tree, and
+whether a table's *arrangement* reproduces a source's ordering is not a question `git grep`
+answers. The one instance a reader could raise is `NUMBERING.md`'s MC table against the source's
+own dimension order, and that is the order-provenance question the prong-2 correction above already
+concedes has to be argued rather than declared. It is not disposed of here.
 
 **Prong 4 — a term coined by a source and adopted here as this repository's own label.** This prong
 engages and the earlier draft never reached it, although its own step 3 described the eight names as
@@ -503,8 +520,11 @@ third time: id 6's `Closed on reasoning` label against its own definition, answe
 `## Ledger disposition` by fixing the wording rather than the disposition; this entry's unrecorded
 Force Management read, answered by removing the ordering clause under the same standard 06-07
 applied to id 6; and "live and unadjudicated", answered by restating the point in the one sense this
-file evidences. Prong 3's whole-repo negative was raised once and is also answered, because
-answering it cost one command, recorded above.
+file evidences. Prong 3's whole-repo negative was raised once and is now also answered, by the two
+sweeps recorded under that prong — which is where the command belongs, not here. When this sentence
+was written it claimed a command "recorded above" that did not exist: prong 3 was three sentences
+and no command, and the only recorded whole-repo sweep was prong 2's, attached to a different
+question. *Corrected 2026-09-22 (06-09).*
 
 One is carried, and here is why rather than a bare note. `skills/proof-first/references/completeness-audit.md`:12-15
 is described in the first bullet above as expressly declining to concede order provenance; a
