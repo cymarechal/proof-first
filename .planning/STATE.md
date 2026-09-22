@@ -3,26 +3,36 @@ gsd_state_version: 1.0
 current_phase: 06
 current_phase_name: Legal Review Gate & Launch
 status: awaiting_verification
-stopped_at: UAT round 4 complete — 4 gaps open, 06-08-PLAN.md written and ready for /gsd-execute-phase 06 --gaps-only
-last_updated: "2026-09-22T11:30:00.000Z"
+stopped_at: >-
+  Round-4 gaps G-06-13..16 closed by 06-08 — 17 tasks, 16 commits, ten CI commands green.
+  Closure is unverified; /gsd-verify-work 06 round 5 with the four-brief standing set is the
+  condition.
+last_updated: "2026-09-22T13:10:00.000Z"
 state_head: defa9aabc721607a1ccf68bbc90062ac333fae16
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 60
-  completed_plans: 59
+  completed_plans: 60
   percent: 67
 last_activity: 2026-09-22
-last_activity_desc: Phase 06 UAT round 4 — the first run of the four-brief standing set, six readers. All of
-  round 3's corrections hold under independent read. 17 new checkably-false statements opened
-  G-06-13 through G-06-16, and ten of the seventeen were authored by the round-3 gap-closure commit
-  itself, up from four and two in the rounds before: the closing round is now the largest single
-  source of findings. Three mechanical classes account for fourteen of them. The new fourth brief,
-  aimed at the closing commit's own added lines, was the highest-yield reader on first use. One
-  finding ships to installed users (both derivatives claim every worked-examples rule has a
-  constructive line in SKILL.md; eight are MC rules a build gate forbids there). All ten CI commands
-  green. 06-08-PLAN.md written inline with 17 tasks, including a narrow citation-resolution checker
-  and an explicit instruction not to ship it half-working.
+last_activity_desc: >-
+  Phase 06 round-4 gap closure (06-08). All four gaps closed across 17 tasks and 16 commits over
+  seven files, all ten CI commands green. The one finding reaching installed users is fixed — both
+  derivatives claimed every worked-examples rule carries its constructive line in SKILL.md, while
+  eight are MC rules a build gate forbids there. Two finding classes got mechanical assertions,
+  caveat-count-matches-constant and no-platform-collision, each mutation-probed against an
+  unmutated control. Task 17's citation gate shipped with its premise reversed by measurement:
+  replayed over the full history it fires zero times, because every citation finding four rounds
+  produced was a line that existed and said something else. It then broke five citations itself and
+  stayed silent on them, so the fix that holds is the anchoring convention — headings and quoted
+  strings for Markdown, symbol names for Python — not the code. The self-audit found eight defects
+  in this round's own added sentences, all fixed inside the round. Verification is human_needed, not
+  passed, because 06-08 wrote the corrections it would be verifying. This round recommends cutting
+  LEGAL-REVIEW.md rather than auditing it again: 159 lines were added to correct 13 sentences.
+  Note: this frontmatter's two long fields are now block scalars — they were plain multi-line
+  scalars containing bare colons, which made STATE.md's frontmatter invalid YAML and is why
+  state-snapshot reported last_activity_desc as null.
 ---
 
 # Project State
@@ -36,9 +46,24 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 06 (Legal Review Gate & Launch) — EXECUTING
-Plan: 1 of 5
-Status: Executing Phase 06
+Phase: 06 (Legal Review Gate & Launch) — AWAITING VERIFICATION
+Plan: 8 of 8 complete
+Status: Round-4 gaps closed by 06-08; verification is `human_needed`
+
+**Next action: `/gsd-verify-work 06` — round 5, with the four-brief standing set.** All eight plans
+have summaries and all four round-4 gaps are closed, but 06-08 wrote the corrections it would be
+verifying, and each of the four self-checks so far has missed what an independent reader then found.
+LEG-04 and LEG-05 stay unchecked; their closure condition is an independent read returning no
+checkably-false statement, which four rounds have not produced.
+
+**What round 5 should do differently, on this round's evidence rather than its own.** The plan said
+that if round 5 again finds most of its findings in the closing commit's text, the remedy is to cut
+the prose rather than keep correcting it. That threshold is already reached: 06-08 added 159 lines
+to `LEGAL-REVIEW.md` to correct 13 sentences and authored 8 new defects doing it, all caught inside
+the round by its own audit. The file is 1,006 lines. Round 5 should cut it, not audit it.
+
+The fourth brief — aimed at the closing commit's own added lines — is mandatory and is the reader
+that would have caught all eight of this round's self-authored defects.
 
 04-15 ran the comparison criterion 3 had waited on since the phase began. Three distribution routes,
 36 headless sessions, four artifact families: the measurement did not distinguish them (skill-on 7.9
