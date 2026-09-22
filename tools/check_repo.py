@@ -7445,8 +7445,15 @@ def catalogue_matches_registry():
     comments produced the round's findings -- check_record_citations reaches
     its paths through CITATION_RECORD_PATHS, check_source_gate_incomplete
     through SOURCES_PATH and LEGAL_REVIEW_PATH, and check_readme_claim_unsourced
-    through CLAIM_SOURCE_GLOB. None of the three carries a path literal in its
-    body, so a static scan would have found zero of the three. Producing the
+    through CLAIM_SOURCE_GLOB plus the _claim_region helper. Every path the
+    three open is reached through a module constant, a glob or a helper, never
+    written as a literal at the point of the read, so a static scan of these
+    bodies would have found none of the paths they read. One qualifier, because
+    the unqualified form of that sentence is false: check_readme_claim_unsourced
+    does carry the literal 'README.md' in its body, twice, as the subject label
+    on the violation tuples it returns. A scan keyed on string shape would pick
+    it up and would be reading a label, not a read -- which is the same failure
+    in the other direction. Producing the
     map needs the tracer, and running the tracer needs the checker to run
     itself, which is the re-entrancy WINDOWS.md id 17 has twice recorded as
     the reason for deferring. The tracer stays a build-time instrument and the
