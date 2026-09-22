@@ -376,13 +376,18 @@ All ten CI commands green. Green CI remains necessary and not sufficient: it was
 seventeen of round 4's findings, all eleven of round 3's, all fourteen of round 2's and all three of
 round 1's. `WINDOWS.md` id 17's pattern, seventh consecutive round.
 
-**The honest note the plan asked for.** `LEGAL-REVIEW.md` is now 1,004 lines, up from 847 — this
-round added 157 while correcting 13 statements. Task 5 removed one drifting count and this round then
+**The honest note the plan asked for.** `LEGAL-REVIEW.md` is now 1,006 lines, up from 847 at
+`9a2a035` — this round added 159 while correcting 13 statements. Task 5 removed one drifting count and this round then
 wrote four more, three of which it caught itself. The plan said that if round 5 again finds most of
 its findings in the closing commit's own text, the remedy is to cut the prose rather than keep
 correcting it. That threshold is reached on this round's evidence, not round 5's: a record that needs
 157 lines of correction paragraphs to fix 13 sentences, and produces 7 new defects doing it, has more
 prose than this project can keep true. **Round 5 should cut `LEGAL-REVIEW.md`, not audit it.**
+
+*One last instance of the pattern, recorded because hiding it would be the defect: the two figures
+in the paragraph above were written as 1,004 and 157 and were wrong by two on both counts. Caught
+by running `wc -l` after writing them rather than before. That is the eighth defect this round
+authored, and the first one in the summary itself.*
 
 ---
 *Phase: 06-legal-review-gate-launch*
