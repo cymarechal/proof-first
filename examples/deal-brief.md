@@ -96,10 +96,13 @@ This file carries facts only. It holds no rule content and no persuasion techniq
 
 ## Canonical figures
 
-Every dollar amount, date, percentage, and count cited anywhere in this repository's examples
-traces to exactly one row below. `tools/check_repo.py` treats this table as an interface: it fails
-the build if a figure elsewhere in `examples/` has no matching row here, or if two rows in this
-table claim the same key.
+Every dollar amount, date, percentage, and count cited anywhere in this repository's examples has a
+row below. `tools/check_repo.py` treats this table as an interface: it fails the build if a figure
+elsewhere in `examples/` has no matching row here, or if two rows in this table claim the same key.
+What it matches on is the formatted value and not the key, so where two rows carry the same value —
+`rfp-question-weight-mid` and `rfp-security-weight` both read 20% — the check cannot tell which of
+them a figure means. The key is what says that, and reading it is a reader's job rather than the
+build's. This is the value-collision ceiling `unlisted-figure`'s own docstring declares.
 
 | Key | Value | Type | What it is |
 |---|---|---|---|
@@ -111,7 +114,8 @@ table claim the same key.
 | legal-review-days | 10 | count | Business days Halverton Mutual's legal review step is expected to take |
 | oracle-database-count | 40 | count | Number of Oracle Database instances in the estate being migrated |
 | rfp-commercial-weight | 25% | percent | Weight the buyer's top-level scoring rubric assigns to the commercial section of the response |
-| rfp-question-weight-mid | 15% | percent | Weight assigned to each of the two mid-weighted scored RFP questions (Q3 and Q4) |
+| rfp-question-weight-low | 15% | percent | Weight assigned to each of the two lowest-weighted scored RFP questions (Q3 and Q4) |
+| rfp-question-weight-mid | 20% | percent | Weight assigned to each of the two mid-weighted scored RFP questions (Q2 and Q5) |
 | rfp-question-weight-top | 30% | percent | Weight assigned to the highest-weighted scored RFP question (Q1) |
 | rfp-security-weight | 20% | percent | Weight the buyer's top-level scoring rubric assigns to the security section of the response |
 | rfp-submission-date | 2026-10-30 | date | Date proposals are due to the buyer |
