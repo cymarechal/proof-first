@@ -20,10 +20,21 @@ headings marking them superseded rather than deleted when section 4 replaced the
 A statement found false against this repository's own files is the one exception, and it is
 corrected in place rather than appended around. The condition is that the correction says what was
 corrected, on what date, and against which file, so a reader can see the change rather than discover
-it by diffing. Every correction made on that basis carries a dated `*Corrected …*` marker at the
-point of the change. Those markers are the record, and this paragraph keeps no tally of them:
-`grep -n 'Corrected 2026-' LEGAL-REVIEW.md` lists them, and a number written here instead would be
-one more statement to keep true. *Corrected 2026-09-22 (06-08): this paragraph used to state a
+it by diffing. Every such change carries a dated marker at the point of the change, in one of four
+forms — `*Corrected …*`, `*Added …*`, `*Updated …*` and `*Clarified …*`. Those markers are the
+record, and this paragraph keeps no tally of them:
+`grep -nE '\*(Corrected|Added|Updated|Clarified) 2026-' LEGAL-REVIEW.md` lists every one, and a
+number written here instead would be one more statement to keep true.
+*Corrected 2026-09-22 (06-10): this stated the universal over one marker form and named
+`grep -n 'Corrected 2026-' LEGAL-REVIEW.md` as the command that lists them. Four forms are in use,
+and that command returns only the first — so the sentence asserted a universal its own named command
+could not meet. The forms are not normalised to one, because they do not mean the same thing:
+`*Added …*` records a ceiling or qualification the text never declared, `*Updated …*` a figure
+superseded by a later decision, `*Clarified …*` a wording change made against a reader's objection
+with the disposition unmoved. `*Clarified …*` is counted, which is the decision round 6 left open
+after declining to count it: this paragraph exists so a reader can find every dated in-place change
+without diffing, and a wording change made in response to an objection is one of those whatever it
+is called.* *Corrected 2026-09-22 (06-08): this paragraph used to state a
 count. It was accurate on the day it was written and wrong by the next round, three rounds running —
 the same failure mode the markers exist to prevent, committed by the sentence describing them. The
 corrections predating the marker convention, all from 2026-09-21, are named here because no marker
