@@ -167,9 +167,9 @@ absolute `https://` URL and the ISO-8601 date it was retrieved. The table is not
 row claiming confirmation names what was read and when.
 
 Every one of the six URLs was fetched during execution of plans 06-01 and 06-02, and the page
-returned was checked against what its row describes before the row was marked. Two rows were
+returned was checked against what its row describes before the row was marked. Three rows were
 confirmed against bibliographic edition records whose `by_statement` field matched the row's author
-list exactly. Three rows were confirmed against public vendor pages, each checked for a login,
+list exactly. The other three were confirmed against public pages, each checked for a login,
 registration wall, or paywall before being accepted; none had one.
 
 `SOURCES.md`'s Out of bounds list was read before searching, not after. No candidate was taken from
