@@ -559,7 +559,13 @@ carried a fourth item on that list: that the seven appear in an internal ID regi
 names them as a set in this order. That is false against this repository's own files. All three
 carry one identical sentence naming all seven in the table's order, opening "The Command of the
 Message spine is carved into seven sub-blocks, each reserved four IDs".
-`grep -rn "Command of the Message spine is carved"` returns exactly those three files.
+`git grep -rln "Command of the Message spine is carved" -- ':!LEGAL-REVIEW.md' ':!.planning'`
+returns exactly those three files and no other. Both exclusions are load-bearing, not tidying.
+Writing the quoted anchor down here put the string into this file, and this round's plan and UAT
+record quote it too, so an unexcluded sweep returns six — three shipped files plus three records
+discussing them. That is the same self-reference the prong-3 sweeps above record, made again by
+the round that recorded it, and caught here by its own self-audit rather than by a sixth cold
+read.
 
 *Corrected 2026-09-22 (06-09): this passage cited the three by path and line number. Only the
 `SKILL.md` one still resolved. `f909d3c`, the previous round's own first task, added three net
