@@ -174,9 +174,10 @@ This block is kept, not deleted, so the failure is auditable. It must not be use
 the MOD-04 rate.
 
 **What happened:** the executor running this matrix hit its own harness usage limit partway
-through the run. The 10 sonnet-5 sessions that ran before the limit hit are genuine (varied
-verdicts, real byte offsets, real marker names). Every one of the 10 claude-opus-5 sessions
-that follow, plus the immediately-preceding `E-ambiguous repeat=1` sonnet session, instead
+through the run. Nine of the 10 sonnet-5 sessions that ran before the limit hit are genuine --
+varied verdicts, real byte offsets, real marker names, and one real timeout. The tenth is not.
+Every one of the 10 claude-opus-5 sessions that follow, plus that tenth sonnet session
+(`E-ambiguous repeat=1`, the one immediately preceding them), instead
 carries the identical signature `verdict=no-family | evidence=no family match found
 (marker_at=None, marker=None)` -- eleven sessions in a row producing byte-for-byte the same
 evidence string across five different fixtures and two different models is not a plausible
@@ -957,13 +958,15 @@ levers.**
 | 03-07 | Five-value family line made unconditional, plus a self-check presence gate | `evals/conformance/run_conformance.py`, five fixtures, two models | unanchored | 16/20 both models; sonnet-5-only paired baseline 5/11 (45.5% -> 60.0% same-model) |
 | 03-11 (measured in 03-12) | Self-check ordering re-scan — re-scan the drafted response, confirm no `PF-`/`MC-` marker precedes the family line, repair before returning if one does | `evals/conformance/run_conformance.py`, five fixtures, `claude-sonnet-5` only | anchored (`FAMILY_LINE_WINDOW_CHARS=400`, post-CR-01) | Arm A 3/10 (30.0%) vs. paired Arm B baseline 4/10 (40.0%), a -10.0pp delta |
 
-The 03-05 rows and the unanchored half of the 03-07 row are optimistic ceilings, not precise
+The 03-05 figures and the unanchored half of the 03-07 row are optimistic ceilings, not precise
 measurements — every figure recorded before commit `7cde49a`'s `FAMILY_LINE_WINDOW_CHARS` fix
 shares CR-01's documented bias, always toward looking more conformant, never less (see "Scorer
-anchoring correction (CR-01)" above). They are not directly comparable to the fourth row, the
+anchoring correction (CR-01)" above). They are not directly comparable to the 03-11 row, the
 only anchored measurement this project has produced, which is also the lowest figure recorded
-and a decline against its own paired same-instrument baseline. The decision above weighs the
-anchored row most heavily for exactly that reason.
+and a decline against its own paired same-instrument baseline. Rows and rounds are not the same
+count here — three rows carry four measurements, because the 03-05 row records both its original
+figure and its independent recheck — so this paragraph addresses the anchored measurement by its
+round. The decision above weighs it most heavily for exactly that reason.
 
 **Alternatives rejected.**
 
