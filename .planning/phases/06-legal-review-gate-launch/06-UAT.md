@@ -314,11 +314,14 @@ is older and larger than five rounds of file-named briefs could see.
 
 **Both of 06-09's structural changes are now measured, and both paid.**
 
-*Change 1, the widened fourth brief.* One of reader 7's two unique findings —
-`LEGAL-REVIEW.md`:383-384, authored by 06-08's `33569f8` — returns **0 matches** in
-`git diff ade21af^..HEAD` (the 06-09 range a diff-scoped brief would have been given this round) and
-**1** in `d67012e^..HEAD`. `33569f8` provably predates the 06-09 range. The widening reached exactly
-one finding no diff-scoped brief could have seen, on its first run.
+*Change 1, the widened fourth brief.* One of reader 7's unique findings —
+`LEGAL-REVIEW.md`:383-384 at `66322b1`, authored by 06-08's `33569f8` — returned **0 matches** in
+`git diff ade21af^..66322b1` (the 06-09 range a diff-scoped brief would have been given this round)
+and **1** in `d67012e^..66322b1`. `33569f8` provably predates the 06-09 range. The widening reached
+exactly one finding no diff-scoped brief could have seen, on its first run. *Both figures pinned to
+`66322b1` by 06-10: written as `..HEAD`, the first arm returns 1 at HEAD, because 06-10's own task-4
+correction quotes the wording it removed and so re-added the phrase inside that range. The
+comparison is about what round 6's widening reached, not a live count.*
 
 *Change 2, the second sweep reader.* Sweep A returned 9 findings, sweep B returned 7, and 3 were
 shared. **Sweep B produced 4 findings the first sweep reader did not** — 16% of the round's total.
