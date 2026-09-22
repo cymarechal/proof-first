@@ -51,8 +51,19 @@ of the file because an earlier revision put it above the disclaimer, where a ski
 before being told what this document is. `tools/check_repo.py`'s `source-gate-incomplete` code
 defines what it asserts and nothing more: that no row in `SOURCES.md` still reads `unverified`. The
 checker's own text says it "does not judge whether the review behind a declared pass was any good,
-only whether the file it declares a pass over is complete." *Corrected 2026-09-22 (06-08): the word
-inside the quotation marks was "list". The checker says "file".*
+only whether the list it declares a pass over is complete." *Correction withdrawn 2026-09-22
+(06-09): 06-08 changed the word inside the quotation marks from "list" to "file", on a round-4
+finding that was itself wrong. "List" was right. The checker states this ceiling twice, one word
+apart. Its module docstring — the violation-code catalogue that defines `source-gate-incomplete`,
+and the text this paragraph cites — says "the list it declares a pass over is complete";
+`check_source_gate_incomplete`'s own docstring says "the file". The earlier quotation matched the
+catalogue, so no misquote occurred, and this marker is kept rather than deleted so the next round
+does not "fix" the same sentence again. `grep -n "it declares a pass over is complete"
+tools/check_repo.py` returns exactly one line, the catalogue's, because the function docstring
+wraps mid-phrase — which is how a reader could reach the "file" spelling and read the catalogue's
+as absent. Two readers found this; a third read the same two docstrings and passed it. The facts
+were never in dispute, only what this marker asserted. Making the two docstrings agree is a
+separate `check_repo.py` edit with its own risk, and is backlog rather than done here.*
 
 So: every check named below was performed on 2026-09-21 and its outcome written down, including the
 two lookups that failed. That is the whole of what the token means here, and it is not a statement
