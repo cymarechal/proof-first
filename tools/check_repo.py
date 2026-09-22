@@ -4232,9 +4232,14 @@ def check_derivative_rule_coverage(allocated, repo_root):
     model does with that content, nothing about whether a session driven
     by a derivative reaches the same conclusions as one with the skill
     folder installed, and nothing about whether the omitted illustration
-    file's absence changes anything. Phase 5's benchmark is the only
-    place such a statement could ever be sourced from; until then this
-    repository makes no such claim."""
+    file's absence changes anything. That second statement now has a
+    committed source: evals/routes/RESULTS-routes.md, which 04-15 wrote
+    from 36 headless sessions and which reports a null result -- every
+    pair of arms overlapping -- not equivalence. This check is not that
+    measurement and does not stand in for it; read the results file.
+    check_derivative_comparison_claim below is built on the same premise
+    and fails the build if a derivative reasserts the old "no benchmark
+    has compared" denial while that results file exists."""
     violations = []
     pf_ids = sorted(row['id'] for row in allocated if PF_ID_RE.match(row['id']))
     mc_ids = sorted(row['id'] for row in allocated if MC_ID_RE.match(row['id']))

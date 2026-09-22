@@ -6,9 +6,11 @@ files.
 This script performs no condensation, no rewriting, and no
 summarisation: it concatenates source content verbatim under stated
 section markers and adds a wrapper around it. It makes no statement
-about how a live model session behaves with either derivative --
-Phase 5's benchmark is the only place such a statement could ever be
-sourced from. It imports only argparse, hashlib, pathlib, re, and sys
+about how a live model session behaves with either derivative; the
+committed source for that is evals/routes/RESULTS-routes.md, which
+_render_preamble() below names in the output for the same reason, and
+which reports a null result rather than equivalence. It imports only
+argparse, hashlib, pathlib, re, and sys
 from the Python standard library; no package-manager dependency is
 introduced by this file or by the CI job that runs it.
 
