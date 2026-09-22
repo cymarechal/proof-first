@@ -260,14 +260,27 @@ by the last one, 06-08, and 2 by earlier ones, 06-05 and 06-06. A future round m
 whether widening the window moved that split, so these figures stay pinned to round 5 rather than
 being carried forward as a running claim.
 
-**Change 2 — a second sweep reader, and why yes rather than no.** Eight of round 5's eighteen
-findings predate Phase 6's closures entirely, and **every one of them was reached by the single
-sweep reader** — the only brief that names no file. That one reader found four two-file
-contradictions plus the `INIT-EVENTS.md` key set and the element-label count, in
-`evals/trigger/`, the `## Launch` section, `artifact-patterns.md`'s label inventory and the bench
-brief's timeline: places no other brief had ever opened in five rounds. One reader carrying the
-whole unnamed-file surface is a single point of failure over the largest unexplored area, and the
-cost of a second is one session.
+**Change 2 — a second sweep reader, and why yes rather than no.** The sweep is the only brief that
+names no file, and round 5 measured exactly what that route returns. Its one reader produced four
+findings, recorded as test 19: `check_repo.py`:4470-4476 contradicting its own module docstring,
+`INIT-EVENTS.md`'s 23-key block, the "fifteen frozen element labels" count in two `check_repo.py`
+docstrings, and the bench brief's reversed timeline. **Three of those four predate Phase 6's
+closures entirely**, in `evals/trigger/`, `artifact-patterns.md`'s label inventory and
+`bench-deal-brief.md` — places no other brief had opened in five rounds. The fourth was 06-08's own
+text, which the diff-scoped fourth brief was pointed straight at and did not catch.
+
+The round's other five pre-Phase-6 findings came from the file-named briefs — two in `README` from
+the contradiction hunt, three in `LEGAL-REVIEW` from the reproduction-boundary brief — so the sweep
+is not the only route to old text. It is the only route to *unnamed* text, and one reader carrying
+that whole surface is a single point of failure over the largest unexplored area. The cost of a
+second is one session.
+
+*Corrected 2026-09-22 (06-09), by this round's own self-audit: the paragraph above first said all
+eight pre-Phase-6 findings were reached by the sweep reader, and that it found "four two-file
+contradictions plus" two more. Both are wrong against this file's own test records — the sweep
+reader returned four findings in total, three of them pre-Phase-6. The claim was carried over from
+06-09-PLAN.md's task 20, which asserted it; a plan is not a source of truth over the UAT record it
+was written from.*
 
 The second reader gets **the same no-file brief, independently** — not a narrower one. Naming files
 to it, or partitioning the tree between the two, would collapse it into the file-named briefs and
