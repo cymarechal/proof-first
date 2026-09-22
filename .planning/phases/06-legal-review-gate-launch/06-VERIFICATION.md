@@ -6,15 +6,15 @@ verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 24
-human_verification: 19
-human_verification_performed: 24
+human_verification: 24
+human_verification_performed: 29
 human_verification_passed: 5
-human_verification_issues: 19
-uat_round: "/gsd-verify-work 06 round 6, 2026-09-22"
-gap_closure_round: "06-10, 2026-09-22 — G-06-21..23 closed. Round 6's 25 findings corrected across LEGAL-REVIEW.md, SOURCES.md, evals/conformance/RESULTS-mod04.md, tools/check_repo.py, WINDOWS.md and 06-UAT.md. Closure awaits round 7's independent read."
+human_verification_issues: 24
+uat_round: "/gsd-verify-work 06 round 7, 2026-09-23, against ad073b9"
+gap_closure_round: "06-10, 2026-09-22 — G-06-21..23 closed and CONFIRMED by round 7's independent read: none of round 6's 25 corrections was found regressed. Round 7 (2026-09-23, ad073b9) then opened G-06-25..29 on 23 new findings across five briefs and eight readers. 12 of 23 are in .planning/, found by the new fifth brief on its first run — including three WINDOWS.md ledger rows whose LEGAL-REVIEW.md twins 06-10 corrected while leaving the ledger wrong, and a gap closure credited to a commit reachable from no ref. Planned for closure in 06-11 (written inline; the Agent tool is prohibited in this session). Closure awaits round 8's independent read."
 gaps_closed: 19
-gaps_open: 0
-gaps_open_ids: []
+gaps_open: 5
+gaps_open_ids: [G-06-25, G-06-26, G-06-27, G-06-28, G-06-29]
 round_4_closure:
   plan: 06-08
   tasks: 17
