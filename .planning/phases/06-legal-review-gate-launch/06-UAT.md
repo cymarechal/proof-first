@@ -60,9 +60,9 @@ reasoning critiques rather than checkable falsehoods are recorded as observation
 2026-09-21 from `.github/workflows/ci.yml`: `check_repo.py --self-test` PASS, `--mutation-test` PASS
 (56 codes discrimination-proven), `check_repo.py` **0 violations**, and the six self-tests in
 `evals/` and `tools/generate_derivatives.py --check` all rc=0. *Corrected 2026-09-22 (06-09):
-this read "seven". The round-5 UAT edit corrected the same sentence in four other methodology
-sections and missed this one; `evals/` holds six scripts and `ci.yml` runs six.* This is the fifth consecutive round
-matching `WINDOWS.md` id 17's pattern.
+this read "seven". Commit `9f841df`, the round-5 UAT edit, removed three such lines from this
+file's other methodology sections and missed this one; `evals/` holds six scripts and `ci.yml`
+runs six.* This is the fifth consecutive round matching `WINDOWS.md` id 17's pattern.
 
 
 ## How tests 10-12 were performed
