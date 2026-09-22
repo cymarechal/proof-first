@@ -307,15 +307,14 @@ Plans:
 
 **Plans**:
 
-- [x] 06-07-PLAN.md
-- [x] 06-08-PLAN.md
-
 - [x] 06-01-PLAN.md
 - [x] 06-02-PLAN.md
 - [x] 06-03-PLAN.md
 - [x] 06-04-PLAN.md
 - [x] 06-05-PLAN.md
 - [x] 06-06-PLAN.md
+- [x] 06-07-PLAN.md
+- [x] 06-08-PLAN.md
 
 **Wave 1**
 
