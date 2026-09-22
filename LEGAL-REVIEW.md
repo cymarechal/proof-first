@@ -959,7 +959,13 @@ a stale statement. Recorded as refuted rather than as a gap.
 **All ten CI commands were green again while every one of the fourteen false statements was in the
 tree.** Run 2026-09-21 from `.github/workflows/ci.yml`: `check_repo.py --self-test` PASS,
 `--mutation-test` PASS at 56 codes discrimination-proven, `check_repo.py` **0 violations**, and the
-seven self-tests in `evals/` and `tools/generate_derivatives.py --check` all rc=0. This is the fifth
+six self-tests in `evals/` and `tools/generate_derivatives.py --check` all rc=0.
+*Corrected 2026-09-22 (06-09): this read "seven self-tests", which was never true —
+`find evals -name '*.py'` returns six scripts and `.github/workflows/ci.yml` runs exactly six
+`python3 evals/` commands, six at `f54edf7` where the sentence was written and six today. The same
+sentence opens with "All ten CI commands" and enumerates them as 3 + N + 1, so seven made eleven
+and contradicted its own opening in the same breath. 3 + 6 + 1 = 10 matches `ci.yml`.*
+This is the fifth
 consecutive round matching `WINDOWS.md` id 17's pattern, and the first in which a gap-closure round
 contradicted a file it had written in the same round.
 
