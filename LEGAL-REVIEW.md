@@ -184,10 +184,21 @@ absolute `https://` URL and the ISO-8601 date it was retrieved. The table is not
 row claiming confirmation names what was read and when.
 
 Every one of the six URLs was fetched during execution of plans 06-01 and 06-02, and the page
-returned was checked against what its row describes before the row was marked. Three rows were
-confirmed against bibliographic edition records whose `by_statement` field matched the row's author
-list exactly. The other three were confirmed against public pages, each checked for a login,
+returned was checked against what its row describes before the row was marked. Two of the three
+book rows were confirmed against bibliographic edition records whose `by_statement` field matched
+the row's author list exactly. The third book row, the MEDDICC one, carries no `by_statement` field
+at all: `OL38629171M` was confirmed against its `authors` array instead, which resolves to Mr Andy
+Whyte, Dick Dunkel and Jack Napoli, and `SOURCES.md`'s row for that title names the first of the
+three. The other three rows were confirmed against public pages, each checked for a login,
 registration wall, or paywall before being accepted; none had one.
+*Corrected 2026-09-22 (06-10): this said "Three rows were confirmed against bibliographic edition
+records whose `by_statement` field matched the row's author list exactly", which is false for the
+MEDDICC row. All three edition records were re-fetched live on 2026-09-22 and the field quoted per
+row: `OL24886401M` returns `by_statement` "Matthew Dixon and Brent Adamson"; `OL27219998M` returns
+"Brent Adamson, Matthew Dixon, Pat Spenner, and Nick Toman"; `OL38629171M` returns no `by_statement`
+key, and its three `authors` keys resolve to the three names above. The confirmation method is
+restated rather than deleted, because how each row was confirmed is the substance of this record and
+a bare count is not.*
 
 `SOURCES.md`'s Out of bounds list was read before searching, not after. No candidate was taken from
 a training portal, a paid course, a certification handout, an enablement deck, or a redistribution
