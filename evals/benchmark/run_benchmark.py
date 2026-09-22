@@ -1642,7 +1642,14 @@ def self_test():
         cases_exercised.append('no-vocabulary-leakage')
 
     # --- bench-deal-brief.md shares no named entity with examples/deal-brief.md ---
-    shared_deal_brief_entities = ('Halverton Mutual', 'Kestrel Systems Group', 'Diane Osoria', 'Marcus Feld')
+    # All nine invented entities in examples/deal-brief.md: four parties (:13-16, under
+    # '## Parties') and five people (:26-30). Widened from four to nine on 2026-09-22 -- README states this
+    # assertion covers every invented name, and it previously covered four of the nine, so a
+    # bench brief reusing 'Ardent Digital' or 'Gina Almeida' would have passed unchallenged.
+    shared_deal_brief_entities = (
+        'Halverton Mutual', 'Kestrel Systems Group', 'Ardent Digital', 'Vantage Nine Consulting',
+        'Diane Osoria', 'Marcus Feld', 'Priya Raghunathan', 'Tom Weatherly', 'Gina Almeida',
+    )
     bench_deal_brief_text = (BENCHMARK_DIR / 'bench-deal-brief.md').read_text(encoding='utf-8')
     collisions = [name for name in shared_deal_brief_entities if name in bench_deal_brief_text]
     if collisions:

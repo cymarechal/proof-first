@@ -5,9 +5,21 @@ Last reviewed: 2026-09-18
 This brief is entirely invented for illustration; any resemblance to a real company, person, or
 transaction is unintended. The migration source and target platforms named in later sections are
 real products, cited only where a benchmark scenario genuinely needs a concrete technical noun.
-This brief shares no company, person, platform, or figure with `examples/deal-brief.md` — it
+This brief shares no company, person, or platform with `examples/deal-brief.md` — it
 grounds Phase 5's benchmark scenarios, which must not reuse the shared deal's facts (see
-`05-RESEARCH.md` Decision 2). The name-collision web search Phase 1 ran for
+`05-RESEARCH.md` Decision 2). That separation is the one that matters and the one that is
+mechanically held: `run_benchmark.py --self-test` asserts every invented party and person in
+`examples/deal-brief.md` is absent from this file, and the platform lists are disjoint.
+
+Figures are a different matter, and this brief no longer claims they are disjoint. *Corrected
+2026-09-22:* this sentence previously said "no company, person, platform, or figure", and the figure
+half was false — `| rfp-security-weight | 20% | percent | ... |` is byte-identical in both briefs'
+canonical-figure tables, and both decision-criteria tables read `| Security posture | 20% |`. Nor
+could the stronger claim be made true cheaply: 20% carries four different meanings inside this brief
+alone and three inside the other, so bare values were always going to coincide across differently
+keyed rows. What is accurate, and weaker than what it replaces: every figure here is keyed to Thornfield Freight
+Systems' own facts, and the separation that protects the benchmark — no shared company, person or
+platform, so no session can draw on the other deal — is the one held mechanically. The name-collision web search Phase 1 ran for
 `examples/deal-brief.md`'s nine invented names was run for this brief's ten names on 2026-09-21, in
 Phase 6 plan 06-02. None of its five invented parties collided with a real entity; three of its five
 invented persons share an exact name with real people in unrelated, neutral roles. Every outcome is

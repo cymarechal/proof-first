@@ -113,6 +113,23 @@ The two file-scoped briefs are the round-1 and round-2 briefs unchanged, one poi
 and one at `LEGAL-REVIEW.md`, each asking only for statements a committed file contradicts and
 requiring the reader to open that file before writing a finding down.
 
+**The standing brief set, from round 4 on — four briefs, not three.** Recorded here by 06-07 task 12
+because three rounds have each found a class the round before could not see, and the fix is the brief
+set rather than any one correction:
+
+1. `README.md` — contradiction hunt, file-scoped.
+2. `LEGAL-REVIEW.md` — contradiction hunt plus reasoning critique, file-scoped.
+3. **The whole-tree sweep above, bound to no named file.** Non-negotiable: it is the only brief that
+   can reach a contradiction between two files neither of the first two names, and it found three
+   on its first run.
+4. **One brief pointed at whatever the last gap-closure round rewrote.** Four of round 3's eleven
+   findings were authored by the round that was closing round 2, and two of round 2's fourteen by the
+   round closing round 1. The closing round's own new sentences are the highest-yield unread surface
+   in the repository, and no brief has ever been aimed at them directly.
+
+A round that runs fewer than four is not comparable with round 3 and must not be read as cleaner
+than it.
+
 **All ten CI commands were green again while all eleven false statements below were in the tree.**
 Run 2026-09-22 from `.github/workflows/ci.yml`: `check_repo.py --self-test` PASS,
 `--mutation-test` PASS (57 codes discrimination-proven), `check_repo.py` **0 violations**, and the

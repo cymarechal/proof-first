@@ -96,8 +96,9 @@ Violation codes implemented in this file:
                            a path this environment can resolve; it does not
                            and cannot confirm a live http(s) URL actually
                            serves the content the registry claims (see
-                           ceiling 2 above -- this environment has no live
-                           network access).
+                           ceiling 2 above -- this linter never fetches or
+                           resolves a URL, by design and regardless of what
+                           network the environment has).
 """
 
 import argparse

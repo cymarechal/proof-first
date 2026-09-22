@@ -53,8 +53,10 @@ that the content is clear to publish.
 
 Two named content items are open and routed to `.planning/WINDOWS.md` for a decision before wider
 distribution — **Ardent Digital** and **Gina Almeida**, both under `## Name collisions`. The
-reproduction-boundary section ends on two live questions rather than a finding, and `WINDOWS.md` id
-29 is open against the PF-1 sub-block list. A reader who wants one sentence should take this one:
+reproduction-boundary section ends on live questions rather than findings — three of them, carried as
+items 5 and 6 of `## What remains open` — and `WINDOWS.md` id 29 is open against the PF-1 sub-block
+list. *Corrected 2026-09-22: this sentence said "two live questions"; items 5 and 6 carry three
+between them.* A reader who wants one sentence should take this one:
 the diligence was done and written down by a non-lawyer, and some of it points at decisions nobody
 has made yet.
 
@@ -231,13 +233,27 @@ repository's own words and grounded in `examples/deal-brief.md`'s own facts.
 
 **Prong 2 — a source's own ordered list reproduced in its order.** This is the prong that engages.
 The sequence does follow the conventional presentation order the qualification family is taught in.
-What this review rests the conclusion on is how little expression that sequence carries. Eight
-blocks, each labelled with the shortest ordinary English for the thing it covers, arranged in the
-order a methodology is conventionally walked through by many independent publishers rather than
-composed by one of them, and organised around a mnemonic: at that thinness, the expression and the
-idea it organises are hard to separate, and what can be separated is slight. That is a judgement
-about how much expression is present, not a finding that no source's arrangement was followed — the
-arrangement plainly was followed, and this record says so.
+What this review rests the conclusion on is how little expression that sequence carries: eight
+one- or two-word labels naming the thing each block covers, in the order the methodology is walked
+through. At that thinness the expression and the idea it organises are hard to separate, and what
+can be separated is slight. That is a judgement about how much expression is present, not a finding
+that no source's arrangement was followed — the arrangement plainly was followed, and this record
+says so.
+
+Three things this paragraph deliberately no longer says, each removed on 2026-09-22 because a reader
+checked it and it did not hold. It no longer says the eight are "the shortest ordinary English for
+the thing it covers": the prong-4 finding below is that seven of the eight are not ordinary English
+at all, and prong 2 cannot rest on a premise prong 4 refutes forty lines later. It no longer says
+the order is one "many independent publishers" teach rather than one publisher's: no read of many
+publishers is recorded anywhere in this repository, `SOURCES.md`:41-44 lists two sources for this
+family, and an argumentative clause resting on an unrecorded lookup is the thing this file exists to
+not do. And it no longer says the blocks are "organised around a mnemonic": the correction above
+retired that ground, and a paragraph fifteen lines later cannot spend what the correction withdrew.
+
+Removing all three narrows the prong-2 answer rather than repairing it. What survives is the
+thinness judgement on the labels themselves, and `SOURCES.md` contains no thinness test — that gap
+is recorded as ledger row 31 and named in `## What remains open`. Prong 2 is the weaker half of this
+entry, and this correction makes it weaker, not stronger.
 
 **Prong 3 — a source's diagram or figure.** Does not apply. `NUMBERING.md`'s MC table is this
 repository's own ID-range registry. No diagram, figure or visual arrangement from any source is
@@ -245,21 +261,70 @@ reproduced anywhere in this repository.
 
 **Prong 4 — a term coined by a source and adopted here as this repository's own label.** This prong
 engages and the earlier draft never reached it, although its own step 3 described the eight names as
-"labels for the blocks", which is the prong's own language. Applied honestly, the eight split.
-"Metric", "Pain", "Champion", "Competition", "Decision Criteria" and "Decision Process" are ordinary
-business English that stands on its own outside this framework family. "Economic Buyer" and "Paper
-Process" are not — both are terms of art this family put into circulation, and both are adopted here
-verbatim as block labels. This review does not find those two off the prong. What it records instead
-is where they sit: they are index terms in `NUMBERING.md`'s registry and nowhere else that ships.
-Neither string occurs in `completeness-audit.md` at all — its headings are MC ids plus rule titles
-written in this repository's own words — and across the shipped tree the two appear only in
-`NUMBERING.md`, in this file, and in `check_repo.py`'s fixtures. They also appear throughout
-`.planning/`, which is tracked in this repository; what they do not reach is any rule body, worked
-example or reader-facing instruction. `NOTICES.md` carries the attribution for the family, and no
-rule text under them is taken from a source. That narrower fact is better for this entry than the
-one it replaces, not worse: the two terms of art reach no shipped reader-facing prose. A stricter
-reading of prong 4 would rename both. This review did not, and the choice is recorded here rather
-than left implicit.
+"labels for the blocks", which is the prong's own language.
+
+**Correcting this entry's split, 2026-09-22.** An earlier draft of this paragraph split the eight
+six-and-two: "Metric", "Pain", "Champion", "Competition", "Decision Criteria" and "Decision Process"
+called ordinary business English, and only "Economic Buyer" and "Paper Process" conceded as terms of
+art. That split is the opposite of the one this repository already enforces in code.
+`tools/check_repo.py`:2952-2965 freezes `SOURCE_COINED_LABELS` — `economic buyer`, `paper process`,
+`decision criteria`, `decision process`, `champion`, `competition`, `pain` — and
+`check_source_label_in_skill_content` (`:2977-3009`) fails the build when any of the seven appears in
+shipped skill content "adopted here as this repository's own unattributed noun (see SOURCES.md's
+reproduction-boundary clause)". Its comment states the one exclusion and why: "the ordinary-English
+word for a measurement ('metric') is deliberately excluded". That is a frozen Phase 3 decision
+(03-07 GAP B), it names `SOURCES.md`'s reproduction-boundary clause in its own violation string, and
+it answers the same question prong 4 asks. The checker's docstring even routes the registry half of
+that question here, to LEG-04 (`:302-305`).
+
+Two positions on the same eight strings, and they were opposites. **This review adopts the
+checker's.** Seven of the eight are source-coined; "Metric" alone is ordinary business English. The
+prong engages for seven names, not two.
+
+What follows, checked by `git grep -iln` over the tracked tree rather than recalled:
+
+- **No shipped skill file carries any of the seven.** Not `skills/proof-first/SKILL.md`, not any
+  `references/*.md`, not `output-styles/proof-first.md`, not `prompts/system-prompt.md`. This is not
+  an observation, it is mechanically held: `source-label-in-skill-content` fails the build on any of
+  the seven in that content, and it is green. "Metric" appears throughout those files, which is
+  exactly why it is excluded from the list.
+- **Five of the seven appear outside `NUMBERING.md`,** in the two committed deal briefs, as headings
+  and role designations. Cited by heading rather than by line, because both files are edited more
+  often than this record is re-read and line citations in this file have drifted before:
+  `### Economic buyer stated priorities`, `### Decision criteria` and `### Paper process` are
+  headings in each brief's buyer section; `## Pain points` is a heading in each; and "the champion"
+  names a person's role in each brief's people list. `git grep -in` over the two files returns all
+  five. The earlier draft asserted the two terms it conceded appeared "only in `NUMBERING.md`, in
+  this file, and in `check_repo.py`'s fixtures". All three parts were wrong: both appear in both deal
+  briefs, `check_repo.py`:2958-2959 is a production constant rather than a fixture, and "Paper
+  Process" occurs in no fixture in that file at all. The case difference in the briefs' headings is
+  not a defence — this repository's own matcher for these exact labels is case-insensitive
+  (`check_repo.py`:2974).
+- **"Decision Process" and "Competition" appear in `NUMBERING.md` and nowhere else** outside this
+  file and the checker.
+- Neither `completeness-audit.md` nor any other `references/*.md` carries any of the seven; that
+  file's `###` headings are MC ids plus rule titles written in this repository's own words.
+- All seven appear throughout `.planning/`, which is tracked in this repository.
+
+**A note on "ships", because this entry previously used the word two ways in four lines.**
+`README.md`:369-371, under `## Repository layout`, states the published definition: `NOTICES.md`, `SOURCES.md`, `NUMBERING.md`,
+`examples/`, `tools/` and `evals/` "stay at the repository root and never ship to an installed user."
+On that definition none of the seven reaches an installed user at all, because the only files that do
+are `skills/proof-first/**` and the two derivatives, and the checker holds those clean. Where the
+seven do sit — `NUMBERING.md` and the two deal briefs — is committed and publicly readable, which is
+a different and weaker kind of exposure. This entry uses "ships" only in `README.md`'s sense from
+here on, and says "committed" for the other.
+
+**Why the disposition does not move, said plainly rather than left for a reader to notice.** Going
+from two conceded names to seven is a material widening, and the honest test is whether the closure
+ever rested on the count. It did not: it rested on position — that the conceded terms reach no
+shipped skill content, that `NOTICES.md` carries the attribution for the family, and that no rule
+text under the blocks is taken from a source. All three hold for all seven, and the first is now
+mechanically enforced rather than observed. What the widening does change is the price of the
+stricter reading: renaming to clear prong 4 would touch `NUMBERING.md` and both deal briefs rather
+than a registry alone. This review still does not rename, and the choice is recorded here rather than
+left implicit. Prong 4 remains recorded rather than disposed — ledger row 31 concedes exactly that,
+and `## What remains open` item 6 keeps it live.
 
 **What the 2026-04-21 ruling contributes.** On that date a US federal court held that MEDDPICC is
 generic — that the term names a methodology rather than identifying one source of training services.
@@ -277,8 +342,9 @@ reading of this repository's files against `SOURCES.md`'s four prongs by a non-l
 legal opinion and not an infringement analysis. It does not establish that every future rule written
 under those blocks stays inside the boundary; that remains a per-rule judgement, and `SOURCES.md`
 already says no tool in this stack performs it. Two items above are live rather than settled — the
-prong-2 judgement that the expression is thin, and the prong-4 position of "Economic Buyer" and
-"Paper Process" — and either would be the place to reopen this entry.
+prong-2 judgement that the expression is thin, resting on a test `SOURCES.md` does not contain, and
+the prong-4 position of the seven source-coined labels — and either would be the place to reopen
+this entry.
 
 ### The PF-1 sub-block list — the seven Command of the Message elements
 
@@ -293,19 +359,39 @@ one per Command of the Message element" and freezes them in a table in this orde
 After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, Positive Business
 Outcomes. The prose names the source on the table's face.
 
-Why it is stronger than id 6, point by point:
+Why it is stronger than id 6, point by point. Two of the four grounds recorded when this section was
+written did not survive a reader checking them, and are restated here rather than quietly dropped:
 
-- It is a source's ordered list, in that source's order, and `NUMBERING.md` says so in its own
-  words. Id 6 at least had to be argued into that description; this one declares it.
-- No acronym defence is available. The MC blocks could at least be argued to follow a mnemonic that
-  many publishers teach; these seven spell nothing and are ordered the way the framework itself
-  sequences them.
+- **It names the source on the table's face.** `NUMBERING.md`:33-35 says `PF-1`'s range "is carved
+  into seven named sub-blocks, **one per Command of the Message element**". That is a declared
+  one-to-one correspondence between this repository's sub-blocks and a named source's elements, in
+  the registry itself, and id 6's MC table declares no such thing about its own eight.
+  *Corrected 2026-09-22:* this point previously read "It is a source's ordered list, in that source's
+  order, and `NUMBERING.md` says so in its own words ... this one declares it." `NUMBERING.md`
+  declares the correspondence; it says nothing anywhere in `:31-54` about whose order the table is
+  in, and the remaining prose there is slot arithmetic. The order claim has to be argued here exactly
+  as id 6's did — it is not declared. The contrast worth recording is that
+  `skills/proof-first/references/completeness-audit.md`:12-15 *does* address order provenance for the
+  MC side and expressly declines to concede it; `NUMBERING.md` carries no equivalent sentence for
+  PF-1 in either direction.
+- **These seven spell nothing**, and are ordered the way the framework itself sequences them.
+  *Corrected 2026-09-22:* this point previously contrasted them against MC blocks that "could at
+  least be argued to follow a mnemonic that many publishers teach." The correction in the id-6 entry
+  retired the mnemonic as a ground there, and prong 2 no longer spends it either. A defence this
+  file has withdrawn twice cannot be the thing PF-1 is measured against. What remains is the
+  narrower and still-true half: no acronym defence is available for these seven.
 - The mark is live and unadjudicated. `Command of the Message®` is used by Force Management in its
   own name on its own current public pages (see the section above). There is no genericness holding
   here of the kind the 2026-04-21 MEDDPICC ruling supplied — no adjudication of any kind was found.
-- Prong 4 engages harder. "Required Capabilities", "Proof Points", "Differentiators" and "Positive
-  Business Outcomes" are this framework's own vocabulary for its own blocks, adopted here verbatim
-  as `NUMBERING.md` labels. They are not neutral English the way "Metric" or "Competition" are.
+- **Prong 4 engages, on all seven.** "Required Capabilities", "Proof Points", "Differentiators" and
+  "Positive Business Outcomes" are this framework's own vocabulary for its own blocks, adopted here
+  verbatim as `NUMBERING.md` labels; "Before scenario", "After scenario" and "Metrics" are the
+  framework's terms for the same three moves. *Corrected 2026-09-22:* this point previously read
+  "They are not neutral English the way "Metric" or "Competition" are." `Competition` is one of the
+  seven strings `check_repo.py`:2963 freezes as source-coined, so it was the wrong side of the
+  comparison. Against the corrected id-6 split, prong 4 now engages on both entries — seven of eight
+  MC names and all seven PF-1 labels — so this point no longer distinguishes the two entries. It is
+  kept because it is true, not because it ranks them.
 
 What weighs the other way, recorded so this entry is not one-sided: the seven labels are short noun
 phrases; no rule text under them is taken from a source; and `NOTICES.md` carries the attribution
@@ -336,10 +422,22 @@ remains open` carries them separately, as items 5 and 6, with different content.
 `WINDOWS.md` id 29, open.
 
 The narrower observation, as corrected: the exposure is not confined to `NUMBERING.md`. Renaming the
-seven sub-blocks to this repository's own terms would still remove it entirely, and it is still the
-cheapest available answer, but it costs three files rather than one — `NUMBERING.md`,
-`skills/proof-first/SKILL.md`, and a `python3 tools/generate_derivatives.py` run to carry the change
-into both derivatives. No rule body, no worked example and no reader-facing instruction depends on
+seven sub-block labels to this repository's own terms is still the cheapest available answer, and it
+costs **four files** rather than one: `NUMBERING.md`:39-45 and `skills/proof-first/SKILL.md`:63 by
+hand, then `output-styles/proof-first.md`:87 and `prompts/system-prompt.md`:75 regenerated by
+`python3 tools/generate_derivatives.py`. All four are committed and all four must be, because
+`generate_derivatives.py --check` compares the derivatives against the committed files. The count is
+`git grep -l "Positive Business Outcomes"` over the tracked tree outside `.planning/`, not an
+estimate. *Corrected 2026-09-22: this passage said "three files" and then enumerated two files and a
+command, and two other places in this file said "three files and a regeneration", making the run an
+addition to three rather than one of them. Neither matched the tree.*
+
+What a rename would **not** remove, recorded so the remedy is not oversold: `NUMBERING.md`:33-35 and
+`skills/proof-first/SKILL.md`:63 both state the seven sub-blocks are "one per Command of the Message
+element", and that sentence names the source and asserts the correspondence independently of what the
+labels are called. Renaming the labels while leaving those two sentences in place leaves the
+seven-element ordered correspondence to a named source exactly where it is. Clearing prong 4 and
+clearing prong 2 are different edits, and only the first is the four-file one. No rule body, no worked example and no reader-facing instruction depends on
 the seven labels, so nothing a reader relies on breaks. What the correction changes is the kind of
 decision it is: a change to shipped content, and so a version decision, rather than an edit to an
 internal registry.
@@ -428,12 +526,17 @@ observed on the day, in both directions.
    the system prompt. Examined for the first time at this review under `## Reproduction boundary`
    and left open as `WINDOWS.md` id 29. One of the two questions it was opened on — whether an
    internal ID registry counts as shipping the list — was answered by the files themselves on
-   2026-09-21: the list ships. What stays open is `SOURCES.md`'s fourth prong, whether it is
-   answered by attribution or only by renaming. Renaming the seven is still the cheap alternative —
-   three files and a regeneration, and nothing a reader depends on.
+   2026-09-21: the list reaches an installed user, in `SKILL.md` and both derivatives. What stays open is `SOURCES.md`'s fourth prong, whether it is
+   answered by attribution or only by renaming. Renaming the seven labels is still the cheap alternative —
+   four files (two by hand, two regenerated), and nothing a reader depends on — but it clears prong 4
+   only; the "one per Command of the Message element" sentence carries the prong-2 correspondence
+   whatever the labels are called.
 6. **Two live questions inside the id-6 disposition** — whether the MC list's expression is thin
-   enough to carry the conclusion, and where "Economic Buyer" and "Paper Process" sit on the fourth
-   prong. Either is a reason to reopen id 6.
+   enough to carry the conclusion, on a thinness test `SOURCES.md` does not contain; and where the
+   **seven** source-coined MC labels sit on the fourth prong. *Updated 2026-09-22:* this item
+   previously named two labels. `tools/check_repo.py`'s frozen `SOURCE_COINED_LABELS` treats seven of
+   the eight as source-coined and only "Metric" as ordinary English, and the id-6 entry now adopts
+   that split. Either question is a reason to reopen id 6.
 7. **The per-rule reproduction judgement is permanent, not closable.** `SOURCES.md` states no tool in
    this stack performs it. Every future rule added under a `PF-` or `MC-` block needs the same read
    this review gave PF-0.1, PF-3.1, and the MC block names.
@@ -705,7 +808,7 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 3 | 02 | Reproduction-boundary read of PF-0.1/PF-3.1 against SOURCES.md | **Closed on reasoning** | No shipped content changed. Closed on 06-02's read, restated at 06-05. Recorded as `fixed` in WINDOWS.md, which has no fourth state. |
 | 4 | 02 | D-31 trigger pressure-test | **Fixed** | Closed in an earlier phase. |
 | 5 | 02 | CAT-08 token half | **Fixed** | Closed in an earlier phase. |
-| 6 | 03 | The eight MC dimension names and their MC-1..MC-40 range order | **Closed on reasoning** | No shipped content changed. 06-05 corrected the acronym premise the earlier reasoning rested on and restated it; ends on two live questions. Recorded as `fixed` in WINDOWS.md, which has no fourth state. |
+| 6 | 03 | The eight MC dimension names and their MC-1..MC-40 range order | **Closed on reasoning** | No shipped content changed. 06-05 corrected the acronym premise the earlier reasoning rested on; 06-07 adopted `check_repo.py`'s frozen seven-of-eight source-coined split in place of this entry's own six-and-two, widening the prong-4 concession from two labels to seven, and removed three prong-2 grounds a reader falsified. The disposition did not move because it never rested on the count — see the entry. Ends on the two questions at `## What remains open` item 6. Recorded as `fixed` in WINDOWS.md, which has no fourth state. |
 | 7 | 03 | 03-05's single standalone-audit re-check (docs/B-proposal-section | **Fixed** | Closed in an earlier phase. |
 | 8 | 03 | MOD-04 anchored remeasurement (03-12), the first measurement of this r | **Waived** | Closed in an earlier phase. |
 | 9 | 03 | Residual source label outside 03-05's scope | **Fixed** | Closed in an earlier phase. |
@@ -727,10 +830,10 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 25 | 05 | README asserted its own benchmark had not run | **Fixed** | Closed by 06-03: README now states what the benchmark supports. |
 | 26 | 02 | 02-10 plan's git-diff removed-lines probe always printed >=1 | **Waived** | Plan-authored probe artifact; the substantive check printed empty throughout. |
 | 27 | 02 | 02-10 plan's whole-file phrase count returned 15 against 14 | **Waived** | Plan-authored probe artifact; the table-scoped count was correct at 14. |
-| 28 | 04 | Route-equivalence measured and not distinguished | **Waived** | Measured null result published with its four named limits. |
-| 29 | 06 | PF-1's seven Command of the Message sub-block labels, in NUMBERING.md and in the shipped skill | **Open — v2** | Opened at this review. The counterweight recorded when the row was opened — that the list appears only in an internal registry — was false, corrected by 06-06: SKILL.md:63 and both derivatives name all seven in the table's order. The first of its two questions is answered by that fact; stays open on prong 4. Renaming now costs three files and a regeneration. |
+| 28 | 04 | Route-equivalence measured and not distinguished | **Waived** | Measured null result published with its six named limits (`run_routes.py`'s `REQUIRED_CAVEATS`, one bullet rendered per key). |
+| 29 | 06 | PF-1's seven Command of the Message sub-block labels, in NUMBERING.md and in the shipped skill | **Open — v2** | Opened at this review. The counterweight recorded when the row was opened — that the list appears only in an internal registry — was false, corrected by 06-06: SKILL.md:63 and both derivatives name all seven in the table's order. The first of its two questions is answered by that fact; stays open on prong 4. Renaming the labels now costs four files (NUMBERING.md and SKILL.md by hand, both derivatives regenerated) and clears prong 4 only. |
 | 30 | 06 | README's claim region says "drafted twice" without the 3 repeats | **Open — v2** | Not a falsehood — no committed file contradicts it — but two consecutive rounds of cold readers tripped on it. Recorded rather than dropped. |
-| 31 | 06 | Two reasoning critiques of the id-6 prong answers | **Open — v2** | Judgements about argument quality, not checkable falsehoods: prong 2 leans on a thinness test `SOURCES.md` does not state, and prong 4 records position instead of disposing. |
+| 31 | 06 | Two reasoning critiques of the id-6 prong answers | **Open — v2** | Judgements about argument quality, not checkable falsehoods: prong 2 leans on a thinness test `SOURCES.md` does not state, and prong 4 records position instead of disposing. 06-07 removed prong 2's two other unrecorded grounds (a "many independent publishers" lookup nothing records, and a mnemonic the same entry had retired), which narrows the prong-2 answer to the thinness test alone and makes this row the whole of what carries it. |
 | 32 | 06 | `evals/proxy-sources.md`'s two source rows were never re-fetched | **Open — v2** | The last file whose provenance rested on the expired no-network premise. Restated in the past tense by 06-06; re-fetching was out of that round's scope. |
 
 Counts after this sweep: **9 fixed, 2 closed on reasoning, 9 waived, 12 open**, totalling 32.

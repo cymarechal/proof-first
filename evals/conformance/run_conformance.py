@@ -19,7 +19,7 @@ dependency is introduced by this file.
 
 Usage:
   python3 evals/conformance/run_conformance.py --self-test
-      Offline proof that the scorer discriminates the three committed
+      Offline proof that the scorer discriminates the five committed
       transcript fixtures correctly. Makes no subprocess call and no
       network call; runs on a machine with no `claude` binary.
 
@@ -310,9 +310,12 @@ def self_test():
     Asserts the five inline cases from this plan's <behavior> block first --
     these need no fixture file and always run, proving all four verdict
     strings are discriminated even before evals/conformance/transcripts/ has
-    any committed fixture. It then cross-checks the three committed
+    any committed fixture. It then cross-checks the five committed
     transcript fixtures (conformant-family-first.txt,
-    nonconformant-no-family.txt, nonconformant-rule-before-family.txt) if
+    nonconformant-no-family.txt, nonconformant-rule-before-family.txt,
+    nonconformant-no-family-late-phrase.txt and
+    conformant-family-first-late-phrase.txt -- the last two added by the
+    CR-01 anchoring fix described in cases 8 and 9 below) if
     present: an absent fixture is not a failure (fixtures are authored in a
     later task), but a present one that no longer exhibits its named
     property is. A sixth case (03-08-PLAN.md) monkeypatches subprocess.run
