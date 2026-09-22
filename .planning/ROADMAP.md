@@ -311,6 +311,8 @@ Plans:
 - [x] 06-02-PLAN.md
 - [x] 06-03-PLAN.md
 - [x] 06-04-PLAN.md
+- [x] 06-05-PLAN.md
+- [x] 06-06-PLAN.md
 
 **Wave 1**
 
@@ -326,7 +328,15 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 06-04 — Launch gate: the publish decision, the install observations, the human reads, the ledger sweep
+- [x] 06-04 — Launch gate: the publish decision, the install observations, the human reads, the ledger sweep
+
+**Gap closure Wave 5** *(closes UAT round 1 — G-06-2, G-06-3, G-06-6)*
+
+- [x] 06-05 — The id-6 reproduction reasoning restated on grounds NUMBERING.md supports, the PF-1 element list examined, the verdict layer separated, and README's three false statements corrected
+
+**Gap closure Wave 6** *(closes UAT round 2 — G-06-7, G-06-9)*
+
+- [x] 06-06 — The fourteen checkably-false statements round 2's five independent readers found, including the one that shipped to installed users; one new check code, `benchmark-run-claim-stale`, discrimination-proven
 
 Cross-cutting constraints:
 
@@ -346,7 +356,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 3. Completeness Audit & Artifact Patterns | 16/16 | Complete    | 2026-09-17 |
 | 4. Distribution & Worked Examples | 11/11 | In Progress|  |
 | 5. Evaluation Harness | 3/3 | Complete    | 2026-09-20 |
-| 6. Legal Review Gate & Launch | 4/4 | In Progress|  |
+| 6. Legal Review Gate & Launch | 6/6 | In Progress|  |
 
 ---
 *Roadmap created: 2026-09-10*

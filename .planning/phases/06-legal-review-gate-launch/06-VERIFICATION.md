@@ -1,7 +1,7 @@
 ---
 phase: 06-legal-review-gate-launch
-status: gaps_found
-score: "2/2 must-haves verified; 9 human items performed across 2 rounds — 4 passed, 5 issues; round 1's 3 gaps closed by 06-05, round 2's independent read of those closures opened 2 new ones"
+status: passed
+score: "2/2 must-haves verified; both round-2 gaps closed by 06-06. Requirement checkboxes stay unchecked: their closure condition is an independent read, and this round self-checked."
 verified: 2026-09-21
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
@@ -11,11 +11,19 @@ human_verification_performed: 9
 human_verification_passed: 4
 human_verification_issues: 5
 uat_round: "/gsd-verify-work 06 round 2, 2026-09-21"
-gap_closure_round: "06-05, 2026-09-21 — G-06-2, G-06-3, G-06-6 closed"
-gaps_closed: 3
-gaps_open: 2
-gaps_open_ids: [G-06-7, G-06-9]
-round_2_note: "Five independent headless readers re-asked round 1's tests 2, 3 and 6 of the corrected files. Test 8 (opinion register) passed. Tests 7 and 9 found 14 checkably-false statements the corrections left or introduced, with all ten CI commands green throughout — the fifth consecutive round of WINDOWS id 17's pattern."
+gap_closure_round: "06-06, 2026-09-21 — G-06-7, G-06-9 closed"
+gaps_closed: 5
+gaps_open: 0
+gaps_open_ids: []
+re_verification:
+  previous_status: gaps_found
+  previous_score: "2/2 must-haves verified; 9 human items performed across 2 rounds — 4 passed, 5 issues; round 1's 3 gaps closed by 06-05, round 2's independent read of those closures opened 2 new ones"
+  gaps_closed:
+    - "G-06-9 (8 findings, README) — CLOSED by 06-06 tasks 1, 2, 3, 4, 5, 6, 7, 8. Each correction checked against the committed file the reader cited. The /config contradiction, the trigger run count, the shipped 'no benchmark has run' sentence, the publish-location-drift scope, what bench-deal-brief.md is for, the reintroduced enforcement claim, the one-armed activation contrast, and the expired no-network premise."
+    - "G-06-7 (6 findings, LEGAL-REVIEW.md) — CLOSED by 06-06 tasks 9, 10, 11. The PF-1 counterweight and its three downstream inheritors, the same-initial undercount, the completeness-audit.md heading claim, the NUMBERING.md line citation, the id-6 equivalence claim, and the append-only rule."
+  gaps_remaining: []
+  regressions: []
+round_3_note: "06-06 re-read its own added sentences and found two further checkably-false statements — one written by this round ('repo-wide' where .planning/ is tracked), one pre-existing and surfaced by checking the first ('.planning/, which a reader of this repository cannot see'). Both corrected in-round. This is the habit 06-05 lacked; one round is not evidence it holds."
 ---
 
 # Phase 6 Verification: Legal Review Gate & Launch
@@ -263,3 +271,83 @@ is recorded here so the next cold read has it in hand.
 
 ---
 *Verified: 2026-09-21 (gap-closure round 06-05)*
+
+
+---
+
+## Gap-closure round — 06-06, verified 2026-09-21
+
+Round 2's two open gaps are closed. Twelve tasks, fifteen commits, all ten CI commands green with
+`--mutation-test` at **57 codes discrimination-proven**, up from 56.
+
+### G-06-9 — eight README findings, closed
+
+| # | Finding | Closed by | Evidence |
+|---|---|---|---|
+| 1 | README said the `/config` picker "has not been observed here" while `LEGAL-REVIEW.md` records observing it | Task 1 | README now states what was observed and carries the same three limits the record states; `WINDOWS.md` 16 stays open |
+| 2 | `artifact-patterns.md` + both derivatives: "no benchmark has run" | Task 3 | String absent from `skills/`, `output-styles/`, `prompts/`; derivatives regenerated; new code guards the regression |
+| 3 | "three runs against the shipped skill description" — two carry the shipped sha256, one a reverted treatment | Task 2 | "three runs, two of them against the shipped skill description" |
+| 4 | `publish-location-drift` described as catching any disagreement | Task 4 | Bounded to the owner-segment comparison the checker's own docstring declares |
+| 5 | `bench-deal-brief.md` described as prompting the benchmark's sessions | Task 5 | `run_benchmark.py`:295 sends `scenario['prompt']`; the brief is read once, inside `--self-test` |
+| 6 | `catalog-count-mismatch` named as checking README's inventory counts | Task 6 | Mutation probe with unmutated control: 31→37 and 28→44 leaves check_repo at 0, exactly as the control |
+| 7 | Activation contrast carrying only `skill-on`'s figure | Task 7 | All three arms carried (9/12, 11/12, 8/12), with what the metric cannot separate stated |
+| 8 | `bench-deal-brief.md` stating the expired no-network premise | Task 8 | Repo-wide sweep — three files, not one; `grep` now returns only past-tense records |
+
+### G-06-7 — six LEGAL-REVIEW.md findings, closed
+
+The most serious was the PF-1 counterweight: the entry asserted the seven Command of the Message
+elements appear in no shipped file, when `SKILL.md`:63, `output-styles/proof-first.md`:87 and
+`prompts/system-prompt.md`:75 each carry them as a set in the table's order. Corrected in all four
+places it had propagated to, and — the part that matters — **the disposition was re-read against the
+corrected facts rather than having them patched underneath it.** `WINDOWS.md` id 29 stays open, but
+on different footing: the first of its two deciding questions is now answered by the files rather
+than by a judgement, and the remedy it priced at one file costs three plus a regeneration.
+
+The other five: the same-initial undercount (four → six, `Paper Process`/`Pain` being a third P
+pair), the `completeness-audit.md` heading claim (neither string occurs in that file), the
+`NUMBERING.md` line citation (`:26-40` → `:31-45`), the id-6 equivalence claim, and the append-only
+rule, which was restated to permit correcting a falsified premise in place on the condition that the
+correction names what changed.
+
+### The one code this round added
+
+Thirteen of the fourteen findings were left to reading, for the reason `WINDOWS.md` id 17 records.
+The fourteenth was a fixed string whose sibling literal already had a guard, so it got a code:
+`benchmark-run-claim-stale`. Three behavioural claims in its docstring were each proven against an
+unmutated sibling control — it catches a capitalised regression, it catches a derivative-only
+regression the source-blind sibling would miss, and it stays silent when the evidence file is absent.
+
+The plan asked for the literal to be folded into the existing check. It is a sibling code instead,
+because the mutation harness maps one code to one mutation and a folded-in literal would be
+registered without ever being discrimination-proven — `WINDOWS.md` id 10, this repository's own named
+recurring defect. Reviewed and upheld in `06-REVIEW.md`.
+
+### What this round did that the last one did not
+
+It re-read the sentences it **added**, not only the ones it fixed. Two more checkably-false
+statements turned up, one of its own making:
+
+- "repo-wide the two appear only in `NUMBERING.md`, in this file, and in `check_repo.py`'s fixtures"
+  — written by this round's Task 10. `.planning/` is tracked, 178 files, and both strings appear
+  across it.
+- "The register itself lives under `.planning/`, which a reader of this repository cannot see" —
+  pre-existing, surfaced by checking the first. A reader can: it is tracked, and README cites
+  `.planning/WINDOWS.md` by entry number twice.
+
+Both corrected before the round closed. 06-05's recorded failure was precisely this, so the habit is
+now in the loop — but catching it once is not evidence it holds.
+
+### Why the requirement checkboxes stay unchecked
+
+LEG-04 and LEG-05 both state their closure condition as **an independent read of the corrections**.
+This round's corrections were written and checked by the same agent. Every round of this phase has
+found that the previous round's self-checked corrections left or introduced defects — three in round
+1, fourteen in round 2, two caught in-round here. The phase's must-haves are verified and its gaps
+are closed; what is not verified is that the closure is clean, and only a reader who did not write it
+can establish that.
+
+**Next: `/gsd-verify-work 06` for a round-3 independent read.** Do not mark the phase complete from
+this branch.
+
+---
+*Verified: 2026-09-21 (gap-closure round 06-06)*

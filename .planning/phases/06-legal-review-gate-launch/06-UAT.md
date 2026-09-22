@@ -594,7 +594,9 @@ Round 2: tests 7-9 — 1 passed, 2 issues (G-06-7, G-06-9).
 
 - gap_id: G-06-7
   truth: "LEGAL-REVIEW.md's id-6 restatement and its new PF-1 section contain no sentence a committed file falsifies"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_by: "06-06 tasks 9, 10, 11 (commits d56022c, b931161, 485de7b) — all six corrected, each checked against the file the reader cited. The PF-1 counterweight was corrected in all four places it had propagated to, and the id-29 disposition was re-read against the corrected facts rather than having them patched underneath it. Self-checked, not independently read: the closure condition remains a round-3 cold read."
   reason: "Two independent readers. Six checkably-false statements survive the restatement. The worst is the PF-1 counterweight at :289-291 and :299-301, which asserts the seven-element list appears in no shipped file — SKILL.md:63, output-styles/proof-first.md:87 and prompts/system-prompt.md:75 each carry it as a set in the table's order — and the error propagates into What remains open item 5 and ledger row 29, understating both the exposure and the remedy. The correction paragraph itself miscounts the freely-swappable positions as four when NUMBERING.md gives six."
   severity: major
   test: 7
@@ -622,7 +624,9 @@ Round 2: tests 7-9 — 1 passed, 2 issues (G-06-7, G-06-9).
 
 - gap_id: G-06-9
   truth: "No statement in README is contradicted by a committed file in this repository"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_by: "06-06 tasks 1-8 (commits 4cb5c9b, 3e3dcd9, 251cad2, c850219, 3a37839, f10f8fc, d11b8a7, 467ed6e) — all eight corrected. Finding 2, the only one that shipped to installed users, also gained a check_repo.py code (benchmark-run-claim-stale, discrimination-proven). Finding 6 was closed by the second of the plan's two permitted outcomes, settled by a mutation probe against an unmutated control. Self-checked, not independently read: the closure condition remains a round-3 cold read."
   reason: "Two independent cold readers converged on four; three more found by one reader each or by the session. Eight in total. One was created by the 06-05 round itself (README still says the /config picker has not been observed while LEGAL-REVIEW.md:536-541 records observing it). One ships to installed users ('no benchmark has run' in artifact-patterns.md and both derivatives). One is the same defect class as G-06-6 #1 reintroduced in the paragraph rewritten to fix it, settled by a mutation probe with an unmutated control: README's inventory counts can be changed to any number and check_repo stays at 0 violations."
   severity: major
   test: 9
