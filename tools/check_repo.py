@@ -4467,13 +4467,29 @@ def run_derivative_checks(repo_root):
 # ---------------------------------------------------------------------------
 # Citation resolution inside this repository's own records (06-08)
 #
-# Rounds 1-4 of cold reads on this repository produced 45 findings. Nine were
-# the same mechanical defect: a `path`:N citation that resolved when it was
-# written and stopped resolving when the cited file was edited afterwards --
-# usually by the very round that wrote the citation. This code closes that
-# class. It deliberately does not attempt the harder half (whether the cited
-# lines say what the citing sentence claims), which is a semantic judgement
-# this repository has refused to put behind a build gate four times.
+# Rounds 1-4 of cold reads on this repository produced 45 findings. Citation
+# defects were among them, and this code catches NONE of those: every citation
+# finding those four rounds produced was a line number that still existed and
+# pointed at the wrong content -- a semantic mismatch, not an unresolvable
+# reference. The full-history replay recorded in the module docstring's
+# record-citation-unresolvable entry fired ZERO times.
+#
+# What this code is, therefore, is future insurance against three shapes that
+# have not yet occurred here: a path that names no file, a range past
+# end-of-file, an inverted range. It deliberately does not attempt the harder
+# half -- whether the cited lines say what the citing sentence claims -- which
+# is the semantic judgement this repository has refused to put behind a build
+# gate four times, and which is the half every citation finding so far has
+# actually been.
+#
+# Corrected 06-09. This comment previously said nine of the 45 were "a
+# `path`:N citation that ... stopped resolving" and that "This code closes
+# that class." Both contradicted the module docstring, which is the more
+# careful account and was written by the same commit. A block comment is the
+# first thing a maintainer reads to learn why code exists, so it is the worse
+# of the two places to overstate. Round 5 then produced two more citation
+# findings -- two derivative `path`:N pairs broken by 06-08's own first
+# commit -- and this code was silent on both, because the cited lines existed.
 # ---------------------------------------------------------------------------
 
 # The records whose citations are validated. Both already carry `path`:N
