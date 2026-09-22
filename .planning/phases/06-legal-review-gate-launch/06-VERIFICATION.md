@@ -1,7 +1,7 @@
 ---
 phase: 06-legal-review-gate-launch
-status: gaps_found
-score: "2/2 must-haves verified; rounds 1 and 2 gap closures all hold under independent read. Round 3 ran the independent read both requirements name as their closure condition: it opened 3 new gaps (G-06-10, G-06-11, G-06-12) across 11 checkably-false statements. Requirement checkboxes stay unchecked."
+status: passed
+score: "2/2 must-haves verified; rounds 1 and 2 gap closures all hold under independent read. Round 3 opened 3 gaps across 11 checkably-false statements; all three closed by 06-07, which also widened one mechanical guard and caught 3 further defects in its own new sentences. Requirement checkboxes stay unchecked: this round self-checked, and every self-check so far has missed what an independent reader then found."
 verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
@@ -11,10 +11,10 @@ human_verification_performed: 12
 human_verification_passed: 4
 human_verification_issues: 8
 uat_round: "/gsd-verify-work 06 round 3, 2026-09-22"
-gap_closure_round: "06-06, 2026-09-21 — G-06-7, G-06-9 closed; verified clean by round 3's independent readers"
-gaps_closed: 5
-gaps_open: 3
-gaps_open_ids: [G-06-10, G-06-11, G-06-12]
+gap_closure_round: "06-07, 2026-09-22 — G-06-10, G-06-11, G-06-12 closed; not yet independently read"
+gaps_closed: 8
+gaps_open: 0
+gaps_open_ids: []
 re_verification:
   previous_status: passed
   previous_score: "2/2 must-haves verified; 9 human items performed across 2 rounds — 4 passed, 5 issues; round 1's 3 gaps closed by 06-05, round 2's independent read of those closures opened 2 new ones"
@@ -390,4 +390,45 @@ PASS, `--mutation-test` PASS at 57 codes, `check_repo.py` 0 violations, seven `e
 from this branch.
 
 ---
-*Verified: 2026-09-22 (UAT round 3)*
+
+## Gap-closure round — 06-07, verified 2026-09-22
+
+All three round-3 gaps closed, 13 tasks, commit `908b90b`. Eleven corrections across six files.
+
+The one worth recording as more than a fix: `LEGAL-REVIEW.md` and `tools/check_repo.py` held
+**opposite** classifications of the same eight MC dimension names — six-and-two against
+seven-and-one — and each file was internally consistent, so no string-matching gate could ever have
+seen it. The review adopts the checker's frozen split, which widens the prong-4 concession from two
+labels to seven. The disposition does not move, and the entry now states why rather than leaving a
+reader to find the gap: the closure never rested on the count.
+
+Two closures went past what the plan required, both because the alternative was worse:
+
+- Prong 2's "many independent publishers" clause — a premise recorded in no committed file, filed by
+  round 3 as backlog — sat inside a sentence two other tasks had to rewrite. Leaving it would have
+  been the exact pattern that produced four of round 3's own findings. Prong 2 now rests on the
+  thinness test alone, which `SOURCES.md` does not contain. The entry's weaker half is weaker.
+- `run_benchmark.py`'s entity assertion covered four of the nine invented names while README was
+  about to claim it covered all of them. Widened to nine and discrimination-proven against an
+  unmutated control.
+
+`G-06-11`'s permitted outcome 1 was rejected on evidence, not cost: 20% carries four distinct
+meanings inside the bench brief and three inside the examples brief, so varying one row would have
+left the claim false while looking fixed.
+
+**The self-audit earned its place this round.** It found three defects in sentences 06-07 had just
+written — a line range pointing at the wrong prose, a claim about copying this review cannot
+establish, and a citation written against line numbers the same round's own edit had shifted. Five
+further citations were converted from line numbers to heading anchors, because both deal briefs are
+edited more often than this record is re-read.
+
+All ten CI commands green. `WINDOWS.md`'s table was re-rendered from its JSON rather than
+hand-edited, and `LEGAL-REVIEW.md`'s reproduced ledger reconciled against it row by row; no status
+and no count changed.
+
+**Next: `/gsd-verify-work 06` for a round-4 independent read**, with the four-brief standing set now
+recorded in `06-UAT.md`. Do not mark the phase complete from this branch: three self-checks in a row
+have each missed what an independent reader then found.
+
+---
+*Verified: 2026-09-22 (gap-closure round 06-07)*

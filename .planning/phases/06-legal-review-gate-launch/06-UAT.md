@@ -8,12 +8,12 @@ rounds: 3
 round_2: "06-05 gap closure — tests 7-9 re-ask tests 2, 3 and 6 of the corrected files"
 round_2_result: "1 passed, 2 issues — G-06-7 and G-06-9 opened 2026-09-21"
 round_3: "06-06 gap closure — tests 10-12 re-ask tests 7 and 9 of the corrected files, plus a new whole-tree sweep bound to no named file"
-round_3_result: "0 passed, 3 issues — G-06-10, G-06-11 and G-06-12 opened 2026-09-22"
+round_3_result: "0 passed, 3 issues — G-06-10, G-06-11 and G-06-12 opened 2026-09-22, all three closed by 06-07 the same day"
 ---
 
 ## Current Test
 
-[testing complete — round 3; 3 gaps open]
+[testing complete — round 3; 3 gaps closed by 06-07, awaiting round-4 independent read]
 
 ## How these six were performed
 
@@ -843,7 +843,7 @@ blocked: 0
 
 Round 1: tests 1-6 — 3 passed, 3 issues (G-06-2, G-06-3, G-06-6), all three resolved by 06-05.
 Round 2: tests 7-9 — 1 passed, 2 issues (G-06-7, G-06-9), both resolved by 06-06.
-Round 3: tests 10-12 — 0 passed, 3 issues (G-06-10, G-06-11, G-06-12), open.
+Round 3: tests 10-12 — 0 passed, 3 issues (G-06-10, G-06-11, G-06-12), all closed by 06-07.
 
 Eleven checkably-false statements this round, against fourteen last round and three the round before.
 The corrections themselves are holding: all six round-2 LEGAL-REVIEW corrections and all eight
@@ -981,7 +981,9 @@ WINDOWS.md id 12's closure condition is a round that returns none; this is not i
 
 - gap_id: G-06-10
   truth: "LEGAL-REVIEW.md's reproduction-boundary material contains no sentence a committed file falsifies"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_by: "06-07 tasks 1-7, 13 (commit 908b90b). Task 1 was a decision: the review adopts check_repo.py's frozen seven-of-eight SOURCE_COINED_LABELS split over its own six-and-two, widening the prong-4 concession from two labels to seven; the disposition is unchanged and the entry now states why rather than leaving it to be noticed. The other six corrected against grep output, not recollection. Prong 2 additionally lost its unrecorded 'many independent publishers' premise — backlog, but inside a sentence two tasks had to rewrite. Self-checked, not independently read: the closure condition remains a round-4 cold read."
   reason: "Two independent readers, converging on five of seven. All six of round 2's corrections hold and were verified accurate; seven different checkably-false statements survive in the same material. The worst is that LEGAL-REVIEW.md:249-252 and :308 classify six of the eight MC names as ordinary business English while tools/check_repo.py:2952-2965 freezes seven of the eight as SOURCE_COINED_LABELS and makes them a build failure in shipped skill content — only 'metric' is excluded. The occurrence enumeration at :253-256, written by 06-06's own self-audit commit, is false against examples/deal-brief.md and evals/benchmark/bench-deal-brief.md, which both carry the two labels as section headings, and miscalls a production constant a fixture."
   severity: major
   test: 10
@@ -1012,7 +1014,9 @@ WINDOWS.md id 12's closure condition is a round that returns none; this is not i
 
 - gap_id: G-06-11
   truth: "No statement in README is contradicted by a committed file in this repository"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_by: "06-07 task 8 (commit 908b90b). Outcome 2, with outcome 1 rejected on evidence — 20% carries four meanings in the bench brief and three in the examples brief, so varying one row would leave the claim false while looking fixed. Claim bounded in README and bench-deal-brief.md in the same commit, identical row named rather than hidden. The company/person/platform separation is now mechanically held over all nine invented names (was four), discrimination-proven against an unmutated control."
   reason: "Three independent readers converged on one statement. README:9-11 says the two deal briefs share 'no company, person, platform or figure'; examples/deal-brief.md:116 and evals/benchmark/bench-deal-brief.md:177 carry a byte-identical Canonical figures row (rfp-security-weight, 20%, same description), and both decision-criteria tables read 'Security posture | 20%'. Every other same-named key between the two briefs was deliberately varied. The claim has been in bench-deal-brief.md:8 since 05-02, but commit 3a37839 — 06-06's fix for round 2's finding 5 — is what imported it into README, so the round that closed G-06-9 opened this."
   severity: major
   test: 11
@@ -1028,7 +1032,9 @@ WINDOWS.md id 12's closure condition is a round that returns none; this is not i
 
 - gap_id: G-06-12
   truth: "No two committed files in this repository state things that cannot both be true"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_by: "06-07 tasks 9, 10, 11 (commit 908b90b). lint.py's ceiling restated as the property that holds rather than put in the past tense, since an environment-dependent ceiling expires again; ledger row 28 six limits; run_conformance.py five fixtures. git grep for the no-network premise now returns only the three files stating it as expired."
   reason: "A whole-tree sweep bound to no named file — new this round, because rounds 1 and 2 pointed every reader at README or LEGAL-REVIEW.md and so could not reach a contradiction between two other files. Three checkably-false statements. The first is the expired no-network premise still asserted in evals/lint.py:98-100, the file evals/proxy-sources.md:37-38 explicitly routes the reader to for the full statement of that ceiling, and the round that was meant to remove it repo-wide (commit 467ed6e, 'sweep the expired no-network premise out of the tracked tree') missed it."
   severity: major
   test: 12

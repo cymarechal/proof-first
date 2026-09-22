@@ -3,26 +3,25 @@ gsd_state_version: 1.0
 current_phase: 06
 current_phase_name: Legal Review Gate & Launch
 status: awaiting_verification
-stopped_at: UAT round 3 complete — 3 gaps open, 06-07-PLAN.md written and ready for /gsd-execute-phase 06 --gaps-only
-last_updated: "2026-09-22T08:40:00.000Z"
+stopped_at: Completed 06-07-PLAN.md (gap closure, round 3) — awaiting round-4 independent read
+last_updated: "2026-09-22T09:45:00.000Z"
 state_head: defa9aabc721607a1ccf68bbc90062ac333fae16
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 59
-  completed_plans: 58
+  completed_plans: 59
   percent: 67
 last_activity: 2026-09-22
-last_activity_desc: Phase 06 UAT round 3 — the independent read LEG-04 and LEG-05 both name as their closure
-  condition. Five headless readers on separate scratch trees, including a new whole-tree sweep bound
-  to no named file. Rounds 1 and 2's fourteen corrections all verified clean by readers who did not
-  write them. Eleven new checkably-false statements opened G-06-10, G-06-11 and G-06-12: the
-  prong-4 classification in LEGAL-REVIEW.md is the inverse of what check_repo.py's
-  SOURCE_COINED_LABELS enforces; README's claim that the two deal briefs share no figure is
-  falsified by their identical rfp-security-weight row; and three contradictions sit in files no
-  earlier brief had named. Zero regressions of a round-2 fix — the briefs were narrower than the
-  defect, which is why the sweep brief is now standing. All ten CI commands green throughout, for
-  the sixth consecutive round. 06-07-PLAN.md written inline with 13 tasks.
+last_activity_desc: Phase 06 gap closure round 3 — all three round-3 UAT gaps closed across 13 tasks and one
+  commit (908b90b), six files, eleven corrections. The load-bearing one was a decision rather than
+  an edit: LEGAL-REVIEW.md and check_repo.py held opposite classifications of the same eight MC
+  dimension names, each file internally consistent, so no string gate could have caught it; the
+  review adopts the checker's seven-of-eight split, widening the prong-4 concession from two labels
+  to seven without moving the disposition. The benchmark's entity assertion went from four of nine
+  invented names to all nine, discrimination-proven against an unmutated control. The round's own
+  self-audit caught three defects in sentences it had just written. All ten CI commands green.
+  Phase awaits a round-4 independent read with the four-brief standing set now recorded.
 ---
 
 # Project State
