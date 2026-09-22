@@ -49,10 +49,12 @@ import datetime
 import hashlib
 import json
 import pathlib
+import posixpath
 import re
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 
 import stats
@@ -341,6 +343,76 @@ def render_run_block(label, rows, counts, model='', harness_version='',
     return '\n'.join(lines)
 
 
+# --- INIT-EVENTS.md key-set assertion --------------------------------------
+#
+# Class 3 of the defect classes 06-08 and 06-09 name: a count or inventory
+# stated in prose next to machine-readable data. 06-09 found INIT-EVENTS.md's
+# "full top-level key set" block listing 23 keys where every one of the 140
+# committed init events carries 24 -- the missing one being `subtype`, the key
+# the document's own extraction script selects on to find the event at all.
+# Asserted here rather than restated, the same remedy run_benchmark.py's
+# caveat-count-matches-constant applies to its own rendered count.
+
+INIT_EVENTS_PATH = REPO_ROOT / 'evals' / 'trigger' / 'INIT-EVENTS.md'
+TRANSCRIPTS_TARBALL = REPO_ROOT / 'evals' / 'trigger' / 'transcripts-cat10.tar.gz'
+
+KEY_SET_HEADING = "**The init event's full top-level key set**"
+
+
+def documented_init_key_set(md_text, path_name=None):
+    """Read the key names out of INIT-EVENTS.md's "full top-level key set" block.
+
+    Returns a sorted tuple. Raises ValueError when the heading or the fenced
+    block after it is absent, so a document that stops carrying the block
+    fails loudly instead of comparing against an empty set and passing.
+    """
+    name = path_name or INIT_EVENTS_PATH.name
+    index = md_text.find(KEY_SET_HEADING)
+    if index < 0:
+        raise ValueError('%s carries no %s block' % (name, KEY_SET_HEADING))
+    fence = re.search(r'```\n(.*?)```', md_text[index:], re.S)
+    if fence is None:
+        raise ValueError('the %s block in %s is not followed by a fenced key list'
+                         % (KEY_SET_HEADING, name))
+    keys = [k.strip() for k in fence.group(1).replace('\n', ' ').split(',')]
+    return tuple(sorted(k for k in keys if k))
+
+
+def observed_init_key_sets(tarball_path):
+    """Every distinct init-event top-level key set in the committed tarball.
+
+    Returns {sorted key tuple: number of transcripts}. Reads the first
+    `system`/`init` event per transcript, the same selection the document's
+    own extraction script makes. macOS AppleDouble members (`._name`) are
+    resource forks rather than transcripts and are not valid UTF-8, so they
+    are skipped by name.
+    """
+    sets = {}
+    with tarfile.open(tarball_path) as archive:
+        for member in archive.getmembers():
+            if not member.isfile():
+                continue
+            if posixpath.basename(member.name).startswith('._'):
+                continue
+            handle = archive.extractfile(member)
+            if handle is None:
+                continue
+            text = handle.read().decode('utf-8')
+            for line in text.splitlines():
+                line = line.strip()
+                if not line.startswith('{'):
+                    continue
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if event.get('type') == 'system' and event.get('subtype') == 'init':
+                    key = tuple(sorted(event.keys()))
+                    sets[key] = sets.get(key, 0) + 1
+                    break
+    return sets
+
+
 # --- self-test -------------------------------------------------------------
 
 _FIRED_FIXTURE = '\n'.join([
@@ -516,6 +588,29 @@ def self_test():
     if 'self-test fixture' not in block:
         failures.append("render_run_block did not carry its own label")
 
+    # --- INIT-EVENTS.md key set vs the committed transcripts (1 case) ---
+    try:
+        documented = documented_init_key_set(INIT_EVENTS_PATH.read_text(encoding='utf-8'))
+        observed = observed_init_key_sets(TRANSCRIPTS_TARBALL)
+    except (ValueError, OSError) as exc:
+        failures.append('init-event key-set assertion could not run: %s' % exc)
+    else:
+        if len(observed) != 1:
+            failures.append('the committed transcripts carry %d distinct init-event key sets, so '
+                            "INIT-EVENTS.md cannot describe one \"full\" set; sizes seen: %r"
+                            % (len(observed), sorted(len(k) for k in observed)))
+        else:
+            actual = next(iter(observed))
+            if documented != actual:
+                missing = sorted(set(actual) - set(documented))
+                extra = sorted(set(documented) - set(actual))
+                failures.append(
+                    "INIT-EVENTS.md's full top-level key set does not match the committed "
+                    'transcripts: %d keys documented, %d observed across %d transcripts; '
+                    'observed but not documented: %s; documented but not observed: %s'
+                    % (len(documented), len(actual), observed[actual],
+                       ', '.join(missing) or 'none', ', '.join(extra) or 'none'))
+
     for problem in failures:
         print('FAIL: %s' % problem)
     if failures:
@@ -523,7 +618,7 @@ def self_test():
         return 1
     print('self-test PASS: 3 detector cases, 2 table rows, 4 scope-hash cases, '
           '3 scope-binding-guard cases, 1 aggregate-verdicts case, 4 overwrite-guard '
-          'cases, 5 render-block cases')
+          'cases, 5 render-block cases, 1 init-event key-set case')
     return 0
 
 

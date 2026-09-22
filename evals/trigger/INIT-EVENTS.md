@@ -70,13 +70,19 @@ PYEOF
   session in this arm the same environment regardless of which phrasing it was driving.
 
 **The init event's full top-level key set** (one representative event, keys sorted; identical
-across all 70 sessions in this arm):
+across all 70 sessions in this arm, and across all 140 in both arms). *Corrected 2026-09-22
+(06-09): this block listed 23 keys and omitted `subtype` — the key the extraction script above
+selects on to find the event in the first place. Every init event in all 140 committed transcripts
+carries 24. The block is now asserted rather than restated:
+`run_trigger_test.py --self-test` reads it back out of this file and compares it to the key set it
+extracts from `transcripts-cat10.tar.gz`, so a future drift fails the build instead of surviving
+four cold reads.*
 
 ```
 agents, analytics_disabled, apiKeySource, capabilities, claude_code_version, cwd,
 fast_mode_disabled_reason, fast_mode_state, mcp_servers, memory_paths,
 messaging_socket_path, model, output_style, permissionMode, plugins,
-product_feedback_disabled, session_id, skills, slash_commands,
+product_feedback_disabled, session_id, skills, slash_commands, subtype,
 terminal_slash_commands, tools, type, uuid
 ```
 
