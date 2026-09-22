@@ -104,7 +104,7 @@ the migrated data layer, and VPC Service Controls for the new project's governan
 Proposals are due to Thornfield Freight Systems on 2026-11-15. Thornfield's next DOT compliance
 audit opens in 6 months, and Thornfield wants the SQL Server estate off-premises before that
 window opens. Meridian Cloud Partners' own most comparable prior migration programme took 11
-months — shorter than, but close to, the audit window Thornfield is working against.
+months — longer than the audit window Thornfield is working against.
 
 ## Inconvenient facts
 
