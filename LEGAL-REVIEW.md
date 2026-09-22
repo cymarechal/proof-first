@@ -400,10 +400,22 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
   `Economic Buyer` is inserted into two fixture builders in that file, `_bad_numbering()` and
   `_mc_numbering_for_count()`, while `grep -in 'paper process' tools/check_repo.py` returns exactly
   one line, and it is inside `SOURCE_COINED_LABELS`. So the word that failed was **only**. The two
-  sub-claims the over-correction offered in support stay, because both are true — the two labels sit
-  in `SOURCE_COINED_LABELS`, a production constant, rather than in a fixture, and "Paper Process" occurs in no fixture in that file
-  at all — they simply do not establish what that sentence claimed they establish, which was that
-  every part of the earlier assertion failed.* The case difference in the briefs' headings is
+  sub-claims the over-correction offered in support stay in corrected form — both labels sit in
+  `SOURCE_COINED_LABELS`, a production constant, **and** `Economic Buyer` additionally sits in
+  fixture builders, while `Paper Process` sits in none — but they do not establish what that
+  sentence claimed they establish, which was that every part of the earlier assertion failed.*
+  *Corrected 2026-09-22 (06-10): the summary above read "the two labels sit in
+  `SOURCE_COINED_LABELS`, a production constant, rather than in a fixture", which contradicts the
+  sentence immediately before it in the same bullet. Measured, with the enclosing scope of every
+  hit named: `grep -in 'economic buyer' tools/check_repo.py` returns eleven lines — one in the
+  module-level `SOURCE_COINED_LABELS` tuple and ten inside seven functions
+  (`_mutate_source_label_in_skill_content`, `_mutate_record_citation_unresolvable`,
+  `_bad_numbering`, `_artifact_patterns_with_source_label`, `_mc_numbering_for_count`,
+  `_mc_checklist_for_count`, `_mc_count_audit_headings`); `grep -in 'paper process'
+  tools/check_repo.py` returns one line, inside that same tuple. The counting rule matters here and
+  is stated rather than left implicit: the two fixture builders the sentence above names are the
+  only two carrying the label in the title case it quotes, and the wider set is what the
+  case-insensitive matcher this bullet closes on would reach.* The case difference in the briefs' headings is
   not a defence — this repository's own matcher for these exact labels is case-insensitive
   (`check_repo.py`'s `_source_label_pattern`, which compiles every label with `re.IGNORECASE`).
 - **"Decision Process" and "Competition" appear in `NUMBERING.md` and nowhere else** outside this
