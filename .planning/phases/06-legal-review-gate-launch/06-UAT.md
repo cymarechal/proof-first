@@ -402,6 +402,59 @@ zero for two consecutive rounds, drop back to one reader and record that; until 
 value of a second sweep reader is unknown, which is the reason to run it, not the reason to skip
 it.
 
+## The standing set, as amended by 06-10 — what round 7 must run
+
+Round 6 confirmed both of 06-09's changes and added three of its own. This is the table round 7
+runs; the paragraphs after it say why each line is where it is, and what would retire it.
+
+| Brief | Readers | Input |
+|---|---|---|
+| `README.md` contradiction hunt | 2 | the file |
+| `LEGAL-REVIEW.md` reproduction-boundary material | 2 | the file |
+| Whole-tree sweep, bound to no named file | 2 | the tree, no file named to either reader |
+| What **any** gap-closure round rewrote | 1 | the union of every gap-closure commit range — `d67012e^..HEAD` today |
+| **`.planning/` record sweep** (new; 06-10 task 25) | 1 | `.planning/`, with the shipped tree available for checking |
+
+**Change 3 — a fifth brief, over `.planning/`.** Three of round 6's twenty-five findings came from
+the orchestrator rather than from any reader, and could not have come from one: every reader tree
+has `.planning/` stripped, so no reader can check a claim whose subject is a `.planning/` file. The
+record that governs the round is the one surface the round does not read. The fifth brief inverts
+the current arrangement — the reader is given `.planning/` and may open the shipped tree to check
+what it finds, rather than being given the tree with `.planning/` removed. One reader, one session.
+Round 6 supplies its first measurement in advance: 06-10's own audit of this file, run under change
+4 below, found that finding C cited two sites as `06-UAT.md`:1417 and `:1907`, and that `:1907` did
+not resolve even at `66322b1`, the HEAD the finding was written against. That is exactly the class
+no reader could reach.
+
+**Change 4 — the self-audit's scope widens from the round's own added sentences to every
+`.planning/` file the round edited.** 06-09's task-18 self-audit read its own added sentences and
+found eight defects, and it was the strongest single instrument of that round. Two of round 6's
+three orchestrator findings were nonetheless in files 06-09 had written to and not re-read. Added
+sentences and touched files are different sets, and the difference is where those two sat.
+
+**Change 5 — every closure plan ends by re-running the command literals it committed, after the
+SUMMARY lands.** `LEGAL-REVIEW.md`'s unexcluded-sweep count was true when `f547989` wrote it
+("fix(06-09): task 18 self-audit — the round's own quoted-string anchor was self-referential") and
+false five commits later, falsified by `10cfa1e` ("docs(06-09): complete gap closure for round 5 —
+21 tasks, 8 files, 1 new assertion, 8 self-audit defects"), the round's own SUMMARY commit. No
+self-audit can see that: the audit runs before the SUMMARY exists. The remedy is a final task, run
+after the SUMMARY commit, that re-runs every command literal the round wrote into prose and
+corrects what moved. Round 6's own write-up did this to itself, caught one, and recorded the catch.
+06-10 ran it too, and the sentence it changed is recorded in `06-10-SUMMARY.md`.
+
+**Both of 06-09's changes stay, and the measurement is what keeps them.** Change 1, the widened
+fourth brief, reached the `LEGAL-REVIEW.md` bullet summarising the two source-coined labels as
+sitting in a production constant "rather than in a fixture" — `:383-384` at `66322b1`, authored by
+06-08's `33569f8` ("fix(06-08): task 14 self-audit — seven defects found in this round's own
+work"). The added-line sweep for that phrase over `ade21af^..HEAD`, the 06-09 range a diff-scoped
+brief would have used, returns 0 matches; the same sweep over `d67012e^..HEAD` returns 1. One finding a diff-scoped brief provably could
+not see. Change 2, the second sweep reader, produced 4 findings the first did not — 16% of round
+6's 25. Neither exit condition is met: the fourth brief retires when a round's widening reaches
+nothing the narrow range would have, and the second sweep reader retires after **two consecutive**
+rounds of zero marginal yield. Round 7 records the second sweep measurement again. One round of
+nonzero yield is not a decision either way, which is the same standard the `README.md` brief is
+being held to after returning its first zero this round.
+
 ## Tests
 
 ### 1. The six confirmed sources are in bounds, and nothing was reproduced from them
