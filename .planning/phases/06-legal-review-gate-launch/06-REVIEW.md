@@ -1,15 +1,113 @@
 ---
 status: clean
 phase: 06-legal-review-gate-launch
-reviewed: 2026-09-21
-round: gap-closure (06-06)
-scope: files changed by 06-06's gap commits (d5efe4b..HEAD)
+reviewed: 2026-09-22
+round: gap-closure (06-08)
+scope: source files changed by 06-08's gap commits (9a2a035..HEAD) — tools/check_repo.py, tools/generate_derivatives.py, evals/benchmark/run_benchmark.py
 reviewer: inline (orchestrator) — the gsd-code-reviewer subagent was not dispatched
-findings_total: 0
+findings_total: 2
 findings_open: 0
-findings_fixed: 0
-supersedes: 06-REVIEW.md as committed for the 06-05 round (preserved in full below)
+findings_fixed: 2
+supersedes: 06-REVIEW.md as committed for the 06-06 round (preserved in full below); the 06-07 round produced no review at this path
 ---
+
+# Phase 6 Code Review — gap-closure round (06-08)
+
+**Three source files changed. Two findings, both in the round's own new check code, both fixed
+before the round closed.**
+
+Sixteen commits; the executable surface is one new violation code
+(`record-citation-unresolvable`, ~150 lines with fixtures and a mutation), two new self-test
+assertions (`caveat-count-matches-constant`, `no-platform-collision`), and prose changes to two
+docstrings and one generated preamble.
+
+## What was reviewed, and how
+
+Behavioural, not a read-through. Every claim the new code's docstring makes was put to a probe
+against an unmutated sibling control — red for the stated reason, green when unmutated — because
+that is the only way to tell a live check from a dead one, and this repository has shipped a dead
+check named as covered before (`01-VERIFICATION.md`).
+
+| Change | Probe | Control | Result |
+|---|---|---|---|
+| `record-citation-unresolvable` overrun | range pushed past EOF in a temp copy | unmutated copy | red with `runs past the end of the file it names (NUMBERING.md has 162 line(s))`; control clean |
+| same, missing path | path replaced with `NO-SUCH-FILE.md` | unmutated copy | red with `no file named NO-SUCH-FILE.md exists in the tree`; control clean |
+| same, inverted range | `:33-35` → `:35-33` | unmutated copy | red with `whose line range is inverted`; control clean |
+| same, production shape | `--mutation-test` entry mutating the real record's first line-range citation | CONTROL step asserts zero violations unmutated | PASS; 58 codes discrimination-proven |
+| `caveat-count-matches-constant` | sibling copy whose renderer emits a seventh hardcoded bullet | unmutated sibling copy | red with `emitted 7 caveat bullet(s), expected len(REQUIRED_CAVEATS)=6`; control rc=0 |
+| `no-platform-collision` | `Amazon EC2` appended to the real bench brief, then restored | restored brief, byte-identical | red with `reuses shared-deal-brief platforms: ['Amazon EC2']`, exit 1; control exit 0 |
+
+The new code was additionally replayed over all 435 commits of repository history with a control
+counting the citation-instances examined, to establish that its zero-firing result is a real
+negative and not an empty measurement. 164 instances examined, 14 distinct spellings, zero firings.
+That measurement is in the code's own docstring, which is the review's main substantive comment on
+it: a check whose value is zero-measured must say so where a reader will meet it.
+
+## Findings
+
+### F-1 — `check_record_citations` did not strip fenced blocks (fixed)
+
+**Severity: low. Real, and a future-CI-breaker rather than a present defect.**
+
+Every other content-scanning code in `check_repo.py` reads `strip_fences(...)` output. This one read
+the raw text. Measured impact today: none — `LEGAL-REVIEW.md` contains zero fences and `README.md`'s
+seven contain no `path`:N pattern, so the citation set is identical either way.
+
+The defect is prospective and specific: the moment either record documents this very citation format
+inside a code fence — which a docstring pointing at `path`:N invites — the gate fires on its own
+documentation and fails the build. A gate hostile to its own docs would be discovered by whoever
+next tries to explain it.
+
+**Fixed** by reading `strip_fences(...)`, consistent with the file's other codes, plus a seventh
+self-test direction (`citation_fenced_root`) carrying the same out-of-range citation as the overrun
+fixture but inside a fence, asserted silent. The direction was proven to discriminate: removing
+`strip_fences` from a sibling copy fails with `record-citation-unresolvable fired on an out-of-range
+citation inside a fenced block, which is documentation`, exit 1; the control passes rc=0. The
+behaviour is now declared in the docstring rather than incidental.
+
+### F-2 — stray whitespace inside a path expression (fixed)
+
+`_citation_line_count` read `len(( repo_root / rel)...)`. Cosmetic, no behavioural effect. Fixed.
+
+## What was checked and found sound
+
+- **The index is built once per run, not per citation.** `if index is None` guards it, and the
+  lazy build means a record with no citations costs nothing. Measured: the whole check runs in
+  42 ms, of which the tree walk over 1,674 paths is 12 ms. No performance concern.
+- **The ambiguous-basename branch is not arbitrary.** Where a basename matches more than one file
+  the check fires only if the range overruns *every* candidate, and says so in the docstring. That
+  is the only sound reading when the check cannot tell which file was meant.
+- **`.planning/` is excluded from resolution, not merely from scanning,** and a self-test direction
+  pins it: a citation resolvable only inside `.planning/` must report as unresolvable rather than
+  silently resolving into the planning archive. A superseded plan is a historical record, not a
+  live target.
+- **`caveat-count-matches-constant` asserts against `len()`, never a literal.** This is the whole
+  point of the finding it closes — a literal above the tuple it counts is what drifted — and the
+  new assertion introduces no number of its own.
+- **`no-platform-collision` declares the same ceiling as the entity assertion beside it:** a
+  substring check over a fixed tuple, proving those six names absent rather than that no platform
+  is shared, with the by-hand maintenance obligation stated.
+- **`generate_derivatives.py`'s changes are prose only**, and both derivatives were regenerated in
+  the same commit as the source change, with `--check` green — so no hand-edit window opened.
+
+## One process observation
+
+This round's own commit broke six line citations in `LEGAL-REVIEW.md` and the new code was silent on
+all six. That is not a defect in the code — its docstring says exactly that it cannot catch a line
+that exists and says something else — but it is the sharpest available evidence that the citation
+class this round tried to mechanize is not mechanically catchable. The structural fix that actually
+holds was the convention change, not the gate: cite a Markdown file by heading and quoted string, a
+Python file by symbol name. That is recorded in the summary's `patterns-established` and is worth
+more than the code shipped alongside it.
+
+---
+
+# Superseded: Phase 6 Code Review — gap-closure round (06-06)
+
+The round-4 review above replaces this one at the same deterministic path. It is preserved in
+full below, unchanged, because the path is deterministic and regenerating it would otherwise
+erase the record. The 06-07 round produced no review at this path.
+
 
 # Phase 6 Code Review — gap-closure round (06-06)
 

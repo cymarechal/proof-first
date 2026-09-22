@@ -993,7 +993,12 @@ Violation codes implemented in this file:
                       -- and it must not be cited as a guard over citation
                       accuracy, which remains a human read. It also stays
                       silent on a retired citation quoted inside a
-                      correction paragraph, which still resolves. Second ceiling: a bare basename is resolved
+                      correction paragraph, which still resolves, and on
+                      anything inside a fenced block -- it reads
+                      strip_fences() output, like every other
+                      content-scanning code here, so a fence that
+                      illustrates the `path`:N format is documentation
+                      rather than a citation. Second ceiling: a bare basename is resolved
                       by searching the tree, so a citation naming a file
                       that is not in this repository fires as unresolvable.
                       Neither record makes such a citation; if one ever
@@ -4511,7 +4516,7 @@ def _citation_tree_index(repo_root):
 
 def _citation_line_count(repo_root, rel):
     try:
-        return len(( repo_root / rel).read_text(encoding='utf-8').splitlines())
+        return len((repo_root / rel).read_text(encoding='utf-8').splitlines())
     except (OSError, UnicodeDecodeError):
         return None
 
@@ -4534,7 +4539,7 @@ def check_record_citations(repo_root):
         record_path = repo_root / record
         if not record_path.exists():
             continue
-        text = record_path.read_text(encoding='utf-8')
+        text = strip_fences(record_path.read_text(encoding='utf-8'))
         seen = set()
         for match in CITATION_RE.finditer(text):
             spelling, low_s, high_s = match.group(1), match.group(2), match.group(3)
@@ -7387,6 +7392,7 @@ def self_test():
         citation_inverted_root = tmp_root / 'citation_inverted'
         citation_nobacktick_root = tmp_root / 'citation_nobacktick'
         citation_planning_root = tmp_root / 'citation_planning'
+        citation_fenced_root = tmp_root / 'citation_fenced'
 
         family_capitalized_root = tmp_root / 'family_capitalized'
 
@@ -7741,7 +7747,7 @@ def self_test():
         _cited = "line one\nline two\nline three\n"
         for _root in (citation_clean_root, citation_overrun_root, citation_missing_root,
                       citation_inverted_root, citation_nobacktick_root,
-                      citation_planning_root):
+                      citation_planning_root, citation_fenced_root):
             _write(_root / 'cited-fixture.md', _cited)
         _write(citation_clean_root / LEGAL_REVIEW_PATH,
                "# Fixture\n\nSee `cited-fixture.md`:2-3 for the rule.\n")
@@ -7756,6 +7762,12 @@ def self_test():
         _write(citation_planning_root / '.planning' / 'archived-fixture.md', _cited)
         _write(citation_planning_root / LEGAL_REVIEW_PATH,
                "# Fixture\n\nSee `archived-fixture.md`:2-3 for the rule.\n")
+        # citation_fenced_root: the SAME out-of-range citation as
+        # citation_overrun_root, inside a fenced block. A fence that shows
+        # readers what the citation format looks like is documentation, and
+        # firing on it would make this gate hostile to its own docs.
+        _write(citation_fenced_root / LEGAL_REVIEW_PATH,
+               "# Fixture\n\n```\nSee `cited-fixture.md`:2-9 for the rule.\n```\n")
 
         # README claim-region, badge and layout-tree fixtures (06-03).
         # Every root below ships the same one-file results corpus so token
@@ -8072,6 +8084,7 @@ def self_test():
         citation_inverted_codes = _codes(citation_inverted_root)
         citation_nobacktick_codes = _codes(citation_nobacktick_root)
         citation_planning_codes = _codes(citation_planning_root)
+        citation_fenced_codes = _codes(citation_fenced_root)
         claim_two_violations = [
             line for _, line in run_all_checks(claim_two_root)
             if line.startswith('readme-claim-unsourced ')
@@ -8597,6 +8610,9 @@ def self_test():
             all_ok = False
         if 'record-citation-unresolvable' not in citation_planning_codes:
             print("FAIL: record-citation-unresolvable did not fire on a citation resolvable only inside .planning/")
+            all_ok = False
+        if 'record-citation-unresolvable' in citation_fenced_codes:
+            print("FAIL: record-citation-unresolvable fired on an out-of-range citation inside a fenced block, which is documentation")
             all_ok = False
         if 'record-citation-unresolvable' in results_good_codes:
             print("FAIL: record-citation-unresolvable fired on a fixture root shipping no LEGAL-REVIEW.md or README.md")
