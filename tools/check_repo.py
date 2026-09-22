@@ -210,6 +210,17 @@ Violation codes implemented in this file:
                       total that is right while a rule body is missing
                       from the file entirely; that direction is
                       catalog-id-drift's.
+  catalog-opening-rule-count - the Opening / Reframe section holds a
+                      number of allocated PF-0 IDs other than exactly one,
+                      in NUMBERING.md's Allocated IDs table or in a skill
+                      folder's references/checklist.md, naming the count
+                      found and the file it was found in. CAT-03 requires
+                      exactly one: the Before-scenario / Identify-Pain /
+                      Reframe convergence must resolve into a single
+                      instruction rather than several a writer has to
+                      reconcile. Declared ceiling: it counts PF-0 rows and
+                      nothing else — a single row whose body states two
+                      opening rules in prose passes.
   mc-count-unstated - a skill folder's references/completeness-audit.md
                       exists and contains no line matching the frozen MC
                       stated-count template ("This audit contains {N}
