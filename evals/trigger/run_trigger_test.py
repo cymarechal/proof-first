@@ -379,15 +379,28 @@ def documented_init_key_set(md_text, path_name=None):
 
 
 def observed_init_key_sets(tarball_path):
-    """Every distinct init-event top-level key set in the committed tarball.
+    """Init-event key sets in the committed tarball, with the scan's own tally.
 
-    Returns {sorted key tuple: number of transcripts}. Reads the first
-    `system`/`init` event per transcript, the same selection the document's
-    own extraction script makes. macOS AppleDouble members (`._name`) are
-    resource forks rather than transcripts and are not valid UTF-8, so they
-    are skipped by name.
+    Returns (sets, scanned, missing): `sets` maps a sorted key tuple to the
+    number of transcripts carrying it, `scanned` is how many transcripts were
+    read, and `missing` lists the ones with no `system`/`init` event at all.
+    Reads the first such event per transcript, the same selection the
+    document's own extraction script makes.
+
+    The tally is returned rather than discarded because the sentence this
+    guards claims two things -- that EVERY init event carries the key set, and
+    that there are 140 of them. A key-set comparison alone proves neither: a
+    tarball that lost half its init events still yields one distinct key set,
+    and would pass. Measured, not assumed: a probe copy with 40 transcripts
+    stripped of their init event passed the key-set check before this tally
+    existed.
+
+    macOS AppleDouble members (`._name`) are resource forks rather than
+    transcripts and are not valid UTF-8, so they are skipped by name.
     """
     sets = {}
+    scanned = 0
+    missing = []
     with tarfile.open(tarball_path) as archive:
         for member in archive.getmembers():
             if not member.isfile():
@@ -397,7 +410,9 @@ def observed_init_key_sets(tarball_path):
             handle = archive.extractfile(member)
             if handle is None:
                 continue
+            scanned += 1
             text = handle.read().decode('utf-8')
+            found = False
             for line in text.splitlines():
                 line = line.strip()
                 if not line.startswith('{'):
@@ -409,8 +424,16 @@ def observed_init_key_sets(tarball_path):
                 if event.get('type') == 'system' and event.get('subtype') == 'init':
                     key = tuple(sorted(event.keys()))
                     sets[key] = sets.get(key, 0) + 1
+                    found = True
                     break
-    return sets
+            if not found:
+                missing.append(member.name)
+    return sets, scanned, missing
+
+
+# The transcript count INIT-EVENTS.md states in prose, asserted rather than
+# trusted. 70 control + 70 treatment, both arms measured at 02-10.
+EXPECTED_TRANSCRIPT_COUNT = 140
 
 
 # --- self-test -------------------------------------------------------------
@@ -591,10 +614,17 @@ def self_test():
     # --- INIT-EVENTS.md key set vs the committed transcripts (1 case) ---
     try:
         documented = documented_init_key_set(INIT_EVENTS_PATH.read_text(encoding='utf-8'))
-        observed = observed_init_key_sets(TRANSCRIPTS_TARBALL)
+        observed, scanned, no_init = observed_init_key_sets(TRANSCRIPTS_TARBALL)
     except (ValueError, OSError) as exc:
         failures.append('init-event key-set assertion could not run: %s' % exc)
     else:
+        if scanned != EXPECTED_TRANSCRIPT_COUNT:
+            failures.append('the committed tarball holds %d transcripts, not the %d '
+                            'INIT-EVENTS.md states' % (scanned, EXPECTED_TRANSCRIPT_COUNT))
+        if no_init:
+            failures.append('%d of %d transcripts carry no system/init event, so '
+                            "INIT-EVENTS.md's \"every init event\" claim does not hold: %s"
+                            % (len(no_init), scanned, ', '.join(sorted(no_init)[:5])))
         if len(observed) != 1:
             failures.append('the committed transcripts carry %d distinct init-event key sets, so '
                             "INIT-EVENTS.md cannot describe one \"full\" set; sizes seen: %r"
@@ -602,14 +632,14 @@ def self_test():
         else:
             actual = next(iter(observed))
             if documented != actual:
-                missing = sorted(set(actual) - set(documented))
+                undocumented = sorted(set(actual) - set(documented))
                 extra = sorted(set(documented) - set(actual))
                 failures.append(
                     "INIT-EVENTS.md's full top-level key set does not match the committed "
                     'transcripts: %d keys documented, %d observed across %d transcripts; '
                     'observed but not documented: %s; documented but not observed: %s'
                     % (len(documented), len(actual), observed[actual],
-                       ', '.join(missing) or 'none', ', '.join(extra) or 'none'))
+                       ', '.join(undocumented) or 'none', ', '.join(extra) or 'none'))
 
     for problem in failures:
         print('FAIL: %s' % problem)
