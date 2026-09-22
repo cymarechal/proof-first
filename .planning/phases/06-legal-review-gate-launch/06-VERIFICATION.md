@@ -1,35 +1,53 @@
 ---
 phase: 06-legal-review-gate-launch
-status: gaps_found
-score: "2/2 must-haves verified. Round 4 ran the four-brief standing set for the first time: all of round 3's corrections hold under independent read, and 17 new checkably-false statements opened 4 gaps (G-06-13..16). Ten of the 17 were authored by the round-3 gap-closure commit itself, up from 4 and 2 in the two rounds before. Requirement checkboxes stay unchecked."
+status: human_needed
+score: "2/2 must-haves verified. Round 4's four gaps (G-06-13..16) are CLOSED by 06-08 across 17 tasks and 16 commits, all ten CI commands green. Closure is NOT verified: every correction is a prose claim about another committed file, and each of the four self-checks so far has missed what an independent reader then found. Requirement checkboxes stay unchecked. Closure condition unchanged — /gsd-verify-work 06 round 5 with the four-brief standing set."
 verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
-automated_verified: 22
+automated_verified: 24
 human_verification: 16
 human_verification_performed: 16
 human_verification_passed: 4
 human_verification_issues: 12
 uat_round: "/gsd-verify-work 06 round 4, 2026-09-22"
-gap_closure_round: "06-07, 2026-09-22 — G-06-10, G-06-11, G-06-12 closed; not yet independently read"
-gaps_closed: 8
-gaps_open: 4
-gaps_open_ids: [G-06-13, G-06-14, G-06-15, G-06-16]
+gap_closure_round: "06-08, 2026-09-22 — G-06-13, G-06-14, G-06-15, G-06-16 closed; not yet independently read"
+gaps_closed: 12
+gaps_open: 0
+gaps_open_ids: []
+round_4_closure:
+  plan: 06-08
+  tasks: 17
+  commits: 16
+  files_changed: 10
+  ci_commands_green: 10
+  new_assertions: ["caveat-count-matches-constant", "no-platform-collision"]
+  new_check_codes: ["record-citation-unresolvable"]
+  mutation_codes_proven: 58
+  user_facing_findings_fixed: 1
+  self_authored_defects_found_and_fixed: 8
+  measured_verdict: "record-citation-unresolvable fires 0 times across the full history as measured at 06-08 (435 commits, 164 citation-instances, 14 distinct spellings). The citation class four rounds produced is NOT mechanically catchable; the structural fix that holds is the anchoring convention, not the gate."
+  recommendation_to_round_5: "Cut LEGAL-REVIEW.md rather than audit it. This round added 159 lines to correct 13 sentences and authored 8 new defects doing so. The plan set that threshold for round 5's evidence; it is reached on round 4's."
 re_verification:
-  previous_status: passed
-  previous_score: "2/2 must-haves verified; 9 human items performed across 2 rounds — 4 passed, 5 issues; round 1's 3 gaps closed by 06-05, round 2's independent read of those closures opened 2 new ones"
+  previous_status: gaps_found
+  previous_score: "2/2 must-haves verified. Round 4 ran the four-brief standing set for the first time: all of round 3's corrections hold under independent read, and 17 new checkably-false statements opened 4 gaps (G-06-13..16). Ten of the 17 were authored by the round-3 gap-closure commit itself, up from 4 and 2 in the two rounds before. Requirement checkboxes stay unchecked."
   gaps_closed:
-    - "G-06-9 (8 findings, README) — CLOSED by 06-06 tasks 1, 2, 3, 4, 5, 6, 7, 8. Each correction checked against the committed file the reader cited. The /config contradiction, the trigger run count, the shipped 'no benchmark has run' sentence, the publish-location-drift scope, what bench-deal-brief.md is for, the reintroduced enforcement claim, the one-armed activation contrast, and the expired no-network premise."
-    - "G-06-7 (6 findings, LEGAL-REVIEW.md) — CLOSED by 06-06 tasks 9, 10, 11. The PF-1 counterweight and its three downstream inheritors, the same-initial undercount, the completeness-audit.md heading claim, the NUMBERING.md line citation, the id-6 equivalence claim, and the append-only rule."
-  gaps_remaining:
-    - "G-06-10 (7 findings, LEGAL-REVIEW.md reproduction-boundary material) — OPEN. Round 3, two independent readers. All six round-2 corrections verified to hold; seven different falsehoods in the same material, five of them in 06-05 text round 2 did not reach."
-    - "G-06-11 (1 finding, README) — OPEN. Round 3, three independent readers converged. README:9-11's no-shared-figure claim, imported into README by 06-06's own commit 3a37839, falsified by the identical rfp-security-weight row in both deal briefs."
-    - "G-06-12 (3 findings, whole-tree sweep) — OPEN. Round 3, new brief bound to no named file. evals/lint.py:98-100's surviving no-network premise, LEGAL-REVIEW.md:730's four-vs-six limit count, and run_conformance.py's three-vs-five fixture count."
+    - "G-06-13 (10 findings, LEGAL-REVIEW.md) — CLOSED by 06-08 tasks 1-7. The two-step 'mechanically held' argument with the strip_fences ceiling declared; the SKILL.md:63 misquote and the both-sides rename contradiction, carried into What-remains-open item 5; the self-referential four-file grep dropped and the by-hand range widened to the prose line below the table; the over-correction corrected part by part; the drifting correction tally removed rather than updated; 'not ordinary English at all' corrected to 'source-coined' with the removal re-checked; the source-gate quotation fixed from 'list' to 'file' and the four-grounds count restated as a property."
+    - "G-06-14 (1 finding, README.md) — CLOSED by 06-08 task 8. README:175's 'enforcing all of the above' bounded to the 23-file surface measured by instrumenting the checker's own reads. Standing since 58530a6 in Phase 1, survived four cold-read rounds."
+    - "G-06-15 (4 findings, whole-tree sweep) — CLOSED by 06-08 tasks 9-11. The derivatives' omission notice corrected and both regenerated (the only round-4 finding reaching an installed user); both route-equivalence denials corrected to name RESULTS-routes.md; the caveat count dropped and asserted against len(REQUIRED_CAVEATS)."
+    - "G-06-16 (2 findings, closing-commit brief) — CLOSED by 06-08 task 12. The 20% meaning-count removed as uncheckable by any command; platform disjointness now asserted by no-platform-collision, mutation-probed against an unmutated control."
+  gaps_remaining: []
   regressions: []
   corrections_verified_clean:
-    - "All 6 round-2 LEGAL-REVIEW.md corrections (G-06-7) re-checked by readers who did not write them: all hold."
-    - "All 8 round-2 README corrections (G-06-9) re-checked by three readers: all hold, and every claim-region figure recomputes by hand."
-round_2_self_audit_note: "06-06 re-read its own added sentences and found two further checkably-false statements — one written by this round ('repo-wide' where .planning/ is tracked), one pre-existing and surfaced by checking the first ('.planning/, which a reader of this repository cannot see'). Both corrected in-round. This is the habit 06-05 lacked; one round is not evidence it holds."
+    - "Not applicable to this round: 06-08 wrote the corrections it would be verifying. The independent read is round 5's, and it is the closure condition."
+  self_audit:
+    added_lines_audited: 595
+    citation_check: "4 real citations in added text, all resolve; 5 apparent misses are synthetic self-test fixture strings"
+    enforcement_scope_check: "found 2 citations this round broke in an untouched passage, plus 1 scope overstatement ('shipped skill content' read wider than the check's globs) — all fixed"
+    absolutes_sweep: "112 sentences carrying only/never/nothing/every/all/none checked against the full tracked tree including .planning/"
+    defects_this_round_authored: 8
+    defects_caught_inside_the_round: 8
+    note: "Six citations in LEGAL-REVIEW.md drifted during this round — one from task 8's README edit, five from task 17's own docstring insertion — and the new citation code was silent on all six. That is the code's declared ceiling demonstrated by the commit that added it."
 ---
 
 # Phase 6 Verification: Legal Review Gate & Launch
