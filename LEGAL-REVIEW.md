@@ -291,13 +291,22 @@ called ordinary business English, and only "Economic Buyer" and "Paper Process" 
 art. That split is the opposite of the one this repository already enforces in code.
 `tools/check_repo.py`'s `SOURCE_COINED_LABELS` tuple freezes — `economic buyer`, `paper process`,
 `decision criteria`, `decision process`, `champion`, `competition`, `pain` — and
-`check_source_label_in_skill_content` (`:2977-3009`) fails the build when any of the seven appears in
-shipped skill content "adopted here as this repository's own unattributed noun (see SOURCES.md's
-reproduction-boundary clause)". Its comment states the one exclusion and why: "the ordinary-English
-word for a measurement ('metric') is deliberately excluded". That is a frozen Phase 3 decision
-(03-07 GAP B), it names `SOURCES.md`'s reproduction-boundary clause in its own violation string, and
-it answers the same question prong 4 asks. The checker's docstring even routes the registry half of
-that question here, to LEG-04 (`:302-305`).
+`check_source_label_in_skill_content` fails the build when any of the seven appears in a
+`skills/*/SKILL.md` or a `references/*.md` beside it, as this repository's own unattributed noun
+(see `SOURCES.md`'s reproduction-boundary clause). Its comment states the one exclusion and why:
+"the ordinary-English word for a measurement ('metric') is deliberately excluded". That is a frozen
+Phase 3 decision (03-07 GAP B), it names `SOURCES.md`'s reproduction-boundary clause in its own
+violation string, and it answers the same question prong 4 asks. The checker's own docstring routes
+the registry half of that question here, to LEG-04, in clause (3) of the
+`source-label-in-skill-content` entry.
+*Corrected 2026-09-22 (06-08): this passage cited `check_repo.py`:2977-3009 for the function and
+`:302-305` for the docstring clause. This round's own task-17 commit inserted a 36-line docstring
+entry above the first of them, so it pointed into an unrelated function; both are now anchored by
+name, which is the only form that survives the next insertion. The passage also
+said "shipped skill content", which is the checker's own phrase for its scope and reads wider than
+that scope is — the two derivatives are shipped skill content and this check never opens them. The
+scope is now stated as the globs the function walks; the derivatives are held by
+`generate_derivatives.py --check`, as the `## Reproduction boundary` bullet above sets out.*
 
 Two positions on the same eight strings, and they were opposites. **This review adopts the
 checker's.** Seven of the eight are source-coined; "Metric" alone is ordinary business English. The
@@ -335,8 +344,8 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
   `Economic Buyer` is inserted into two fixture builders in that file, `_bad_numbering()` and
   `_mc_numbering_for_count()`, while `grep -in 'paper process' tools/check_repo.py` returns exactly
   one line, and it is inside `SOURCE_COINED_LABELS`. So the word that failed was **only**. The two
-  sub-claims the over-correction offered in support stay, because both are true — `:2958-2959` is a
-  production constant rather than a fixture, and "Paper Process" occurs in no fixture in that file
+  sub-claims the over-correction offered in support stay, because both are true — the two labels sit
+  in `SOURCE_COINED_LABELS`, a production constant, rather than in a fixture, and "Paper Process" occurs in no fixture in that file
   at all — they simply do not establish what that sentence claimed they establish, which was that
   every part of the earlier assertion failed.* The case difference in the briefs' headings is
   not a defence — this repository's own matcher for these exact labels is case-insensitive
@@ -351,12 +360,13 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
 `README.md`, in the closing paragraph of its `## Repository layout` section, states the published
 definition: `NOTICES.md`, `SOURCES.md`, `NUMBERING.md`, `examples/`, `tools/` and `evals/` "stay at
 the repository root and never ship to an installed user." *Corrected 2026-09-22 (06-08): this cited
-`README.md`:369-371, which was right when written and wrong thirteen lines later once this same
+`README.md`:369-371, which was right when written and wrong twelve lines later once this same
 round lengthened README's checker bullet. Cited by heading and quoted string instead, per the
 convention the `## Reproduction boundary` bullet above already states for the deal briefs. The same
-round then did it again to three `tools/check_repo.py` line citations, by inserting a docstring
-entry above them; those are now anchored to the named constant and function instead. 06-08's
-`record-citation-unresolvable` was silent on every one of the four, because every cited line still
+round then did it again to five `tools/check_repo.py` line citations, by inserting a 36-line
+docstring entry above them; those are now anchored to named constants and functions instead. Six of
+this record's citations drifted during this round in total, and 06-08's
+`record-citation-unresolvable` was silent on every one of them, because every cited line still
 existed — which is the clearest available demonstration of that code's declared ceiling, and it was
 produced by the commit that added it.*
 On that definition none of the seven reaches an installed user at all, because the only files that do
@@ -968,7 +978,7 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 14 | 04 | 04-07 plan's word-spelled-cardinal counts disagreed with the shipped regex | **Waived** | Plan-authored measurement error; the shipped docstring states the corrected figures. |
 | 15 | 04 | 04-10 plan's import probe matched a docstring prose line as an import | **Waived** | Plan-authored probe error; the AST-based stdlib check confirms the real import set. |
 | 16 | 04 | DIST-03's /config half: style listed and selectable, unobserved | **Open — v2** | Observed 2026-09-21 in a driven interactive session: the picker lists `proof-first` and selection persists to disk. Automation read the terminal, not a human eye; the owner decides whether that meets a condition written as a human observation. |
-| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | Seventh round of the pattern: ten CI commands green every time while cold readers found three, fourteen, eleven and seventeen false statements. Round 4 changed what this entry argues. One finding no string gate could catch in principle: a count of MEANINGS, which no command produces. But three classes could be caught mechanically, and 06-08 put code under two — a caveat count asserted against len(REQUIRED_CAVEATS), and `record-citation-unresolvable` over `path`:N citations in this file and README (58 codes discrimination-proven). That code ships with a measurement that bounds it: replayed over all 435 commits it fires zero times, because every citation finding four rounds produced was a line that existed and said something else. It is future insurance, not a guard over what occurred — demonstrated when 06-08's own commit broke four citations into `check_repo.py` and the new code stayed silent. The third class, enforcement scope wider than a check's reach, is mechanizable only by running the checker under a tracer and is recorded as a candidate, not shipped. The proxy-gate refusal stands for the semantic half. Closes with G-06-13 through G-06-16. |
+| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | Seventh round of the pattern: ten CI commands green every time while cold readers found three, fourteen, eleven and seventeen false statements. Round 4 changed what this entry argues. One finding no string gate could catch in principle: a count of MEANINGS, which no command produces. But three classes could be caught mechanically, and 06-08 put code under two — a caveat count asserted against len(REQUIRED_CAVEATS), and `record-citation-unresolvable` over `path`:N citations in this file and README (58 codes discrimination-proven). That code ships with a measurement that bounds it: replayed over the full history as measured at 06-08 (435 commits then) it fired zero times, because every citation finding four rounds produced was a line that existed and said something else. It is future insurance, not a guard over what occurred — demonstrated when 06-08's own commit broke four citations into `check_repo.py` and the new code stayed silent. The third class, enforcement scope wider than a check's reach, is mechanizable only by running the checker under a tracer and is recorded as a candidate, not shipped. The proxy-gate refusal stands for the semantic half. Closes with G-06-13 through G-06-16. |
 | 18 | 05 | Name-collision search for bench-deal-brief.md's invented names | **Fixed** | Closed by 06-02's searches; the premise that this environment has no network had expired. |
 | 19 | 05 | Whether the eight benchmark scenarios are realistic presales tasks | **Waived** | Backstop judgement no tool here performs; scenarios are committed and readable. |
 | 20 | 05 | aggregate() pools per-order records instead of averaging pairs first | **Open — v2** | Not fixed here: the fix moves a published figure. 06-03 provably did not inherit it. |

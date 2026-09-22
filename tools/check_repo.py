@@ -967,22 +967,27 @@ Violation codes implemented in this file:
                       is inverted. One violation per distinct citation,
                       naming the record, the cited spelling and what was
                       wrong. Added by 06-08 against a measured pattern:
-                      four rounds of cold reads on this repository
-                      produced nine citation-drift findings, every one of
-                      them a line number that was right when written and
-                      wrong after the cited file was edited. Declared
+                      four rounds of cold reads on this repository kept
+                      producing citation-drift findings, every one of them
+                      a line number that was right when written and wrong
+                      after the cited file was edited -- usually by the
+                      round that wrote the citation. Declared
                       ceiling, and it is narrower than it looks: this
                       checks that a citation RESOLVES, not that the cited
                       lines say what the citing sentence claims. Measured,
-                      not asserted: replayed over all 435 commits of this
-                      repository's history -- 164 citation-instances, 14
-                      distinct spellings, 37 commits carrying at least one
-                      -- this code fires ZERO times. Every one of the nine
-                      citation findings four rounds of cold reads produced
-                      was a line number that existed and pointed at the
-                      wrong content, including the SKILL.md:63 misquote and
-                      the NUMBERING.md:26-40 slip. This code catches none
-                      of them. It is future insurance against three shapes
+                      not asserted: replayed over this repository's full
+                      history as measured at 06-08 -- 435 commits then, 164
+                      citation-instances, 14 distinct spellings, 37 commits
+                      carrying at least one -- this code fired ZERO times.
+                      The figures are pinned to that measurement, not
+                      restated as a live count: 06-08's own commits moved
+                      three of the four (only the 14 distinct spellings
+                      held), which is the defect class this file keeps
+                      recording. Every citation finding four rounds of
+                      cold reads produced was a line number that existed
+                      and pointed at the wrong content, including the
+                      SKILL.md:63 misquote and the NUMBERING.md:26-40
+                      slip. This code catches none of them. It is future insurance against three shapes
                       that have not yet occurred here -- a path that names
                       no file, a range past end-of-file, an inverted range
                       -- and it must not be cited as a guard over citation
