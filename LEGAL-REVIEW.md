@@ -20,10 +20,16 @@ headings marking them superseded rather than deleted when section 4 replaced the
 A statement found false against this repository's own files is the one exception, and it is
 corrected in place rather than appended around. The condition is that the correction says what was
 corrected, on what date, and against which file, so a reader can see the change rather than discover
-it by diffing. Three corrections in this file were made on that basis: the id-6 acronym reasoning
-(2026-09-21, commit 0b8a865, which removed 32 lines and added 64), the PF-1 counterweight and its
-downstream statements (2026-09-21, plan 06-06), and the four reproduction-boundary figures and
-citations corrected in the same round. The rule was restated on 2026-09-21 to match, because the
+it by diffing. Every correction made on that basis carries a dated `*Corrected …*` marker at the
+point of the change. Those markers are the record, and this paragraph keeps no tally of them:
+`grep -n 'Corrected 2026-' LEGAL-REVIEW.md` lists them, and a number written here instead would be
+one more statement to keep true. *Corrected 2026-09-22 (06-08): this paragraph used to state a
+count. It was accurate on the day it was written and wrong by the next round, three rounds running —
+the same failure mode the markers exist to prevent, committed by the sentence describing them. The
+corrections predating the marker convention, all from 2026-09-21, are named here because no marker
+carries them: the id-6 acronym reasoning (commit 0b8a865, which removed 32 lines and added 64), the
+PF-1 counterweight and its downstream statements (plan 06-06), and the reproduction-boundary figures
+and citations corrected in the same round.* The rule was restated on 2026-09-21 to match, because the
 earlier wording forbade what this round and the one before it had already done for good reason. The
 alternative considered and not taken was to keep the wording and restore each superseded passage
 under a dated heading, the way sections 1 to 3 were kept. It was rejected on the distinction this
@@ -45,7 +51,8 @@ of the file because an earlier revision put it above the disclaimer, where a ski
 before being told what this document is. `tools/check_repo.py`'s `source-gate-incomplete` code
 defines what it asserts and nothing more: that no row in `SOURCES.md` still reads `unverified`. The
 checker's own text says it "does not judge whether the review behind a declared pass was any good,
-only whether the list it declares a pass over is complete."
+only whether the file it declares a pass over is complete." *Corrected 2026-09-22 (06-08): the word
+inside the quotation marks was "list". The checker says "file".*
 
 So: every check named below was performed on 2026-09-21 and its outcome written down, including the
 two lookups that failed. That is the whole of what the token means here, and it is not a statement
@@ -242,8 +249,17 @@ says so.
 
 Three things this paragraph deliberately no longer says, each removed on 2026-09-22 because a reader
 checked it and it did not hold. It no longer says the eight are "the shortest ordinary English for
-the thing it covers": the prong-4 finding below is that seven of the eight are not ordinary English
-at all, and prong 2 cannot rest on a premise prong 4 refutes forty lines later. It no longer says
+the thing it covers": the prong-4 finding below is that seven of the eight are **source-coined**,
+and prong 2 cannot rest on a premise prong 4 refutes forty lines later. The removal still follows on
+the corrected ground, and it is worth saying which rather than assuming: a term coined by a source
+to name its own block is not "the shortest ordinary English for the thing it covers" either,
+whatever else it is. *Corrected 2026-09-22 (06-08): this sentence said prong 4 finds the seven "not
+ordinary English at all". It does not, and that is a stronger and different claim. Prong 4's own
+words are "source-coined; 'Metric' alone is ordinary business English", and the same entry records
+five of the seven in ordinary English use as headings and role designations in the two committed
+deal briefs. `check_repo.py` excludes `metric` from `SOURCE_COINED_LABELS` for a narrower reason
+than non-Englishness, which its docstring states: this repository's own MC-1 and integrity rules use
+the word as ordinary business English, so including it would fire on legitimate content.* It no longer says
 the order is one "many independent publishers" teach rather than one publisher's: no read of many
 publishers is recorded anywhere in this repository, `SOURCES.md`:41-44 lists two sources for this
 family, and an argumentative clause resting on an unrecorded lookup is the thing this file exists to
@@ -305,9 +321,18 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
   headings in each brief's buyer section; `## Pain points` is a heading in each; and "the champion"
   names a person's role in each brief's people list. `git grep -in` over the two files returns all
   five. The earlier draft asserted the two terms it conceded appeared "only in `NUMBERING.md`, in
-  this file, and in `check_repo.py`'s fixtures". All three parts were wrong: both appear in both deal
-  briefs, `check_repo.py`:2958-2959 is a production constant rather than a fixture, and "Paper
-  Process" occurs in no fixture in that file at all. The case difference in the briefs' headings is
+  this file, and in `check_repo.py`'s fixtures". *Corrected 2026-09-22 (06-08): the round before
+  this one said "all three parts were wrong", which over-corrected. Part by part, against a grep:
+  **"only" was wrong** — both terms appear in both committed deal briefs, as the bullet above
+  records. **"in `NUMBERING.md`" was right.** **"in this file" was right.** **"in
+  `check_repo.py`'s fixtures" was right for Economic Buyer and wrong for Paper Process** —
+  `Economic Buyer` is inserted into two fixture builders in that file, `_bad_numbering()` and
+  `_mc_numbering_for_count()`, while `grep -in 'paper process' tools/check_repo.py` returns exactly
+  one line, `:2959`, inside `SOURCE_COINED_LABELS`. So the word that failed was **only**. The two
+  sub-claims the over-correction offered in support stay, because both are true — `:2958-2959` is a
+  production constant rather than a fixture, and "Paper Process" occurs in no fixture in that file
+  at all — they simply do not establish what that sentence claimed they establish, which was that
+  every part of the earlier assertion failed.* The case difference in the briefs' headings is
   not a defence — this repository's own matcher for these exact labels is case-insensitive
   (`check_repo.py`:2974).
 - **"Decision Process" and "Competition" appear in `NUMBERING.md` and nowhere else** outside this
@@ -371,8 +396,21 @@ one per Command of the Message element" and freezes them in a table in this orde
 After scenario, Required Capabilities, Metrics, Proof Points, Differentiators, Positive Business
 Outcomes. The prose names the source on the table's face.
 
-Why it is stronger than id 6, point by point. Two of the four grounds recorded when this section was
-written did not survive a reader checking them, and are restated here rather than quietly dropped:
+Why it is stronger than id 6, point by point. **Three** of the four grounds recorded when this
+section was written did not survive a reader checking them, and are restated here rather than
+quietly dropped. *Corrected 2026-09-22 (06-08): this lead-in said "two". Three of the four bullets
+below carry a dated `*Corrected 2026-09-22:*` marker; the fourth, on the live mark, does not. Count
+the bullets rather than grepping the range — this correction sits inside it.*
+
+Said plainly, because the heading above claims a comparison and the list no longer supports as much
+of it as it did: what survives is the declared correspondence in `NUMBERING.md` (narrowed — the
+correspondence is declared there, the *order* is not, and has to be argued here exactly as id 6's
+does), the absence of any acronym defence for these seven, and the live unadjudicated mark. The
+fourth ground, that prong 4 engages, is true and no longer distinguishes the two entries at all,
+because prong 4 now engages on both. A reader of round 4 raised exactly this: the "stronger than id
+6" heading rests on fewer grounds than it did when it was written. That is conceded here rather than
+argued away. The heading is kept because the narrowed grounds still point one way and the entry says
+which, not because the original four held.
 
 - **It names the source on the table's face.** `NUMBERING.md`:33-35 says `PF-1`'s range "is carved
   into seven named sub-blocks, **one per Command of the Message element**". That is a declared
