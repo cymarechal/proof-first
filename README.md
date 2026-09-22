@@ -50,10 +50,14 @@ under an unchanged owner is not detected.
 Route 4 runs from a local clone with no step beyond the clone: `prompts/system-prompt.md` is a
 committed file, and pasting it is the whole action. Route 3 runs from a local clone too, but it
 needs one copy step first, stated in full below. `output-styles/` at this repository's root is
-where a plugin ships an output style from, not a directory Claude Code scans, so the file is not
-offered in `/config` until it is copied to one that is. Both routes 3 and 4 need that local clone,
-and the clone URL is the same unpublished `<owner>/<repo>` as routes 1 and 2: until this repository
-is published, there is no URL to clone from.
+where a plugin ships an output style from. In route 3's local-clone case Claude Code does not
+scan it, so the file is not offered in `/config` until it is copied to a directory that is.
+Whether installing this repository as a plugin makes that root directory scanned instead is a
+different question, and an untested one: `marketplace.json` sets the plugin source to `./`,
+which says it should, but DIST-02 is unverified and no plugin install has ever resolved — the
+same unpublished publish location that stops routes 1 and 2. Both routes 3 and 4 need that
+local clone, and the clone URL is the same unpublished `<owner>/<repo>` as routes 1 and 2:
+until this repository is published, there is no URL to clone from.
 
 **1. Skills CLI** — for any harness the Agent Skills standard covers (Cursor, Codex, Copilot,
 Gemini CLI, OpenCode, and the rest), install with the `skills` CLI's one-line command:
