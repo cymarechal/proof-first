@@ -728,8 +728,9 @@ Violation codes implemented in this file:
                       repository's own carriers of its publish location
                       (plugin.json's and marketplace.json's `homepage`,
                       `repository`, and `owner.url` fields; README.md's
-                      `npx skills add` and `claude plugin marketplace add`
-                      command arguments) disagree, or a manifest carrier
+                      `npx skills add`, `claude plugin marketplace add`
+                      and in-session `/plugin marketplace add` command
+                      arguments) disagree, or a manifest carrier
                       exists and states none at all while another existing
                       carrier states one. Each value is normalised across
                       four GitHub URL forms before comparison -- HTTPS,
@@ -3686,6 +3687,12 @@ PUBLISH_LOCATION_CARRIERS = (PLUGIN_MANIFEST_PATH, MARKETPLACE_MANIFEST_PATH, 'R
 
 SKILLS_CLI_INSTALL_RE = re.compile(r'npx skills add ([^\s`]+)')
 MARKETPLACE_ADD_RE = re.compile(r'claude plugin marketplace add ([^\s`]+)')
+# Route 2's in-session form, which Claude Code's own slash command spells
+# without the `claude` prefix. Kept as a separate pattern rather than
+# folded into MARKETPLACE_ADD_RE because that regex is also
+# check_readme_install_paths' route-2 anchor, where the CLI form is the
+# text being asserted present; only publish-location-drift reads both.
+IN_SESSION_MARKETPLACE_ADD_RE = re.compile(r'/plugin marketplace add ([^\s`]+)')
 
 
 def _owner_segment(value):
@@ -3730,9 +3737,10 @@ def _publish_locations_in(repo_root, rel_path):
     states, read from structured positions only, never from a loose scan
     of every link in the file: for plugin.json, its `homepage` and
     `repository` values; for marketplace.json, its plugin entry's same two
-    fields plus `owner.url`; for README.md, the argument following the
-    literal command prefixes `npx skills add ` and
-    `claude plugin marketplace add ` on a line. Every position is reduced
+    fields plus `owner.url`; for README.md, the argument following any of
+    the literal command prefixes `npx skills add `,
+    `claude plugin marketplace add ` and `/plugin marketplace add ` (route
+    2's in-session form) on a line. Every position is reduced
     to its owner segment via _owner_segment. Returns an empty set when the
     carrier does not exist or states nothing at any of its positions."""
     if not (repo_root / rel_path).exists():
@@ -3764,6 +3772,8 @@ def _publish_locations_in(repo_root, rel_path):
         for m in SKILLS_CLI_INSTALL_RE.finditer(text):
             owners.add(_owner_segment(m.group(1)))
         for m in MARKETPLACE_ADD_RE.finditer(text):
+            owners.add(_owner_segment(m.group(1)))
+        for m in IN_SESSION_MARKETPLACE_ADD_RE.finditer(text):
             owners.add(_owner_segment(m.group(1)))
 
     return owners
