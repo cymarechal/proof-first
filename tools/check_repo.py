@@ -7377,9 +7377,70 @@ def _token_budget_bad_skill():
     return _skill_body_at_line_count(20, ['### PF-0.1 — Opening rule', '', filler_words])
 
 
+DOCSTRING_CATALOGUE_MARKER = 'Violation codes implemented in this file:'
+
+_CATALOGUE_ENTRY_RE = re.compile(r'^  ([a-z0-9][a-z0-9-]*)\s+- ', re.M)
+
+
+def docstring_catalogue_codes():
+    """Return the set of violation codes this module's own docstring
+    catalogue names, parsed out of __doc__ rather than kept as a second
+    hand-maintained list. An entry is a line beginning with exactly two
+    spaces, then the code, then whitespace and a '- ' separator; the
+    continuation lines of an entry are indented further and are skipped by
+    that shape. Returns None when the catalogue heading is absent, which
+    the caller reports as a failure rather than treating as an empty set."""
+    doc = __doc__ or ''
+    if DOCSTRING_CATALOGUE_MARKER not in doc:
+        return None
+    body = doc[doc.index(DOCSTRING_CATALOGUE_MARKER) + len(DOCSTRING_CATALOGUE_MARKER):]
+    return set(_CATALOGUE_ENTRY_RE.findall(body))
+
+
+def catalogue_matches_registry():
+    """Assert the docstring catalogue names exactly the codes ALL_CHECK_CODES
+    registers, and print the difference in both directions when it does not.
+
+    This is the whole of what 06-10 decided to ship against the enforcement-
+    scope defect class (six instances in round 6, five of them in this file).
+    It is exact, not a proxy: both sides are lists this module already holds,
+    so the assertion compares the fact the catalogue heading asserts rather
+    than an approximation of it, and it re-enters nothing.
+
+    What was considered and refused, with the measurement that refused it: a
+    scope assertion over a frozen path -> reading-checks map, asserted without
+    tracing by scanning each check_* body for the paths it names. Measured on
+    2026-09-22 against the three readers whose absence from this module's
+    comments produced the round's findings -- check_record_citations reaches
+    its paths through CITATION_RECORD_PATHS, check_source_gate_incomplete
+    through SOURCES_PATH and LEGAL_REVIEW_PATH, and check_readme_claim_unsourced
+    through CLAIM_SOURCE_GLOB. None of the three carries a path literal in its
+    body, so a static scan would have found zero of the three. Producing the
+    map needs the tracer, and running the tracer needs the checker to run
+    itself, which is the re-entrancy WINDOWS.md id 17 has twice recorded as
+    the reason for deferring. The tracer stays a build-time instrument and the
+    general scope check stays a candidate, with round 6's six instances as its
+    evidence; a regex over comment prose is refused outright, as it has been
+    six times before."""
+    catalogue = docstring_catalogue_codes()
+    if catalogue is None:
+        print(f"FAIL: module docstring has no '{DOCSTRING_CATALOGUE_MARKER}' heading")
+        return False
+    registry = set(ALL_CHECK_CODES)
+    missing = sorted(registry - catalogue)
+    extra = sorted(catalogue - registry)
+    for code in missing:
+        print(f"FAIL: {code} is in ALL_CHECK_CODES but absent from the docstring catalogue")
+    for code in extra:
+        print(f"FAIL: {code} is in the docstring catalogue but absent from ALL_CHECK_CODES")
+    return not missing and not extra
+
+
 def self_test():
     codes_covered = set()
     all_ok = True
+    if not catalogue_matches_registry():
+        all_ok = False
     with tempfile.TemporaryDirectory(prefix='check-repo-self-test-') as tmp:
         tmp_root = Path(tmp)
         bad_root = tmp_root / 'bad'
