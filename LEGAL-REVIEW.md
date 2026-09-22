@@ -319,10 +319,15 @@ this one, because recording the command here put its own alternatives into the t
 other file matches, and this file's only match is the command itself. The negative now has commands
 behind it.
 
-The prong's "visual arrangement" clause is narrower than either command reaches, and is left as a
-judgement rather than claimed as swept: this repository does carry tables and one layout tree, and
-whether a table's *arrangement* reproduces a source's ordering is not a question `git grep`
-answers. The one instance a reader could raise is `NUMBERING.md`'s MC table against the source's
+The prong's own wording is "a source's diagram or figure", and the ordering question sitting beside
+it is narrower than either command reaches; it is left as a judgement rather than claimed as swept,
+because this repository does carry tables and one layout tree, and whether a table's *arrangement*
+reproduces a source's ordering is not a question `git grep` answers.
+*Corrected 2026-09-22 (06-10): this attributed a clause to the prong that the prong does not
+contain. `SOURCES.md`'s reproduction-boundary paragraph states the third prong as "a source's
+diagram or figure" and nowhere uses the phrase this sentence quoted. The wrong quotation is not
+reproduced here: a correction that repeats the string it removed puts it back into the tracked tree,
+which is the self-reference `## The PF-1 sub-block list` below records twice.* The one instance a reader could raise is `NUMBERING.md`'s MC table against the source's
 own dimension order, and that is the order-provenance question `### The PF-1 sub-block list` below
 already concedes — "the correspondence is declared there, the *order* is not, and has to be argued
 here". It is not disposed of here. *Corrected 2026-09-22 (06-09) by this round's own self-audit:
