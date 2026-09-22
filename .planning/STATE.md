@@ -3,17 +3,26 @@ gsd_state_version: 1.0
 current_phase: 06
 current_phase_name: Legal Review Gate & Launch
 status: awaiting_verification
-stopped_at: Completed 06-06-PLAN.md (gap closure, round 2) — awaiting round-3 independent read
-last_updated: "2026-09-21T21:30:00.000Z"
+stopped_at: UAT round 3 complete — 3 gaps open, 06-07-PLAN.md written and ready for /gsd-execute-phase 06 --gaps-only
+last_updated: "2026-09-22T08:40:00.000Z"
 state_head: defa9aabc721607a1ccf68bbc90062ac333fae16
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 58
+  total_plans: 59
   completed_plans: 58
   percent: 67
-last_activity: 2026-09-21
-last_activity_desc: Phase 06 gap closure round 2 complete — both round-2 UAT gaps closed across 12 tasks and 15 commits; one new check code (benchmark-run-claim-stale) takes --mutation-test to 57 codes discrimination-proven; all ten CI commands green. Phase awaits a round-3 independent read, which is LEG-04's and LEG-05's stated closure condition.
+last_activity: 2026-09-22
+last_activity_desc: Phase 06 UAT round 3 — the independent read LEG-04 and LEG-05 both name as their closure
+  condition. Five headless readers on separate scratch trees, including a new whole-tree sweep bound
+  to no named file. Rounds 1 and 2's fourteen corrections all verified clean by readers who did not
+  write them. Eleven new checkably-false statements opened G-06-10, G-06-11 and G-06-12: the
+  prong-4 classification in LEGAL-REVIEW.md is the inverse of what check_repo.py's
+  SOURCE_COINED_LABELS enforces; README's claim that the two deal briefs share no figure is
+  falsified by their identical rfp-security-weight row; and three contradictions sit in files no
+  earlier brief had named. Zero regressions of a round-2 fix — the briefs were narrower than the
+  defect, which is why the sweep brief is now standing. All ten CI commands green throughout, for
+  the sixth consecutive round. 06-07-PLAN.md written inline with 13 tasks.
 ---
 
 # Project State

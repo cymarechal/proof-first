@@ -1,29 +1,35 @@
 ---
 phase: 06-legal-review-gate-launch
-status: passed
-score: "2/2 must-haves verified; both round-2 gaps closed by 06-06. Requirement checkboxes stay unchecked: their closure condition is an independent read, and this round self-checked."
-verified: 2026-09-21
+status: gaps_found
+score: "2/2 must-haves verified; rounds 1 and 2 gap closures all hold under independent read. Round 3 ran the independent read both requirements name as their closure condition: it opened 3 new gaps (G-06-10, G-06-11, G-06-12) across 11 checkably-false statements. Requirement checkboxes stay unchecked."
+verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 22
-human_verification: 9
-human_verification_performed: 9
+human_verification: 12
+human_verification_performed: 12
 human_verification_passed: 4
-human_verification_issues: 5
-uat_round: "/gsd-verify-work 06 round 2, 2026-09-21"
-gap_closure_round: "06-06, 2026-09-21 — G-06-7, G-06-9 closed"
+human_verification_issues: 8
+uat_round: "/gsd-verify-work 06 round 3, 2026-09-22"
+gap_closure_round: "06-06, 2026-09-21 — G-06-7, G-06-9 closed; verified clean by round 3's independent readers"
 gaps_closed: 5
-gaps_open: 0
-gaps_open_ids: []
+gaps_open: 3
+gaps_open_ids: [G-06-10, G-06-11, G-06-12]
 re_verification:
-  previous_status: gaps_found
+  previous_status: passed
   previous_score: "2/2 must-haves verified; 9 human items performed across 2 rounds — 4 passed, 5 issues; round 1's 3 gaps closed by 06-05, round 2's independent read of those closures opened 2 new ones"
   gaps_closed:
     - "G-06-9 (8 findings, README) — CLOSED by 06-06 tasks 1, 2, 3, 4, 5, 6, 7, 8. Each correction checked against the committed file the reader cited. The /config contradiction, the trigger run count, the shipped 'no benchmark has run' sentence, the publish-location-drift scope, what bench-deal-brief.md is for, the reintroduced enforcement claim, the one-armed activation contrast, and the expired no-network premise."
     - "G-06-7 (6 findings, LEGAL-REVIEW.md) — CLOSED by 06-06 tasks 9, 10, 11. The PF-1 counterweight and its three downstream inheritors, the same-initial undercount, the completeness-audit.md heading claim, the NUMBERING.md line citation, the id-6 equivalence claim, and the append-only rule."
-  gaps_remaining: []
+  gaps_remaining:
+    - "G-06-10 (7 findings, LEGAL-REVIEW.md reproduction-boundary material) — OPEN. Round 3, two independent readers. All six round-2 corrections verified to hold; seven different falsehoods in the same material, five of them in 06-05 text round 2 did not reach."
+    - "G-06-11 (1 finding, README) — OPEN. Round 3, three independent readers converged. README:9-11's no-shared-figure claim, imported into README by 06-06's own commit 3a37839, falsified by the identical rfp-security-weight row in both deal briefs."
+    - "G-06-12 (3 findings, whole-tree sweep) — OPEN. Round 3, new brief bound to no named file. evals/lint.py:98-100's surviving no-network premise, LEGAL-REVIEW.md:730's four-vs-six limit count, and run_conformance.py's three-vs-five fixture count."
   regressions: []
-round_3_note: "06-06 re-read its own added sentences and found two further checkably-false statements — one written by this round ('repo-wide' where .planning/ is tracked), one pre-existing and surfaced by checking the first ('.planning/, which a reader of this repository cannot see'). Both corrected in-round. This is the habit 06-05 lacked; one round is not evidence it holds."
+  corrections_verified_clean:
+    - "All 6 round-2 LEGAL-REVIEW.md corrections (G-06-7) re-checked by readers who did not write them: all hold."
+    - "All 8 round-2 README corrections (G-06-9) re-checked by three readers: all hold, and every claim-region figure recomputes by hand."
+round_2_self_audit_note: "06-06 re-read its own added sentences and found two further checkably-false statements — one written by this round ('repo-wide' where .planning/ is tracked), one pre-existing and surfaced by checking the first ('.planning/, which a reader of this repository cannot see'). Both corrected in-round. This is the habit 06-05 lacked; one round is not evidence it holds."
 ---
 
 # Phase 6 Verification: Legal Review Gate & Launch
@@ -350,4 +356,38 @@ can establish that.
 this branch.
 
 ---
-*Verified: 2026-09-21 (gap-closure round 06-06)*
+
+## Round 3 — independent read, 2026-09-22
+
+The read both requirements name as their closure condition ran. Five readers, five separate scratch
+trees, headless `claude -p` on `claude-opus-5`, `.planning/` and `.claude/` removed, neutral briefs,
+one writer per output file. Two on README, two on `LEGAL-REVIEW.md`'s reproduction-boundary material,
+and one — new this round — pointed at no file at all and asked only for two committed files that
+cannot both be true.
+
+**The corrections held.** Every one of round 2's fourteen fixes was re-checked by a reader who had
+not written it, and all fourteen stand. Both readers on `LEGAL-REVIEW.md` verified the PF-1
+counterweight against all three shipped files byte for byte; all three README readers recomputed the
+claim region by hand, including re-summing the 48-row per-cell table to its pooled totals and
+re-tallying the 23 conformance run blocks.
+
+**The files did not.** Eleven checkably-false statements, opening G-06-10, G-06-11 and G-06-12. Where
+they came from is the finding worth carrying. By `git blame` on each cited line: four are in 06-05
+text that round 2's briefs pointed no reader at, three are in files no brief had ever named, and four
+were authored by the closing round itself while fixing something else — one of those four importing
+into README a claim that had sat unread in `bench-deal-brief.md` since Phase 5. None is a regression
+of a fix. The fixes are clean; the briefs were narrower than the defect.
+
+That is why the sweep brief exists from this round on. It cost the same as a file-scoped reader and
+returned three statements in three files — `evals/lint.py`, `LEGAL-REVIEW.md`'s ledger, and
+`run_conformance.py` — that six earlier readers across two rounds had no reason to open.
+
+**All ten CI commands were green again while all eleven were in the tree** (2026-09-22: `--self-test`
+PASS, `--mutation-test` PASS at 57 codes, `check_repo.py` 0 violations, seven `evals/` self-tests and
+`generate_derivatives.py --check` all rc=0). Sixth consecutive round of `WINDOWS.md` id 17's pattern.
+
+**Next: `/gsd-execute-phase 06 --gaps-only`** against `06-07-PLAN.md`. Do not mark the phase complete
+from this branch.
+
+---
+*Verified: 2026-09-22 (UAT round 3)*

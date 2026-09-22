@@ -3,15 +3,17 @@ status: complete
 phase: 06-legal-review-gate-launch
 source: [06-VERIFICATION.md]
 started: 2026-09-21
-updated: 2026-09-21
-rounds: 2
+updated: 2026-09-22
+rounds: 3
 round_2: "06-05 gap closure — tests 7-9 re-ask tests 2, 3 and 6 of the corrected files"
 round_2_result: "1 passed, 2 issues — G-06-7 and G-06-9 opened 2026-09-21"
+round_3: "06-06 gap closure — tests 10-12 re-ask tests 7 and 9 of the corrected files, plus a new whole-tree sweep bound to no named file"
+round_3_result: "0 passed, 3 issues — G-06-10, G-06-11 and G-06-12 opened 2026-09-22"
 ---
 
 ## Current Test
 
-[testing complete — round 2; 2 gaps open]
+[testing complete — round 3; 3 gaps open]
 
 ## How these six were performed
 
@@ -55,6 +57,68 @@ reasoning critiques rather than checkable falsehoods are recorded as observation
 (56 codes discrimination-proven), `check_repo.py` **0 violations**, and the seven self-tests in
 `evals/` and `tools/generate_derivatives.py --check` all rc=0. This is the fifth consecutive round
 matching `WINDOWS.md` id 17's pattern.
+
+
+## How tests 10-12 were performed
+
+Round 3, 2026-09-22, against commit `034c75d`. Five independent readers, run as separate headless
+`claude -p` sessions on `claude-opus-5` in five separate scratch directories, each holding its own
+copy of the committed tree with `.planning/` and `.claude/` removed, each on a neutral brief that did
+not name the wanted answer, each writing to its own output file. None had written the text it read.
+Two briefs were given to two readers each so their findings could be cross-checked; a fifth reader
+was given a whole-tree contradiction sweep bound to no single file, which is new this round.
+
+- Readers 1 and 2 — README contradiction hunt (test 11).
+- Readers 3 and 4 — `LEGAL-REVIEW.md`'s reproduction-boundary material (test 10).
+- Reader 5 — any two committed files that cannot both be true (test 12).
+
+Every finding below was re-verified against the repository before being recorded, and convergence is
+noted per item. Findings that are reasoning critiques rather than checkable falsehoods are recorded
+as observations, not gaps. One reader finding was adjudicated against on a 2-to-1 split and is
+recorded as an observation.
+
+**A limitation of the setup, stated because it bounds what these readers could reach.** `.planning/`
+is tracked in this repository but was removed from the readers' trees, so README's two
+`.planning/WINDOWS.md` cross-references (`:96`, `:153`) and `LEGAL-REVIEW.md`'s ledger provenance
+were outside what any reader could check. Reader 3 said so unprompted. Those were checked by this
+session instead: `WINDOWS.md` entries 16 and 24 carry what the two files cite.
+
+**The sweep brief, recorded verbatim so the next round runs it rather than reinventing it.** This is
+the one that found all three of test 12's statements, in three files six earlier readers across two
+rounds had no reason to open. It costs the same as a file-scoped reader.
+
+> You are reading a software repository you did not write. Your task: find places where two committed
+> files in this repository state things that cannot both be true.
+>
+> Do not restrict yourself to any one file. Pay particular attention to:
+> - statements about whether a measurement, benchmark, search, review or observation has or has not
+>   been performed;
+> - counts of anything (rules, examples, routes, runs, sessions, dimensions, files, violations);
+> - descriptions of what a script or an automated check does, measured against what its code does;
+> - claims about what some other file contains or does not contain;
+> - statements about the environment this repository was built in.
+>
+> Note that skills/proof-first/SKILL.md, output-styles/proof-first.md and prompts/system-prompt.md
+> carry overlapping generated text and all three ship to users: a sentence that is stale in one is
+> stale in all three.
+>
+> For each finding: both file paths with line numbers, both quoted texts, and one sentence saying why
+> they cannot both be true. Open the files and check; do not report suspicions.
+>
+> End with a list of what you checked and found consistent.
+>
+> Work only from files in this directory. Output plain text, no preamble.
+
+The two file-scoped briefs are the round-1 and round-2 briefs unchanged, one pointed at `README.md`
+and one at `LEGAL-REVIEW.md`, each asking only for statements a committed file contradicts and
+requiring the reader to open that file before writing a finding down.
+
+**All ten CI commands were green again while all eleven false statements below were in the tree.**
+Run 2026-09-22 from `.github/workflows/ci.yml`: `check_repo.py --self-test` PASS,
+`--mutation-test` PASS (57 codes discrimination-proven), `check_repo.py` **0 violations**, and the
+seven self-tests in `evals/` and `tools/generate_derivatives.py --check` all rc=0. This is the sixth
+consecutive round matching `WINDOWS.md` id 17's pattern, and the third in which the gap-closure round
+that fixed the previous round's findings authored one of the next round's.
 
 
 ## Tests
@@ -521,17 +585,257 @@ evidence: |
   run's 36 sessions and overlapping ranges; every one of the layout tree's paths existing on disk;
   stdlib-only imports across all eight Python files; and the ten CI commands in `ci.yml`.
 
+### 10. The reproduction-boundary material holds up to readers who did not write it
+expected: |
+  Round 3, against `LEGAL-REVIEW.md`'s MEDDICC/MEDDPICC and PF-1 material and the ledger rows and
+  `## What remains open` items that depend on it. Gap G-06-7 was six checkably-false statements found
+  by two readers; 06-06 corrected all six. This test asks the same question of the corrected file, by
+  readers who did not make the corrections: is any sentence in that material falsifiable from another
+  committed file, and do the stated conclusions follow from the reasons given?
+result: issue
+reported: "Two independent readers, converging on five of seven. The six corrections from round 2 all hold and were verified as accurate. Seven different checkably-false statements survive in the same material — five of them in text 06-05 wrote that round 2 did not reach, one in the sentence 06-06's own self-audit commit wrote, and one spread across three places that disagree with each other. The worst is that the file's prong-4 classification of the eight MC names is the opposite of the classification this repository's own checker enforces."
+severity: major
+evidence: |
+  **1. The prong-4 six/two split is the opposite of what `check_repo.py` enforces. (Both readers.)**
+  `LEGAL-REVIEW.md`:249-252 — "Applied honestly, the eight split. "Metric", "Pain", "Champion",
+  "Competition", "Decision Criteria" and "Decision Process" are ordinary business English that stands
+  on its own outside this framework family. "Economic Buyer" and "Paper Process" are not". And
+  `:308` — "They are not neutral English the way "Metric" or "Competition" are."
+
+  `tools/check_repo.py`:2952-2965 freezes the same eight strings one-and-seven the other way:
+
+      SOURCE_COINED_LABELS = (
+          # ... The ordinary-English
+          # word for a measurement ('metric') is deliberately excluded ...
+          'economic buyer', 'paper process', 'decision criteria',
+          'decision process', 'champion', 'competition', 'pain',
+      )
+
+  `metric` is the only one of the eight this repository treats as ordinary English. Five strings the
+  review calls ordinary business English — pain, champion, competition, decision criteria, decision
+  process — are strings `check_source_label_in_skill_content` (`:2977-3009`) makes a build failure in
+  shipped skill content, on the stated ground that they are source-coined. `:308` names "Competition"
+  as the example of neutral English; `:2963` names it in the coined tuple. The split is the load-
+  bearing step of the prong-4 disposition, and the repository's own enforcement code contradicts it.
+
+  **2. The occurrence enumeration is false against two committed files, and miscalls a production
+  constant a fixture. (Both readers.)** `:253-256` — "they are index terms in `NUMBERING.md`'s
+  registry and nowhere else that ships ... across the shipped tree the two appear only in
+  `NUMBERING.md`, in this file, and in `check_repo.py`'s fixtures."
+
+      examples/deal-brief.md:75          ### Economic buyer stated priorities
+      examples/deal-brief.md:89          ### Paper process
+      examples/deal-brief.md:26          ... Chief Financial Officer, the economic buyer.
+      evals/benchmark/bench-deal-brief.md:130   ### Economic buyer stated priorities
+      evals/benchmark/bench-deal-brief.md:145   ### Paper process
+      evals/benchmark/bench-deal-brief.md:54,185  ... the economic buyer ...
+
+  The case defence is unavailable: this repository's own matcher for these exact labels is
+  `re.compile(r'\b' + escaped + r'\b', re.IGNORECASE)` (`check_repo.py`:2974). Both files ship —
+  `README.md`:141 calls `examples/deal-brief.md` "the one canonical fictional deal every worked
+  example cites", and the same `LEGAL-REVIEW.md` entry leans on it at `:230-231`. Separately,
+  `check_repo.py`:2958-2959 is `SOURCE_COINED_LABELS`, the module-level constant the production check
+  reads — not a fixture; and "Paper Process" occurs in no fixture in that file at all, only at
+  `:2959`. The sentence at `:259-260` calls this "a narrower fact ... better for this entry than the
+  one it replaces". The narrower fact is itself wrong, and it was written by commit a18f492 — 06-06's
+  own self-audit, titled "correct two statements this round's own self-audit falsified".
+
+  **3. Prong 2 reinstates the mnemonic the correction fifteen lines above retired. (Both readers.)**
+  `:224-225` — "the prong has to be answered on that footing rather than on a mnemonic that the
+  shipped block names do not spell." `:239` — "and organised around a mnemonic: at that thinness, the
+  expression and the idea it organises are hard to separate". `:301` reinstates it a second time as
+  the contrast that makes PF-1 stronger than id 6 — "The MC blocks could at least be argued to follow
+  a mnemonic that many publishers teach". The correction exists to remove that ground; two later
+  passages spend it anyway.
+
+  **4. `NUMBERING.md` does not declare what `:298-299` says it declares. (Both readers.)**
+  "It is a source's ordered list, in that source's order, and `NUMBERING.md` says so in its own words.
+  Id 6 at least had to be argued into that description; this one declares it." `NUMBERING.md`:33-35
+  says "carved into seven named sub-blocks, one per Command of the Message element" — a one-to-one
+  correspondence of labels. Nothing in `:31-54` addresses whose order the table is in; the remaining
+  prose is slot arithmetic. The contrast is available in the repository:
+  `completeness-audit.md`:12-15 does address order provenance for the MC side and declines to concede
+  it. No equivalent sentence exists for PF-1 in either direction. This is the entry's first and
+  strongest ground for ranking PF-1 above id 6.
+
+  **5. The rename cost is stated three times and counted two ways, and neither matches the tree.
+  (Both readers, and found independently by this session before either returned.)** `:340-342` —
+  "it costs three files rather than one — `NUMBERING.md`, `skills/proof-first/SKILL.md`, and a
+  `python3 tools/generate_derivatives.py` run" — enumerates two files and one command and calls it
+  three files. `:433` and `:731` both say "three files and a regeneration", making the regeneration an
+  addition to three rather than one of them. The tree gives four: `git grep -l "Positive Business
+  Outcomes"` returns `NUMBERING.md`, `skills/proof-first/SKILL.md`, `output-styles/proof-first.md`,
+  `prompts/system-prompt.md` — two hand edits and two regenerated files, all four of which must be
+  committed because `generate_derivatives.py --check` compares against the committed files.
+
+  **6. "nowhere else that ships" uses a sense of "ships" `README.md` denies. (Reader 3.)** `:253`
+  presupposes `NUMBERING.md` ships. `README.md`:367-369 — "`NOTICES.md`, `SOURCES.md`,
+  `NUMBERING.md`, `examples/`, `tools/`, and `evals/` stay at the repository root and never ship to
+  an installed user." Four lines later the same passage uses "the shipped tree" to include
+  `NUMBERING.md`, `LEGAL-REVIEW.md` and `check_repo.py`, none of which ship on README's definition.
+  Two incompatible senses in one passage, and the repository contradicts the first.
+
+  **7. Prong 2's stated basis contradicts prong 4's stated finding, thirteen lines apart. (Reader 4.)**
+  `:237` — "Eight blocks, each labelled with the shortest ordinary English for the thing it covers".
+  `:250-252` — ""Economic Buyer" and "Paper Process" are not — both are terms of art this family put
+  into circulation, and both are adopted here verbatim as block labels." Both cannot describe the
+  same eight labels.
+
+  **What the round-2 corrections got right, verified and recorded so the improvement is not lost.**
+  Both readers checked all six and found all six correct. The PF-1 counterweight now names
+  `SKILL.md`:63, `output-styles/proof-first.md`:87 and `prompts/system-prompt.md`:75, and all three
+  carry the byte-identical seven-element sentence (reader 3 verified the bytes). The swappable-
+  position count is six and recomputes from `NUMBERING.md`:73-80's three same-initial pairs. The
+  `completeness-audit.md` claim is true and is mechanically enforced. The `NUMBERING.md`:31-45
+  citation resolves. `:296`'s equivalence claim is gone and items 5 and 6 are described as separate.
+  The append-only rule at `:16-24` now states the correction exception with its conditions. Reader 3
+  additionally recomputed every ledger count (32 entries; 9 fixed, 2 closed on reasoning, 9 waived,
+  12 open) row by row and found them right, and confirmed the six `SOURCES.md` rows all read verified.
+
+  **Reasoning critiques, recorded as observations rather than gaps** (not checkably false; prose-gap
+  stopping rule): prong 2's "many independent publishers" clause is a premise recorded in no committed
+  file — `SOURCES.md`:41-44 lists two sources for this family — and it is the clause that converts a
+  conceded reproduction into a thin one (both readers, independently, and it survives from round 2's
+  own backlog); `:56` says the section "ends on two live questions" while items 5 and 6 carry three
+  between them (reader 3); `:39`'s bolded "Content items still needing a decision: 2" excludes id 29,
+  which `:344-345` classifies as a change to shipped content awaiting a version decision, though the
+  prose at `:54-57` discloses it separately and the two name-collision items are the ones routed
+  "before wider distribution" (reader 3); prong 4 still records position instead of disposing, which
+  the ledger concedes at `:733` (both readers); and `:254-255`'s "its headings are MC ids plus rule
+  titles" is true of the eight `###` headings but not of the file's `#` and `##` headings (reader 4).
+
+### 11. A cold read of the corrected README finds no checkably-false statement
+expected: |
+  Round 3, against `README.md`. Gap G-06-9 was eight false statements found by two readers and this
+  session; 06-06 corrected all eight and added a checker code for the one that shipped. This test
+  asks the same question of the corrected file, by readers who did not make the corrections.
+result: issue
+reported: "Three independent readers converged on one statement — and it is a claim 06-06 newly imported into README while correcting a different false claim about the same file. Every one of round 2's eight corrections holds. One further reader finding was adjudicated against 2-to-1 and is recorded as an observation."
+severity: major
+evidence: |
+  **1. README says the two deal briefs share no figure. They share one, byte for byte. (Readers 1, 2
+  and 5, independently.)** `README.md`:9-11 — "`evals/benchmark/bench-deal-brief.md` is a second,
+  separate brief, which grounds the benchmark's scenarios and shares no company, person, platform or
+  figure with the one the examples are written against."
+
+  The two briefs' `Canonical figures` tables — each declared by its own file to be the registry of
+  every figure it owns — carry an identical row:
+
+      examples/deal-brief.md:116               | rfp-security-weight | 20% | percent | Weight the
+      evals/benchmark/bench-deal-brief.md:177    buyer's top-level scoring rubric assigns to the
+                                                 security section of the response |
+
+  Same key, same value, same type, same description. `comm -12` over the two files' table rows
+  returns it and nothing else substantive. Both decision-criteria tables also read
+  `| Security posture | 20% |` (`examples/deal-brief.md`:87, `bench-deal-brief.md`:143). Every other
+  same-named key was deliberately varied — technical 55%/50%, commercial 25%/30%, legal-review-days
+  10/8, security-review-days 15/12 — which is what makes the one that was not a slip rather than a
+  policy. The company, person and platform thirds of the claim do hold; reader 1 checked all nine
+  invented names and the platform lists.
+
+  `evals/benchmark/bench-deal-brief.md`:8 has carried this claim about itself since 05-02
+  (commit 1577910). What is new is that commit 3a37839 — 06-06's fix for round 2's finding 5, titled
+  "correct what bench-deal-brief.md is for" — replaced README's old sentence, which made no such
+  claim, with one that imports it. The round that closed G-06-9 opened this.
+
+  **Adjudicated against, recorded so it is not re-raised as new.** Reader 1 called `README.md`:186-188
+  false — "`run_benchmark.py --self-test` is the only place it is read at run time, to assert it
+  shares no named entity with `examples/deal-brief.md`" — because `run_benchmark.py`:1645's
+  `shared_deal_brief_entities` tuple holds four strings while `examples/deal-brief.md` invents nine.
+  Readers 2 and 5 each examined the same sentence against the same code and listed it as accurate.
+  The tuple's scope is a real and understated limit, and it is the same class as round 2's
+  `publish-location-drift` finding, which was recorded as a gap and closed by bounding the sentence.
+  Recorded here as an observation on the 2-to-1 split rather than a gap, with the bounding edit
+  carried to backlog. The substantive property holds today: none of the other five names appears in
+  the bench brief.
+
+  **What all three readers verified as consistent, recorded so it is not re-checked.** Every one of
+  round 2's eight corrections: the `/config` observation at `:90-98` against `LEGAL-REVIEW.md`:582-594
+  including its two controls and three stated limits; `:44-46`'s publish-location ceiling against
+  `check_repo.py`:703-727; `:146-154`'s "three runs, two of them against the shipped skill
+  description" against the three head-14 hashes; `:184-188` on what the bench brief is for;
+  `:279-284`'s inventory-enforcement paragraph, with both readers independently enumerating every
+  function in `check_repo.py` that opens README and finding none that reads a stated count;
+  `:121-123`'s three activation figures 9/11/8 of 12; and the "no benchmark has run" sentence gone
+  from `artifact-patterns.md` and both derivatives. Beyond those: all 40 layout-tree paths exist;
+  the reproduced before/after pair is character-for-character `examples/before-after.md`:12-15; the
+  31-rule and 28-pair counts recompute from the files; every claim-region figure against
+  `RESULTS.md`, with both readers re-summing the 48-row per-cell table to the pooled 45/1/2, 32/3/13
+  and 7/3/38 totals and recomputing the 8/1/7 sixteen-cell split and the both-models direction by
+  hand; the conformance 3/10 and 4/10 against `RESULTS-mod04.md`:760 and :776, with reader 2
+  re-tallying all 23 committed run blocks; the 439-character description length, counted; and the ten
+  CI commands in `ci.yml`.
+
+### 12. No two committed files in the repository state things that cannot both be true
+expected: |
+  Round 3, new this round. Rounds 1 and 2 pointed every reader at a named file, so a contradiction
+  between two files neither brief named could not be found. This reader was pointed at no file: find
+  any two committed files that cannot both be true, with attention to whether a measurement has been
+  performed, to counts, and to what a script's prose says against what its code does.
+result: issue
+reported: "Three checkably-false statements, none in a file any previous round's brief named. One is the expired no-network premise surviving in the file a companion explicitly routes the reader to — in the round whose own commit was titled 'sweep the expired no-network premise out of the tracked tree'."
+severity: major
+evidence: |
+  **1. The expired no-network premise survives in `evals/lint.py`, and `proxy-sources.md` sends the
+  reader to it.** `evals/lint.py`:98-100, in the module docstring's declared ceiling for
+  `proxy-term-source-is-internal` — "it does not and cannot confirm a live http(s) URL actually
+  serves the content the registry claims (see ceiling 2 above -- **this environment has no live
+  network access**)." `evals/proxy-sources.md`:12-14 — "The reason given when this file was written
+  was that the environment had no live network access. That premise has since expired —
+  `LEGAL-REVIEW.md`'s ledger row 18 records where — and `SOURCES.md`'s own rows were re-confirmed
+  against live pages on 2026-09-21". And `evals/proxy-sources.md`:37-38 — "See `evals/lint.py`'s
+  module docstring for the full statement of this ceiling."
+
+  The file that records the premise as expired points the reader at the file that still asserts it.
+  Three further files agree the premise expired: `LEGAL-REVIEW.md`:720 (ledger row 18, **Fixed**),
+  `bench-deal-brief.md`:16-17, and `check_repo.py`:3776-3779. Commit 467ed6e, 06-06 task 8, is titled
+  "sweep the expired no-network premise out of the tracked tree"; `git grep` for the premise now
+  returns `lint.py`:99 alongside the three files that disclaim it.
+
+  **2. Ledger row 28 miscounts the route report's limits.** `LEGAL-REVIEW.md`:730 — "Measured null
+  result published with its **four** named limits." `evals/routes/RESULTS-routes.md`:45-50 publishes
+  six bullets, and `evals/routes/run_routes.py`:183-190 freezes `REQUIRED_CAVEATS` at exactly six
+  keys with one bullet rendered per key, so the file structurally cannot publish four.
+
+  **3. `run_conformance.py` says it cross-checks three committed fixtures; it enumerates five and
+  five are committed.** `:22-23` — "Offline proof that the scorer discriminates **the three
+  committed** transcript fixtures correctly" — and `:313-315` — "It then cross-checks the three
+  committed transcript fixtures (conformant-family-first.txt, nonconformant-no-family.txt,
+  nonconformant-rule-before-family.txt) if present", naming them exhaustively. `:459-465`'s
+  `fixture_expectations` holds five, including the two `-late-phrase` fixtures the same docstring's
+  own cases 8 and 9 describe, and `ls evals/conformance/transcripts/` returns all five.
+
+  **What this reader checked and found consistent, recorded so it is not re-checked.** The PF and MC
+  registries across `NUMBERING.md`, `SKILL.md`, `checklist.md` and `completeness-audit.md` — 31 PF
+  IDs, 8 MC IDs, identical ID sets in all three, and the PF-1 seven-by-four arithmetic; the
+  derivative triple, with `output-styles/proof-first.md`'s body line-for-line identical to
+  `prompts/system-prompt.md` and both carrying the same stamp digest and source list; both stale-claim
+  guards satisfied by the current text; the 96 generation records and 96 judge records on disk;
+  `DECISION-RULE-cat10.md`'s Clopper-Pearson and Fisher tables recomputed by hand against `stats.py`,
+  including `p_attr = 0.0016`; `INIT-EVENTS.md`'s 70+70 sessions against the committed tarball; and
+  `RESULTS-mod04.md`'s 23 run blocks re-derived arm by arm.
+
 ## Summary
 
-total: 9
+total: 12
 passed: 4
-issues: 5
+issues: 8
 pending: 0
 skipped: 0
 blocked: 0
 
 Round 1: tests 1-6 — 3 passed, 3 issues (G-06-2, G-06-3, G-06-6), all three resolved by 06-05.
-Round 2: tests 7-9 — 1 passed, 2 issues (G-06-7, G-06-9).
+Round 2: tests 7-9 — 1 passed, 2 issues (G-06-7, G-06-9), both resolved by 06-06.
+Round 3: tests 10-12 — 0 passed, 3 issues (G-06-10, G-06-11, G-06-12), open.
+
+Eleven checkably-false statements this round, against fourteen last round and three the round before.
+The corrections themselves are holding: all six round-2 LEGAL-REVIEW corrections and all eight
+round-2 README corrections were re-checked by readers who did not make them, and every one stands.
+What has not converged is the reading — every one of round 3's eleven findings is in text no earlier
+brief pointed a reader at. By `git blame` on the cited lines: four in 06-05 text round 2 did not
+reach, three in files no brief had ever named (reached only by the new sweep brief), and four
+authored by the closing round itself while fixing something else. Zero are regressions of a fix.
+WINDOWS.md id 12's closure condition is a round that returns none; this is not it.
 
 ## Gaps
 
@@ -657,3 +961,69 @@ Round 2: tests 7-9 — 1 passed, 2 issues (G-06-7, G-06-9).
     - "Decide README:111-112: either drop the contrast or carry prompt-on's 8 of 12 beside it"
     - "Reconcile bench-deal-brief.md:10-12 with ledger row 18"
     - "Backlog: README:188 'drafted twice' omits the 3 repeats; two rounds of readers have now tripped on it"
+
+- gap_id: G-06-10
+  truth: "LEGAL-REVIEW.md's reproduction-boundary material contains no sentence a committed file falsifies"
+  status: failed
+  reason: "Two independent readers, converging on five of seven. All six of round 2's corrections hold and were verified accurate; seven different checkably-false statements survive in the same material. The worst is that LEGAL-REVIEW.md:249-252 and :308 classify six of the eight MC names as ordinary business English while tools/check_repo.py:2952-2965 freezes seven of the eight as SOURCE_COINED_LABELS and makes them a build failure in shipped skill content — only 'metric' is excluded. The occurrence enumeration at :253-256, written by 06-06's own self-audit commit, is false against examples/deal-brief.md and evals/benchmark/bench-deal-brief.md, which both carry the two labels as section headings, and miscalls a production constant a fixture."
+  severity: major
+  test: 10
+  artifacts:
+    - path: "LEGAL-REVIEW.md"
+      issue: ":249-252 and :308 — the prong-4 six/two split of the eight MC names is the inverse of tools/check_repo.py:2952-2965's SOURCE_COINED_LABELS; :308 names 'Competition' as neutral English and :2963 names it as coined"
+    - path: "LEGAL-REVIEW.md"
+      issue: ":253-256 'the two appear only in NUMBERING.md, in this file, and in check_repo.py's fixtures' — false against examples/deal-brief.md:26,75,89 and bench-deal-brief.md:54,130,145,185; the repo's own matcher is IGNORECASE (check_repo.py:2974); check_repo.py:2958-2959 is a production constant, and 'Paper Process' is in no fixture there"
+    - path: "LEGAL-REVIEW.md"
+      issue: ":239 and :301 reinstate the mnemonic ground that the correction at :224-225 retired fifteen lines earlier"
+    - path: "LEGAL-REVIEW.md"
+      issue: ":298-299 'NUMBERING.md says so in its own words' — NUMBERING.md:33-35 declares a one-per-element correspondence and says nothing about order provenance anywhere in :31-54"
+    - path: "LEGAL-REVIEW.md"
+      issue: ":340-342 enumerates two files and a command and calls it 'three files'; :433 and :731 say 'three files and a regeneration'; the tree gives four (NUMBERING.md, SKILL.md, and both derivatives)"
+    - path: "LEGAL-REVIEW.md"
+      issue: ":253 'nowhere else that ships' presupposes NUMBERING.md ships; README.md:367-369 says it never ships to an installed user, and :255's 'the shipped tree' uses the opposite sense four lines later"
+    - path: "LEGAL-REVIEW.md"
+      issue: ":237 'each labelled with the shortest ordinary English' contradicts :250-252's finding that two of the eight are terms of art, thirteen lines apart in the same section"
+  missing:
+    - "Reconcile the prong-4 classification at :249-252 and :308 with tools/check_repo.py's SOURCE_COINED_LABELS — either the review adopts the checker's seven-of-eight split and re-reasons the prong on it, or it states why the two classifications answer different questions and the checker's is not the reproduction-boundary one"
+    - "Correct :253-256: the two labels appear as section headings in both committed deal briefs, the matcher is case-insensitive, and check_repo.py:2958-2959 is a production constant rather than a fixture"
+    - "Cut the mnemonic clause at :239 and the mnemonic contrast at :301, or restate why a ground the correction retired is still available here"
+    - "Correct :298-299 — NUMBERING.md declares the element correspondence, not the order; the PF-1 order claim has to be argued exactly as id 6's was"
+    - "Settle the rename cost once at four files, and make :340-342, :433 and :731 agree"
+    - "Reconcile :253's sense of 'ships' with README.md:367-369, or say which definition this file uses"
+    - "Reconcile :237 with :250-252"
+    - "Backlog, not blocking: prong 2's 'many independent publishers' clause is a premise in no committed file and carries the thinness conclusion (second round it has been raised); :56 says two live questions where items 5 and 6 carry three; :39's bolded content-item count excludes id 29, which :344-345 classifies as a shipped-content decision"
+
+- gap_id: G-06-11
+  truth: "No statement in README is contradicted by a committed file in this repository"
+  status: failed
+  reason: "Three independent readers converged on one statement. README:9-11 says the two deal briefs share 'no company, person, platform or figure'; examples/deal-brief.md:116 and evals/benchmark/bench-deal-brief.md:177 carry a byte-identical Canonical figures row (rfp-security-weight, 20%, same description), and both decision-criteria tables read 'Security posture | 20%'. Every other same-named key between the two briefs was deliberately varied. The claim has been in bench-deal-brief.md:8 since 05-02, but commit 3a37839 — 06-06's fix for round 2's finding 5 — is what imported it into README, so the round that closed G-06-9 opened this."
+  severity: major
+  test: 11
+  artifacts:
+    - path: "README.md"
+      issue: ":9-11 'shares no company, person, platform or figure with the one the examples are written against' — contradicted by the identical rfp-security-weight row at examples/deal-brief.md:116 and evals/benchmark/bench-deal-brief.md:177"
+    - path: "evals/benchmark/bench-deal-brief.md"
+      issue: ":8 makes the same claim about itself and has since commit 1577910; it is false against its own :177 read next to examples/deal-brief.md:116"
+  missing:
+    - "Decide the substance first: either vary the bench brief's rfp-security-weight so the no-shared-figure claim becomes true, or drop 'or figure' from both README:9-11 and bench-deal-brief.md:8 and state what separation the two briefs do hold (company, person and platform, all three verified this round)"
+    - "Whichever is chosen, both files must be changed in the same pass — README repeats the brief's own claim, so fixing one leaves the other false"
+    - "Backlog: bound README:186-188 to what run_benchmark.py:1645 actually asserts — four names of the nine examples/deal-brief.md invents. Recorded as an observation on a 2-to-1 reader split, not a gap, and it is the same class as round 2's publish-location-drift finding"
+
+- gap_id: G-06-12
+  truth: "No two committed files in this repository state things that cannot both be true"
+  status: failed
+  reason: "A whole-tree sweep bound to no named file — new this round, because rounds 1 and 2 pointed every reader at README or LEGAL-REVIEW.md and so could not reach a contradiction between two other files. Three checkably-false statements. The first is the expired no-network premise still asserted in evals/lint.py:98-100, the file evals/proxy-sources.md:37-38 explicitly routes the reader to for the full statement of that ceiling, and the round that was meant to remove it repo-wide (commit 467ed6e, 'sweep the expired no-network premise out of the tracked tree') missed it."
+  severity: major
+  test: 12
+  artifacts:
+    - path: "evals/lint.py"
+      issue: ":98-100 'this environment has no live network access' asserted as present fact; contradicted by evals/proxy-sources.md:12-14, LEGAL-REVIEW.md:720, bench-deal-brief.md:16-17 and check_repo.py:3776-3779, and proxy-sources.md:37-38 points the reader at this docstring"
+    - path: "LEGAL-REVIEW.md"
+      issue: ":730 ledger row 28 'its four named limits' — RESULTS-routes.md:45-50 publishes six and run_routes.py:183-190 freezes REQUIRED_CAVEATS at six keys"
+    - path: "evals/conformance/run_conformance.py"
+      issue: ":22-23 and :313-315 say 'the three committed transcript fixtures' and name them exhaustively; :459-465 enumerates five and all five are committed"
+  missing:
+    - "Restate evals/lint.py:98-100's ceiling in the past tense as the other four files do, or cut the parenthetical — the ceiling itself (a URL is never fetched) holds regardless of the environment and does not need the expired premise"
+    - "Correct LEGAL-REVIEW.md:730 to six named limits"
+    - "Correct run_conformance.py:22-23 and :313-315 to five fixtures, naming the two -late-phrase files the same docstring's cases 8 and 9 already describe"
+    - "Consider whether the sweep brief itself belongs in every future round: this reader found three statements in three files no earlier brief had named, at the same cost as a file-scoped reader"
