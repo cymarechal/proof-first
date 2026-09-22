@@ -1662,6 +1662,33 @@ def self_test():
     else:
         cases_exercised.append('no-entity-collision')
 
+    # --- bench-deal-brief.md shares no platform name with examples/deal-brief.md ---
+    # Added 2026-09-22 (06-08). bench-deal-brief.md:8-12 presented the platform
+    # half of the separation as mechanically held while only the entity tuple
+    # above was asserted, so a bench brief migrating off VMware vSphere onto
+    # Amazon EC2 would have passed. The six names are the five real products
+    # examples/deal-brief.md:18 lists as its migration source and target, plus
+    # the target platform's own name from :22. Declared ceiling: this is a
+    # substring check over a fixed tuple -- it proves these six names are
+    # absent, not that no other platform is shared, and a platform added to
+    # examples/deal-brief.md must be added here by hand exactly as the entity
+    # tuple must be.
+    shared_deal_brief_platforms = (
+        'VMware vSphere', 'Oracle Database', 'Amazon EC2',
+        'Amazon Aurora PostgreSQL', 'AWS Control Tower', 'Amazon Web Services',
+    )
+    platform_collisions = [
+        name for name in shared_deal_brief_platforms if name in bench_deal_brief_text
+    ]
+    if platform_collisions:
+        print(
+            'FAIL: bench-deal-brief.md reuses shared-deal-brief platforms: '
+            f'{platform_collisions}'
+        )
+        all_ok = False
+    else:
+        cases_exercised.append('no-platform-collision')
+
     # --- family-coverage assertion: the shipped scenarios.json carries
     # exactly 8 scenarios, exactly 2 per family; a negative fixture with a
     # family carrying only 1 scenario fails the same assertion, naming it. ---

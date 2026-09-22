@@ -8,16 +8,29 @@ real products, cited only where a benchmark scenario genuinely needs a concrete 
 This brief shares no company, person, or platform with `examples/deal-brief.md` — it
 grounds Phase 5's benchmark scenarios, which must not reuse the shared deal's facts (see
 `05-RESEARCH.md` Decision 2). That separation is the one that matters and the one that is
-mechanically held: `run_benchmark.py --self-test` asserts every invented party and person in
-`examples/deal-brief.md` is absent from this file, and the platform lists are disjoint.
+mechanically held: `run_benchmark.py --self-test` asserts that the nine invented parties and
+persons named in `examples/deal-brief.md`, and the six platform names it gives as its migration
+source and target, are all absent from this file. *Corrected 2026-09-22 (06-08):* the platform half
+of that sentence was an authored observation until this round, because the self-test's tuple held
+only the nine names. It is now a second assertion alongside them. Its ceiling is the same as the
+entity assertion's: it proves those six names are absent, not that no other platform is shared, so
+a platform added to `examples/deal-brief.md` must be added to the tuple by hand.
 
 Figures are a different matter, and this brief no longer claims they are disjoint. *Corrected
 2026-09-22:* this sentence previously said "no company, person, platform, or figure", and the figure
 half was false — `| rfp-security-weight | 20% | percent | ... |` is byte-identical in both briefs'
 canonical-figure tables, and both decision-criteria tables read `| Security posture | 20% |`. Nor
-could the stronger claim be made true cheaply: 20% carries four different meanings inside this brief
-alone and three inside the other, so bare values were always going to coincide across differently
-keyed rows. What is accurate, and weaker than what it replaces: every figure here is keyed to Thornfield Freight
+could the stronger claim be made true cheaply: `20%` is an ordinary RFP weight, and in both briefs it
+keys differently named rows — a scored question's weight in one row, a scoring-rubric section's
+weight in another — so bare values were always going to coincide across differently keyed rows.
+*Corrected 2026-09-22 (06-08):* this passage previously put a count on those meanings ("four
+different meanings inside this brief alone and three inside the other"). It was wrong under both
+available counting rules — `grep -c '^|.*20%'` returns four for each brief, and distinct meanings
+are two here and three there — and a count of *meanings* is not checkable by any command, which is
+why no count of meanings replaces it. The occurrence count is scoped to table rows deliberately: an
+unscoped `grep -c '20%'` over this file counts this paragraph's own mentions too, which is how the
+sentence being corrected would have gone stale a second time. The argument does not need either
+number. What is accurate, and weaker than what it replaces: every figure here is keyed to Thornfield Freight
 Systems' own facts, and the separation that protects the benchmark — no shared company, person or
 platform, so no session can draw on the other deal — is the one held mechanically. The name-collision web search Phase 1 ran for
 `examples/deal-brief.md`'s nine invented names was run for this brief's ten names on 2026-09-21, in

@@ -8,7 +8,7 @@ Below: an unrevised draft, then a rewrite. The rewrite's numbers come from
 `examples/deal-brief.md`, the canonical deal brief every worked example in this repository cites.
 (`evals/benchmark/bench-deal-brief.md` is a second, separate brief, which grounds the benchmark's
 scenarios and shares no company, person or platform with the one the examples are written against —
-checked over all nine invented names by `run_benchmark.py --self-test`. Some figures coincide: both
+checked over all nine invented names and all six platform names by `run_benchmark.py --self-test`. Some figures coincide: both
 rubrics weight security at 20%, and that row is identical in both briefs' figure tables.)
 One full pair, reproduced from `examples/before-after.md`:
 
