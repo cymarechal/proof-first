@@ -344,7 +344,7 @@ next round reads.
 | `README.md` contradiction hunt | 2 | the file |
 | `LEGAL-REVIEW.md` reproduction-boundary material | 2 | the file |
 | Whole-tree sweep, bound to no named file | **2** (was 1; changed 06-09) | the tree, no file named to either reader |
-| What **any** gap-closure round rewrote (amended 06-09; was "the last") | 1 | the union of every gap-closure commit range — `d67012e..HEAD` today, the first commit of the 06-05 closure onward |
+| What **any** gap-closure round rewrote (amended 06-09; was "the last") | 1 | the union of every gap-closure commit range — `d67012e^..HEAD` today, the first commit of the 06-05 closure onward (notation corrected by 06-10 task 21; the two-dot form excludes `d67012e`'s own changes, which the gloss requires) |
 
 **Change 1 — the fourth brief widens past the last round's diff.** Through round 5 this brief was
 given the diff of the round that had just closed. Round 5 proved the blind spot: `README`:196 was
