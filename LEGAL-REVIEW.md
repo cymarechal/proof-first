@@ -18,31 +18,25 @@ stays recorded as it was — which is why `## Human observations` sections 1 to 
 headings marking them superseded rather than deleted when section 4 replaced them.
 
 A statement found false against this repository's own files is the one exception, and it is
-corrected in place rather than appended around. The condition is that the correction says what was
-corrected, on what date, and against which file, so a reader can see the change rather than discover
-it by diffing. Every such change carries a dated marker at the point of the change, in one of four
-forms — `*Corrected …*`, `*Added …*`, `*Updated …*` and `*Clarified …*`. Those markers are the
-record, and this paragraph keeps no tally of them:
-`grep -nE '\*(Corrected|Added|Updated|Clarified) 2026-' LEGAL-REVIEW.md` lists every one, and a
-number written here instead would be one more statement to keep true.
-*Corrected 2026-09-22 (06-10): this stated the universal over one marker form and named
-`grep -n 'Corrected 2026-' LEGAL-REVIEW.md` as the command that lists them. Four forms are in use,
-and that command returns only the first — so the sentence asserted a universal its own named command
-could not meet. The forms are not normalised to one, because they do not mean the same thing:
-`*Added …*` records a ceiling or qualification the text never declared, `*Updated …*` a figure
-superseded by a later decision, `*Clarified …*` a wording change made against a reader's objection
-with the disposition unmoved. `*Clarified …*` is counted, which is the decision round 6 left open
-after declining to count it: this paragraph exists so a reader can find every dated in-place change
-without diffing, and a wording change made in response to an objection is one of those whatever it
-is called.* *Corrected 2026-09-22 (06-08): this paragraph used to state a
-count. It was accurate on the day it was written and wrong by the next round, three rounds running —
-the same failure mode the markers exist to prevent, committed by the sentence describing them. The
-corrections predating the marker convention, all from 2026-09-21, are named here because no marker
-carries them: the id-6 acronym reasoning (commit 0b8a865, which removed 32 lines and added 64), the
-PF-1 counterweight and its downstream statements (plan 06-06), and the reproduction-boundary figures
-and citations corrected in the same round.* The rule was restated on 2026-09-21 to match, because the
-earlier wording forbade what this round and the one before it had already done for good reason. The
-alternative considered and not taken was to keep the wording and restore each superseded passage
+corrected in place rather than appended around. Until 2026-09-23 each such change also carried a
+dated marker in the prose, quoting the wording it replaced. That convention is retired.
+
+It was retired because it wrote the retired wording back into the tracked tree, where the next
+reader met it as though it were a live claim. Two of the three findings round 7's readers raised
+against this file were the convention reading back that way: one against an enumeration that
+existed only inside a marker, and one against the paragraph describing the markers themselves — a
+paragraph obliged to stay true about its own taxonomy, corrected once for stating its universal
+over a single marker form when more were in use, and found wrong again the next round for leaving a
+fifth form outside both the list and the grep it named.
+
+What replaces it is where the record already was. Git history carries the date, the author, and the
+exact wording on both sides of every edit to this file, and it cannot be falsified by being written
+down. `git log -p --follow LEGAL-REVIEW.md` walks it; `git log -S'<wording>' -- LEGAL-REVIEW.md`
+names the commit that introduced or removed a particular sentence. What a correction established —
+a measurement, a ceiling, a concession made to a reader — is kept below in this file's own voice, as
+a statement standing on its own rather than as a note about a sentence that is no longer here.
+
+The alternative considered and not taken was to keep the wording and restore each superseded passage
 under a dated heading, the way sections 1 to 3 were kept. It was rejected on the distinction this
 paragraph draws: a record of what was and was not done is evidence and is preserved, while a reading
 that was simply wrong about a file in this repository is not evidence of anything and preserving it
@@ -62,32 +56,26 @@ of the file because an earlier revision put it above the disclaimer, where a ski
 before being told what this document is. `tools/check_repo.py`'s `source-gate-incomplete` code
 defines what it asserts and nothing more: that no row in `SOURCES.md` still reads `unverified`. The
 checker's own text says it "does not judge whether the review behind a declared pass was any good,
-only whether the list it declares a pass over is complete." *Correction withdrawn 2026-09-22
-(06-09): 06-08 changed the word inside the quotation marks from "list" to "file", on a round-4
-finding that was itself wrong. "List" was right. The checker states this ceiling twice, one word
-apart. Its module docstring — the violation-code catalogue that defines `source-gate-incomplete`,
-and the text this paragraph cites — says "the list it declares a pass over is complete";
-`check_source_gate_incomplete`'s own docstring says "the file". The earlier quotation matched the
-catalogue, so no misquote occurred, and this marker is kept rather than deleted so the next round
-does not "fix" the same sentence again. `grep -n "it declares a pass over is complete"
-tools/check_repo.py` returns exactly one line, the catalogue's, because the function docstring
-wraps mid-phrase — which is how a reader could reach the "file" spelling and read the catalogue's
-as absent. Two readers found this; a third read the same two docstrings and passed it. The facts
-were never in dispute, only what this marker asserted. Making the two docstrings agree is a
-separate `check_repo.py` edit with its own risk, and is backlog rather than done here.*
+only whether the list it declares a pass over is complete."
+
+That quotation is the module docstring's — the violation-code catalogue that defines
+`source-gate-incomplete`. The checker states the same ceiling twice, one word apart:
+`check_source_gate_incomplete`'s own docstring writes "the file" where the catalogue writes "the
+list". `grep -n "it declares a pass over is complete" tools/check_repo.py` returns exactly one
+line, the catalogue's, because the function's docstring wraps mid-phrase — which is how a reader
+can reach the "file" spelling and read the catalogue's as absent. Three readers have checked this
+sentence against both docstrings. Making the two agree is a separate `check_repo.py` edit with its
+own risk, and is backlog rather than done here.
 
 So: every check named below was performed on 2026-09-21 and its outcome written down, including the
-register lookup that failed and the one not attempted. *Corrected 2026-09-22 (06-09): this read
-"the two lookups that failed". The table under `## USPTO register lookups` records one failure, the
-HTTP 401, and one row never attempted.* That is the whole of what the token means here, and it is
-not a statement that the content is clear to publish.
+register lookup that failed and the one not attempted. That is the whole of what the token means
+here, and it is not a statement that the content is clear to publish.
 
 Two named content items are open and routed to `.planning/WINDOWS.md` for a decision before wider
 distribution — **Ardent Digital** and **Gina Almeida**, both under `## Name collisions`. The
 reproduction-boundary section ends on live questions rather than findings — three of them, carried as
 items 5 and 6 of `## What remains open` — and `WINDOWS.md` id 29 is open against the PF-1 sub-block
-list. *Corrected 2026-09-22: this sentence said "two live questions"; items 5 and 6 carry three
-between them.* A reader who wants one sentence should take this one:
+list. A reader who wants one sentence should take this one:
 the diligence was done and written down by a non-lawyer, and some of it points at decisions nobody
 has made yet.
 
@@ -141,11 +129,10 @@ counterclaims with prejudice, and directed the USPTO to cancel Registration No. 
 Darius Lahoutifard of 01 Consulting LLC.
 
 **The register, confirmed — a gap that closed at this review.** The TSDR status view that returned
-HTTP 403 during Phase 6 research answered this time, with HTTP 200. *Corrected 2026-09-22 (06-09):
-this read "The two TSDR endpoints that failed during Phase 6 research answered this time." One
-endpoint answered. The second row of the table under `## USPTO register lookups` returned HTTP 401
-and is recorded below as a failed lookup, so on this file's own vocabulary — where the earlier 503
-and 403 are called failures, and they were HTTP responses too — it did not answer.* On a page
+HTTP 403 during Phase 6 research answered this time, with HTTP 200. One endpoint, not two: the
+second row of the table under `## USPTO register lookups` returned HTTP 401 and is recorded below
+as a failed lookup, because on this file's own vocabulary — where the earlier 503 and 403 are
+called failures, and they were HTTP responses too — it did not answer. On a page
 stamped by TSDR itself as generated 2026-09-21 05:36:50 EDT, it records Registration No. 6,489,058 (Serial No. 88845076, mark
 MEDDPICC, Principal Register, registered 2021-09-21, owner Lahoutifard Darius) with the common
 status descriptor **LIVE/REGISTRATION/Issued and Active** and a most recent prosecution-history
@@ -166,11 +153,10 @@ registration number, the registrant, the docket's un-terminated state, its most 
 and the register's observed state. The two clauses of the element's existing second sentence — no
 claim about the outcome of any proceeding, and a determination about one spelling not treated as
 covering another — are unchanged and were verified present after the edit. `Last reviewed:` moved to
-2026-09-21.
-*Corrected 2026-09-22 (06-10): this called them "the two existing sentences". They are two clauses
-of one sentence, which reads in full: "This repository makes no claim about the validity of any mark
-in this family and no claim about the outcome of any proceeding, and a determination about one
-spelling in the family is not treated here as covering another."*
+2026-09-21. Those two clauses are one sentence, not two, and it reads in full: "This repository
+makes no claim about the validity of any mark in this family and no claim about the outcome of any
+proceeding, and a determination about one spelling in the family is not treated here as covering
+another."
 
 **Deliberately not done.** The holding is not extended to the MEDDIC or MEDDICC spellings. No
 position is taken, stated or implied, on where the proceeding ends. The multi-party-contested
@@ -207,14 +193,12 @@ at all: `OL38629171M` was confirmed against its `authors` array instead, which r
 Whyte, Dick Dunkel and Jack Napoli, and `SOURCES.md`'s row for that title names the first of the
 three. The other three rows were confirmed against public pages, each checked for a login,
 registration wall, or paywall before being accepted; none had one.
-*Corrected 2026-09-22 (06-10): this said "Three rows were confirmed against bibliographic edition
-records whose `by_statement` field matched the row's author list exactly", which is false for the
-MEDDICC row. All three edition records were re-fetched live on 2026-09-22 and the field quoted per
-row: `OL24886401M` returns `by_statement` "Matthew Dixon and Brent Adamson"; `OL27219998M` returns
+
+How each book row was confirmed, per row, is the substance of this paragraph rather than the count.
+All three edition records were re-fetched live on 2026-09-22 and the field read off each:
+`OL24886401M` returns `by_statement` "Matthew Dixon and Brent Adamson"; `OL27219998M` returns
 "Brent Adamson, Matthew Dixon, Pat Spenner, and Nick Toman"; `OL38629171M` returns no `by_statement`
-key, and its three `authors` keys resolve to the three names above. The confirmation method is
-restated rather than deleted, because how each row was confirmed is the substance of this record and
-a bare count is not.*
+key at all, and its three `authors` keys resolve to Mr Andy Whyte, Dick Dunkel and Jack Napoli.
 
 `SOURCES.md`'s Out of bounds list was read before searching, not after. No candidate was taken from
 a training portal, a paid course, a certification handout, an enablement deck, or a redistribution
@@ -297,19 +281,18 @@ the thing it covers": the prong-4 finding below is that seven of the eight are *
 and prong 2 cannot rest on a premise prong 4 refutes forty lines later. The removal still follows on
 the corrected ground, and it is worth saying which rather than assuming: a term coined by a source
 to name its own block is not "the shortest ordinary English for the thing it covers" either,
-whatever else it is. *Corrected 2026-09-22 (06-08): this sentence said prong 4 finds the seven "not
-ordinary English at all". It does not, and that is a stronger and different claim. Prong 4's own
-words are "source-coined; 'Metric' alone is ordinary business English", and the same entry records
-five of the seven in ordinary English use as headings and role designations in the two committed
-deal briefs. `check_repo.py` excludes `metric` from `SOURCE_COINED_LABELS` for a narrower reason
-than non-Englishness, which its docstring states: this repository's own MC-1 and integrity rules use
-the word as ordinary business English, so including it would fire on legitimate content.* It no longer says
+whatever else it is. Prong 4 is not the stronger claim that the seven are not ordinary English at
+all; its own words are "source-coined; 'Metric' alone is ordinary business English", and the same
+entry records five of the seven in ordinary English use as headings and role designations in the two
+committed deal briefs. `check_repo.py` excludes `metric` from `SOURCE_COINED_LABELS` for a narrower
+reason than non-Englishness, which its docstring states: this repository's own MC-1 and integrity
+rules use the word as ordinary business English, so including it would fire on legitimate content.
+It no longer says
 the order is one "many independent publishers" teach rather than one publisher's: no read of many
 publishers is recorded anywhere in this repository, `SOURCES.md`:41-44 lists two sources for this
 family, and an argumentative clause resting on an unrecorded lookup is the thing this file exists to
-not do. *Added 2026-09-22 (06-08), because a round-4 reader called "anywhere in this repository" an
-unqualified negative with no recorded sweep — a fair objection to an unsupported absolute.* The
-sweep, run over the whole tracked tree including `.planning/`:
+not do. That negative was an unqualified absolute with no sweep recorded behind it, which a reader
+objected to, fairly. The sweep, run over the whole tracked tree including `.planning/`:
 `git grep -inE 'many (independent )?publishers|multiple publishers|several publishers'`. Every hit
 is this record or the defect register discussing the absence of such a read — `LEGAL-REVIEW.md`,
 `.planning/WINDOWS.md` id 31, and three Phase 6 planning artifacts. No source row, anywhere, backs
@@ -323,9 +306,9 @@ entry, and this correction makes it weaker, not stronger.
 
 **Prong 3 — a source's diagram or figure.** Does not apply. `NUMBERING.md`'s MC table is this
 repository's own ID-range registry. No diagram or figure from any source is reproduced anywhere in
-this repository. *Added 2026-09-22 (06-09), because this was the same shape of unqualified
-whole-repo negative a round-4 reader objected to in prong 2, and that objection applies here
-verbatim.* Two sweeps, both over the whole tracked tree including `.planning/`. For a reproduced
+this repository. That is the same shape of unqualified whole-repo negative a reader objected to in
+prong 2, and the objection applies here verbatim, so this prong carries sweeps too. Two of them,
+both over the whole tracked tree including `.planning/`. For a reproduced
 image or diagram file:
 `git ls-files | grep -iE '\.(png|jpe?g|gif|svg|pdf|webp|bmp|tiff?|eps|ai|drawio|vsdx|puml|mmd)$'`
 returns nothing — this repository tracks no image or diagram file of any kind, from any source or
@@ -338,16 +321,11 @@ behind it.
 The prong's own wording is "a source's diagram or figure", and the ordering question sitting beside
 it is narrower than either command reaches; it is left as a judgement rather than claimed as swept,
 because this repository does carry tables and one layout tree, and whether a table's *arrangement*
-reproduces a source's ordering is not a question `git grep` answers.
-*Corrected 2026-09-22 (06-10): this attributed a clause to the prong that the prong does not
-contain. `SOURCES.md`'s reproduction-boundary paragraph states the third prong as "a source's
-diagram or figure" and nowhere uses the phrase this sentence quoted. The wrong quotation is not
-reproduced here: a correction that repeats the string it removed puts it back into the tracked tree,
-which is the self-reference `## The PF-1 sub-block list` below records twice.* The one instance a reader could raise is `NUMBERING.md`'s MC table against the source's
+reproduces a source's ordering is not a question `git grep` answers. The one instance a reader could
+raise is `NUMBERING.md`'s MC table against the source's
 own dimension order, and that is the order-provenance question `### The PF-1 sub-block list` below
 already concedes — "the correspondence is declared there, the *order* is not, and has to be argued
-here". It is not disposed of here. *Corrected 2026-09-22 (06-09) by this round's own self-audit:
-this first attributed that concession to the prong-2 correction above, which does not make it.*
+here". It is not disposed of here.
 
 **Prong 4 — a term coined by a source and adopted here as this repository's own label.** This prong
 engages and the earlier draft never reached it, although its own step 3 described the eight names as
@@ -366,19 +344,12 @@ art. That split is the opposite of the one this repository already enforces in c
 Phase 3 decision (03-07 GAP B), it names `SOURCES.md`'s reproduction-boundary clause in its own
 violation string, and it answers the same question prong 4 asks. The checker's own docstring routes
 the registry half of that question here, to LEG-04, in clause (3) of the
-`source-label-in-skill-content` entry.
-*Corrected 2026-09-22 (06-08): this passage cited `check_repo.py`:2977-3009 for the function and
-`:302-305` for the docstring clause. This round's own task-17 commit inserted a 36-line docstring
-entry above the first of them, so it pointed into an unrelated function; both are now anchored by
-name, which is the only form that survives the next insertion. The passage also
-said "shipped skill content", which is the checker's own phrase for its scope and reads wider than
-that scope is — the two derivatives are shipped skill content and this check never opens them. The
-scope is now stated as the globs the function walks; the derivatives are held by
-`generate_derivatives.py --check`, as the **No shipped skill file carries any of the seven** bullet
-below sets out. *Corrected 2026-09-22 (06-10): that pointer read "the `## Reproduction boundary`
-bullet above". The bullet it means is the first of the five under "What follows, checked by
-`git grep -iln`", which stands below this paragraph, not above it. Anchored by its opening words,
-the convention this file already adopted for citations that drift.*
+`source-label-in-skill-content` entry. Both are anchored by name rather than by line, which is the
+only form that survives the next insertion into that file. The check's scope is the globs its
+function walks, which is narrower than "shipped skill content": the two derivatives are shipped
+skill content and this check never opens them. They are held by `generate_derivatives.py --check`
+instead, as the **No shipped skill file carries any of the seven** bullet below sets out — the first
+of the five under "What follows, checked by `git grep -iln`".
 
 Two positions on the same eight strings, and they were opposites. **This review adopts the
 checker's.** Seven of the eight are source-coined; "Metric" alone is ordinary business English. The
@@ -396,44 +367,35 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
   bytes of both, so a derivative can carry no label its sources do not, and the sources are what the
   first check holds. Both commands run in CI. "Metric" appears throughout those files, which is
   exactly why it is excluded from the list.
-  *Added 2026-09-22 (06-08):* the ceiling neither the entry nor the checker declared. The label
-  check reads `strip_fences(...)`, so one of the seven inside a fenced block in `SKILL.md` would
-  pass it and then be concatenated verbatim into both derivatives. Presently moot and stated because
-  it is: `grep -c '```' skills/proof-first/SKILL.md skills/proof-first/references/*.md` returns 0
-  for all six files.
+  One ceiling neither the entry nor the checker declares. The label check reads
+  `strip_fences(...)`, so one of the seven inside a fenced block in `SKILL.md` would pass it and
+  then be concatenated verbatim into both derivatives. Presently moot, and stated because it is:
+  `grep -c '```' skills/proof-first/SKILL.md skills/proof-first/references/*.md` returns 0 for all
+  six files.
 - **Five of the seven appear outside `NUMBERING.md`,** in the two committed deal briefs, as headings
   and role designations. Cited by heading rather than by line, because both files are edited more
   often than this record is re-read and line citations in this file have drifted before:
   `### Economic buyer stated priorities`, `### Decision criteria` and `### Paper process` are
   headings in each brief's buyer section; `## Pain points` is a heading in each; and "the champion"
   names a person's role in each brief's people list. `git grep -in` over the two files returns all
-  five. The earlier draft asserted the two terms it conceded appeared "only in `NUMBERING.md`, in
-  this file, and in `check_repo.py`'s fixtures". *Corrected 2026-09-22 (06-08): the round before
-  this one said "all three parts were wrong", which over-corrected. Part by part, against a grep:
-  **"only" was wrong** — both terms appear in both committed deal briefs, as the bullet above
-  records. **"in `NUMBERING.md`" was right.** **"in this file" was right.** **"in
-  `check_repo.py`'s fixtures" was right for Economic Buyer and wrong for Paper Process** —
-  `Economic Buyer` is inserted into two fixture builders in that file, `_bad_numbering()` and
-  `_mc_numbering_for_count()`, while `grep -in 'paper process' tools/check_repo.py` returns exactly
-  one line, and it is inside `SOURCE_COINED_LABELS`. So the word that failed was **only**. The two
-  sub-claims the over-correction offered in support stay in corrected form — both labels sit in
-  `SOURCE_COINED_LABELS`, a production constant, **and** `Economic Buyer` additionally sits in
-  fixture builders, while `Paper Process` sits in none — but they do not establish what that
-  sentence claimed they establish, which was that every part of the earlier assertion failed.*
-  *Corrected 2026-09-22 (06-10): the summary above read "the two labels sit in
-  `SOURCE_COINED_LABELS`, a production constant, rather than in a fixture", which contradicts the
-  sentence immediately before it in the same bullet. Measured, with the enclosing scope of every
-  hit named: `grep -in 'economic buyer' tools/check_repo.py` returns eleven lines — one in the
-  module-level `SOURCE_COINED_LABELS` tuple and ten inside seven functions
-  (`_mutate_source_label_in_skill_content`, `_mutate_record_citation_unresolvable`,
-  `_bad_numbering`, `_artifact_patterns_with_source_label`, `_mc_numbering_for_count`,
-  `_mc_checklist_for_count`, `_mc_count_audit_headings`); `grep -in 'paper process'
-  tools/check_repo.py` returns one line, inside that same tuple. The counting rule matters here and
-  is stated rather than left implicit: the two fixture builders the sentence above names are the
-  only two carrying the label in the title case it quotes, and the wider set is what the
-  case-insensitive matcher this bullet closes on would reach.* The case difference in the briefs' headings is
-  not a defence — this repository's own matcher for these exact labels is case-insensitive
-  (`check_repo.py`'s `_source_label_pattern`, which compiles every label with `re.IGNORECASE`).
+  five.
+
+  Where the two conceded terms sit inside `tools/check_repo.py`, with the enclosing scope of every
+  hit named and attributed by AST rather than by eye: `grep -in 'economic buyer'
+  tools/check_repo.py` returns eleven lines, two of them module-level — the `SOURCE_COINED_LABELS`
+  tuple and one description string in the `MUTATIONS` table — and nine inside six functions
+  (`_mutate_source_label_in_skill_content`, `_bad_numbering`, `_artifact_patterns_with_source_label`,
+  `_mc_numbering_for_count`, `_mc_checklist_for_count`, `_mc_count_audit_headings`).
+  `grep -in 'paper process' tools/check_repo.py` returns one line, inside that same tuple. So
+  `Economic Buyer` sits in fixture builders as well as in a production constant, and `Paper Process`
+  sits in none.
+
+  The counting rule matters and is stated rather than left implicit, because the two counts differ:
+  exactly two hits carry the label in the title case `_bad_numbering()` and `_mc_numbering_for_count()`
+  write it, while the eleven are what the case-insensitive matcher this bullet closes on would reach.
+  That case difference in the briefs' headings is not a defence — this repository's own matcher for
+  these exact labels is case-insensitive (`check_repo.py`'s `_source_label_pattern`, which compiles
+  every label with `re.IGNORECASE`).
 - **"Decision Process" and "Competition" appear in `NUMBERING.md` and nowhere else** outside this
   file and the checker.
 - Neither `completeness-audit.md` nor any other `references/*.md` carries any of the seven; that
@@ -443,16 +405,13 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
 **A note on "ships", because this entry previously used the word two ways in four lines.**
 `README.md`, in the closing paragraph of its `## Repository layout` section, states the published
 definition: `NOTICES.md`, `SOURCES.md`, `NUMBERING.md`, `examples/`, `tools/` and `evals/` "stay at
-the repository root and never ship to an installed user." *Corrected 2026-09-22 (06-08): this cited
-`README.md`:369-371, which was right when written and wrong twelve lines later once this same
-round lengthened README's checker bullet. Cited by heading and quoted string instead, per the
-convention the `## Reproduction boundary` bullet above already states for the deal briefs. The same
-round then did it again to five `tools/check_repo.py` line citations, by inserting a 36-line
-docstring entry above them; those are now anchored to named constants and functions instead. Six of
-this record's citations drifted during this round in total, and 06-08's
-`record-citation-unresolvable` was silent on every one of them, because every cited line still
-existed — which is the clearest available demonstration of that code's declared ceiling, and it was
-produced by the commit that added it.*
+the repository root and never ship to an installed user." Cited by heading and quoted string rather
+than by line number, because citations in this record have drifted mid-round before: a lengthened
+README bullet moved this sentence's own target twelve lines, and a 36-line docstring entry inserted
+above five `tools/check_repo.py` citations moved those. `record-citation-unresolvable` was silent on
+every one of them, because every cited line still existed — the clearest available demonstration of
+that code's declared ceiling, produced by the commit that added it.
+
 On that definition none of the seven reaches an installed user at all, because the only files that do
 are `skills/proof-first/**` and the two derivatives, and the checker holds those clean. Where the
 seven do sit — `NUMBERING.md` and the two deal briefs — is committed and publicly readable, which is
@@ -507,12 +466,9 @@ Outcomes. The prose names the source on the table's face.
 
 Why it is stronger than id 6, point by point. **Every one** of the four grounds recorded when this
 section was written has been narrowed or restated by a reader checking it, and each is restated here
-rather than quietly dropped — every bullet below carries a dated `*Corrected …*` marker saying what
-changed. *Corrected 2026-09-22 (06-08): this lead-in said "two", and then said "three" earlier in
-this same round. Both were counts of a set the round was still changing: answering the round-4
-reasoning critique on the fourth bullet put a marker on the last bullet that lacked one. The
-sentence now states the property rather than a tally, which is the only version that survives the
-next correction.*
+rather than quietly dropped. The bullets below state the narrowed grounds, and each says what was
+narrowed and why; git history carries the wording each of them replaced. The property is stated
+rather than a tally, which is the only version that survives the next correction.
 
 Said plainly, because the heading above claims a comparison and the list no longer supports as much
 of it as it did. What survives, ground by ground: the correspondence **declared** in `NUMBERING.md`
@@ -529,53 +485,51 @@ narrowed grounds still point one way and the entry says which, not because the o
   into seven named sub-blocks, **one per Command of the Message element**". That is a declared
   one-to-one correspondence between this repository's sub-blocks and a named source's elements, in
   the registry itself, and id 6's MC table declares no such thing about its own eight.
-  *Corrected 2026-09-22:* this point previously read "It is a source's ordered list, in that source's
-  order, and `NUMBERING.md` says so in its own words ... this one declares it." `NUMBERING.md`
-  declares the correspondence; it says nothing anywhere in `:31-54` about whose order the table is
-  in, and the remaining prose there is slot arithmetic. The order claim has to be argued here exactly
-  as id 6's did — it is not declared. The contrast worth recording is that
-  `skills/proof-first/references/completeness-audit.md`:12-15 *does* address order provenance for the
-  MC side and expressly declines to concede it; `NUMBERING.md` carries no equivalent sentence for
-  PF-1 in either direction.
+  Narrowed: what `NUMBERING.md` declares is the correspondence, not the order. It says nothing
+  anywhere under `## PF-1 sub-blocks` about whose order the table is in, and the remaining prose
+  there is slot arithmetic — so the order claim has to be argued here exactly as id 6's did. The
+  contrast worth recording is that
+  `skills/proof-first/references/completeness-audit.md` *does* address order provenance for the MC
+  side, in the paragraph opening "The dimension blocks below are ordered the way `NUMBERING.md`
+  reserves their ID ranges", and expressly declines to concede it; `NUMBERING.md` carries no
+  equivalent sentence for PF-1 in either direction.
 - **These seven spell nothing.**
-  *Corrected 2026-09-22:* this point previously contrasted them against MC blocks that "could at
-  least be argued to follow a mnemonic that many publishers teach." The correction in the id-6 entry
-  retired the mnemonic as a ground there, and prong 2 no longer spends it either. A defence this
-  file has withdrawn twice cannot be the thing PF-1 is measured against. What remains is the
-  narrower and still-true half: no acronym defence is available for these seven.
-  *Corrected 2026-09-22 (06-08):* the clause "and are ordered the way the framework itself sequences
-  them" is removed as well, for the reason 06-07 already gave twenty lines away in the id-6 entry:
-  an argumentative clause resting on a lookup nothing in this repository records is the thing this
-  file exists to not do. `SOURCES.md`'s `## Message articulation sources` records two Force
-  Management public pages, and neither is recorded as establishing the seven elements' order. The
-  standard was applied to id 6's "many independent publishers" clause and not to this one in the
-  same file, which is worse than not applying it. Noted for symmetry: the MC side's walk-through
-  order is not in the same position — `SOURCES.md`'s `## Qualification checklist sources` records a
-  published book and a public overview page for that family, so that order has recorded sources even
-  where its provenance is argued. The absence here is specific to this clause.
+  Narrowed twice. The point once rested on a contrast with MC blocks arguably following a mnemonic
+  that many publishers teach; the id-6 entry retired that mnemonic as a ground, prong 2 no longer
+  spends it, and a defence this file has withdrawn twice cannot be the thing PF-1 is measured
+  against. What remains is the narrower and still-true half: no acronym defence is available for
+  these seven. Dropped with it was a clause asserting the seven are ordered the way the framework
+  itself sequences them, for the reason the id-6 entry already gives — an argumentative clause
+  resting on a lookup nothing in this repository records is the thing this file exists to not do.
+  `SOURCES.md`'s `## Message articulation sources` records two Force Management public pages, and
+  neither is recorded as establishing the seven elements' order. That standard had been applied to
+  id 6's "many independent publishers" clause and not to this one in the same file, which is worse
+  than not applying it. Noted for symmetry: the MC side's walk-through order is not in the same
+  position — `SOURCES.md`'s `## Qualification checklist sources` records a published book and a
+  public overview page for that family, so that order has recorded sources even where its
+  provenance is argued. The absence here is specific to this clause.
 - The mark is in current use by its holder, and no adjudication of it was found. `Command of the
   Message®` is used by Force Management in its own name on its own current public pages (see the
   section above). There is no genericness holding here of the kind the 2026-04-21 MEDDPICC ruling
   supplied.
-  *Corrected 2026-09-22 (06-08):* this point read "the mark is live and unadjudicated", which a
-  reader raised twice, correctly. "Live" carries two senses and this file establishes only one of
-  them. **In use:** confirmed, by the two page reads recorded in `## Message articulation sources`.
-  **Live on the register:** not established and not claimed — `## USPTO register lookups` records
-  the Command of the Message registration as "not attempted separately", and the **Not confirmed**
-  paragraph near the top of this file records that no registration number was retrievable for this
-  mark. The point is restated in the sense that is evidenced. "Unadjudicated" is likewise restated
-  as "no adjudication of it was found", because that is the observation; no search of this mark's
-  adjudication history was run separately from the MEDDPICC one, and a negative observation is not
-  a finding that nothing exists.
+  Narrowed, on an objection a reader raised twice. "Live" carries two senses and this file
+  establishes only one of them. **In use:** confirmed, by the two page reads recorded in
+  `## Message articulation sources`. **Live on the register:** not established and not claimed —
+  `## USPTO register lookups` records the Command of the Message registration as "not attempted
+  separately", and the **Not confirmed** paragraph near the top of this file records that no
+  registration number was retrievable for this mark. The point is therefore stated in the sense
+  that is evidenced, and "no adjudication of it was found" is stated rather than "unadjudicated",
+  because that is the observation: no search of this mark's adjudication history was run separately
+  from the MEDDPICC one, and a negative observation is not a finding that nothing exists.
 - **Prong 4 engages, on all seven.** "Required Capabilities", "Proof Points", "Differentiators" and
   "Positive Business Outcomes" are this framework's own vocabulary for its own blocks, adopted here
   verbatim as `NUMBERING.md` labels; "Before scenario", "After scenario" and "Metrics" are the
-  framework's terms for the same three moves. *Corrected 2026-09-22:* this point previously read
-  "They are not neutral English the way "Metric" or "Competition" are." `Competition` is one of the
-  seven strings `check_repo.py`'s `SOURCE_COINED_LABELS` freezes as source-coined, so it was the wrong side of the
-  comparison. Against the corrected id-6 split, prong 4 now engages on both entries — seven of eight
-  MC names and all seven PF-1 labels — so this point no longer distinguishes the two entries. It is
-  kept because it is true, not because it ranks them.
+  framework's terms for the same three moves. This point once contrasted them against `Competition`
+  as neutral English, which was the wrong side of the comparison: `Competition` is one of the seven
+  strings `check_repo.py`'s `SOURCE_COINED_LABELS` freezes as source-coined. Against the corrected
+  id-6 split, prong 4 now engages on both entries — seven of eight MC names and all seven PF-1
+  labels — so this point no longer distinguishes the two entries. It is kept because it is true, not
+  because it ranks them.
 
 What weighs the other way, recorded so this entry is not one-sided: the seven labels are short noun
 phrases; no rule text under them is taken from a source; and `NOTICES.md` carries the attribution
@@ -591,17 +545,10 @@ file evidences. Prong 3's whole-repo negative was raised once and is now also an
 sweeps recorded under that prong — which is where the command belongs, not here. When this sentence
 was written it claimed a command "recorded above" that did not exist: prong 3 was three sentences
 and no command, and no command anywhere in this file bore on diagrams, figures or visual
-arrangements. *Corrected 2026-09-22 (06-09). This correction first said prong 2's was "the only
-recorded whole-repo sweep", which is itself false — this file records other tree-wide sweeps, and
-none of them bears on prong 3's question, which is the claim that actually carries the correction;
-caught by this round's own self-audit.*
-*Corrected 2026-09-22 (06-10): the 06-09 wording named two of those sweeps as examples, and one of
-them does not exist. There is no "entity check under `## Reproduction boundary`": this file's entity
-searches sit under `## Name collisions`, which is a different section, and `tools/check_repo.py`
-implements no check by that name. Both examples are dropped rather than one repaired, because an
-enumeration of sweeps written into prose is falsified by the next round that adds or removes one —
-the failure this file has now recorded three times — and the sentence's point does not rest on
-them.*
+arrangements. This file does record other tree-wide sweeps, and none of them bears on prong 3's
+question, which is the claim that carries the point. No enumeration of those sweeps is given here:
+a list of sweeps written into prose is falsified by the next round that adds or removes one, a
+failure this file has now recorded three times, and the sentence's point does not rest on it.
 
 One is carried, and here is why rather than a bare note. `skills/proof-first/references/completeness-audit.md`:12-15
 is described in the first bullet above as expressly declining to concede order provenance; a
@@ -626,25 +573,20 @@ puts it into that round's planning records too, so the unexcluded sweep returns 
 the scoped one and a different number after each round. The scoped figure is the one stated here,
 because it is the only one that holds still. That is the same self-reference the prong-3 sweeps
 above record, made again by the round that recorded it, and caught here by its own self-audit rather
-than by a sixth cold read.
-*Corrected 2026-09-22 (06-10): this enumerated the unexcluded sweep as "six — three shipped files
-plus three records discussing them". It returned seven before this round began, and it moves again
-with every commit that mentions the anchor — including the SUMMARY of the round that writes the
-number down, which lands after the sentence is already committed. The enumeration is dropped rather
-than re-counted: three rounds running have falsified a self-referential sweep result recorded in
-prose here, and the counterweight rests on the scoped figure, not the unscoped one.*
+than by a sixth cold read. The unexcluded figure is deliberately not written down: it moves with
+every commit that mentions the anchor, including the SUMMARY of the round that would write it, which
+lands after the sentence is already committed. Three rounds running falsified a self-referential
+sweep result recorded in prose here, and the counterweight rests on the scoped figure rather than
+the unscoped one.
 
-*Corrected 2026-09-22 (06-09): this passage cited the three by path and line number. Only the
-`SKILL.md` one still resolved. `f909d3c`, the previous round's own first task, added three net
-lines to each derivative's preamble, so both derivative citations came to point at the blank line
-three lines above where the sentence had moved to. Cited by quoted string instead — the convention
-the `## Reproduction boundary` correction above already adopted for the deal briefs, and the
-sibling of the named-constant anchors it adopted for `tools/check_repo.py`. A generated file's line
-numbers move whenever its preamble does, which is exactly the property that makes them the wrong
-anchor there. `record-citation-unresolvable` was silent on both, and could not have seen either,
-twice over: the cited lines existed, and `CITATION_RE` requires backticks around the path, which
-these three citations did not carry. That is a second measured demonstration of that code's
-declared ceiling, and like the first it was produced by the round that shipped it.*
+The three are cited by quoted string rather than by path and line number. Two of them are generated
+files, and a generated file's line numbers move whenever its preamble does: a single commit adding
+three net lines to each derivative's preamble left both derivative citations pointing at a blank
+line three lines above where the sentence had moved to. `record-citation-unresolvable` was silent on
+both and could not have seen either, twice over — the cited lines existed, and `CITATION_RE` requires
+backticks around the path, which those citations did not carry. That is a second measured
+demonstration of that code's declared ceiling, and like the first it was produced by the round that
+shipped it.
 
 The list ships. It reaches every installed user, and the two derivatives carry it because
 `tools/generate_derivatives.py` copies `SKILL.md`'s line into both.
@@ -669,31 +611,26 @@ costs **four files** rather than one: `NUMBERING.md` and `skills/proof-first/SKI
 under `## PF-1 sub-blocks` **and** the `Ceiling:` paragraph below them, which names one of the seven
 labels in prose. All four files are committed and all four must be, because
 `generate_derivatives.py --check` compares the derivatives against the committed files.
-*Corrected 2026-09-22: this passage said "three files" and then enumerated two files and a
-command, and two other places in this file said "three files and a regeneration", making the run an
-addition to three rather than one of them. Neither matched the tree.*
-*Corrected 2026-09-22 (06-08): two further defects. The passage rested the four on
-`git grep -l "Positive Business Outcomes"` over the tracked tree outside `.planning/`, which returns
-five files rather than four — this record is the fifth, because it carries the phrase in its own
-prose as well as inside the quoted command.
-*Corrected 2026-09-22 (06-10): that read "once in the `## Reproduction boundary` quotation and once
-inside the quoted command itself", which undercounted. The counting rule matters more than the
-tally, and is why the tally is not repeated in this file's own prose: the two obvious commands
-disagree and both are right about what they measure. `grep -c` is line-based, and one occurrence in
-this file is wrapped across a line break, so it reads one low — which is how three of round 6's five
-readers arrived at a different number from each other. The count that matches the file is a
-wrap-tolerant match over the whole text:
+
+The four are not rested on a sweep. An earlier version grounded them on
+`git grep -l "Positive Business Outcomes"` over the tracked tree outside `.planning/`, which is a
+grep this file runs against itself: the phrase is in this record's own prose as well as inside the
+quoted command, so the sweep counts this record too and breaks again the next time the phrase is
+quoted here. The four citations are individually correct without it.
+
+The counting rule, recorded because it is what makes the tally unstable rather than the tally
+itself: the two obvious commands disagree and both are right about what they measure. `grep -c` is
+line-based, and one occurrence in this file is wrapped across a line break, so it reads one low —
+which is how three of round 6's five readers arrived at different numbers from each other. The
+count that matches the file is a wrap-tolerant match over the whole text:
 `python3 -c "import re;print(len(re.findall(r'Positive\s+Business\s+Outcomes', open('LEGAL-REVIEW.md').read())))"`.
-That command adds no occurrence of its own — the regex is written with `\s+` rather than spaces, so
-it matches neither itself nor a line-based grep — which is the only reason it can be recorded here
-at all. The count itself moved inside this very round, when the correction two sections above
-dropped a sentence that carried the phrase; a number written here would have been false before the
-round ended.* The provenance sentence is dropped rather than repaired: a grep a
-file runs against itself will break again the next time this file quotes the phrase, and the four
-citations are individually correct without it. The by-hand citation also read `NUMBERING.md`:39-45,
-which covers the table but not the prose line below it that carries the seventh label; the edit is
-now described by heading rather than by line, for the reason the `## Reproduction boundary` bullet
-above already gives.*
+That command adds no occurrence of its own, because the regex is written with `\s+` rather than
+spaces and so matches neither itself nor a line-based grep — the only reason it can be recorded here
+at all. No number is written down beside it: the count moves whenever a sentence carrying the phrase
+is added or dropped, which has happened inside a single round before.
+
+The by-hand edit is described by heading rather than by line, for the reason given above: a line
+range covering `NUMBERING.md`'s table misses the prose line below it that carries the seventh label.
 
 What a rename would **not** remove, recorded so the remedy is not oversold: `NUMBERING.md`'s
 sentence under `## PF-1 sub-blocks` states the seven sub-blocks are "one per Command of the Message
@@ -702,20 +639,20 @@ labels are called. There the correspondence sentence and the label table are sep
 the labels leaves it standing, and the seven-element ordered correspondence to a named source stays
 exactly where it is. Clearing prong 4 and clearing prong 2 are different edits, and only the first is
 the four-file one.
-*Corrected 2026-09-22 (06-08): this passage attributed the quoted phrase to
-`skills/proof-first/SKILL.md`:63 as well. It occurs in `NUMBERING.md` under `## PF-1 sub-blocks`, in
-this record, and in seven files under `.planning/` that record the review's own history — and in no
-shipped skill file. `SKILL.md`'s sentence reads "The Command of the Message spine is
-carved into seven sub-blocks, each reserved four IDs: Before scenario, …". Checked with a
-wrap-tolerant command, because in `NUMBERING.md` the phrase straddles a line break and a line-based
-`git grep` misses it there — which is worth recording, since a line-based grep is what would
-normally be run:
-`for f in $(git ls-files); do tr '\n' ' ' < "$f" | grep -q "one per Command of the Message" && echo "$f"; done`.
-The correction is not
-cosmetic, because the same line was also named above as one of the two files a rename edits by hand,
-and a line cannot both be rewritten by a rename and survive one. In `SKILL.md` the source-naming
-clause and the seven labels are one sentence, so a rename does rewrite it; the survives-a-rename
-property belongs to `NUMBERING.md` alone.* No rule body, no worked example and no reader-facing instruction depends on
+
+The survives-a-rename property belongs to `NUMBERING.md` alone, and the distinction is not cosmetic:
+`NUMBERING.md` was also named above as one of the two files a rename edits by hand, and a line
+cannot both be rewritten by a rename and survive one. In `SKILL.md` the source-naming clause and the
+seven labels are one sentence — "The Command of the Message spine is carved into seven sub-blocks,
+each reserved four IDs: Before scenario, …" — so a rename does rewrite it. The "one per Command of
+the Message" phrasing is `NUMBERING.md`'s, not `SKILL.md`'s, and it reaches no shipped skill file.
+Checked wrap-tolerantly, because in `NUMBERING.md` the phrase straddles a line break and the
+line-based `git grep` that would normally be run misses it there:
+`LC_ALL=C; for f in $(git ls-files); do tr '\n' ' ' < "$f" | grep -q "one per Command of the Message" && echo "$f"; done`.
+Outside `NUMBERING.md` and this record every hit is a `.planning/` artifact recording the review's
+own history; that set grows with each round, so it is described rather than counted.
+
+No rule body, no worked example and no reader-facing instruction depends on
 the seven labels, so nothing a reader relies on breaks. What the correction changes is the kind of
 decision it is: a change to shipped content, and so a version decision, rather than an edit to an
 internal registry.
@@ -788,10 +725,7 @@ re-attempted — the status view answering made the `statusview/sn?searchType=rn
 URL that returned HTTP 503 unnecessary, and the `tmsearch.uspto.gov` POST that returned HTTP 405 is
 not a register lookup this review needs. The `tsdrapi.uspto.gov` endpoint in the table above was
 attempted for the first time at this review and returned HTTP 401; it is not a re-attempt of
-anything. *Corrected 2026-09-22 (06-09): this paragraph read "The endpoints that returned HTTP 503
-and HTTP 403 during Phase 6 research answered on this attempt." Both halves were wrong. Only one of
-those two endpoints was re-attempted, and the second endpoint in the table is a different host that
-was never attempted before and did not answer.* The outcomes are recorded because the earlier
+anything. The outcomes are recorded because the earlier
 failures were recorded: a lookup's outcome is reported as observed on the day, in both directions.
 
 ## What remains open
@@ -817,14 +751,14 @@ failures were recorded: a lookup's outcome is reported as observed on the day, i
    four files (two by hand, two regenerated), and nothing a reader depends on — but it clears prong 4
    only; `NUMBERING.md`'s "one per Command of the Message element" sentence carries the prong-2
    correspondence whatever the labels are called, because there that sentence is separate from the
-   label table. *Corrected 2026-09-22 (06-08): this item previously implied the same of
-   `SKILL.md`, which does not carry that sentence and whose one sentence a rename does rewrite.*
+   label table. `SKILL.md` is not in the same position: it does not carry that sentence, and the one
+   sentence it does carry a rename rewrites.
 6. **Two live questions inside the id-6 disposition** — whether the MC list's expression is thin
    enough to carry the conclusion, on a thinness test `SOURCES.md` does not contain; and where the
-   **seven** source-coined MC labels sit on the fourth prong. *Updated 2026-09-22:* this item
-   previously named two labels. `tools/check_repo.py`'s frozen `SOURCE_COINED_LABELS` treats seven of
-   the eight as source-coined and only "Metric" as ordinary English, and the id-6 entry now adopts
-   that split. Either question is a reason to reopen id 6.
+   **seven** source-coined MC labels sit on the fourth prong. Seven rather than the two this item
+   once named: `tools/check_repo.py`'s frozen `SOURCE_COINED_LABELS` treats seven of the eight as
+   source-coined and only "Metric" as ordinary English, and the id-6 entry adopts that split. Either
+   question is a reason to reopen id 6.
 7. **The per-rule reproduction judgement is permanent, not closable.** `SOURCES.md` states no tool in
    this stack performs it. Every future rule added under a `PF-` or `MC-` block needs the same read
    this review gave PF-0.1, PF-3.1, and the MC block names.
@@ -844,15 +778,18 @@ Nothing was substituted. The publish location in `.claude-plugin/plugin.json`,
 `.claude-plugin/marketplace.json` and `README.md`'s install commands remains the disclosed
 placeholder `<owner>/<repo>`, and `publish-location-drift` stays silent because the three carriers
 it compares still agree.
-*Corrected 2026-09-22 (06-10): this read "all four occurrences still agree with each other". The
-check counts no set of four: the only four it names is `_owner_segment`'s four GitHub URL forms,
-which is a normalisation input and not a count of anything this sentence is about. `PUBLISH_LOCATION_CARRIERS` holds three carriers;
-`_publish_locations_in` reads seven structured positions across them — `homepage` and `repository`
+
+Three is the number, and it is a count of carriers rather than of occurrences. There is no set of
+four here: `_owner_segment`'s four GitHub URL forms are a normalisation input, not a count of
+anything this sentence is about. `PUBLISH_LOCATION_CARRIERS` holds three carriers;
+`_publish_locations_in` reads eight structured positions across them — `homepage` and `repository`
 in `plugin.json`, the same two fields plus `owner.url` in `marketplace.json`'s plugin entry, and the
-argument following `npx skills add ` and `claude plugin marketplace add ` in `README.md`; and the
-literal placeholder occurs nine times, reproducible by
-`git grep -o '<owner>/<repo>' -- .claude-plugin README.md | wc -l`. The check compares one owner
-segment per carrier, not occurrences, so three is the number this sentence needed.* No git remote was created. No commit left this machine.
+argument following `npx skills add `, `claude plugin marketplace add ` and the in-session
+`/plugin marketplace add ` in `README.md`; and the literal placeholder occurs nine times,
+reproducible by `git grep -o '<owner>/<repo>' -- .claude-plugin README.md | wc -l`. The check
+compares one owner segment per carrier, so three is what this sentence needed.
+
+No git remote was created. No commit left this machine.
 
 **Why this is recorded rather than retried.** Publication is the one action in this project that
 cannot be undone: a deleted public repository stays in search indexes, in forks, and in archive
@@ -871,17 +808,16 @@ under motion practice on the review date. Deferring forecloses nothing and spend
 The legal review gate itself is unaffected: it is a gate on content, not on publication, and the
 summary above records that its checks were run and recorded on 2026-09-21. Roadmap criterion 1 asks that the
 gate pass *before* public launch; deferring launch satisfies that ordering trivially.
-*Corrected 2026-09-22 (06-09): this sentence continued "and the machine check that enforces it — a
-configured remote requires a passed gate — is green in the no-remote direction". No such check
-exists, and none ever did. `grep -c subprocess tools/check_repo.py` returns 0, so the checker
-cannot observe a git remote at all. The only code reading the `Gate status:` line is
-`check_source_gate_incomplete`, the sole consumer of `GATE_STATUS_PREFIX`, and it compares that
-line against `SOURCES.md`'s row statuses and nothing else. Every "remote" string in the checker is
-a docstring line describing the SSH URL form `git remote -v` prints — two in the module docstring's
-`publish-location-drift` entry, one in `check_plugin_manifest_invalid`'s docstring and two in
-`_owner_segment`'s, the owner normaliser. None of the five is code, and none observes a remote.
-The ordering argument stands on its own and is not weakened by losing a check that was never
-there.*
+
+The ordering argument stands on its own, and no machine check enforces it. There is no code here
+that makes a configured git remote require a passed gate, and there never was:
+`grep -c subprocess tools/check_repo.py` returns 0, so the checker cannot observe a git remote at
+all. The only code reading the `Gate status:` line is `check_source_gate_incomplete`, the sole
+consumer of `GATE_STATUS_PREFIX`, and it compares that line against `SOURCES.md`'s row statuses and
+nothing else. Every "remote" string in the checker is a docstring line describing the SSH URL form
+`git remote -v` prints — two in the module docstring's `publish-location-drift` entry, one in
+`check_plugin_manifest_invalid`'s docstring and two in `_owner_segment`'s, the owner normaliser.
+None of them is code, and none observes a remote.
 
 ### Install verification
 
@@ -1070,12 +1006,9 @@ a stale statement. Recorded as refuted rather than as a gap.
 **All ten CI commands were green again while every one of the fourteen false statements was in the
 tree.** Run 2026-09-21 from `.github/workflows/ci.yml`: `check_repo.py --self-test` PASS,
 `--mutation-test` PASS at 56 codes discrimination-proven, `check_repo.py` **0 violations**, and the
-six self-tests in `evals/` and `tools/generate_derivatives.py --check` all rc=0.
-*Corrected 2026-09-22 (06-09): this read "seven self-tests", which was never true —
+six self-tests in `evals/` and `tools/generate_derivatives.py --check` all rc=0. Six, not seven:
 `find evals -name '*.py'` returns six scripts and `.github/workflows/ci.yml` runs exactly six
-`python3 evals/` commands, six at `f54edf7` where the sentence was written and six today. The same
-sentence opens with "All ten CI commands" and enumerates them as 3 + N + 1, so seven made eleven
-and contradicted its own opening in the same breath. 3 + 6 + 1 = 10 matches `ci.yml`.*
+`python3 evals/` commands, so the ten this sentence opens with decompose as 3 + 6 + 1.
 This is the fifth
 consecutive round matching `WINDOWS.md` id 17's pattern, and the first in which a gap-closure round
 contradicted a file it had written in the same round.
@@ -1106,7 +1039,8 @@ had actually happened to two entries:
   judgement question, the judgement is written out in this file, and the entry closes on that
   reasoning. Ids 3 and 6 are the two. They were previously booked `Fixed`, which the definition
   above does not fit: no shipped content changed for either.
-  *Clarified 2026-09-22 (06-08), against a critique two consecutive rounds raised.* A reader
+
+  The wording of this label was tightened against a critique two consecutive rounds raised. A reader
   objected that id 6 cannot meet this definition while `## What remains open` item 6 carries two of
   its questions as live, and that the entry's own text concedes prong 4 is "recorded rather than
   disposed". The objection is right about the wording and the wording is what changes here, not the
@@ -1139,12 +1073,12 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 9 | 03 | Residual source label outside 03-05's scope | **Fixed** | Closed in an earlier phase. |
 | 10 | 03 | Self-test behavior case 11 in evals/conformance/run_conformance | **Fixed** | Closed in an earlier phase. |
 | 11 | 04 | Publish location frozen as the placeholder <owner>/<repo> | **Open — v2** | Publication deferred 2026-09-21 by operator decision; closes on substitution AND an observed install. |
-| 12 | 04 | DIST-06's prose-quality half, unchecked by any code here | **Open — v2** | Cold read PERFORMED 2026-09-21 and 2026-09-22, six rounds. Round 1's reader on the named question returned PASS — one reader, not two: round 1 ran five readers and its only pair was the README hunt, which returned three false statements; rounds 2 through 5 re-read each round's corrections and found no regression of any fix. Stays open on the statements they found: three in round 1 (G-06-6, closed in 06-05), fourteen in round 2 (G-06-7, G-06-9, closed in 06-06), eleven in round 3 (G-06-10 to G-06-12, closed in 06-07), seventeen in round 4 (G-06-13 to G-06-16, closed in 06-08) eighteen in round 5 (G-06-17 to G-06-20, addressed in 06-09) and twenty-five in round 6 (G-06-21 to G-06-23, addressed in 06-10; closure awaits round 7's read). By `git blame`, ten of round 5's eighteen were authored by a gap-closure round — eight by the last one and two by 06-05 and 06-06, which a brief scoped to the last round's diff could not see. Round 6 moved that split: nine of twenty-five, only four by the last closure, while sixteen predate every closure and eight predate Phase 6 entirely. The count rose because the briefs reached further back, not because the tree got worse. Closes when a round returns none; six have not. *Corrected 2026-09-22 (06-10): this row stopped at round 5 and read "five rounds" and "five have not". Six rounds have run.* |
+| 12 | 04 | DIST-06's prose-quality half, unchecked by any code here | **Open — v2** | Cold read PERFORMED 2026-09-21 to 2026-09-23, seven rounds. Round 1's reader on the named question returned PASS — one reader, not two: round 1 ran five readers and its only pair was the README hunt, which returned three false statements; rounds 2 through 5 re-read each round's corrections and found no regression of any fix. Stays open on the statements they found: three in round 1 (G-06-6, closed in 06-05), fourteen in round 2 (G-06-7, G-06-9, closed in 06-06), eleven in round 3 (G-06-10 to G-06-12, closed in 06-07), seventeen in round 4 (G-06-13 to G-06-16, closed in 06-08) eighteen in round 5 (G-06-17 to G-06-20, addressed in 06-09) twenty-five in round 6 (G-06-21 to G-06-23, addressed in 06-10, and confirmed by round 7 with no correction regressed) and twenty-three in round 7 (G-06-25 to G-06-29, addressed in 06-11). By `git blame`, ten of round 5's eighteen were authored by a gap-closure round — eight by the last one and two by 06-05 and 06-06, which a brief scoped to the last round's diff could not see. Round 6 moved that split: nine of twenty-five, only four by the last closure, while sixteen predate every closure and eight predate Phase 6 entirely. The count rose because the briefs reached further back, not because the tree got worse. Round 7 moved it once more: nine of twenty-three authored by a gap-closure round, five by the last, and thirteen of the twenty-three sit in `.planning/` rather than in shipped files — the first round whose centre of mass was off the shipped tree. Closes when a round returns none; seven have not. |
 | 13 | 04 | 04-04 plan expected a third results-pointer occurrence that never existed | **Waived** | Plan-authored probe error; the shipped README was always correct. |
 | 14 | 04 | 04-07 plan's word-spelled-cardinal counts disagreed with the shipped regex | **Waived** | Plan-authored measurement error; the shipped docstring states the corrected figures. |
-| 15 | 04 | 04-10 plan's import probe matched a docstring prose line as an import | **Waived** | Plan-authored probe error: the probe, not the import set, was what failed. *Corrected 2026-09-22 (06-10): this cell claimed "the AST-based stdlib check confirms the real import set". No such check exists. `git grep -n 'import ast' -- '*.py'` returns nothing, and so does a search for `ast.parse`, `ast.walk` or `ast.Import` across the same files. The claim is deleted rather than restated, on the standard `44cc648` set for the launch section in the previous round — the waiver never rested on a check.* |
+| 15 | 04 | 04-10 plan's import probe matched a docstring prose line as an import | **Waived** | Plan-authored probe error: the probe, not the import set, was what failed. The waiver rests on that observation and on no check: this repository runs no AST-based import check, and `git grep -n 'import ast' -- '*.py'` returns nothing. |
 | 16 | 04 | DIST-03's /config half: style listed and selectable, unobserved | **Open — v2** | Observed 2026-09-21 in a driven interactive session: the picker lists `proof-first` and selection persists to disk. Automation read the terminal, not a human eye; the owner decides whether that meets a condition written as a human observation. |
-| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | Six rounds of the pattern, every one measured: ten CI commands green every time while cold readers found three, fourteen, eleven, seventeen, eighteen and twenty-five checkably-false statements. *Corrected 2026-09-22 (06-10): this opened "Eighth round of the pattern" and then enumerated five rounds. The ordinal is replaced by the enumeration, which is checkable against this file's own round records; `WINDOWS.md` id 17 counted the same pattern as five at the same moment, which is how two numbers for one thing survived.* Round 4 changed what this entry argues and round 5 changed its diagnosis. One round-4 finding no string gate could catch in principle: a count of MEANINGS, which no command produces. But three classes could be caught mechanically, and 06-08 put code under two — a caveat count asserted against len(REQUIRED_CAVEATS), and `record-citation-unresolvable` over `path`:N citations in this file and README (58 codes discrimination-proven). That code ships with a measurement that bounds it: replayed over the full history as measured at 06-08 (435 commits then) it fired zero times, because every citation finding four rounds produced was a line that existed and said something else. It is future insurance, not a guard over what occurred — demonstrated when 06-08's own commits broke six of this record's citations, and again in round 5 when its first commit broke two more by lengthening a generated preamble. Round 5's largest class is the one 06-08 left to prose discipline: scope overstatement about a mechanical guard, 7 of 18, against citations at 2 of 18 where the new code sits and caught neither. Enforcement scope is mechanizable only by running the checker under a tracer and stays a candidate; so does asserting the bench brief's timeline against its own figures table, which 06-09 filed rather than shipped because the brief states the comparison in both orientations. Ten of round 5's eighteen were authored by a gap-closure round, two of them by 06-05 and 06-06 rather than the last one, so 06-09 widened the fourth brief from the last round's diff to every gap-closure range and took the whole-tree sweep from one reader to two. Correction to this entry's own earlier rounds: they said "seven self-tests" in `evals/`; it holds six scripts and `ci.yml` runs six — the defect class this entry exists to record, committed by the entry recording it. The proxy-gate refusal stands for the semantic half. Round 6 found twenty-five, nine of them authored by a gap-closure round and only four by the last one, with sixteen predating every closure and eight predating Phase 6 — the oldest two written by plan 01-01, the commit that created `check_repo.py`. Its largest class is the scope absolute, six of twenty-five and five of those in `check_repo.py`. 06-10 settled the enforcement-scope candidate this entry has carried since 06-08. It shipped the one assertion that is exact rather than a proxy: `--self-test` now parses the checker's own docstring catalogue out of `__doc__` and compares it to `ALL_CHECK_CODES` in both directions, which caught the live instance of 57 listed against 58 implemented. It refused the frozen path-to-readers map on a measurement rather than on preference — the three readers whose absence from the checker's comments produced this round's findings all reach their paths through module constants or a glob and carry no path literal in their bodies, so a static scan would have found none of them, and producing the map needs the checker to run itself under a tracer. The general scope check therefore stays a candidate, on six instances rather than one, and the three false absolutes it would have guarded were replaced by the tracer's measured per-path reader lists instead of by corrected absolutes. Closes with G-06-21 through G-06-23. |
+| 17 | 04 | No code compares two assertions in one document for consistency | **Open — v2** | Seven rounds of the pattern, every one measured: ten CI commands green every time while cold readers found three, fourteen, eleven, seventeen, eighteen, twenty-five and twenty-three checkably-false statements. The ordinal is carried by the enumeration rather than written separately, because it is checkable against this file's own round records and an ordinal is not. Round 4 changed what this entry argues and round 5 changed its diagnosis. One round-4 finding no string gate could catch in principle: a count of MEANINGS, which no command produces. But three classes could be caught mechanically, and 06-08 put code under two — a caveat count asserted against len(REQUIRED_CAVEATS), and `record-citation-unresolvable` over `path`:N citations in this file and README (58 codes discrimination-proven). That code ships with a measurement that bounds it: replayed over the full history as measured at 06-08 (435 commits then) it fired zero times, because every citation finding four rounds produced was a line that existed and said something else. It is future insurance, not a guard over what occurred — demonstrated when 06-08's own commits broke six of this record's citations, and again in round 5 when its first commit broke two more by lengthening a generated preamble. Round 5's largest class is the one 06-08 left to prose discipline: scope overstatement about a mechanical guard, 7 of 18, against citations at 2 of 18 where the new code sits and caught neither. Enforcement scope is mechanizable only by running the checker under a tracer and stays a candidate; so does asserting the bench brief's timeline against its own figures table, which 06-09 filed rather than shipped because the brief states the comparison in both orientations. Ten of round 5's eighteen were authored by a gap-closure round, two of them by 06-05 and 06-06 rather than the last one, so 06-09 widened the fourth brief from the last round's diff to every gap-closure range and took the whole-tree sweep from one reader to two. Correction to this entry's own earlier rounds: they said "seven self-tests" in `evals/`; it holds six scripts and `ci.yml` runs six — the defect class this entry exists to record, committed by the entry recording it. The proxy-gate refusal stands for the semantic half. Round 6 found twenty-five, nine of them authored by a gap-closure round and only four by the last one, with sixteen predating every closure and eight predating Phase 6 — the oldest two written by plan 01-01, the commit that created `check_repo.py`. Its largest class is the scope absolute, six of twenty-five and five of those in `check_repo.py`. 06-10 settled the enforcement-scope candidate this entry has carried since 06-08. It shipped the one assertion that is exact rather than a proxy: `--self-test` now parses the checker's own docstring catalogue out of `__doc__` and compares it to `ALL_CHECK_CODES` in both directions, which caught the live instance of 57 listed against 58 implemented. It refused the frozen path-to-readers map on a measurement rather than on preference — the three readers whose absence from the checker's comments produced this round's findings all reach their paths through module constants or a glob and carry no path literal in their bodies, so a static scan would have found none of them, and producing the map needs the checker to run itself under a tracer. The general scope check therefore stays a candidate, on six instances rather than one, and the three false absolutes it would have guarded were replaced by the tracer's measured per-path reader lists instead of by corrected absolutes. Round 7 found twenty-three against a tree where all ten CI commands were green, re-measured at `ad073b9` by 06-11. Its centre of mass moved off the shipped tree for the first time — thirteen of the twenty-three sit in `.planning/`, three of them ledger rows whose twins in this file 06-10 had already corrected, so the correction reached the reproduction and not the original. The project owner bounded the gate to shipped files on 2026-09-23 (ledger id 33), and this entry's closure condition reads over the shipped tree from here. Closes with G-06-25 through G-06-28. |
 | 18 | 05 | Name-collision search for bench-deal-brief.md's invented names | **Fixed** | Closed by 06-02's searches; the premise that this environment has no network had expired. |
 | 19 | 05 | Whether the eight benchmark scenarios are realistic presales tasks | **Waived** | Backstop judgement no tool here performs; scenarios are committed and readable. |
 | 20 | 05 | aggregate() pools per-order records instead of averaging pairs first | **Open — v2** | Not fixed here: the fix moves a published figure. 06-03 provably did not inherit it. |
@@ -1157,7 +1091,7 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 27 | 02 | 02-10 plan's whole-file phrase count returned 15 against 14 | **Waived** | Plan-authored probe artifact; the table-scoped count was correct at 14. |
 | 28 | 04 | Route-equivalence measured and not distinguished | **Waived** | Measured null result published with its six named limits (`run_routes.py`'s `REQUIRED_CAVEATS`, one bullet rendered per key). |
 | 29 | 06 | PF-1's seven Command of the Message sub-block labels, in NUMBERING.md and in the shipped skill | **Open — v2** | Opened at this review. The counterweight recorded when the row was opened — that the list appears only in an internal registry — was false, corrected by 06-06: SKILL.md:63 and both derivatives name all seven in the table's order. The first of its two questions is answered by that fact; stays open on prong 4. Renaming the labels now costs four files (NUMBERING.md and SKILL.md by hand, both derivatives regenerated) and clears prong 4 only. |
-| 30 | 06 | README's claim region says "drafted twice" without the 3 repeats | **Open — v2** | `evals/benchmark/RESULTS.md`'s `n` column reads 3 in all 32 rows of its mechanical-proxy table and 6 in all 96 rows of its judged table, so a reader who takes "drafted twice" as a per-scenario draft count is contradicted by a committed file. The sentence is defensible read as naming the two conditions rather than the drafts, and the clause after it gives the 96 generations and 48 averaged pairs from which the three repeats are recoverable — which is why it is recorded rather than rewritten. *Corrected 2026-09-22 (06-10): the ground for this row read "Not a falsehood — no committed file contradicts it". `RESULTS.md` is that file, and it has been committed since Phase 5. The row stays open on the same observation, two consecutive rounds of readers tripping on the sentence; only its stated ground changes.* |
+| 30 | 06 | README's claim region says "drafted twice" without the 3 repeats | **Open — v2** | `evals/benchmark/RESULTS.md`'s `n` column reads 3 in all 32 rows of its mechanical-proxy table and 6 in all 96 rows of its judged table, so a reader who takes "drafted twice" as a per-scenario draft count is contradicted by a committed file. The sentence is defensible read as naming the two conditions rather than the drafts, and the clause after it gives the 96 generations and 48 averaged pairs from which the three repeats are recoverable — which is why it is recorded rather than rewritten. The row stays open on the observation that readers keep tripping on the sentence, not on a claim that nothing contradicts it: `RESULTS.md` has been committed since Phase 5 and does. |
 | 31 | 06 | Two reasoning critiques of the id-6 prong answers | **Open — v2** | Judgements about argument quality, not checkable falsehoods: prong 2 leans on a thinness test `SOURCES.md` does not state, and prong 4 records position instead of disposing. 06-07 removed prong 2's two other unrecorded grounds (a "many independent publishers" lookup nothing records, and a mnemonic the same entry had retired), which narrows the prong-2 answer to the thinness test alone and makes this row the whole of what carries it. |
 | 32 | 06 | `evals/proxy-sources.md`'s two source rows were never re-fetched | **Open — v2** | The last file whose provenance rested on the expired no-network premise. Restated in the past tense by 06-06; re-fetching was out of that round's scope. |
 
