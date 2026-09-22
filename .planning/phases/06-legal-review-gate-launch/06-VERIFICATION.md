@@ -1,20 +1,20 @@
 ---
 phase: 06-legal-review-gate-launch
 status: human_needed
-score: "2/2 must-haves verified. Round 5's four gaps (G-06-17..20) are CLOSED by 06-09 across 21 tasks and 8 files, addressing all eighteen checkably-false statements, and round 5 confirmed every one of 06-08's seventeen corrections holds. Not yet independently read: 06-09 wrote the corrections a round-6 reader would be verifying, and each of the five self-checks so far has missed what an independent reader then found. The round shipped one new build assertion (INIT-EVENTS.md's init-event key set, mutation-probed with an unmutated control and hardened once by the code-review gate) and one method change: the fourth standing brief now reads every gap-closure commit range rather than only the last round's diff, and the whole-tree sweep runs two readers. Task 18's self-audit found eight further defects in the round's own added sentences and fixed them; the code-review gate found a ninth in its new assertion. All ten CI commands green throughout. Requirement checkboxes stay unchecked. Closure condition unchanged — WINDOWS id 12 closes when a round of cold reads returns none; five have not."
+score: "2/2 must-haves verified. Round 6 ran the standing set as 06-09 amended it — seven readers, four briefs — and returned 25 checkably-false statements against round 5's 18, opening G-06-21, G-06-22 and G-06-23. The count rose because the briefs reached further back, not because the tree worsened: 16 of 25 predate every gap closure and 8 predate Phase 6, the oldest authored by plan 01-01, the commit that created the checker. The last closing round's share more than halved (06-09 authored 4 of 25, against 06-08's 8 of 18). Both of 06-09's structural changes were measured and both paid: the widened fourth brief reached one finding a diff-scoped brief could not, and the second sweep reader produced four unique findings, 16% of the round. README returned ZERO for the first time in six rounds, two readers cross-checked. All ten CI commands green throughout. Three findings came from the orchestrator over .planning/, which every reader tree strips — a standing harness gap now recorded as a gap-closure item. Requirement checkboxes stay unchecked. Closure condition unchanged — WINDOWS id 12 closes when a round of cold reads returns none; six have not."
 verified: 2026-09-22
 requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 24
-human_verification: 16
-human_verification_performed: 20
-human_verification_passed: 4
-human_verification_issues: 16
-uat_round: "/gsd-verify-work 06 round 5, 2026-09-22"
-gap_closure_round: "06-09, 2026-09-22 — G-06-17, G-06-18, G-06-19, G-06-20 closed; not yet independently read"
+human_verification: 19
+human_verification_performed: 24
+human_verification_passed: 5
+human_verification_issues: 19
+uat_round: "/gsd-verify-work 06 round 6, 2026-09-22"
+gap_closure_round: "06-09, 2026-09-22 — G-06-17..20 closed and independently re-read in round 6; all four corrections hold. Round 6 opened G-06-21, G-06-22, G-06-23."
 gaps_closed: 16
-gaps_open: 0
-gaps_open_ids: []
+gaps_open: 3
+gaps_open_ids: [G-06-21, G-06-22, G-06-23]
 round_4_closure:
   plan: 06-08
   tasks: 17
