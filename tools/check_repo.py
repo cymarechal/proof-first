@@ -461,7 +461,7 @@ Violation codes implemented in this file:
                       contains `badge` or `shields.io`, or ends `.svg`,
                       and matches no entry in the frozen BADGE_ALLOW_LIST.
                       The allow-list admits build status and license only:
-                      a CI badge reports that ten offline scripts exited
+                      a CI badge reports that ten offline commands exited
                       zero and a license badge states what LICENSE already
                       states, so neither carries a measured product claim.
                       Fires once per offending image, naming its URL.
@@ -1625,7 +1625,7 @@ CLAIM_SOURCE_GLOB = 'evals/*/RESULTS*.md'
 _MARKDOWN_IMAGE_RE = re.compile(r'!\[[^\]]*\]\(([^)]*)\)')
 
 # Badge policy, frozen: build status and license only. Neither carries a
-# measured product claim -- a CI badge reports that ten offline scripts
+# measured product claim -- a CI badge reports that ten offline commands
 # exited zero, and a license badge states what LICENSE already states. No
 # badge may carry a number this repository has not measured, which is why
 # every shields.io endpoint and every dynamic badge is refused rather than
