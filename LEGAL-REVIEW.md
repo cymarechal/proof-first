@@ -285,9 +285,19 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
 
 - **No shipped skill file carries any of the seven.** Not `skills/proof-first/SKILL.md`, not any
   `references/*.md`, not `output-styles/proof-first.md`, not `prompts/system-prompt.md`. This is not
-  an observation, it is mechanically held: `source-label-in-skill-content` fails the build on any of
-  the seven in that content, and it is green. "Metric" appears throughout those files, which is
+  an observation, but it is held by two mechanisms rather than one, and saying which is which
+  matters. `source-label-in-skill-content` fails the build on any of the seven, and it is green —
+  but its scope is `skills/*/SKILL.md` plus the `references/*.md` beside it, and it never opens
+  either derivative; its own docstring says so. The derivatives are held by the second step:
+  `generate_derivatives.py --check` byte-compares freshly rendered output against the committed
+  bytes of both, so a derivative can carry no label its sources do not, and the sources are what the
+  first check holds. Both commands run in CI. "Metric" appears throughout those files, which is
   exactly why it is excluded from the list.
+  *Added 2026-09-22 (06-08):* the ceiling neither the entry nor the checker declared. The label
+  check reads `strip_fences(...)`, so one of the seven inside a fenced block in `SKILL.md` would
+  pass it and then be concatenated verbatim into both derivatives. Presently moot and stated because
+  it is: `grep -c '```' skills/proof-first/SKILL.md skills/proof-first/references/*.md` returns 0
+  for all six files.
 - **Five of the seven appear outside `NUMBERING.md`,** in the two committed deal briefs, as headings
   and role designations. Cited by heading rather than by line, because both files are edited more
   often than this record is re-read and line citations in this file have drifted before:
@@ -320,7 +330,9 @@ from two conceded names to seven is a material widening, and the honest test is 
 ever rested on the count. It did not: it rested on position — that the conceded terms reach no
 shipped skill content, that `NOTICES.md` carries the attribution for the family, and that no rule
 text under the blocks is taken from a source. All three hold for all seven, and the first is now
-mechanically enforced rather than observed. What the widening does change is the price of the
+mechanically enforced rather than observed — by the two commands named in the first bullet above,
+the label check over the skill sources and the derivative byte-comparison over the two generated
+files, not by the label check alone. What the widening does change is the price of the
 stricter reading: renaming to clear prong 4 would touch `NUMBERING.md` and both deal briefs rather
 than a registry alone. This review still does not rename, and the choice is recorded here rather than
 left implicit. Prong 4 remains recorded rather than disposed — ledger row 31 concedes exactly that,
