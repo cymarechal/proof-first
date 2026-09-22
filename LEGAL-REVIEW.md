@@ -544,7 +544,8 @@ commissioned this read required the list to be examined, not disposed of. It was
 questions. The first — whether an internal ID registry counts as shipping the list — is no longer a
 question: the list is in the shipped skill, so it does not turn on how a registry is characterised.
 The second stands: whether `SOURCES.md`'s fourth prong is answered by attribution or only by
-renaming, asked here against a live unadjudicated mark instead of an adjudicated one. That question
+renaming, asked here against a mark in current use by its holder with no adjudication found,
+instead of against an adjudicated one. That question
 also sits inside id 6's disposition, which is why the two entries were compared when this section
 was written; they are related questions about the same prong, not the same open items — `## What
 remains open` carries them separately, as items 5 and 6, with different content. Recorded as
