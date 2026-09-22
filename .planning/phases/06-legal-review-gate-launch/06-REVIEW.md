@@ -1,6 +1,97 @@
 ---
 status: clean
 phase: 06-legal-review-gate-launch
+reviewed: 2026-09-23
+round: gap-closure (06-11)
+scope: source files changed by 06-11's gap commits (743b1bb..HEAD) — tools/check_repo.py is the only file carrying executable code; LEGAL-REVIEW.md, examples/deal-brief.md and evals/conformance/RESULTS-mod04.md are prose records reviewed under the round's own self-audit, not here
+reviewer: inline (orchestrator) — the gsd-code-reviewer subagent was not dispatched
+depth: standard
+files_reviewed: 1
+findings:
+  critical: 0
+  warning: 0
+  info: 0
+  total: 0
+findings_total: 0
+findings_open: 0
+findings_fixed: 0
+supersedes: 06-REVIEW.md as committed for the 06-10 round (preserved in full below, with its own supersession chain back to 06-05)
+---
+
+# Phase 6 Code Review — gap-closure round (06-11)
+
+**One file carries executable code this round, and its change is two lines. No findings.**
+
+Eleven commits. In `tools/check_repo.py` the executable surface is exactly:
+
+```python
+IN_SESSION_MARKETPLACE_ADD_RE = re.compile(r'/plugin marketplace add ([^\s`]+)')
+```
+
+and the two-line loop in `_publish_locations_in` that runs it over README's text. Everything else
+the round changed in that file is docstring prose — the opening scope pointer (C7), the
+path-literal narrowing (C8), and the two enumerations that had to move with the new pattern.
+
+**Why no subagent.** This session's instructions prohibit dispatching the Agent tool. The review was
+performed inline against the same checklist, and this line records the deviation rather than letting
+the report imply a dispatch that did not happen — the same disclosure every round since 06-05 made.
+
+## What was reviewed, and how
+
+Behavioural first, read-through second.
+
+| Property | How it was checked | Result |
+|---|---|---|
+| The new pattern discriminates | mutation probe on scratch copies, before and after the edit, each against an unmutated control | pre-edit: mutating `README.md`:79's owner → **0 violations**, `:66` → fires. post-edit: control 0, and `:66`, `:73`, `:79` each fire `publish-location-drift` |
+| It does not double-count the CLI form | both patterns run over both command lines directly | in-session pattern on the CLI line → `[]`; CLI pattern on the in-session line → `[]`. Disjoint, and `owners` is a set regardless |
+| The constant is live, not dead | `grep -c IN_SESSION_MARKETPLACE_ADD_RE` | 2 — the definition and the one call site |
+| No syntax or escape-sequence regression | `python3 -m py_compile` | clean |
+| Nothing else in the checker moved | `--self-test`, `--mutation-test`, live run | 58 codes verified, 58 discrimination-proven, 0 violations — identical to before |
+
+## Findings
+
+None.
+
+## Points considered and cleared
+
+- **Why a separate pattern rather than widening `MARKETPLACE_ADD_RE`.** That regex is also
+  `check_readme_install_paths`' route-2 anchor, where the *CLI* form is the text being asserted
+  present. Folding the in-session form into it would let a README satisfy route 2 while shipping
+  only the slash-command form — a silent weakening of a different check, paid for a cosmetic
+  saving. Kept separate, with the reason in a comment at the definition.
+- **Scope of application.** The new loop sits in `_publish_locations_in`'s README branch only; the
+  two manifest branches are untouched, and the function's contract of reading structured positions
+  rather than scanning every link is preserved.
+- **Character class consistency.** The new pattern's argument class is the same one both siblings
+  use — everything up to whitespace or a backtick — so all three
+  command arguments terminate on the same boundary.
+- **The docstring enumerations moved with the code.** Both places that list README's structured
+  positions — the module docstring's `publish-location-drift` entry and `_publish_locations_in`'s
+  own — name the third command now. A third site, `LEGAL-REVIEW.md`'s launch section, said "seven
+  structured positions" and is now eight; it was corrected in the same round under C9.
+
+## Declared ceiling of this review
+
+It is an inline read by the agent that wrote the code. The two things that make it worth more than
+a self-assurance are that the one behavioural change was put under a mutation probe with an
+unmutated control both before and after the edit, and that the probe's pre-edit run is what
+established the defect existed at all rather than being inferred from the README sentence. Neither
+substitutes for round 8's cold read, which is this phase's standing closure condition.
+
+## Gate
+
+**Clean.** No findings. All ten commands in `.github/workflows/ci.yml` exit 0 at `HEAD`, and were
+re-run after every one of the round's eleven commits.
+
+---
+
+# Superseded: the 06-10 round
+
+The report below is the previous round's, preserved unchanged.
+
+---
+status: clean
+phase: 06-legal-review-gate-launch
 reviewed: 2026-09-22
 round: gap-closure (06-10)
 scope: source files changed by 06-10's gap commits (f2cdd16..HEAD) — tools/check_repo.py is the only file carrying executable code; LEGAL-REVIEW.md, SOURCES.md and evals/conformance/RESULTS-mod04.md are prose records reviewed under the round's own self-audit, not here
