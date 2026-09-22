@@ -2,14 +2,91 @@
 status: clean
 phase: 06-legal-review-gate-launch
 reviewed: 2026-09-21
-round: gap-closure (06-05)
-scope: files changed by 06-05's gap commits (7e2170d..HEAD)
+round: gap-closure (06-06)
+scope: files changed by 06-06's gap commits (d5efe4b..HEAD)
 reviewer: inline (orchestrator) — the gsd-code-reviewer subagent was not dispatched
 findings_total: 0
 findings_open: 0
 findings_fixed: 0
-supersedes: 06-REVIEW.md as committed in fbcef01
+supersedes: 06-REVIEW.md as committed for the 06-05 round (preserved in full below)
 ---
+
+# Phase 6 Code Review — gap-closure round (06-06)
+
+**One source file changed in this round: `tools/check_repo.py`. No findings.**
+
+Fourteen commits; thirteen touch documentation only. The single executable change adds one violation
+code, `benchmark-run-claim-stale`, with its constants, its check function, its self-test fixtures and
+its mutation.
+
+## What was reviewed, and how
+
+The review is behavioural, not a read-through. Every claim the new code's docstring makes about what
+it does was put to a probe against an unmutated sibling control — red for the stated reason, green on
+the control — rather than accepted from the prose.
+
+| Claim in the docstring | Probe | Control | Mutant |
+|---|---|---|---|
+| Catches a regression restored **capitalised** | `No benchmark has run.` appended to the skill source | 0 | 1 ✓ |
+| Catches a **derivative-only** regression the source-blind sibling would miss | lowercase claim appended to `output-styles/proof-first.md`, source untouched | 0 | 1 ✓ |
+| Stays silent when the **evidence file is absent** — the sentence is then true | same capitalised mutant, `evals/benchmark/RESULTS.md` deleted | — | 0 ✓ |
+
+The third row is the one that matters most: it is the two-sided conjunction the sibling code
+established, and without it the check would fire on an honest disclosure in a tree where no benchmark
+had run.
+
+## Points considered and cleared
+
+- **Placement in `run_derivative_checks`.** The call sits above the `numbering_path.exists()` early
+  return, so it runs whether or not `NUMBERING.md` is present. Checked deliberately — the sibling
+  call has the same placement and the ordering is load-bearing.
+- **`BENCHMARK_CLAIM_PATHS = DERIVATIVE_PATHS + DERIVATIVE_SOURCE_NAMES`.** Both operands are tuples,
+  so this concatenates to seven paths rather than doing anything surprising. Each is existence-guarded
+  before it is read.
+- **False-positive surface of a case-insensitive substring.** Widening the match widens what can trip
+  it. The declared ceiling states the check is literal presence and nothing more, matching the
+  sibling's disclosed discipline, and the corrected sentence in the tree does not contain the needle
+  — `check_repo.py` reports 0 violations, which is the direct evidence.
+- **Mutation co-firing.** The mutator appends to a `DERIVATIVE_SOURCE_NAMES` file, so
+  `skill-derivative-stale` fires on the same mutant. This does not weaken the result:
+  `mutation_test` requires only that the expected code is silent on the control and fires on its own
+  mutant, and the control ran clean at 0 violations.
+
+## Deviation from the plan, reviewed on its merits
+
+The plan directed that the literal be added to the existing `check_derivative_comparison_claim`. The
+executor made it a sibling code instead. Reviewed and **upheld**: the mutation harness maps one code
+to one mutation, so a second literal folded into an existing code would have been registered without
+ever being independently discrimination-proven — which is this repository's own named recurring
+defect, `.planning/WINDOWS.md` id 10. The deviation serves the plan's stated intent ("prove the
+addition discriminates via `--mutation-test`") better than its letter would have. It is recorded in
+the commit message rather than left to be discovered.
+
+## Gate
+
+All ten commands from `.github/workflows/ci.yml`, after the final commit: green.
+`check_repo.py --mutation-test` reports **57 codes discrimination-proven** with a clean control, up
+from 56.
+
+## The caveat, repeated rather than assumed carried over
+
+**This review was not independent.** The agent that wrote the code also reviewed it — the exact
+weakness `.planning/WINDOWS.md` id 17 measures, and which this phase's cold reads have now
+demonstrated for a fifth consecutive round. The behavioural probes above are worth more than the
+read-through precisely because they do not depend on the reviewer's judgement, but a clean
+self-review is still weaker evidence than a clean independent one.
+
+The round did run one thing an ordinary self-review does not: it re-read the sentences it had
+*added*, not only the ones it fixed, and found two further checkably-false statements — one of its
+own making. Both were corrected before the round closed. That is recorded here because the previous
+round's failure was precisely this, and catching it once is not evidence the habit holds.
+
+---
+
+# Superseded: Phase 6 Code Review — gap-closure round (06-05)
+
+The round-2 review above replaces this one at the same deterministic path. It is preserved in full
+rather than overwritten, because the round it reviewed is the round whose defects round 2 found.
 
 # Phase 6 Code Review — gap-closure round (06-05)
 
