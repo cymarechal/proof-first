@@ -312,8 +312,10 @@ The prong's "visual arrangement" clause is narrower than either command reaches,
 judgement rather than claimed as swept: this repository does carry tables and one layout tree, and
 whether a table's *arrangement* reproduces a source's ordering is not a question `git grep`
 answers. The one instance a reader could raise is `NUMBERING.md`'s MC table against the source's
-own dimension order, and that is the order-provenance question the prong-2 correction above already
-concedes has to be argued rather than declared. It is not disposed of here.
+own dimension order, and that is the order-provenance question `### The PF-1 sub-block list` below
+already concedes — "the correspondence is declared there, the *order* is not, and has to be argued
+here". It is not disposed of here. *Corrected 2026-09-22 (06-09) by this round's own self-audit:
+this first attributed that concession to the prong-2 correction above, which does not make it.*
 
 **Prong 4 — a term coined by a source and adopted here as this repository's own label.** This prong
 engages and the earlier draft never reached it, although its own step 3 described the eight names as
