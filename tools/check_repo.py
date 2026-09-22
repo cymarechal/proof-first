@@ -236,12 +236,20 @@ Violation codes implemented in this file:
                       about whether a section's content is correct or
                       complete, and it does not check that each section
                       carries exactly one **Order:** line or that the
-                      fifteen frozen element labels are present, both
-                      enforced at plan level instead of here. It also emits
-                      no violation for an extra section the file also
-                      contains: the classification section and the closing
-                      refusal section are both legitimate and neither is a
-                      family.
+                      fourteen frozen element labels are present, both
+                      enforced at plan level instead of here. Fourteen under
+                      the rule 03-03-PLAN.md's own verification command
+                      applies, stated here because "element label" is
+                      defined in no committed file: the bold `**Label:**`
+                      lines that are not **Order:** lines -- thirteen inside
+                      the four family sections plus **No family fits:** in
+                      the classification section. The file carries eighteen
+                      bold labels in total; the other four are the
+                      **Order:** lines this sentence counts separately. It
+                      also emits no violation for an extra section the file
+                      also contains: the classification section and the
+                      closing refusal section are both legitimate and
+                      neither is a family.
   skill-family-line-gate-missing - a skills/*/SKILL.md's '## Self-check
                       before delivering' section is present but its body
                       does not name both anchors MOD-04's family-line gate
@@ -2882,11 +2890,23 @@ def check_artifact_family_sections(repo_root):
     Declared ceiling: this check is heading presence only. It says nothing
     about whether a section's content is correct or complete, and it does
     not check that each section carries exactly one **Order:** line or that
-    the fifteen frozen element labels are present -- that parity is
+    the fourteen frozen element labels are present -- that parity is
     enforced at plan level, the same way the rule-heading-versus-**Replace
-    with:**-count parity is. It also emits no violation for an extra
-    section the file also contains: the classification section and the
-    closing refusal section are both legitimate and neither is a family."""
+    with:**-count parity is. Fourteen under the rule 03-03-PLAN.md's own
+    verification command applies, stated here because "element label" is
+    defined in no committed file: the bold `**Label:**` lines that are not
+    **Order:** lines -- thirteen inside the four family sections plus
+    **No family fits:** in the classification section. The file carries
+    eighteen bold labels in total; the other four are the **Order:** lines
+    this sentence counts separately. Corrected 06-09: both this docstring
+    and the catalogue entry said "fifteen", which is reachable under no
+    rule and never was -- the same 18/4/13 split held at 6bc2dab, where the
+    sentence was written. The miscount is inherited: 03-03-PLAN.md's prose
+    says fifteen while its own verification command lists fourteen.
+
+    It also emits no violation for an extra section the file also contains:
+    the classification section and the closing refusal section are both
+    legitimate and neither is a family."""
     violations = []
     for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
         patterns_path = skill_path.parent / 'references' / 'artifact-patterns.md'
