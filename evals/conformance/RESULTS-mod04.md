@@ -775,7 +775,7 @@ Blob SHA `fadc48613f71fb29d55b42f70805225f9087a2b9`, model `claude-sonnet-5`, fi
 repeats planned per fixture = 10 planned sessions.
 
 12 attempted (10 planned + 2 retries after timeout exclusions), 2 unscoreable (both
-`reason=timeout`: `A-rfp-answer` first attempt, `B-proposal-section` first attempt; both
+`reason=timeout`: `A-rfp-answer` first attempt, `B-proposal-section` second attempt; both
 retried successfully and the retries are counted below), 10 scoreable:
 - conformant: 3 (`B-proposal-section` retry, `D-demo-discovery` first attempt,
   `E-ambiguous` first attempt)
@@ -793,13 +793,28 @@ already recorded as the post-03-07 skill — `03-11` is the only plan that touch
 recipe as Arm A.
 
 11 attempted (10 planned + 1 retry after a timeout exclusion), 1 unscoreable
-(`reason=timeout`, `A-rfp-answer` first attempt, retried successfully), 10 scoreable:
+(`reason=timeout`, `A-rfp-answer` second attempt, retried successfully), 10 scoreable:
 - conformant: 4 (`A-rfp-answer` retry, `C-exec-summary` x2, `E-ambiguous` first attempt)
 - no-family: 6 (`A-rfp-answer` first attempt, `B-proposal-section` x2, `D-demo-discovery`
   x2, `E-ambiguous` second attempt)
 - rule-before-family: 0
 
 **N_B = 4, M_B = 10. N_B/M_B = 40.0%.**
+
+*Corrected 2026-09-22 (06-10): two of the three timeout attributions above named the wrong attempt.
+Arm A's `B-proposal-section` timeout is its **second** attempt, not its first — its first attempt
+scored `no-family`, as this section's own `no-family` line already said, so the two lines
+contradicted each other. Arm B's `A-rfp-answer` timeout is likewise its **second** attempt, against
+a first that scored `no-family`. Arm A's `A-rfp-answer` timeout was correctly attributed to the
+first attempt and is unchanged. Re-derived twice, from the run blocks in file order and
+independently from the twenty-three per-block commit subjects, which carry the `repeat=` index and
+the `(timeout, excluded)` / `(retry)` labels; the two agree.
+
+`N_A`, `M_A`, `N_B` and `M_B` are unaffected. Every `conformant` and `no-family` attribution in
+both arms was re-derived in the same pass and all of them were already correct, so the published
+`3/10` and `4/10` figures, the `30.0%` and `40.0%` rates, the branch selection below, and
+`README.md`'s statement of the same two rates all stand exactly as recorded. This note exists so a
+later round does not reopen those figures on the strength of this correction.*
 
 ### Branch selection
 
