@@ -311,15 +311,22 @@ from, so you can check it against that file yourself; `check_repo.py` will not d
 ## Keeping derivatives in sync
 
 `output-styles/proof-first.md` and `prompts/system-prompt.md` are generated, not hand-written.
-After editing `skills/proof-first/SKILL.md` or any of its reference files, run:
+After editing `skills/proof-first/SKILL.md` or any of the four reference files the generator
+reads — `deletion-test.md`, `completeness-audit.md`, `artifact-patterns.md`, `checklist.md` —
+run:
 
 ```
 python3 tools/generate_derivatives.py
 ```
 
+The fifth reference file, `worked-examples.md`, is not a source. It supplies illustration rather
+than instruction: every rule it illustrates already carries its own constructive
+**Replace with:** line in one of the four, so nothing normative is lost by leaving it out.
+Editing it changes no derivative.
+
 CI runs the generator's own `--check` mode and `tools/check_repo.py`'s `skill-derivative-stale`
-code; either one fails the build if a derivative is committed stale, so skipping this step cannot
-ship silently.
+code; either one fails the build if a derivative is committed stale, so skipping this step after
+an edit to any of the four sources cannot ship silently.
 
 ## Repository layout
 
