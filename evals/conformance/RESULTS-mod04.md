@@ -10,9 +10,26 @@ denominator that decide whether MOD-04 closes.
 
 ## Scorer anchoring correction (CR-01)
 
-Every run block recorded in this file was produced by an unanchored scorer, and every
-figure computed from those run blocks is an optimistic ceiling, not a precise
-measurement. Read this before any figure below.
+Every run block in this file that was recorded before commit `7cde49a` was
+produced by an unanchored scorer, and every figure computed from those run
+blocks is an optimistic ceiling, not a precise measurement. Read this before
+any figure in the sections that compute from them. It does not reach the 23
+run blocks recorded after that commit -- the ones `## Anchored remeasurement
+result (03-12)` computes from, which stand immediately above that section --
+nor the figures in that section: those were produced under the anchored scorer
+and are precise measurements.
+
+*Corrected 2026-09-22 (06-10): this opened "Every run block recorded in this
+file", a file-wide universal with 23 counterexamples standing below it. The
+scope it needed was already written in this section's own closing paragraph,
+which draws the boundary at commit `7cde49a`; the opening sentence now states
+that same boundary instead of contradicting it. The commit boundary is used
+rather than a position in the file, because this file is append-only and every
+later section shifts what "above" and "below" pick out. The two greps that
+measure the split -- over the anchored scorer's 400-character-window evidence
+phrase, and over the unanchored scorer's null-marker field -- are recorded in
+this round's commit message and SUMMARY rather than quoted here, because
+quoting either literal into this file changes the number it returns.*
 
 **The defect.** `score_transcript()`'s family search ran over the entire transcript
 with no bound. `SKILL.md`'s write-mode contract requires the artifact-family line to
