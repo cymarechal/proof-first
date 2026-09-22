@@ -4,7 +4,7 @@ phase: 06-legal-review-gate-launch
 source: [06-VERIFICATION.md]
 started: 2026-09-21
 updated: 2026-09-22
-rounds: 6
+rounds: 7
 round_2: "06-05 gap closure — tests 7-9 re-ask tests 2, 3 and 6 of the corrected files"
 round_2_result: "1 passed, 2 issues — G-06-7 and G-06-9 opened 2026-09-21"
 round_3: "06-06 gap closure — tests 10-12 re-ask tests 7 and 9 of the corrected files, plus a new whole-tree sweep bound to no named file"
@@ -15,11 +15,13 @@ round_5: "06-08 gap closure — tests 17-20 re-ask tests 13-16 of the corrected 
 round_5_result: "0 passed, 4 issues — G-06-17, G-06-18, G-06-19 and G-06-20 opened 2026-09-22; 18 findings, 8 of them authored by the closing commit. All four closed by 06-09."
 round_6: "06-09 gap closure — tests 21-24; the four-brief standing set as 06-09 amended it: fourth brief widened to every gap-closure commit range, whole-tree sweep at two readers. Seven readers, run as subagents because the headless claude -p route was blocked this session."
 round_6_result: "1 passed, 3 issues — G-06-21, G-06-22 and G-06-23 opened 2026-09-22; 25 findings. README returned zero for the first time in six rounds. 9 of 25 authored by a gap-closure round (4 by the last, down from 8 of 18); 16 predate the closures and 8 predate Phase 6. Both of 06-09's structural changes measured and both paid."
+round_7: "06-10 gap closure — tests 25-29; the standing set as 06-10 amended it: five briefs, eight readers, with a new `.planning/` record sweep. Headless `claude -p` was available again, so the harness returned to the rounds 1-5 recipe."
+round_7_result: "0 passed, 5 issues — G-06-25 through G-06-29 opened 2026-09-23; 23 findings, none refuted. 12 of 23 live in `.planning/`, found by the new fifth brief on its first run — including three ledger rows whose `LEGAL-REVIEW.md` twins 06-10 corrected, and a gap closure credited to a commit reachable from no ref. 9 of 23 authored by a gap-closure round (5 by the last). Changes 1, 2 and 5 all measured; none met its exit condition."
 ---
 
 ## Current Test
 
-[testing complete — round 6; 3 gaps open]
+[testing complete — round 7; 5 gaps open]
 
 ## How these six were performed
 
@@ -404,6 +406,130 @@ second sweep reader's findings the first did not produce, and vice versa. If the
 zero for two consecutive rounds, drop back to one reader and record that; until then the marginal
 value of a second sweep reader is unknown, which is the reason to run it, not the reason to skip
 it.
+
+## How tests 25-29 were performed
+
+Round 7, 2026-09-23, against commit `ad073b9`. **Eight readers across the five-brief standing set**,
+first run of the set as 06-10 amended it, and the first run at five briefs.
+
+| Brief | Readers | Test |
+|---|---|---|
+| `README.md` contradiction hunt | 2 | 25 |
+| `LEGAL-REVIEW.md` reproduction-boundary material | 2 | 26 |
+| Whole-tree sweep, bound to no named file | 2 | 27 |
+| What **any** gap-closure round rewrote | 1 | 28 |
+| **`.planning/` record sweep** (first run) | 1 | 29 |
+
+**The harness returned to the one rounds 1-5 used.** Round 6 recorded that headless `claude -p` was
+refused by the permission classifier in that session and ran its seven readers as subagents instead.
+That premise had expired: a probe in this session returned cleanly, so all eight readers ran as
+separate headless `claude -p` sessions on `claude-opus-5`, each in its own copy of the tree, each on
+a neutral brief that did not name the wanted answer, each writing to its own output file. None had
+written the text it read. Readers 1-7 were given the committed tree with `.planning/` and `.claude/`
+removed — isolation checked rather than assumed, 310 files each, and reader 7's only extra file was
+its patch. Reader 8's tree is described below.
+
+**The fifth brief inverts the arrangement, and it is the round's largest result.** Reader 8 was
+given `.planning/` — 187 files — plus the shipped tree and full git history, and asked to find
+statements inside `.planning/` that the repository contradicts. It returned **twelve**, every one
+confirmed. **Twelve of this round's twenty-three findings, 52%, live in `.planning/`** — the surface
+stripped from every reader tree for six consecutive rounds. Three of them (`WINDOWS.md` ids 11, 15
+and 29) are ledger rows whose twins in `LEGAL-REVIEW.md` 06-10 corrected in this very phase, leaving
+the ledger — the source of truth the rendered table is generated from — still wrong. One credits a
+gap's closure to a commit reachable from no ref in the repository.
+
+**Every reader finding was re-verified against the repository by the orchestrator before being
+recorded**, and the verification is quoted in each test's evidence block rather than taken from the
+reader. Findings resting on a mutation were re-run with an unmutated sibling control, and the
+mutations were applied to a scratch copy, never to the tracked tree. **This round refuted none.**
+That is itself a result and not a good one: six rounds of readers have been calibrated by having
+their claims checked, and the first round in which every claim survived is the round whose new brief
+had no prior calibration.
+
+**All ten CI commands were green while all twenty-three false statements below were in the tree.**
+Run 2026-09-23 at `ad073b9`: `check_repo.py --self-test` PASS, `--mutation-test` PASS (58 codes
+discrimination-proven), `check_repo.py` **0 violations**, and the six self-tests in `evals/` plus
+`tools/generate_derivatives.py --check` all rc=0. Tenth consecutive round of `WINDOWS.md` id 17's
+pattern.
+
+**Change 5 ran a second time, and this time it covered commits the round that wrote it could not
+see.** 06-10 re-ran its eleven committed command literals after its SUMMARY landed at `a952906` and
+recorded a clean table. Two commits landed after that pass — `be727e6`, which edits
+`tools/check_repo.py`, and `ad073b9`. All eleven were re-run at `ad073b9` by this round: all hold.
+The one most exposed to `be727e6` was re-measured rather than re-read — `README.md`:180's "a live
+run opens 23 files", checked with a `Path.read_text`/`read_bytes`/`open` tracer over a live run,
+returns 23 files matching the bullet's enumeration item for item.
+
+### The round's result, and what changed in the diagnosis
+
+**Twenty-three findings, against twenty-five in round 6.** The count barely moved; where the findings
+live moved completely.
+
+| | Round 5 | Round 6 | Round 7 |
+|---|---|---|---|
+| Total findings | 18 | 25 | **23** |
+| Authored by *a* gap-closure round | 10 (56%) | 9 (36%) | **9 (39%)** |
+| — by the **last** closure | 8 (44%) | 4 (16%) | **5 (22%)** |
+| — by **earlier** closures | 2 (11%) | 5 (20%) | **4 (17%)** |
+| Authored by a UAT write-up round | — | — | **3 (13%)** |
+| Predating the closures entirely | 8 (44%) | 16 (64%) | **11 (48%)** |
+| **Living in `.planning/`** | not reachable | 3, orchestrator-only | **12 (52%)** |
+
+**The shipped tree is converging; the record governing it is not.** Eleven findings are in shipped
+files, down from twenty-two in round 6. Twelve are in `.planning/`, up from three — and the three in
+round 6 were found by the orchestrator noticing, not by any instrument. The fifth brief is the
+instrument, and on its first run it found four times what noticing found.
+
+**Three of the twelve are the same defect, and they show the failure mode.** `WINDOWS.md` ids 11, 15
+and 29 each carry a statement 06-10 corrected in `LEGAL-REVIEW.md` during this phase. Id 15 claims
+"the AST-based stdlib check, which reads ast.Import/ast.ImportFrom nodes"; `git grep -n 'import ast'
+-- '*.py'` returns nothing, and 06-10's `add066d` deleted that claim from `LEGAL-REVIEW.md` on
+exactly that evidence. `LEGAL-REVIEW.md` reproduces the ledger. `WINDOWS.md` **is** the ledger, and
+its JSON fence is the source of truth the rendered table is generated from. Every one of the three
+was corrected in the copy and left standing in the original.
+
+**One finding is a class this project has not recorded before.** `06-UAT.md`'s G-06-23 closure
+credits commit `fc801a9`. That object exists in this clone and is reachable from **no ref** — it is
+a pre-amend version that a fresh clone would not have. The on-branch commit with that subject is
+`81495a3`, which is what `06-10-SUMMARY.md`:138 records for the same tasks; the two have different
+trees. A citation can now be wrong not because the line moved but because the commit was rewritten
+under it, and nothing in the standing set checks SHA reachability.
+
+**Change 1 paid again, and the measurement re-attributed a finding.** Reader 7 returned four
+findings. Three were authored by 06-10 and a diff-scoped brief would have reached them. The fourth,
+`README.md`:45-46, was not:
+
+    $ git diff 'd33b78a^..HEAD' -- README.md | grep '^+' | grep -c 'stops naming the same GitHub owner segment'
+    0
+    $ git diff 'd67012e^..HEAD' -- README.md | grep '^+' | grep -c 'stops naming the same GitHub owner segment'
+    1
+    $ git merge-base --is-ancestor c850219 'd33b78a^' && echo "predates the 06-10 range"
+    predates the 06-10 range
+
+`d33b78a^..HEAD` is the 06-10 range — what a brief scoped to "the last gap-closure round" would have
+been given this round. The clause was written by 06-06's `c850219`, the commit that *bounded* the
+publish-location claim to owner segments and left its "any command or manifest" universal standing.
+Marginal yield of the widening on its second run: **one finding in twenty-three**, the same as its
+first. Its exit condition — a round whose widening reaches nothing the narrow range would have — is
+not met.
+
+**Change 2's second sweep reader produced two unique findings**, both in shipped files that the two
+file-named briefs do not cover (`tools/check_repo.py`'s own docstring, and `RESULTS-mod04.md`). That
+is 2 of 23, down from 4 of 25. Nonzero, so the exit condition — two consecutive rounds of zero
+marginal yield — is not met; round 8 records the measurement again and is the earliest round at which
+it could retire.
+
+**Change 5 is now proven against a case its author could not reach.** 06-10's own post-SUMMARY pass
+was clean, but two commits landed after it, one of them editing `tools/check_repo.py`. Re-running all
+eleven literals at `ad073b9` found nothing moved. The rule did not catch anything this round; it
+covered a window that had been open and unchecked, which is what it is for.
+
+**Nothing was refuted.** Rounds 1-6 each refuted or corrected at least one reader claim on
+verification. This round refuted none — twenty-three claims, twenty-three confirmed. The honest
+reading is not that the readers improved: it is that twelve of the findings came from a brief running
+for the first time, against a surface no reader had ever swept, where the easy and unambiguous
+defects were still unpicked. A first pass over virgin ground should have a high hit rate. The number
+to watch is the second run of the fifth brief, not this one.
 
 ## The standing set, as amended by 06-10 — what round 7 must run
 
@@ -1999,11 +2125,391 @@ evidence: |
   record that governs the round; finding B is in a shipped file. Both are inside the round's own
   work and outside the window its self-audit covers.
 
+### 25. A cold read of README after the round-6 corrections
+
+expected: |
+  Two readers who did not write it, each on the committed tree with `.planning/` and `.claude/`
+  removed, find no statement in `README.md` that the repository contradicts.
+result: issue
+reported: "One checkably-false statement, found by the README reader and independently by the gap-closure-range reader. README returned zero in round 6; it returns one here, and the sentence predates round 6's read — a reading-scope miss, not a regression. The known-open `drafted twice` item tripped a reader for the third consecutive round."
+severity: major
+evidence: |
+  **Finding A — `README.md`:45-46 claims a build failure the checker does not produce.** The
+  sentence:
+
+  > The placeholder is deliberate and disclosed: `publish-location-drift` in `tools/check_repo.py`
+  > fails the build if any command or manifest carrying it stops naming the same GitHub owner
+  > segment as the others.
+
+  `README.md` prints three commands carrying the placeholder — `:66` (`npx skills add`), `:73`
+  (`claude plugin marketplace add`) and `:79` (`/plugin marketplace add`, the in-session form
+  under route 2). The checker reads two. Probe, control and contrast, all on a scratch copy:
+
+      $ python3 tools/check_repo.py                       # unmutated control
+      check_repo: 0 violations
+      $ sed -i '' '79s|/plugin marketplace add <owner>/<repo>|/plugin marketplace add someoneelse/<repo>|' README.md
+      $ python3 tools/check_repo.py
+      check_repo: 0 violations                            # owner drifted, build still green
+      $ sed -i '' '66s|npx skills add <owner>/<repo>|npx skills add someoneelse/<repo>|' README.md
+      $ python3 tools/check_repo.py
+      publish-location-drift these carriers disagree on the repository's publish location: ...
+        README.md states <owner>, someoneelse                                        # exit 1
+
+  The cause is in the checker's own text: `tools/check_repo.py`:3687-3688 defines
+  `SKILLS_CLI_INSTALL_RE` and `MARKETPLACE_ADD_RE` as the only two README read positions, and
+  `_publish_locations_in`'s docstring says so. `/plugin marketplace add` matches neither.
+  The ceiling the next sentence states — "it compares owner segments only, so a repository-name-only
+  drift under an unchanged owner is not detected" — does not cover this: the demonstrated failure
+  **is** an owner-segment drift, the case the ceiling claims is caught.
+
+  Authored by `c850219`, 06-06, "bound the publish-location-drift claim to what the checker
+  compares" — the commit that narrowed this sentence and left its universal standing. Reached by
+  reader 7 only because the fourth brief's range is the widened one; see test 28.
+
+  **Observation, not a new finding — `README.md`:226, "Each scenario was drafted twice".** Two
+  readers derived 12 drafts per scenario from the 96 committed records and called the sentence
+  false. This is `WINDOWS.md` id 30, already open with a stated closure condition, and it is the
+  **third consecutive round** in which an independent reader has tripped on it. It is recorded here
+  as a recurrence, not as a new gap. What *is* new is a defect in the row itself — recorded under
+  test 29, finding B2.
+
+### 26. The reproduction-boundary material after the round-6 corrections
+
+expected: |
+  Two readers who did not write it find no statement in `LEGAL-REVIEW.md` that the repository
+  contradicts, after 06-10 corrected twelve.
+result: issue
+reported: "Three checkably-false statements. Two of the three were authored by 06-10 itself, and one of those is the sentence 06-10 rewrote in order to fix this exact defect class — it re-asserted a universal its own named command cannot meet, one marker form over."
+severity: major
+evidence: |
+  **Finding C — `LEGAL-REVIEW.md`:426-430, the enclosing-scope enumeration is wrong in two ways.**
+  The bullet opens "Measured, with the enclosing scope of every hit named" and then states eleven
+  hits as "one in the module-level `SOURCE_COINED_LABELS` tuple and ten inside seven functions",
+  naming the seven. Attributed by parsing the file rather than by eye:
+
+      $ python3 - <<'PY'   # ast walk, enclosing scope of each grep hit
+      ...
+      PY
+      total hits: 11
+        line 3045: MODULE LEVEL
+        line 5648: MODULE LEVEL
+        (9 others, inside 6 distinct functions)
+      module-level: 2   in-function: 9   distinct functions: 6
+      _mutate_record_citation_unresolvable: (5591, 5605)  contains string: False
+
+  Line 5648 sits inside `MUTATIONS`, a module-level list opened at column 0 on line 5608 — at the
+  same nesting depth as `SOURCE_COINED_LABELS`. It names `_mutate_source_label_in_skill_content` as
+  a value; it is not inside it. `_mutate_record_citation_unresolvable`, seventh in the named list,
+  contains no occurrence of the string at all. The arithmetic 1 + 10 = 11 is only reachable by
+  assigning the `MUTATIONS` row to the function whose `def` happens to precede it.
+  Found by three readers independently. Authored `5e9b6de`, 06-10.
+
+  **Finding D — `LEGAL-REVIEW.md`:23-27, a fifth marker form the named grep cannot see.** The
+  paragraph states that every dated in-place change carries a marker "in one of four forms" and
+  names `grep -nE '\*(Corrected|Added|Updated|Clarified) 2026-' LEGAL-REVIEW.md` as the command that
+  "lists every one".
+
+      $ grep -cE '\*(Corrected|Added|Updated|Clarified) 2026-' LEGAL-REVIEW.md
+      43
+      $ grep -nE '\*(Corrected|Added|Updated|Clarified) 2026-' LEGAL-REVIEW.md | awk -F: '$1==65' | wc -l
+      0
+      $ sed -n '65p' LEGAL-REVIEW.md
+      ... only whether the list it declares a pass over is complete." *Correction withdrawn 2026-09-22
+
+  `:65` carries `*Correction withdrawn 2026-09-22 (06-09): …*` — a dated marker at the point of an
+  in-place change, which calls itself "this marker" at `:71` and records a real reversal (06-08
+  changed a quoted word, 06-09 changed it back). `\*Corrected` does not match `*Correction`.
+  The narrow reading is foreclosed by the paragraph's own 06-10 correction three lines below: "this
+  paragraph exists so a reader can find every dated in-place change without diffing, and a wording
+  change made in response to an objection is one of those **whatever it is called**."
+
+  Found by **four readers** — the highest convergence of the phase. Authored `aeb8bfc`, 06-10,
+  "state the correction-marker universal over the forms that exist". That commit widened the claim
+  from one form to four to repair a universal its own command could not meet, and reintroduced the
+  same defect one form over, in the same sentence, in the same round.
+
+  **Finding E — `LEGAL-REVIEW.md`:907-908 counts a section whose own heading says it was performed.**
+  The sentence calls sections 1-3 "the three \"not performed\" findings above". The headings:
+
+      912:### 1. Output style in the `/config` picker — NOT OBSERVED AT 06-02 (superseded by § 4)
+      931:### 2. Cold read of README — NOT PERFORMED AS A COLD READ AT 06-02 (superseded by § 4)
+      967:### 3. DIST-06 prose read — PERFORMED AT 06-02, BUT NOT COLD (superseded by § 4)
+
+  Section 3's heading states it **was** performed; its body records a substantive assessment, and
+  §4's own summary of it at `:1024` is headed "The DIST-06 prose question — **answered**", saying §3
+  "named one question the author was the wrong person to judge". The file draws the distinction
+  deliberately — §2 says "NOT PERFORMED AS A COLD READ" where §3 says "PERFORMED … BUT NOT COLD" —
+  which is what makes the summary label checkable rather than loose. One reader. Authored `36fbf6c`,
+  06-05. The weakest of the three; recorded because the file's own headings settle it.
+
+### 27. No two committed files state things that cannot both be true
+
+expected: |
+  Two readers, each bound to no named file and each choosing its own coverage strategy, find no
+  statement anywhere in the committed tree that the tree itself contradicts.
+result: issue
+reported: "Five checkably-false statements across three files the two file-named briefs do not cover: both example deal briefs' canonical-figure interface, the conformance results file, and the checker's own module docstring. The second sweep reader contributed two the first did not."
+severity: major
+evidence: |
+  Both readers stated their coverage at the top, as the brief requires. Both read every prose file
+  end to end and re-derived the published figures from the committed records rather than from the
+  reports; both skipped the 9,008-line body of `tools/check_repo.py` and exercised it instead.
+
+  **Finding F — `examples/deal-brief.md`:99-100, two percentages trace to no row.** The file says
+  "Every dollar amount, date, percentage, and count cited anywhere in this repository's examples
+  traces to exactly one row below." Q2 and Q5 are both weighted 20% in the same file's scored-question
+  table. The only canonical row carrying 20% is `rfp-security-weight`, which `:58` declares belongs to
+  a *distinct* scheme. Probe with control, on a scratch copy:
+
+      $ python3 tools/check_repo.py                                    # control
+      check_repo: 0 violations
+      $ sed -i '' '/^| rfp-security-weight | 20% |/d' examples/deal-brief.md
+      $ python3 tools/check_repo.py
+      unlisted-figure 20% in examples/deal-brief.md has no matching Canonical figures row
+      unlisted-figure 20% in skills/proof-first/references/artifact-patterns.md ...
+      unlisted-figure 20% in skills/proof-first/references/worked-examples.md ...
+
+  Q2's and Q5's 20% are accepted only by raw-value collision with a row describing a different
+  quantity. Authored `d487e32`, 01-01.
+
+  **Finding G — `examples/deal-brief.md`:114 calls the two lowest weights "mid-weighted".** The row
+  reads "Weight assigned to each of the two mid-weighted scored RFP questions (Q3 and Q4)" at 15%.
+  Sorted: Q1 30%, Q2 20%, Q5 20%, Q3 15%, Q4 15%. Q3 and Q4 rank fourth and fifth of five; nothing is
+  below them. The sibling brief uses the correct three-tier vocabulary for the same structure
+  (`bench-deal-brief.md`:199-201, `-top` / `-mid` / `-low`), which is what makes this a defect rather
+  than a naming preference. Authored `e26e93b`, 01-02.
+
+  **Finding H — `RESULTS-mod04.md`:963 points at "the fourth row" of a three-row table.** The table
+  at `:954-958` has a header, a separator and exactly three data rows (`03-05`, `03-07`, `03-11`).
+  The anchored measurement the sentence describes is the third. The table's own lead-in says "four
+  measurement **rounds**, three structurally distinct levers", and the `03-05` row does carry two
+  figures ("5/6, independently rechecked at 14/16"), so the intended referent — the fourth of four
+  measurements — is recoverable. "Row" is not: the file distinguishes rounds from rows in the same
+  sentence that introduces the table. Two readers. Authored `8449a78`, 03-15.
+
+  **Finding I — `tools/check_repo.py`:6-9 points at the wrong README section for its own scope.**
+  The docstring says README's `## Repository layout` section "enumerates every one of them and names
+  what is deliberately not opened; that enumeration is the single place this scope is written down".
+
+      $ grep -n '^#\{2,3\} ' README.md        # ## Status 132 ; ## Repository layout 332
+      $ awk 'NR>=332 && NR<=400' README.md | grep -n 'opens 23\|not opened'
+      (no output)
+      $ grep -n 'A live run opens 23 files' README.md
+      180:  above. A live run opens 23 files: ...
+
+  The enumeration is at `:180`, inside `## Status`. The name is unambiguous — the checker freezes
+  `README_LAYOUT_HEADING = '## Repository layout'` at `:3885` and binds two violation codes to it.
+  The docstring's stated purpose, "one statement to keep true instead of two", fails because the
+  pointer resolves to the wrong section. Authored `d448ed6`, **06-10**, "correct the checker's
+  opening scope sentence to its real scope".
+
+  **Finding J — `RESULTS-mod04.md`:177 calls ten sessions genuine, then names one of them
+  contaminated.** "The 10 sonnet-5 sessions that ran before the limit hit are genuine"; the next
+  sentence adds "plus the immediately-preceding `E-ambiguous repeat=1` sonnet session" to the eleven
+  carrying the error fingerprint. That session is one of the ten.
+
+      $ awk 'NR>=198 && NR<=219' RESULTS-mod04.md | grep -c 'model=claude-sonnet-5'      # 10
+      $ awk 'NR>=198 && NR<=219' RESULTS-mod04.md | grep 'model=claude-sonnet-5' \
+          | grep -c 'marker_at=None, marker=None'                                        # 1
+
+  The file's own tally at `:226` — "11 of the 19 scoreable sessions" — is 10 opus + 1 sonnet, leaving
+  9 genuine sonnet sessions, not 10. Authored `bbb8296`, 03-08.
+
+  **Second-reader marginal yield:** findings I and J came from the second sweep reader only; F, G and
+  the `README` recurrence came from the first; H from both. 2 of 23. See test 28's change-2 note.
+
+### 28. The sentences any gap-closure round added survive checking
+
+expected: |
+  One reader, given the added lines of every gap-closure commit range (`d67012e^..HEAD`), verifies
+  every citation, count, scope claim and absolute in them against the tree.
+result: issue
+reported: "Four findings, three of them converging with the file-named briefs and one unique. The widening paid for the second consecutive round, by one finding, and the measurement re-attributed that finding to 06-06 rather than to a pre-Phase-6 commit."
+severity: major
+evidence: |
+  Reader 7 was given `GAP-CLOSURE-DIFF.patch` — the full diff of `d67012e^..HEAD` outside
+  `.planning/`, 2,991 lines, 17 files, 1,959 insertions — and returned four findings: D and C
+  (recorded under test 26), A (test 25), and K below.
+
+  **Finding K — `tools/check_repo.py`:7434, "None of the three carries a path literal in its body".**
+  The comment reasons that a static scan would have found zero of three named readers, so the tracer
+  was necessary. String constants inside each body, docstring excluded:
+
+      check_record_citations:        []
+      check_source_gate_incomplete:  []
+      check_readme_claim_unsourced:  ['README.md', 'README.md',
+                                      "readme-claim-unsourced README.md's claim region states "]
+
+  `check_readme_claim_unsourced` carries `'README.md'` at `:1710` and `:1718`, and the tracer
+  confirms that function does read `README.md`. The narrower point the paragraph is driving at — that
+  the `evals/*/RESULTS*.md` edge arrives through `CLAIM_SOURCE_GLOB` and is invisible to a static
+  scan — survives. The sentence as written does not. Authored `ca6e9d4`, **06-10**.
+
+  **Convergence: 3 of 4**, against round 6's 3 of 5. D was reached by four readers, C by three, A by
+  two; K by this reader alone.
+
+  **Change 1 — did the widening pay?** Yes, for the second consecutive round, by one finding, and it
+  is reproducible:
+
+      $ git diff 'd33b78a^..HEAD' -- README.md | grep '^+' | grep -c 'stops naming the same GitHub owner segment'
+      0
+      $ git diff 'd67012e^..HEAD' -- README.md | grep '^+' | grep -c 'stops naming the same GitHub owner segment'
+      1
+      $ git merge-base --is-ancestor c850219 'd33b78a^' && echo "predates the 06-10 range"
+      predates the 06-10 range
+
+  `d33b78a^..HEAD` is the 06-10 range, what a brief scoped to "the last gap-closure round" would have
+  been given. The other three findings sit inside it and were reachable either way. Marginal yield:
+  **one finding in twenty-three**, matching the first run's one in twenty-five. The exit condition —
+  a round whose widening reaches nothing the narrow range would have — is not met.
+
+  The measurement also corrected this round's own first attribution of finding A. A pickaxe on the
+  surviving substring "fails the build if any" returns `63b5dfa` (04-13), which would have filed A
+  under "predates Phase 6". The clause that is actually false was written by `c850219` (06-06). The
+  figures above are pinned to `ad073b9` and recorded against it, per change 5.
+
+### 29. The `.planning/` record states nothing the repository contradicts
+
+expected: |
+  One reader, given `.planning/` plus the shipped tree and full git history, finds no statement
+  inside the project's own working record that the repository contradicts. First run of the fifth
+  brief (06-10 task 25, change 3).
+result: issue
+reported: "Thirteen checkably-false statements on the brief's first run — 52% of the round, from one reader out of eight, over the one surface no reader has swept in six rounds. Three are ledger rows whose twins 06-10 corrected in this phase while leaving the ledger itself wrong. One credits a gap's closure to a commit reachable from no ref."
+severity: major
+evidence: |
+  The reader stated its coverage: every top-level `.planning/` file, all three `COVERAGE.md`s, all of
+  phase 06, and a machine scan of **all 187** `.planning/` files for three checkable classes —
+  `path:line` citations, commit SHAs, and quoted command literals. It did not read phases 01-05's
+  plan files in full, `.planning/debug/`, or `.planning/research/`. It declined to report drift in
+  explicitly dated append-only "what round N measured" passages, which is the correct call.
+
+  **The three ledger rows corrected in the copy and left standing in the original.**
+  `LEGAL-REVIEW.md` reproduces the ledger; `WINDOWS.md` **is** the ledger, and its JSON fence is what
+  the rendered table is generated from. 06-10 corrected all three twins and none of the originals.
+
+  **R-1 — `WINDOWS.md` id 15 (`:32` rendered, `:229` fence) claims a check that does not exist.**
+
+      re-asserted this phase by the AST-based stdlib check, which reads ast.Import/ast.ImportFrom
+      nodes rather than regex over text and reports EXTRA [].
+
+      $ git grep -n 'import ast' -- '*.py' | wc -l                              0
+      $ git grep -nE '\bast\.(parse|walk|Import|ImportFrom)' -- '*.py' | wc -l  0
+      $ git grep -n 'EXTRA' -- '*.py' | wc -l                                   0
+
+  `LEGAL-REVIEW.md`:1145 already carries 06-10's correction on exactly this evidence ("No such check
+  exists"), committed as `add066d`. Authored `b627fd3`, 06-04.
+
+  **R-2 — `WINDOWS.md` id 11 (`:28`, `:181`) states "all four occurrences" and "all four guarded
+  locations".** There is no set of four: nine literal `<owner>/<repo>` occurrences in the guarded
+  files, three carriers (`PUBLISH_LOCATION_CARRIERS`, `:3685`), seven structured positions, and five
+  positions in the row's own preceding clause. `LEGAL-REVIEW.md`:847 carries 06-10's correction
+  ("The check counts no set of four"), committed as `9e69ebd`. Authored `b627fd3`, 06-04.
+
+  **R-3 — `WINDOWS.md` id 29 (`:46`, `:395`) cites two blank lines.** The row says
+  `output-styles/proof-first.md:87` and `prompts/system-prompt.md:75` "each name all seven as a set
+  in the table's order".
+
+      $ sed -n '87p' output-styles/proof-first.md | cat -A      $
+      $ sed -n '75p' prompts/system-prompt.md   | cat -A        $
+      $ grep -n 'Command of the Message spine is carved' output-styles/proof-first.md prompts/system-prompt.md
+      output-styles/proof-first.md:90:...   prompts/system-prompt.md:78:...
+
+  Both are empty lines; the sentence is at `:90` and `:78`, moved by `f909d3c`. `06-UAT.md`'s
+  test 18 evidence block recorded this exact drift for the other copy in round 4, and 06-09
+  re-anchored `LEGAL-REVIEW.md` by quoted string. The ledger was not. Authored `f54edf7`, 06-06.
+
+  **B2 — `WINDOWS.md` id 30 (`:47`, `:407`) still states the ground `LEGAL-REVIEW.md` retracted.**
+  The row reads "no committed file states a contradicting count, so it is not a falsehood".
+  `LEGAL-REVIEW.md`:1160's 06-10 correction says: *"the ground for this row read 'Not a falsehood —
+  no committed file contradicts it'. `RESULTS.md` is that file, and it has been committed since
+  Phase 5."* The row's own citation also fails to resolve: it names
+  `evals/benchmark/RESULTS.md:212`; the sentence it quotes is at `:214`. This is the row governing
+  the `README.md`:226 recurrence recorded under test 25. Last touched by `f54edf7`, 06-06.
+
+  **R-4 — `REQUIREMENTS.md`:64 puts `generate_derivatives.py --check` ninth in CI; it is tenth.**
+  `grep -n python3 .github/workflows/ci.yml` numbers it 10 of 10; the ninth is
+  `evals/trigger/stats.py --self-test`. Not drift: the note was written at `82b2053` and
+  `git diff 82b2053 HEAD -- .github/workflows/ci.yml` is empty, so the file was already in this order.
+  The rest of `.planning/` consistently says "all ten CI commands".
+
+  **R-5 — phase 6 `COVERAGE.md`'s network-client sweep states a false universal.** It says the grep
+  "returns no client code. The only matches are `web_search_requests: 0` / `web_fetch_requests: 0`
+  telemetry fields inside committed benchmark result JSON".
+
+      $ git grep -nE "urllib|requests|http\.client|import socket|fetch\(|axios" \
+          -- evals/ tools/ skills/ prompts/ output-styles/ .github/ | wc -l          278
+      $ ... | grep -vE "web_search_requests|web_fetch_requests" | wc -l                6
+
+  Four are generated prose inside `"text"` fields (matching the word "requests"); two are ordinary
+  prose in `evals/trigger/DECISION-RULE-cat10.md`, which is not a benchmark result JSON and was added
+  in phase 02, long before `COVERAGE.md` was written. The conclusion — no client code — survives; the
+  universal does not. Authored `1b390b5`, the round-1 UAT commit.
+
+  **R-6 — `06-UAT.md`'s round-6 method section states 1,714 added lines; the range has 1,684.**
+
+      $ git rev-list --count d67012e^..66322b1                                        86
+      $ git diff --shortstat d67012e^..66322b1 -- . ':(exclude).planning'
+       15 files changed, 1684 insertions(+), 185 deletions(-)
+
+  Commits and files match; the line count does not. 1,714 is the artifact file's own length —
+  1,684 added lines plus 15 file headers plus 15 separators — which is how `:1931` correctly
+  describes it ("1,714 lines grouped under 15 file headers") in test 24's evidence block. The
+  round-6 method section relabels the same number as "added lines". Both sites are named by section
+  rather than by line: this round's own edits moved them, which is the defect class the citation
+  convention below exists for. Authored `f2cdd16`, the round-6 UAT commit.
+
+  **R-7 — `06-UAT.md`'s `G-06-23` gaps entry credits the closure to a commit reachable from no ref.**
+
+  The `resolved_by` field opening "06-10 tasks 21-27 (commits 1c41a2a, 2c0b6c5, …" names `fc801a9`.
+
+      $ git merge-base --is-ancestor fc801a9 HEAD && echo REACHABLE || echo "NOT REACHABLE"
+      NOT REACHABLE
+      $ for r in $(git for-each-ref --format='%(refname)'); do
+          git merge-base --is-ancestor fc801a9 "$r" 2>/dev/null && echo "reachable from $r"; done
+      (no output)
+      $ git rev-parse fc801a9^{tree} 81495a3^{tree}
+      75956ac91909fa8919c0e17a7bfdfef0d2960236
+      0a1672944a7d78e8cfd05345ca5fc12f92cb1911
+
+  `fc801a9` survives in this clone only as an orphaned pre-amend object; a fresh clone would not have
+  it. The on-branch commit with that subject is `81495a3`, which is what `06-10-SUMMARY.md`:138
+  records for the same tasks. The two have different trees. **This is a class the standing set does
+  not check**: a citation wrong not because a line moved but because the commit was rewritten under
+  it. The reader scanned every commit-shaped SHA in all 187 files; this is the only one that fails.
+  Authored `de2ec28`, 06-10.
+
+  **R-8 — `ROADMAP.md`:363 and `:365` understate two phases' plan counts.** The Progress table reads
+  `10/10` for phase 2 and `11/11` for phase 4. `ls` counts 11 and 15 `-PLAN.md` files; the same file's
+  own per-phase line at `:72` reads "11/11 plans executed" for phase 2, contradicting its own table.
+  Authored `5308eac`, roadmap creation.
+
+  **R-9 — `ROADMAP.md`:268 leaves `04-15-PLAN.md` unchecked.** `04-15-SUMMARY.md` reads
+  `status: complete`, `completed: 2026-09-21`; seven `(04-15)` commits are in history and
+  `evals/routes/` ships. Authored `5dee48d`, 04.
+
+  **R-10 — `ROADMAP.md`:37 calls three completed plans pending.** "7/7 plans executed (4 executed,
+  3 gap-closure plans pending)"; `01-05`, `01-06` and `01-07` all read `status: complete` and are
+  checked `[x]` at `:55-57` of the same file. Authored `3967b95`, 01.
+
+  **R-11 — `STATE.md`:76 reports 26 plans completed against its own 62.** `ls .planning/phases/*/*-SUMMARY.md
+  | wc -l` is 62, and the file's own frontmatter reads `completed_plans: 62`. The 26 is the By-Phase
+  table above it, which covers only phases 01, 03 and 05 (7 + 16 + 3) and omits 02, 04 and 06.
+  Authored `e918c1d`, phase-05.
+
+  **R-12 — `06-UAT.md`'s `## Current Test` line said three gaps are open; all nineteen were
+  resolved.** At `ad073b9`, the HEAD this round was run against, the line read
+  `[testing complete — round 6; 3 gaps open]`; all 19 gap entries read `status: resolved`, none
+  `failed`, and `06-VERIFICATION.md` frontmatter reads `gaps_open: 0`. True when written and
+  falsified by `de2ec28`, which flipped the last three and left the status line — the same
+  write-then-falsify shape change 5 exists for, in the file that records change 5. Superseded by this
+  round's own header update; recorded because the mechanism is the finding, not the stale line.
+
 ## Summary
 
-total: 24
+total: 29
 passed: 5
-issues: 19
+issues: 24
 pending: 0
 skipped: 0
 blocked: 0
@@ -2013,113 +2519,41 @@ Round 2: tests 7-9 — 1 passed, 2 issues (G-06-7, G-06-9), both resolved by 06-
 Round 3: tests 10-12 — 0 passed, 3 issues (G-06-10, G-06-11, G-06-12), all closed by 06-07.
 Round 4: tests 13-16 — 0 passed, 4 issues (G-06-13, G-06-14, G-06-15, G-06-16), all closed by 06-08.
 Round 5: tests 17-20 — 0 passed, 4 issues (G-06-17, G-06-18, G-06-19, G-06-20), all closed by 06-09.
-Round 6: tests 21-24 — **1 passed**, 3 issues (G-06-21, G-06-22, G-06-23), addressed by 06-10; closure awaits round 7's independent read.
+Round 6: tests 21-24 — 1 passed, 3 issues (G-06-21, G-06-22, G-06-23), all closed by 06-10.
+Round 7: tests 25-29 — 0 passed, 5 issues (G-06-25 … G-06-29), 23 findings; first run at five briefs.
 
-**Round 6: the count rose and the diagnosis moved.** Twenty-five checkably-false statements, against
-eighteen in round 5, seventeen in round 4, eleven in round 3, fourteen in round 2 and three in
-round 1. The rise is not the tree getting worse — it is the briefs reaching further back, which is
-what 06-09 widened them to do.
+**Round 7: the count held and the location moved.** Twenty-three checkably-false statements, against
+twenty-five in round 6, eighteen in round 5, seventeen in round 4, eleven in round 3, fourteen in
+round 2 and three in round 1. The shipped tree is converging — eleven findings, down from
+twenty-two. The record that governs it is not: twelve findings, up from three, and the three in
+round 6 were the orchestrator noticing rather than any instrument.
 
-| | Round 5 | Round 6 |
-|---|---|---|
-| Total findings | 18 | **25** |
-| Authored by *a* gap-closure round | 10 (56%) | **9 (36%)** |
-| — by the **last** closure | 8 (44%) | **4 (16%)** |
-| — by **earlier** closures | 2 (11%) | **5 (20%)** |
-| Predating the closures entirely | 8 (44%) | **16 (64%)** |
+| | Round 5 | Round 6 | Round 7 |
+|---|---|---|---|
+| Total findings | 18 | 25 | **23** |
+| Authored by *a* gap-closure round | 10 (56%) | 9 (36%) | **9 (39%)** |
+| — by the **last** closure | 8 (44%) | 4 (16%) | **5 (22%)** |
+| — by **earlier** closures | 2 (11%) | 5 (20%) | **4 (17%)** |
+| Authored by a UAT write-up round | — | — | **3 (13%)** |
+| Predating the closures entirely | 8 (44%) | 16 (64%) | **11 (48%)** |
+| **Living in `.planning/`** | not reachable | 3 (orchestrator) | **12 (52%)** |
+| Findings refuted on verification | ≥1 | 3 | **0** |
 
-**The last closing round's share more than halved** — 06-09 authored 4 of 25 against 06-08's 8 of
-18. Its self-audit and its code-review gate move the number on the surface they cover. What they do
-not cover is now measured: two of 06-09's four are outside any window a self-audit can see — one
-falsified by the round's own SUMMARY commit, one in the UAT record the round was editing.
+**The fifth brief is the round's result.** One reader in eight produced thirteen of the
+twenty-three findings, over a surface stripped from every reader tree for six consecutive rounds.
+Three of them are ledger rows whose twins 06-10 corrected in this very phase — `WINDOWS.md` is the
+ledger and `LEGAL-REVIEW.md` reproduces it, and the corrections landed only in the reproduction. One
+is a class never recorded here before: a gap closure credited to a commit reachable from no ref,
+which no line-drift check and no cold read could reach.
 
-**Sixteen of the twenty-five predate every gap closure, and eight predate Phase 6 entirely.**
-`check_repo.py`'s opening scope sentence and its violation-code catalogue (`5b124ba`, **plan
-01-01**, the commit that created the checker), `SOURCES.md`'s review stamp (`0ba93f8`, 01-03),
-`RESULTS-mod04.md`'s unanchored banner and CR-01 section (`fbe0aa6`, 03-09), both double-counted
-sessions (`878b937`, 03-12) and one mutation-scope comment (`82535c7`, 03-16). Every one survived
-six rounds of cold reads and every CI run since it was written.
+**Zero refutations is a caution, not an achievement.** Every prior round refuted or corrected at
+least one reader claim. Twelve of this round's findings came from a brief on its first pass over
+unswept ground, where the unambiguous defects were still unpicked. The number that will mean
+something is the fifth brief's second run.
 
-**The README brief returned zero for the first time.** Six rounds have produced 3, 8, 2, 1, 3 and
-**0** README findings. Two readers, cross-checked, both instrumenting the checker and both mutating
-the stated counts. The single finding raised was refuted against a commit — `6c50822`,
-"narrow two over-broad README claims" — that had already made the decision deliberately.
-
-**Both of 06-09's structural changes were measured this round, and both paid.** The widened fourth
-brief reached one finding a diff-scoped brief could not (`LEGAL-REVIEW.md`:383-384, authored by
-06-08, 0 matches in `ade21af^..HEAD` and 1 in `d67012e^..HEAD`). The second sweep reader produced
-four findings the first did not — 16% of the round — so the exit condition of zero marginal yield
-for two consecutive rounds is not met and two readers stay.
-
-**The dominant defect class changed.** Round 5's largest was scope overstatement about a mechanical
-guard at 7 of 18. Round 6's is the **scope absolute** — a comment asserting that no other code, no
-other check or no other file does something, written beside the code it describes and falsified by
-code added later in the same file. Six of twenty-five, five of them in `check_repo.py`, three of
-those inside one sixteen-line comment block that 06-09 edited and partly corrected. `T6` has the
-full chain: 06-08's `3589842` added the check that falsified the sentence, and 06-09's `36ef0a9`
-edited the same block without reading the neighbouring absolutes.
-
-**Zero of the twenty-five is a regression of an earlier fix.** Readers 1 and 2 re-verified the
-round-5 README corrections, readers 3 and 4 the eight round-5 LEGAL-REVIEW corrections including
-the re-anchored citations, and all hold. Three reader claims were refuted or corrected on
-verification rather than recorded: README's layout-tree framing (refuted), reader 3's count of the
-backward-bullet construction (corrected from four to six, finding stands), and the occurrence count
-at `:616-617` (corrected from three to four by a wrap-tolerant check reader 4 alone ran).
-
-**`WINDOWS.md` id 12's closure condition is a round that returns none. Six have not.**
-
-Round 5's paragraph, kept for comparison:
-
-**Round 5: the count did not fall, and the reason changed.** Eighteen checkably-false statements,
-against seventeen in round 4, eleven in round 3, fourteen in round 2 and three in round 1. The
-closing round's share fell — **8 of 18, against 10 of 17** — so 06-08's self-audit and its new
-code-review gate did move that number, but not to zero, and three of the eight are the same shape:
-the round asserting a property of its own new check that the check's own docstring, written in the
-same batch, denies.
-
-**And "the closing round" is the wrong frame.** By `git blame`, **ten** of the eighteen were
-authored by *a* gap-closure round — eight by 06-08, plus `README`:196 by **06-05** and
-`LEGAL-REVIEW`:913 by **06-06**. Those two have survived every round since they were written. The
-other eight predate Phase 6's closures: `README`:53 (04-13), `README`:306 (04-08),
-`LEGAL-REVIEW`:119 and :170 (06-02), :723 (06-04), `INIT-EVENTS.md` (02-10), `check_repo.py`:239
-(03-03, where `03-03-PLAN.md`'s own frozen list already held fourteen against its prose's fifteen),
-and `bench-deal-brief.md`:107 (05-02). Four rounds did not reach them because until round 3 every
-brief named a file, and no reader had opened `evals/trigger/`, the `## Launch` section or
-`artifact-patterns.md`'s label inventory until this one. **Zero of the eighteen are regressions
-of an earlier fix**; all seventeen of round 4's corrections — ten in `LEGAL-REVIEW.md`, one in
-`README.md`, four found by the sweep and two in the bench brief — were re-checked by readers who did
-not make them, and every one stands. The user-facing derivative fix was re-verified rule by rule:
-all 28 illustrated rules carry a constructive line in the file the notice names for them.
-
-**The closing round broke two citations that were correct before it ran.** `f909d3c` added three
-net lines to each derivative's preamble; `LEGAL-REVIEW.md`:526-527, the two derivative citations,
-resolved at `38c873b` and point at blank lines now. 06-08 recorded six of this record's citations
-drifting inside its own round (`LEGAL-REVIEW.md`:367-369) and anchored those six to symbols; these
-two were outside that sweep because they are not `check_repo.py` citations. On both occasions
-`record-citation-unresolvable` — the code built for this class — was silent, because the cited
-lines still exist. Here it could not even reach them: `CITATION_RE` requires backticks the three
-citations do not carry.
-
-`WINDOWS.md` id 12's closure condition is a round that returns none. Five have not.
-
-Round 4's paragraph, kept for comparison:
-
-**Round 4 reverses the trend and says why.** Seventeen checkably-false statements, against eleven in
-round 3, fourteen in round 2 and three in round 1 — and **ten of the seventeen were authored by commit
-`908b90b`, the round-3 gap closure itself.** Every one of round 3's corrections was verified to hold by
-readers who did not make them; the round that made them introduced more than it closed. The new fourth
-brief, aimed at exactly that surface, was the highest-yield reader of the round on its first run.
-
-Round 3's numbers, kept for comparison:
-
-Eleven checkably-false statements that round, against fourteen the round before and three before that.
-The corrections themselves are holding: all six round-2 LEGAL-REVIEW corrections and all eight
-round-2 README corrections were re-checked by readers who did not make them, and every one stands.
-What has not converged is the reading — every one of round 3's eleven findings is in text no earlier
-brief pointed a reader at. By `git blame` on the cited lines: four in 06-05 text round 2 did not
-reach, three in files no brief had ever named (reached only by the new sweep brief), and four
-authored by the closing round itself while fixing something else. Zero are regressions of a fix.
-WINDOWS.md id 12's closure condition is a round that returns none; this is not it.
+**All ten CI commands were green at `ad073b9` while all twenty-three were in the tree** — tenth
+consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mechanical gate at
+0 violations coexisted with more than fifteen false sentences.
 
 ## Gaps
 
@@ -2636,3 +3070,87 @@ WINDOWS.md id 12's closure condition is a round that returns none; this is not i
     - "Re-run every command literal the round commits into prose AFTER the SUMMARY commit lands, not before. The self-audit structurally cannot see the SUMMARY, and :571 is the third consecutive round in which recording a command changed its result"
     - "Add a fifth standing brief, or widen an existing one, to cover `.planning/`. Three of this round's twenty-five findings were invisible to all seven readers by construction, and the record that governs the round is the one surface no reader reads"
     - "Keep both structural changes. Change 1 reached one finding no diff-scoped brief could see; change 2's second sweep reader produced four unique findings, 16% of the round. Neither exit condition is met"
+
+- gap_id: G-06-25
+  truth: "A cold read of README by someone who did not write it finds no checkably-false statement"
+  status: failed
+  reason: "Round 7, 2 readers. 1 finding: README:45-46 claims publish-location-drift fails the build if ANY command or manifest carrying the placeholder drifts in owner segment; the /plugin marketplace add form at :79 is a command carrying it, its owner segment can be changed to a different owner, and the build stays green at 0 violations. The checker reads only two of README's three placeholder-bearing commands (SKILLS_CLI_INSTALL_RE, MARKETPLACE_ADD_RE). The stated ceiling covers repository-name-only drift under an unchanged owner, which is a different case from the one demonstrated. Authored c850219 (06-06), the commit that bounded this same sentence. Separately, README:226's known-open 'drafted twice' (WINDOWS id 30) tripped a reader for the third consecutive round — recorded as a recurrence, not a new gap."
+  severity: major
+  test: 25
+  artifacts:
+    - path: "README.md"
+      issue: "line 45-46: universal over 'any command or manifest carrying it' that the checker does not meet"
+  missing:
+    - "Bound the sentence to the two carriers the checker reads, or extend _publish_locations_in to read the /plugin marketplace add form; if bounded, state which README commands are unguarded"
+
+- gap_id: G-06-26
+  truth: "The reproduction-boundary material holds up to readers who did not write it"
+  status: failed
+  reason: "Round 7, 2 readers. 3 findings. (1) :426-430 announces 'the enclosing scope of every hit named' then partitions 11 grep hits as 1 module-level + 10 inside seven functions; AST attribution gives 2 module-level + 9 inside six, and the seventh named function _mutate_record_citation_unresolvable contains no occurrence — authored 5e9b6de (06-10). (2) :23-27 states every dated in-place marker is 'in one of four forms' and names a grep that 'lists every one'; :65 carries a fifth form, *Correction withdrawn 2026-09-22 (06-09)*, which the grep does not return and which calls itself 'this marker' — authored aeb8bfc (06-10), the commit that widened this same claim from one form to four to fix this same defect class. Four readers converged on it. (3) :907-908 calls sections 1-3 'the three not performed findings' while section 3's own heading reads 'PERFORMED AT 06-02, BUT NOT COLD' — authored 36fbf6c (06-05)."
+  severity: major
+  test: 26
+  artifacts:
+    - path: "LEGAL-REVIEW.md"
+      issue: "lines 426-430, 23-27, 907-908"
+  missing:
+    - "Re-derive the economic-buyer partition from an AST attribution and state the counting rule, or drop the enumeration"
+    - "State the marker universal over the forms that exist including *Correction withdrawn*, or stop asserting a universal a single grep must satisfy"
+    - "Correct the summary label so it does not contradict section 3's own heading"
+
+- gap_id: G-06-27
+  truth: "No two committed files state things that cannot both be true"
+  status: failed
+  reason: "Round 7, 2 sweep readers bound to no named file. 5 findings in three files the file-named briefs do not cover. (1) examples/deal-brief.md:99-100 'every percentage traces to exactly one row below' — Q2 and Q5 are 20% and trace to no row; they pass only by raw-value collision with rfp-security-weight, which :58 declares a distinct scheme (probe with unmutated control: deleting that row makes the checker itself report the Q2/Q5 20% as unlisted). (2) :114 calls 15% 'the two mid-weighted scored RFP questions (Q3 and Q4)' when they are the two lowest of five; the sibling brief uses correct top/mid/low labelling for the same structure. (3) RESULTS-mod04.md:963 points at 'the fourth row' of a three-row table. (4) tools/check_repo.py:6-9 names README's '## Repository layout' as the single place its 23-file scope is written down; the enumeration is at README:180 under '## Status' — authored d448ed6 (06-10). (5) RESULTS-mod04.md:177 calls all 10 sonnet-5 sessions genuine, then names one of them as carrying the contamination fingerprint; the file's own 11-of-19 tally gives 9."
+  severity: major
+  test: 27
+  artifacts:
+    - path: "examples/deal-brief.md"
+      issue: "lines 99-100 and 114"
+    - path: "evals/conformance/RESULTS-mod04.md"
+      issue: "lines 963 and 177"
+    - path: "tools/check_repo.py"
+      issue: "lines 6-9, module docstring section pointer"
+  missing:
+    - "Key Q2/Q5's 20% to its own canonical row, or bound the interface sentence to the figures the table actually keys"
+    - "Relabel rfp-question-weight-mid to match the ordering, as bench-deal-brief.md already does"
+    - "Address the table by round rather than by row, or add the fourth row"
+    - "Point the checker docstring at '## Status', the section that holds the enumeration"
+    - "Correct the sonnet-5 genuine count to 9, consistent with the file's own 11-of-19 tally"
+
+- gap_id: G-06-28
+  truth: "The sentences any gap-closure round added survive checking"
+  status: failed
+  reason: "Round 7, 1 reader over d67012e^..HEAD (2,991-line diff, 17 files). 4 findings: D, C and A recorded under tests 26 and 25, plus tools/check_repo.py:7434 'None of the three carries a path literal in its body, so a static scan would have found zero of the three' — check_readme_claim_unsourced carries 'README.md' at :1710 and :1718 and does read it, so the scan would have found one of three; the narrower CLAIM_SOURCE_GLOB point survives (authored ca6e9d4, 06-10). Convergence 3 of 4, against round 6's 3 of 5. Change 1 measured and paid a second time: the README:45-46 clause returns 0 added-line matches over the 06-10 range d33b78a^..HEAD and 1 over d67012e^..HEAD, pinned to ad073b9. The same measurement corrected this round's own first attribution of that finding, which a pickaxe on the surviving substring had filed under 04-13."
+  severity: major
+  test: 28
+  artifacts:
+    - path: "tools/check_repo.py"
+      issue: "line 7434, unqualified claim about three named functions"
+  missing:
+    - "Qualify the path-literal sentence to the edge it is actually arguing about, or drop the 'none of the three' universal"
+    - "Keep the widened range: marginal yield 1 in 23, exit condition not met"
+
+- gap_id: G-06-29
+  truth: "The .planning/ record states nothing the repository contradicts"
+  status: failed
+  reason: "Round 7, first run of the fifth brief (06-10 task 25). 1 reader, 13 findings — 52% of the round from one reader in eight, over the surface stripped from every reader tree for six rounds. Three are ledger rows whose LEGAL-REVIEW.md twins 06-10 corrected while leaving WINDOWS.md — the ledger itself, and the JSON fence the table renders from — wrong: id 15 claims an AST-based stdlib check (no .py imports ast), id 11 states 'all four occurrences' (nine occurrences, three carriers, seven positions), id 29 cites two blank lines as carrying a seven-element list. Id 30 still states the ground LEGAL-REVIEW.md:1160 retracted, and cites RESULTS.md:212 for a sentence at :214. REQUIREMENTS.md:64 calls generate_derivatives.py --check the ninth CI command; it is the tenth, and ci.yml has not changed since the note was written. Phase 6 COVERAGE.md's 'the only matches are' universal has six counterexamples in 278. 06-UAT.md:266 states 1,714 added lines for a range with 1,684 (1,714 is the artifact file's own length). 06-UAT.md:2621 credits G-06-23's closure to fc801a9, reachable from NO ref — an orphaned pre-amend object with a different tree from the on-branch 81495a3 that 06-10-SUMMARY.md:138 records. ROADMAP.md understates two phases' plan counts (10/10 and 11/11 against 11 and 15), leaves a complete 04-15 unchecked, and calls three complete phase-1 plans pending. STATE.md:76 reports 26 plans completed against its own frontmatter's 62."
+  severity: major
+  test: 29
+  artifacts:
+    - path: ".planning/WINDOWS.md"
+      issue: "ids 15, 11, 29 and 30 — rendered rows and JSON fence both; the fence is the source of truth"
+    - path: ".planning/REQUIREMENTS.md"
+      issue: "line 64, ninth vs tenth CI command"
+    - path: ".planning/phases/06-legal-review-gate-launch/COVERAGE.md"
+      issue: "Evidence section, network-client sweep universal"
+    - path: ".planning/phases/06-legal-review-gate-launch/06-UAT.md"
+      issue: "lines 266 and 2621 — added-line count, and a SHA reachable from no ref"
+    - path: ".planning/ROADMAP.md"
+      issue: "lines 37, 268, 363, 365"
+    - path: ".planning/STATE.md"
+      issue: "line 76"
+  missing:
+    - "Correct WINDOWS.md ids 15, 11, 29 and 30 through the JSON fence and re-render, per the ledger's own edit rule"
+    - "Establish why three LEGAL-REVIEW.md corrections did not reach the ledger they reproduce, and make the ledger the edit target"
+    - "Add SHA reachability to the checkable classes: git merge-base --is-ancestor over every commit-shaped SHA in .planning/"
+    - "Correct the DIST-05 ordinal, the COVERAGE.md universal, the two 06-UAT.md figures, four ROADMAP.md rows and the STATE.md total"
