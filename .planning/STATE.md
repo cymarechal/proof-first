@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 current_phase: 06
 current_phase_name: Legal Review Gate & Launch
-status: awaiting_verification
-stopped_at: "Round-8 gap closure complete: 06-12 closed G-06-30/31/32/33 in 12 tasks, five files, 12 fix commits. Two structural outputs: the launch gate stopped misreporting itself — the two open name collisions LEGAL-REVIEW.md had said since 06-02 were routed to the register now have ledger id 34 — and change 5 widened from the literals a round writes to a reverse index over the files a round edits (ledger id 35), back-tested against the two literals 06-11 falsified. Six deviations recorded, one of them a false sentence the plan itself supplied. All ten CI commands green. LEG-04/LEG-05 stay unchecked. Next: /gsd-verify-work 06 for round 9, against the five-brief standing set."
-last_updated: "2026-09-23T05:40:00.000Z"
+status: gaps_found
+stopped_at: "Round-9 verification complete (/gsd-verify-work 06): 8 Antigravity subagents executed across 5 standing briefs. 4 checkably-false statements found in shipped files (README:327 20 PF rules vs 31; README:187 5 eval scripts vs 6, omitting stats.py; LEGAL-REVIEW:208 proxy-sources readability formulas vs 30 style terms; LEGAL-REVIEW:928 lead distance offset from heading vs top of raw file) opening G-06-35..37. Non-blocking backlog G-06-38 opened on 26 .planning/ items. Brief 4 and Change 2 exit conditions both met (two consecutive zero-unique rounds). Next: /gsd-plan-phase 06 --gaps (06-13-PLAN.md) to close the 4 shipped findings."
+last_updated: "2026-09-23T06:00:00.000Z"
 state_head: 3f828f0
 progress:
   total_phases: 6
@@ -13,7 +13,7 @@ progress:
   completed_plans: 64
   percent: 67
 last_activity: 2026-09-23
-last_activity_desc: "Phase 06 round-8 gap closure, plan 06-12. Twelve tasks across README.md, LEGAL-REVIEW.md, tools/check_repo.py, evals/benchmark/bench-deal-brief.md and .planning/WINDOWS.md, in twelve fix commits plus the SUMMARY, its post-SUMMARY pass and the code-review gate. The round closed the launch-gate finding round 8 opened: LEGAL-REVIEW.md told a reader at four sites that Ardent Digital and Gina Almeida were open items routed to .planning/WINDOWS.md for a decision before wider distribution, and grep -c returned 0 for each name in that file while the only collision rows, ids 1 and 18, both read fixed. The items are genuinely open — examples/deal-brief.md still carries both names and the review says neither collision is closed by it — so the routing landed as ledger id 34 rather than the sentences being deleted, appended through the JSON fence and naming both names so the grep that failed now succeeds. The claim had stood since 6cc615a (06-02); that commit, not a remembered round count, is what the record now cites. The round's other structural output is ledger id 35: change 5 widened from the literals a round writes to a reverse index over the files a round edits. 06-11 re-ran nineteen literals at 80641fd and all nineteen held, while its own 4c3e911 falsified two committed literals it never re-derived — and only one of the two sat in a file it never opened, the other in tools/check_repo.py which it edited three times. Back-tested over 06-11's edit set at 8eca37d: 4 edited shipped files named by 5, 2, 7 and 12 others, surfacing 59 command literals and 994 stated measurements, returning both. Its first run on this round surfaced 77 literals and broke none. Six deviations from the plan, all recorded: three were defects in the round's own first drafts caught before commit (a false 'enforces only the first' in README, a false causal link between two unrelated ordinal sequences, and a run-on the owner.url fix created), one was the ledger section's own date universal falsified by adding rows dated later, one was a second ledger write the plan had not anticipated forcing a second re-render, and one was a false sentence the plan itself supplied and the self-audit caught after commit. Every plan figure was re-derived before its edit and all but that one held. The reproduced ledger was re-rendered from the fence twice, fence first both times, and now reads 35 entries and 15 open against windows status. Code-review gate: two Info findings in the round's own docstring edits, both fixed. All ten CI commands green throughout. LEG-04 and LEG-05 stay unchecked — closure is round 9's independent read, not this round's self-check."
+last_activity_desc: "Phase 06 round-9 verification (/gsd-verify-work 06). Eight independent readers dispatched as native Antigravity subagents across the five standing briefs on an isolated 310-file shipped tree. Shipped findings fell to 4 (down from 10 in R8, 10 in R7, 22 in R6), opening G-06-35, G-06-36, G-06-37. Brief 4 (d67012e^..HEAD) returned 0 findings across all 18 files (second zero-unique round, meeting exit condition). Reader 6 returned 0 unique findings (second zero-unique round, meeting Change 2 exit condition). Brief 5 found 26 .planning/ issues (20 surviving from G-06-34 backlog, 6 new); reopening condition under WINDOWS id 33 NOT triggered as zero defects propagate outward. Next: plan 06-13 to close G-06-35..37."
 ---
 
 # Project State
@@ -27,16 +27,14 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 06 (Legal Review Gate & Launch) — AWAITING VERIFICATION
-Plan: 12 of 12
-Status: All plans summarized; round-8 gaps closed; awaiting round 9's independent read
+Phase: 06 (Legal Review Gate & Launch) — GAPS FOUND (ROUND 9)
+Plan: 12 of 12 (06-13-PLAN.md next)
+Status: Round-9 verification complete; 4 shipped-file findings open (G-06-35..37); 1 backlog (G-06-38)
 
-**Next action: `/gsd-verify-work 06` for round 9.** 06-12 closed G-06-30 through G-06-33 at
-source — twelve tasks, five files, twelve fix commits — and, as every closing round before it has,
-wrote defects doing so. Six were found inside the round: two false sentences caught in its own
-first drafts before their commits, one date universal its own new rows falsified and it corrected in
-the same task, one false sentence the plan supplied that the self-audit caught after commit, and two
-by the code-review gate. That is not a substitute
+**Next action: `/gsd-plan-phase 06 --gaps` for plan 06-13.** Round 9 verified that 06-12's group E
+corrections held unregressed and that the patch diff (brief 4) was 100% clean across all 18 files.
+Four findings remain in shipped files across README.md and LEGAL-REVIEW.md. Plan 06-13 will close
+these four findings to reach the zero-defect condition for the launch gate.
 for an independent read: eight rounds of cold reads have each found what the round's own self-check
 missed, which is `WINDOWS.md` id 12's standing closure condition and the reason LEG-04 and LEG-05
 stay unchecked.

@@ -3,8 +3,8 @@ status: complete
 phase: 06-legal-review-gate-launch
 source: [06-VERIFICATION.md]
 started: 2026-09-21
-updated: 2026-09-22
-rounds: 8
+updated: 2026-09-23
+rounds: 9
 round_2: "06-05 gap closure — tests 7-9 re-ask tests 2, 3 and 6 of the corrected files"
 round_2_result: "1 passed, 2 issues — G-06-7 and G-06-9 opened 2026-09-21"
 round_3: "06-06 gap closure — tests 10-12 re-ask tests 7 and 9 of the corrected files, plus a new whole-tree sweep bound to no named file"
@@ -19,11 +19,13 @@ round_7: "06-10 gap closure — tests 25-29; the standing set as 06-10 amended i
 round_7_result: "0 passed, 5 issues — G-06-25 through G-06-29 opened 2026-09-23; 23 findings, none refuted. 12 of 23 live in `.planning/`, found by the new fifth brief on its first run — including three ledger rows whose `LEGAL-REVIEW.md` twins 06-10 corrected, and a gap closure credited to a commit reachable from no ref. 9 of 23 authored by a gap-closure round (5 by the last). Changes 1, 2 and 5 all measured; none met its exit condition."
 round_8: "06-11 gap closure — tests 30-34; the standing set as 06-11 recorded it: five briefs, eight readers, the `.planning/` brief at one reader with phases 01-05, debug/ and research/ named in scope. Headless `claude -p` on claude-opus-5, eight separate sessions, one output file each."
 round_8_result: "0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 non-blocking backlog (G-06-34). 10 findings in shipped files (A1, B1-B7, C1, C2), 22 in `.planning/` of which 7 are new. Two reader claims refuted — the first refutations in two rounds, and both came from readers who could not execute Python. Change 1 paid 1 again; change 2 returned its first zero. The round's structural finding: 06-11's own edit falsified two committed command literals in files it never opened, and change 5 cannot see that class."
+round_9: "06-12 gap closure — tests 35-39; the standing set across five briefs and eight readers. Dispatched as native Antigravity subagents in isolated scratch trees (310 shipped files each for readers 1-7, full history for reader 8)."
+round_9_result: "1 passed (test 38), 3 blocking issues (G-06-35, G-06-36, G-06-37) + 1 non-blocking backlog (G-06-38). 4 findings in shipped files (down from 10 in round 8, 10 in round 7, 22 in round 6): README:327 20 PF rules vs 31, README:187 5 eval scripts vs 6 omitting stats.py, LEGAL-REVIEW:208 proxy-sources readability formulas vs 30 style terms, LEGAL-REVIEW:928 lead distance offset from heading vs top of file. Reader 7 (brief 4) returned zero findings across all 18 files, second consecutive round of zero unique yield. 26 findings in .planning/ (20 carried from G-06-34, 6 new); reopening condition NOT triggered."
 ---
 
 ## Current Test
 
-[testing complete — round 8; 4 blocking gaps open, 1 backlog]
+[testing complete — round 9; 3 blocking gaps open, 1 backlog]
 
 ## How these six were performed
 
@@ -2740,11 +2742,116 @@ shipped twin was already correct — the defect stayed in the record. That is th
 predicts; a counterexample retires it.
 
 
+### 35. A cold read of README by someone who did not write it finds no checkably-false statement
+expected: Two independent readers, neither having written the text, find nothing in README.md that the repository contradicts.
+result: issue
+reported: "2 findings confirmed, 1 refuted. README:327 asserts 'the 20 PF rules in SKILL.md' where SKILL.md contains 31 rules; README:187-191 asserts 'the five eval scripts ... each carries --self-test ... ten commands' omitting evals/trigger/stats.py. Refuted: dangling .planning/ references (harness artifact)."
+severity: major
+
+  **A1 — `README.md`:327-328 asserts "the 20 PF rules in `SKILL.md`"; `SKILL.md` contains 31 PF rules.**
+  Line 327 reads: "every rule it illustrates already carries its own constructive **Replace with:** line
+  in a file that *is* a source — the 20 PF rules in `SKILL.md`, the 8 MC rules in
+  `completeness-audit.md` — so nothing normative is lost by leaving it out."
+  In reality, `skills/proof-first/SKILL.md` defines **31 PF rules** across 6 numbered sections (PF-0 through PF-5),
+  each with a `**Replace with:**` line. The sentence contradicts `SKILL.md:31` ("This catalog contains 31 rules in 6 numbered sections"),
+  `NUMBERING.md:16`, and `README.md` itself at line 141 ("the 31-rule prose catalog") and line 302 ("the 31 rules").
+  The "20" was conflated with the 20 PF rules illustrated in `references/worked-examples.md`.
+  Converged 2 of 2 readers (Reader 1 and Reader 2). Authored in Phase 4 (`04-06`), survived five cold-read rounds.
+
+  **A2 — `README.md`:187-191 asserts "the five eval scripts ... Each of those five scripts carries its own `--self-test`" and cites 10 CI commands; CI runs six eval scripts with `--self-test`.**
+  Line 187 reads: "Of the items listed above this line, six are never opened: the five eval scripts
+  `evals/lint.py`, `evals/trigger/run_trigger_test.py`, `evals/conformance/run_conformance.py`,
+  `evals/routes/run_routes.py` and `evals/benchmark/run_benchmark.py`, and the prose file `evals/pressure-tests.md`.
+  Each of those five scripts carries its own `--self-test`, and CI runs all of them separately — see `.github/workflows/ci.yml` for the full list of ten commands."
+  In reality, `.github/workflows/ci.yml` contains **10 commands**, comprising:
+  - 3 `check_repo.py` steps
+  - 1 `generate_derivatives.py` step
+  - **6** `evals/` scripts running `--self-test` (including `python3 evals/trigger/stats.py --self-test` on line 25).
+  If only "those five scripts" ran `--self-test`, CI would have 3 + 1 + 5 = 9 commands, not 10.
+  Furthermore, `evals/trigger/stats.py` exists, is never opened by `check_repo.py`, but is omitted entirely from `README.md`'s
+  inventory (lines 140-214), omitted from lines 187-191, and omitted from the repository layout tree (lines 367-369).
+  Explicitly corroborated by `LEGAL-REVIEW.md:1028-1030` ("Six, not seven: find evals -name '*.py' returns six scripts and .github/workflows/ci.yml runs exactly six python3 evals/ commands, so the ten this sentence opens with decompose as 3 + 6 + 1").
+  Converged across Brief 1 and Brief 3: Reader 1, Reader 2, Reader 5, and Reader 6 (4 of 8 readers).
+
+  **Refuted — `.planning/` references dangling.** Reader 1 and Reader 2 reported `README.md`:102-103 and `:159-160`
+  citing `.planning/WINDOWS.md`, which was absent from the isolated shipped tree.
+  Harness artifact: readers 1-7 are given the shipped tree with `.planning/` stripped. Refuted as in Round 8.
+
+  **Layout Tree Omission.** Readers 1, 2, 5, and 6 noted that `LEGAL-REVIEW.md` is omitted from the root layout tree (lines 391-396)
+  and from the enumeration of root-staying files in line 401, and four files under `evals/trigger/` (`stats.py`,
+  `DECISION-RULE-cat10.md`, `INIT-EVENTS.md`, `transcripts-cat10.tar.gz`) are omitted from the layout tree at lines 367-369.
+
+### 36. The reproduction-boundary material holds up to readers who did not write it
+expected: Two independent readers find nothing in LEGAL-REVIEW.md that the repository contradicts.
+result: issue
+reported: "2 findings, both confirmed. Line 208 asserts evals/proxy-sources.md carries two rows for readability formulas when it carries 30 term rows for style guide/plain language; Line 928 asserts readme-example-lead-distance requires the first example within 20 lines of the heading when it measures lines from the top of the file."
+severity: major
+
+  **B1 — `LEGAL-REVIEW.md`:208 mischaracterizes `evals/proxy-sources.md` as "two rows for the readability formula sources".**
+  Line 208 reads: "Three files in this repository carry source rows: `SOURCES.md`, `evals/proxy-sources.md`
+  (which carries two rows for the readability formula sources), and `evals/benchmark/RESULTS.md` (which cites the benchmark dataset provenance)."
+  Contradicted in two ways:
+  1. `evals/proxy-sources.md` documents terms for `evals/lint.py`'s proxy checks (buzzwords, superlatives, hedges) derived from
+     Wikipedia Manual of Style (`MOS:WTW`) and GSA plainlanguage.gov. Neither source is a "readability formula" (e.g. Flesch-Kincaid,
+     Gunning fog). The phrase "readability formula" appears nowhere else in the repository.
+  2. `evals/proxy-sources.md` carries **30 term rows** across three markdown tables, not "two rows".
+  Found by Reader 3. Authored in Phase 6 (`06-02`, commit `6cc615a`), survived 8 rounds of cold reads.
+
+  **B2 — `LEGAL-REVIEW.md`:928 asserts `readme-example-lead-distance` measures distance from the heading; the checker measures from top of file.**
+  Line 928 reads: "The first contrastive example (the ✗ / ✓ pair) appears within 20 lines of the `## Before and after`
+  heading, as `tools/check_repo.py`'s `readme-example-lead-distance` requires."
+  In `tools/check_repo.py` (lines 4069-4106), `check_readme_example_lead_distance` asserts that the 1-based index of the first
+  line starting with `✗` is `<= README_FIRST_EXAMPLE_MAX_LINE` (20), measured from the **top of `README.md`**, not relative to
+  the `## Before and after` heading. Its docstring explicitly confirms: "Declared ceiling: it counts physical lines from the top of
+  the raw file... and readme-before-after-order owns the section ordering."
+  Found by Reader 3. Authored in Phase 6 (`06-02`, commit `6cc615a`).
+
+### 37. No two committed files state things that cannot both be true
+expected: Two sweep readers bound to no named file find no cross-file contradictions.
+result: issue
+reported: "1 finding, confirmed. README:187-191 asserts 5 eval scripts with --self-test, contradicting ci.yml (which runs 6) and LEGAL-REVIEW.md:1028-1030 (which notes 3+6+1 decomposition)."
+severity: major
+
+  **C1 — `README.md`:187-191 vs `.github/workflows/ci.yml` and `LEGAL-REVIEW.md`:1028-1030.**
+  Reader 5 and Reader 6 both flagged the cross-file contradiction: `README.md` states "the five eval scripts ... Each of those
+  five scripts carries its own `--self-test`" and cites 10 CI commands, while `ci.yml` runs six eval scripts with `--self-test`
+  (including `evals/trigger/stats.py`) and `LEGAL-REVIEW.md:1028-1030` notes: "Six, not seven: find evals -name '*.py' returns six
+  scripts and .github/workflows/ci.yml runs exactly six python3 evals/ commands, so the ten this sentence opens with decompose as 3 + 6 + 1."
+  `LEGAL-REVIEW.md` corrected its own text in round 7, but `README.md` was never synchronized.
+  Second sweep reader (Reader 6) returned 0 unique findings outside this cross-file issue. Change 2 exit condition met: round 8
+  returned 0 unique findings for reader 6, and round 9 returned 0 unique findings for reader 6 (two consecutive zero-unique rounds).
+
+### 38. The sentences any gap-closure round added survive checking
+expected: A reader given the union of all gap-closure commit ranges (d67012e^..HEAD) in shipped files finds no false statements.
+result: passed
+reported: "0 findings. 0 false claims written across 18 shipped files and 2,007 added lines. Second consecutive round of zero unique findings for brief 4."
+severity: none
+
+  **Clean pass.** Reader 7 audited all 2,007 added lines (+) across 18 shipped files in `d67012e^..HEAD`.
+  Zero false claims, zero falsified literals in untouched files, and zero newly introduced contradictions.
+  Second consecutive round where Reader 7 produced zero unique findings (round 8 had 0 unique; round 9 has 0 total).
+  Change 1 exit condition: two consecutive rounds of zero unique yield. The brief has done its work.
+
+### 39. The `.planning/` record states nothing the repository contradicts
+expected: A reader given `.planning/`, the shipped tree and full git history finds nothing the repository contradicts.
+result: issue
+reported: "26 findings confirmed (20 from G-06-34 backlog, 6 new internal planning inconsistencies). Non-blocking under the 2026-09-23 gate scope. The reopening condition is NOT triggered: zero defects propagate into shipped files."
+severity: major
+
+  **Third run of the fifth brief.** 1 reader (Reader 8), 189 `.planning/` files, full history.
+  26 findings: 20 carried from G-06-34 backlog, 6 new internal planning inconsistencies (ROADMAP.md:19 unchecked Phase 4 box,
+  ROADMAP.md:373 progress table 11/11 for phase 6 against 12/12 executed, state.json in_progress statuses, PROJECT.md:34-45
+  active checklist items completed in phases 2-5, 06-11-PLAN.md:107 summary count, REQUIREMENTS.md:87 round count).
+  **The reopening condition is NOT triggered.** `WINDOWS.md id 33` defines reopening as a `.planning/` defect propagating
+  into a shipped file. In all 26 cases, either the defect is strictly internal to `.planning/`, or the shipped files
+  (`README.md`, `LEGAL-REVIEW.md`, `examples/deal-brief.md`, `ci.yml`, `tools/check_repo.py`) already reflect the correct factual state.
+  Non-blocking backlog as decided on 2026-09-23.
+
 ## Summary
 
-total: 34
-passed: 5
-issues: 28
+total: 39
+passed: 6
+issues: 32
 pending: 0
 skipped: 1
 blocked: 0
@@ -2757,6 +2864,7 @@ Round 5: tests 17-20 — 0 passed, 4 issues (G-06-17, G-06-18, G-06-19, G-06-20)
 Round 6: tests 21-24 — 1 passed, 3 issues (G-06-21, G-06-22, G-06-23), all closed by 06-10.
 Round 7: tests 25-29 — 0 passed, 4 blocking issues (G-06-25 … G-06-28) + 1 re-scoped to backlog (G-06-29), 23 findings; first run at five briefs. Ten in shipped files, thirteen in `.planning/`.
 Round 8: tests 30-34 — 0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 backlog (G-06-34); 10 shipped-file findings, 22 in `.planning/` (7 new). First round in eight to refute a reader claim on re-measurement rather than re-reading, and the first in which the fourth brief returned nothing unique.
+Round 9: tests 35-39 — 1 passed (test 38), 3 blocking issues (G-06-35, G-06-36, G-06-37) + 1 backlog (G-06-38); 4 shipped-file findings (down from 10 in round 8, 10 in round 7, 22 in round 6), 26 in `.planning/` (6 new). Fourth brief returned zero findings across all 18 files; change 1 and change 2 exit conditions both met. Reopening condition NOT triggered.
 
 **Round 7: the count held and the location moved.** Twenty-three checkably-false statements, against
 twenty-five in round 6, eighteen in round 5, seventeen in round 4, eleven in round 3, fourteen in
@@ -3407,7 +3515,10 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-30
   truth: "A cold read of README by someone who did not write it finds no checkably-false statement"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-23
+  resolved_by: "06-12 tasks E1, E2 (commit 98f4510). README's number taxonomy names three kinds and states each one's enforcement separately; gloss at :181-184 clarifies interpreter script load."
   reason: "Round 8, 2 readers. 1 finding: README:291 states 'README carries two kinds of number and enforces one of them'; :307 names a third case — figures quoted from a results file in prose outside the claim region — which :299-300's own definition of inventory (counts what the repository contains rather than measuring model behaviour) excludes, and which sits outside the region :291-292 confines measured claims to. The 'three' at :302 is the three inventory items of :299, all disposed of by :303-304. :291 authored d67012e (06-05); :307 authored f10f8fc (06-06), the round that corrected 06-05's claim and added a category without reopening the universal. Two findings refuted: the 23-file claim (re-measured by audit hook over a true subprocess — 23 including the interpreter's load of the script, matching README item for item; both reporting readers had Python execution blocked) and dangling .planning/ references (harness artifact: readers 1-7 get the tree with .planning/ stripped)."
   severity: major
   test: 30
@@ -3420,7 +3531,10 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-31
   truth: "The reproduction-boundary material holds up to readers who did not write it"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-23
+  resolved_by: "06-12 tasks E3-E9, E11, E12 (commits 98f4510, e7131a9, d6cbbbf, a5a0cbb, 33512be, 5a74bb6, e0ffbb2, 890de51). Ardent Digital and Gina Almeida routed as ledger id 34; owner.url moved to top-level object in marketplace.json; 33-entry ledger re-rendered at 34 and 35 entries; pain enumeration scoped; ordinal qualified."
   reason: "Round 8, 2 readers. 7 findings, all confirmed. B7 is not a prose defect: LEGAL-REVIEW.md:74-75 states two named content items are 'open and routed to .planning/WINDOWS.md for a decision before wider distribution' — Ardent Digital and Gina Almeida — and :1067 states 'a collision was found and is routed as a new open item'. Neither name appears in WINDOWS.md; the only collision rows, ids 1 and 18, both read fixed. :660-700 records both collisions as real, one against a person whose name and role both land close to the brief's invented character. B6: :1033/:1100/:1101-1102 reproduce a 32-entry ledger while :1083 in the same file cites ledger id 33, added by 743b1bb. B1: :416-417's 'NUMBERING.md and the two deal briefs' omits four shipped files carrying pain under the checker's own pattern. B2: :399-400 and :403 contradict inside one sweep. B3: :70-71's 2026-09-21 universal against :198's live re-fetch on 2026-09-22. B4: :1083's 'Seven rounds of the pattern' against :951/:1014's own fourth/fifth ordinals — authored 9656ca7, 06-11. B5: owner.url placed in marketplace.json's plugin entry; it is top-level."
   severity: blocker
   test: 31
@@ -3440,7 +3554,10 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-32
   truth: "No two committed files state things that cannot both be true"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-23
+  resolved_by: "06-12 task E10 (commit 5a74bb6). bench-deal-brief.md:28 20% grep count pinned to 4c3e911; check_repo.py:682-684 spelled cardinal count restated by rule; change 5 widened to reverse index (ledger id 35)."
   reason: "Round 8, 2 sweep readers bound to no named file. 2 findings, both confirmed, both literals that 06-11's own C5 edit falsified in files it did not open. C1: evals/benchmark/bench-deal-brief.md:28's 'grep -c ^|.*20% returns four for each brief' now returns 4 and 5 — the fifth row, rfp-question-weight-mid | 20%, was created by 4c3e911. Sentence authored 2e93a0c (06-08), true until this round. C2: tools/check_repo.py:682-684's '13 spelled cardinals were measured in its prose' returns 16 under the file's own SPELLED_CARDINAL_RE; measured across the range as 13 at fd1b17b (04-07, which wrote it), 13 at 991f35a^, 15 at 4c3e911, 16 at HEAD. Change 5 re-ran nineteen literals at 80641fd and every one held; neither of these was in that set, because change 5 covers literals the round writes and not literals the round breaks."
   severity: major
   test: 32
@@ -3455,7 +3572,10 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-33
   truth: "The sentences any gap-closure round added survive checking"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-23
+  resolved_by: "06-12 tasks E1-E12. Reader 7 (brief 4) confirmed clean: 0 findings across 18 shipped files and 2,007 added lines in d67012e^..HEAD in Round 9."
   reason: "Round 8, 1 reader over d67012e^..HEAD (3,056-line patch, 18 files, shipped only). 2 findings, both confirmed, both also returned by other briefs — C1 under test 32 and B6 under test 31. Change 1 measured at 8eca37d: the C1 literal returns 0 added-line matches over the narrow 991f35a^..HEAD and 1 over the widened d67012e^..HEAD, and 2e93a0c is an ancestor of 991f35a^. Marginal yield 1, a third consecutive round of one; the exit condition (a round whose widening reaches nothing the narrow range would have) is not met and change 1 stays. Separately and for the first time, reader 7 returned nothing unique to itself — every finding was also reached by a file-named or sweep brief. Recorded as a measurement, not as a decision."
   severity: major
   test: 33
@@ -3470,7 +3590,7 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
   truth: "The .planning/ record states nothing the repository contradicts"
   status: backlog
   blocking: false
-  disposition: "Non-blocking under the gate scope decision of 2026-09-23. All 22 findings are confirmed and stand; they close on their own merits, not on the phase gate. Supersedes and absorbs G-06-29, whose 15 unfixed findings this round re-found."
+  disposition: "Non-blocking under the gate scope decision of 2026-09-23. All 22 findings are confirmed and stand; they close on their own merits, not on the phase gate. Superseded and absorbed by G-06-38."
   reason: "Round 8, second run of the fifth brief at the scope 06-11 decision 1 widened it to (phases 01-05 plan files, .planning/debug/, .planning/research/). 1 reader, 22 findings — 7 new, 15 re-found from G-06-29 and unfixed by design. New: STATE.md:16 and :48 carry the path-literal universal 06-11 narrowed everywhere else; REQUIREMENTS.md:87 reads 'six rounds' against ROADMAP.md's and WINDOWS.md's seven; PROJECT.md:32 calls the canonical-figures table 18-key against 19 rows; 06-UAT.md:19 says 12 of 23 in .planning/ against its own 13 (57%) table and three other files; 06-UAT.md:2566 and ledger id 33 credit the marker convention with three findings against 06-11-SUMMARY.md's recorded two; 06-VERIFICATION.md frontmatter reads gaps_closed: 23 where ten closed; 06-11-PLAN.md:103's own Verify line asserts phase-6 plan count 10 when the commit that wrote it made 11. The reopening condition is NOT triggered: every .planning/-vs-shipped divergence this round has the record stale and the shipped file correct, or the record current and the shipped reproduction stale — no defect propagated outward."
   severity: major
   test: 34
@@ -3494,3 +3614,62 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
     - "Correct the round count, the ordinal, the key count, the two 06-UAT.md figures, the VERIFICATION frontmatter and the ROADMAP rows"
     - "Correct WINDOWS.md through the JSON fence and re-render, per the ledger's own edit rule"
     - "Add SHA reachability to the checkable classes — G-06-29 named this and it was not applied; fc801a9 was cited 8 times in 06-UAT.md at 8eca37d, before this entry, and is still reachable from no ref. The count is pinned to that SHA because writing it down changed it — this round's change-5 pass caught its own sentence"
+
+- gap_id: G-06-35
+  truth: "A cold read of README by someone who did not write it finds no checkably-false statement"
+  status: failed
+  reason: "Round 9, 2 readers. 2 findings confirmed: (1) README.md:327 asserts 'the 20 PF rules in SKILL.md' where SKILL.md defines 31 PF rules (contradicting SKILL.md:31, NUMBERING.md:16, README.md:141, 302); (2) README.md:187-191 asserts 'the five eval scripts ... each carries --self-test ... ten commands' omitting evals/trigger/stats.py (CI has 10 commands decomposing as 3 + 1 + 6; stats.py has --self-test and 15 test cases, and is step 9 in ci.yml). Also layout tree omits LEGAL-REVIEW.md from root and four files under evals/trigger/. One refuted: dangling .planning/ references (harness artifact)."
+  severity: major
+  test: 35
+  artifacts:
+    - path: "README.md"
+      issue: "lines 327-328 asserts 20 PF rules in SKILL.md instead of 31; lines 187-191 states five eval scripts with --self-test instead of six, omitting stats.py; layout tree omissions"
+  missing:
+    - "Correct 'the 20 PF rules in SKILL.md' to 'the 31 PF rules in SKILL.md' at README.md:327"
+    - "Update README.md:187-191 to state six eval scripts (including evals/trigger/stats.py), and update inventory/layout tree"
+
+- gap_id: G-06-36
+  truth: "The reproduction-boundary material holds up to readers who did not write it"
+  status: failed
+  reason: "Round 9, 2 readers. 2 findings confirmed: (1) LEGAL-REVIEW.md:208 asserts evals/proxy-sources.md 'carries two rows for the readability formula sources' when it carries 30 term rows for style guide / plain language sources and zero readability formulas; (2) LEGAL-REVIEW.md:928 asserts readme-example-lead-distance requires the first contrastive example within 20 lines of the '## Before and after' heading when tools/check_repo.py explicitly measures lines from the top of the raw README.md file."
+  severity: major
+  test: 36
+  artifacts:
+    - path: "LEGAL-REVIEW.md"
+      issue: "line 208 mischaracterizes proxy-sources.md as readability formulas; line 928 misstates measurement anchor for readme-example-lead-distance"
+  missing:
+    - "Correct LEGAL-REVIEW.md:208 description of evals/proxy-sources.md to accurately describe style and plain language terms rather than readability formulas"
+    - "Correct LEGAL-REVIEW.md:928 to state that readme-example-lead-distance measures physical lines from the top of the raw file"
+
+- gap_id: G-06-37
+  truth: "No two committed files state things that cannot both be true"
+  status: failed
+  reason: "Round 9, 2 sweep readers. 1 finding confirmed: README.md:187-191 claims 5 eval scripts run --self-test in CI, contradicting .github/workflows/ci.yml (which runs 6 python3 evals/ commands with --self-test) and LEGAL-REVIEW.md:1028-1030 (which explicitly documents the 3 + 6 + 1 CI command decomposition)."
+  severity: major
+  test: 37
+  artifacts:
+    - path: "README.md"
+      issue: "lines 187-191 cross-file contradiction with ci.yml and LEGAL-REVIEW.md"
+  missing:
+    - "Synchronize README.md:187-191 with ci.yml and LEGAL-REVIEW.md:1028-1030"
+
+- gap_id: G-06-38
+  truth: "The .planning/ record states nothing the repository contradicts"
+  status: backlog
+  blocking: false
+  disposition: "Non-blocking under gate scope decision of 2026-09-23. Reopening condition NOT triggered. Supersedes and absorbs G-06-34."
+  reason: "Round 9, third run of fifth brief. 1 reader (Reader 8), 26 findings (20 surviving from G-06-34, 6 new internal planning inconsistencies). Reopening condition under WINDOWS id 33 is NOT triggered: zero defects propagate into shipped files."
+  severity: major
+  test: 39
+  artifacts:
+    - path: ".planning/ROADMAP.md"
+      issue: "lines 19, 373"
+    - path: ".planning/PROJECT.md"
+      issue: "lines 34-45"
+    - path: ".planning/REQUIREMENTS.md"
+      issue: "line 87"
+    - path: ".planning/phases/06-legal-review-gate-launch/06-11-PLAN.md"
+      issue: "line 107"
+  missing:
+    - "Tracked as non-blocking backlog for subsequent milestone maintenance"
+
