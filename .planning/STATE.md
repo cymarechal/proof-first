@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 current_phase: 06
 current_phase_name: Legal Review Gate & Launch
-status: gaps_found
-stopped_at: "Round-9 verification complete (/gsd-verify-work 06): 8 Antigravity subagents executed across 5 standing briefs. 4 checkably-false statements found in shipped files (README:327 20 PF rules vs 31; README:187 5 eval scripts vs 6, omitting stats.py; LEGAL-REVIEW:208 proxy-sources readability formulas vs 30 style terms; LEGAL-REVIEW:928 lead distance offset from heading vs top of raw file) opening G-06-35..37. Non-blocking backlog G-06-38 opened on 26 .planning/ items. Brief 4 and Change 2 exit conditions both met (two consecutive zero-unique rounds). Next: /gsd-plan-phase 06 --gaps (06-13-PLAN.md) to close the 4 shipped findings."
-last_updated: "2026-09-23T06:00:00.000Z"
-state_head: 3f828f0
+status: ready_to_verify
+stopped_at: "Plan 06-13 executed: G-06-35 and G-06-37 closed in README.md (31 PF rules, 6 eval scripts with --self-test in CI, stats.py and LEGAL-REVIEW.md added to layout tree and inventory); G-06-36 refuted with disk evidence in LEGAL-REVIEW.md. Zero open blocking defects in shipped files. All 10 CI commands pass. Next: /gsd-verify-work 06 (Round 10 cold-read verification with retired Brief 4 and Reader 6)."
+last_updated: "2026-09-23T08:00:00.000Z"
+state_head: HEAD
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 64
-  completed_plans: 64
-  percent: 67
+  total_plans: 65
+  completed_plans: 65
+  percent: 68
 last_activity: 2026-09-23
-last_activity_desc: "Phase 06 round-9 verification (/gsd-verify-work 06). Eight independent readers dispatched as native Antigravity subagents across the five standing briefs on an isolated 310-file shipped tree. Shipped findings fell to 4 (down from 10 in R8, 10 in R7, 22 in R6), opening G-06-35, G-06-36, G-06-37. Brief 4 (d67012e^..HEAD) returned 0 findings across all 18 files (second zero-unique round, meeting exit condition). Reader 6 returned 0 unique findings (second zero-unique round, meeting Change 2 exit condition). Brief 5 found 26 .planning/ issues (20 surviving from G-06-34 backlog, 6 new); reopening condition under WINDOWS id 33 NOT triggered as zero defects propagate outward. Next: plan 06-13 to close G-06-35..37."
+last_activity_desc: "Plan 06-13 executed: closed confirmed defects in README.md and refuted Reader 3 claims against LEGAL-REVIEW.md. Shipped files have zero known defects. All 10 CI commands pass. Next: /gsd-verify-work 06 (Round 10 verification)."
 ---
 
 # Project State
@@ -27,17 +27,14 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 06 (Legal Review Gate & Launch) — GAPS FOUND (ROUND 9)
-Plan: 12 of 12 (06-13-PLAN.md next)
-Status: Round-9 verification complete; 4 shipped-file findings open (G-06-35..37); 1 backlog (G-06-38)
+Phase: 06 (Legal Review Gate & Launch) — READY TO VERIFY (ROUND 10)
+Plan: 13 of 13
+Status: Plan 06-13 executed; 0 blocking defects open in shipped files; 1 non-blocking backlog (G-06-38)
 
-**Next action: `/gsd-plan-phase 06 --gaps` for plan 06-13.** Round 9 verified that 06-12's group E
-corrections held unregressed and that the patch diff (brief 4) was 100% clean across all 18 files.
-Four findings remain in shipped files across README.md and LEGAL-REVIEW.md. Plan 06-13 will close
-these four findings to reach the zero-defect condition for the launch gate.
-for an independent read: eight rounds of cold reads have each found what the round's own self-check
-missed, which is `WINDOWS.md` id 12's standing closure condition and the reason LEG-04 and LEG-05
-stay unchecked.
+**Next action: `/gsd-verify-work 06` for Round 10.** Plan 06-13 closed the 2 confirmed defects in `README.md`
+and recorded the refutation of Reader 3's two hallucinated quotes against `LEGAL-REVIEW.md`. Shipped files
+now have zero open defects across the entire 310-file tree. Round 10 cold-read verification will run
+against the zero-defect tree with retired instruments (Brief 4 and Reader 6 retired per exit conditions).
 
 **The launch-gate finding, and how it closed.** `LEGAL-REVIEW.md` told a reader at four sites that
 **Ardent Digital** and **Gina Almeida** were open items routed to `.planning/WINDOWS.md` for a
