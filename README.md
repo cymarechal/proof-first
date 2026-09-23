@@ -149,6 +149,8 @@ What exists today:
 - `evals/lint.py` — the stdlib-only mechanical proxy linter the benchmark counts with.
 - `evals/trigger/run_trigger_test.py` — a stdlib-only, self-testing runner that drives live
   sessions per phrasing and reads activation from each session's own event stream.
+- `evals/trigger/stats.py` — a stdlib-only, self-testing statistical utility for confidence
+  intervals and exact tests.
 - `evals/trigger/RESULTS-trigger.md` — three runs, two of them against the shipped skill
   description. The current one is Arm B, the paired n=5 control measured 2026-09-20 on
   `claude-sonnet-5`: the skill activated in 45 of 45 must-fire sessions, and over-fired in 9 of 25
@@ -184,11 +186,12 @@ What exists today:
   `tools/check_repo.py`. No frame inside the checker opens the script — a reader who counts only
   the checker's own reads finds every file on this list but that one, which is why the count is 23
   and not 22. An `open`-audit hook over a real `python3 tools/check_repo.py` subprocess sees all 23.
-  Of the items listed above this line, six are never opened: the five eval scripts
-  `evals/lint.py`, `evals/trigger/run_trigger_test.py`, `evals/conformance/run_conformance.py`,
-  `evals/routes/run_routes.py` and `evals/benchmark/run_benchmark.py`, and the prose file
-  `evals/pressure-tests.md`. Each of those five scripts carries its own `--self-test`, and CI runs
-  all of them separately — see `.github/workflows/ci.yml` for the full list of ten commands.
+  Of the items listed above this line, seven are never opened: the six eval scripts
+  `evals/lint.py`, `evals/trigger/run_trigger_test.py`, `evals/trigger/stats.py`,
+  `evals/conformance/run_conformance.py`, `evals/routes/run_routes.py` and
+  `evals/benchmark/run_benchmark.py`, and the prose file `evals/pressure-tests.md`. Each of those six
+  scripts carries its own `--self-test`, and CI runs all of them separately — see
+  `.github/workflows/ci.yml` for the full list of ten commands.
   Below this line, `tools/generate_derivatives.py`, `evals/proxy-sources.md`,
   `evals/benchmark/scenarios.json`, `evals/benchmark/bench-deal-brief.md` and the CI workflow
   itself are likewise not opened by the checker.
@@ -324,7 +327,7 @@ python3 tools/generate_derivatives.py
 
 The fifth reference file, `worked-examples.md`, is not a source. It supplies illustration rather
 than instruction: every rule it illustrates already carries its own constructive
-**Replace with:** line in a file that *is* a source — the 20 PF rules in `SKILL.md`, the 8 MC rules
+**Replace with:** line in a file that *is* a source — the 31 PF rules in `SKILL.md`, the 8 MC rules
 in `completeness-audit.md` — so nothing normative is lost by leaving it out. Editing it changes no
 derivative.
 
@@ -366,6 +369,7 @@ proof-first/
 │   │   └── RESULTS-mod04.md
 │   ├── trigger/
 │   │   ├── run_trigger_test.py
+│   │   ├── stats.py
 │   │   └── RESULTS-trigger.md
 │   ├── routes/
 │   │   ├── run_routes.py
@@ -388,6 +392,7 @@ proof-first/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
+├── LEGAL-REVIEW.md
 ├── LICENSE
 ├── NOTICES.md
 ├── SOURCES.md
@@ -397,9 +402,9 @@ proof-first/
 
 The skill lives at `skills/proof-first/`: the folder name must equal the frontmatter `name` field
 the Agent Skills specification requires, and a single-folder upload to a harness or to claude.ai
-is that one directory zipped with the folder as its root. `NOTICES.md`, `SOURCES.md`,
-`NUMBERING.md`, `examples/`, `tools/`, and `evals/` stay at the repository root and never ship to
-an installed user.
+is that one directory zipped with the folder as its root. `LEGAL-REVIEW.md`, `LICENSE`,
+`NOTICES.md`, `SOURCES.md`, `NUMBERING.md`, `examples/`, `tools/`, and `evals/` stay at the
+repository root and never ship to an installed user.
 
 ## Rule numbering
 
