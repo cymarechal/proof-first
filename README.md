@@ -60,11 +60,16 @@ local clone, and the clone URL is the same unpublished `<owner>/<repo>` as route
 until this repository is published, there is no URL to clone from.
 
 **1. Skills CLI** — for any harness the Agent Skills standard covers (Cursor, Codex, Copilot,
-Gemini CLI, OpenCode, and the rest), install with the `skills` CLI's one-line command:
+Gemini CLI, Antigravity, OpenCode, and the rest), install with the `skills` CLI (`npx skills`,
+available via npm from [skills.sh](https://skills.sh)):
 
 ```
 npx skills add <owner>/<repo>
 ```
+
+This auto-detects installed coding agents and places `skills/proof-first/` into the target agent
+configuration directory. When running from a local checkout prior to publishing, the CLI also
+accepts a local directory path (e.g. `skills add .`).
 
 **2. Claude Code plugin** — Claude Code installs this skill as a plugin from the marketplace
 manifest committed in this repository at `.claude-plugin/`:
