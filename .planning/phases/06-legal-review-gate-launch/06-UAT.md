@@ -4,7 +4,7 @@ phase: 06-legal-review-gate-launch
 source: [06-VERIFICATION.md]
 started: 2026-09-21
 updated: 2026-09-22
-rounds: 7
+rounds: 8
 round_2: "06-05 gap closure — tests 7-9 re-ask tests 2, 3 and 6 of the corrected files"
 round_2_result: "1 passed, 2 issues — G-06-7 and G-06-9 opened 2026-09-21"
 round_3: "06-06 gap closure — tests 10-12 re-ask tests 7 and 9 of the corrected files, plus a new whole-tree sweep bound to no named file"
@@ -17,11 +17,13 @@ round_6: "06-09 gap closure — tests 21-24; the four-brief standing set as 06-0
 round_6_result: "1 passed, 3 issues — G-06-21, G-06-22 and G-06-23 opened 2026-09-22; 25 findings. README returned zero for the first time in six rounds. 9 of 25 authored by a gap-closure round (4 by the last, down from 8 of 18); 16 predate the closures and 8 predate Phase 6. Both of 06-09's structural changes measured and both paid."
 round_7: "06-10 gap closure — tests 25-29; the standing set as 06-10 amended it: five briefs, eight readers, with a new `.planning/` record sweep. Headless `claude -p` was available again, so the harness returned to the rounds 1-5 recipe."
 round_7_result: "0 passed, 5 issues — G-06-25 through G-06-29 opened 2026-09-23; 23 findings, none refuted. 12 of 23 live in `.planning/`, found by the new fifth brief on its first run — including three ledger rows whose `LEGAL-REVIEW.md` twins 06-10 corrected, and a gap closure credited to a commit reachable from no ref. 9 of 23 authored by a gap-closure round (5 by the last). Changes 1, 2 and 5 all measured; none met its exit condition."
+round_8: "06-11 gap closure — tests 30-34; the standing set as 06-11 recorded it: five briefs, eight readers, the `.planning/` brief at one reader with phases 01-05, debug/ and research/ named in scope. Headless `claude -p` on claude-opus-5, eight separate sessions, one output file each."
+round_8_result: "0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 non-blocking backlog (G-06-34). 12 findings in shipped files, 22 in `.planning/` of which 7 are new. Two reader claims refuted — the first refutations in two rounds, and both came from readers who could not execute Python. Change 1 paid 1 again; change 2 returned its first zero. The round's structural finding: 06-11's own edit falsified two committed command literals in files it never opened, and change 5 cannot see that class."
 ---
 
 ## Current Test
 
-[testing complete — round 7; 5 gaps open]
+[testing complete — round 8; 4 blocking gaps open, 1 backlog]
 
 ## How these six were performed
 
@@ -2513,6 +2515,169 @@ evidence: |
   write-then-falsify shape change 5 exists for, in the file that records change 5. Superseded by this
   round's own header update; recorded because the mechanism is the finding, not the stale line.
 
+### 30. A cold read of README by someone who did not write it finds no checkably-false statement
+expected: Two independent readers, neither having written the text, find nothing in README.md that the repository contradicts.
+result: issue
+reported: "1 finding confirmed, 2 refuted. README:291 states README carries two kinds of number; :307 names a third the document's own definitions place in neither."
+severity: major
+
+  **A1 — `README.md`:291 asserts two kinds of number; `:307` names a third.** `:291` reads "README
+  carries two kinds of number and enforces one of them" — measured claims inside the claim region,
+  and inventory. `:307` reads "What no code checks either is the third case: figures quoted from a
+  results file in prose outside the claim region". That case is neither kind: `:299-300` defines
+  inventory as counting "what this repository contains rather than measuring model behaviour", and
+  these figures measure model behaviour, while sitting outside the region `:291-292` confines
+  measured claims to. The "three" at `:302` cannot absorb it — those are the three inventory items
+  of `:299`, and `:303-304` disposes of all three. Reader 2 enumerated the instances: `:265-268`,
+  `:155-159`, `:110`, `:118`, `:127-129`. Converged 2 of 2 readers. `:291` authored `d67012e`
+  (06-05); `:307` authored `f10f8fc` (06-06) — the round that corrected 06-05's claim and added a
+  third category without reopening the universal above it. Standing six rounds.
+
+  **Refuted — the 23-file claim.** Both readers reported `README.md`:181-184's "A live run opens 23
+  files ... and itself" as false at 22, on the ground that no `check_*` function reads the script.
+  Re-measured rather than re-read: an audit hook on `open` installed via `sitecustomize` on
+  `PYTHONPATH`, over a true `python3 tools/check_repo.py` subprocess, returns **23** repository
+  files including `tools/check_repo.py`, matching README's enumeration item for item. The
+  interpreter's own load of the script is a file open in a live run. Both readers stated Python
+  execution was blocked for them; both reasoned statically about what checks read. Reader 7, given
+  the same text, declined to report it and named the interpreter load as the unresolved half —
+  correctly. **Two readers converging is not two readers being right.**
+
+  **Refuted — `.planning/` references dangling.** Reader 2 reported `README.md`:102 and `:159-160`
+  citing `.planning/WINDOWS.md`, which is absent from its tree. Artifact of the harness: readers 1-7
+  are given the shipped tree with `.planning/` and `.claude/` stripped. `.planning/` is tracked and
+  `git archive HEAD` carries 200 entries under it. Reader 5 met the same absence and declined to
+  report it as a claim error. Recorded so the next round's brief can pre-empt the class.
+
+### 31. The reproduction-boundary material holds up to readers who did not write it
+expected: Two independent readers find nothing in LEGAL-REVIEW.md that the repository contradicts.
+result: issue
+reported: "7 findings, all confirmed. One is not a prose defect: the review says two real-world name collisions are tracked as open launch blockers, and no such ledger entry exists."
+severity: blocker
+
+  **B1 — `:416-417`'s enumeration of where the seven source-coined labels sit omits four shipped
+  files.** "Where the seven do sit — `NUMBERING.md` and the two deal briefs". Under the repository's
+  own `_source_label_pattern` (`tools/check_repo.py:3062-3066`, which compiles `pain` as `pains?`,
+  `re.IGNORECASE`), `pain` also sits in `examples/before-after.md`:27,
+  `evals/conformance/fixtures/D-demo-discovery.md`:6, and two raw records under `evals/benchmark/`
+  and `evals/routes/`. Converged 2 of 2. Authored `908b90b` (06-07).
+
+  **B2 — `:399-400` and `:403` cannot both hold, in one bullet list under one sweep header.**
+  `:399-400`: "Decision Process" and "Competition" "appear in `NUMBERING.md` and nowhere else
+  outside this file and the checker". `:403`: "All seven appear throughout `.planning/`, which is
+  tracked in this repository." `:358` states the sweep is `git grep -iln` over the tracked tree.
+  Verified: both labels appear across many `.planning/` files. Authored `908b90b` (06-07).
+
+  **B3 — `:70-71`'s date universal is falsified by `:198`.** "every check named below was performed
+  on 2026-09-21" against "All three edition records were re-fetched live on 2026-09-22". Converged
+  2 of 2. `:70` authored `0476564` (06-05); `:198` last touched `fa6111f` (06-11).
+
+  **B4 — `:1083` counts seven rounds of a pattern its own text numbers to ten.** "Seven rounds of
+  the pattern" against `:951-952` calling this phase's round 1 "a fourth consecutive round" and
+  `:1014-1015` calling round 2 "the fifth". On the file's own ordinals the seven enumerated rounds
+  are 4 through 10. Authored `9656ca7` — **06-11, this round's own closure.**
+
+  **B5 — `:786-787` puts `owner.url` in the wrong object.** "the same two fields plus `owner.url` in
+  `marketplace.json`'s plugin entry". `owner` is a top-level key of `marketplace.json`; `plugins[0]`
+  has no `owner`. The checker reads it that way (`tools/check_repo.py:3767-3773`). The count of
+  eight positions is right; the placement is not. Authored `9e69ebd` (06-10).
+
+  **B6 — the reproduced ledger is stale by the entry the same file cites.** `:1033` "reproduced here
+  in full for that reason: 32 entries, none left undecided"; `:1100` and `:1101-1102` restate the
+  total as 32 and quote `total_count: 32`. The live ledger reads `total_count: 33, open_count: 13`,
+  and `:1083` in this same file cites "ledger id 33". Id 33 was added by `743b1bb`, the owner
+  gate-scope commit of 2026-09-23. Converged 3 of 8 readers, from two directions. `:1033` authored
+  `a18f492`, `:1101` `f54edf7` (both 06-06).
+
+  **B7 — the review states two name collisions are open and routed; the ledger has no such entry.**
+  `:74-75`: "Two named content items are open and routed to `.planning/WINDOWS.md` for a decision
+  before wider distribution — **Ardent Digital** and **Gina Almeida**". `:1067` (row 1's reason):
+  "a collision was found and is routed as a new open item". Neither name appears anywhere in
+  `.planning/WINDOWS.md` (0 occurrences each). The only collision-bearing ledger rows are id 1 and
+  id 18, and **both read `fixed`**. `:660-700` records both collisions as real — Ardent Digital
+  trading at `ardent.digital`, and a Gina Almeida who is an associate lawyer at an insurance group
+  against a brief casting that name as Associate General Counsel at an insurance firm. This is the
+  launch gate itself rather than the record of it. `:74` authored `0476564` (06-05); `:1067`
+  `b627fd3` (06-04).
+
+### 32. No two committed files state things that cannot both be true
+expected: Two readers bound to no named file find nothing the repository contradicts.
+result: issue
+reported: "2 findings, both confirmed, and both are literals that 06-11's own edit falsified in files it did not open."
+severity: major
+
+  **C1 — `evals/benchmark/bench-deal-brief.md`:28's quoted command result is now wrong.** "`grep -c
+  '^|.*20%'` returns four for each brief". Re-run: 4 for the bench brief, **5** for
+  `examples/deal-brief.md` (`:63`, `:66`, `:87`, `:121`, `:123`). The fifth row is
+  `rfp-question-weight-mid | 20%`, created by `4c3e911` — 06-11's C5 commit. Sentence authored
+  `2e93a0c` (06-08) and true until this round. Converged 3 of 8.
+
+  **C2 — `tools/check_repo.py`:682-684's spelled-cardinal count is now wrong.** "13 spelled
+  cardinals were measured in its prose". The file's own `SPELLED_CARDINAL_RE` (`:1090-1091`) applied
+  to `examples/deal-brief.md` returns **16**. Measured across the range: 13 at `fd1b17b` (04-07,
+  which wrote the claim), 13 at `991f35a^`, 15 at `4c3e911`, 16 at HEAD. Converged 2 of 2 sweep
+  readers. No narrower reading of "prose" reaches 13 (14 excluding the two table rows, 11 excluding
+  the section).
+
+  **Both are the same new class, and it is the round's structural result.** Change 5 re-runs every
+  command literal *the round commits into prose*, after the SUMMARY lands. 06-11 ran it over
+  nineteen literals at `80641fd` and every one held. Neither C1 nor C2 was in that set: both were
+  authored by earlier rounds, both were true when 06-11 began, and both were falsified by 06-11's
+  own C5 edit to a third file. **The instrument covers literals a round writes; the gap is literals
+  a round breaks.**
+
+### 33. The sentences any gap-closure round added survive checking
+expected: A reader over the union of every gap-closure commit range finds nothing false among the added lines.
+result: issue
+reported: "2 findings, both confirmed, both also reached by other briefs. Change 1 paid once more; reader 7 produced nothing unique."
+severity: major
+
+  Reader 7, over `d67012e^..HEAD` (3,056-line patch, 18 files, shipped only). Both findings are
+  recorded above — C1 and B6. **Change 1's measurement, re-run at `8eca37d`:**
+
+      $ git diff '991f35a^..HEAD' -- evals/benchmark/bench-deal-brief.md | grep '^+' | grep -c 'returns four for each brief'
+      0
+      $ git diff 'd67012e^..HEAD' -- evals/benchmark/bench-deal-brief.md | grep '^+' | grep -c 'returns four for each brief'
+      1
+      $ git merge-base --is-ancestor 2e93a0c '991f35a^' && echo "predates the 06-11 range"
+      predates the 06-11 range
+
+  `991f35a^..HEAD` is the narrow range — what a brief scoped to the last closure would have been
+  given. C1 is not in it. Marginal yield of the widening: **1**, a third consecutive round of a
+  single finding. Exit condition — a round whose widening reaches nothing the narrow range would
+  have — **not met; change 1 stays.** But reader 7 returned no finding that another brief did not
+  also return, the first round in which the fourth brief was wholly redundant on uniqueness. Both
+  facts are recorded; neither alone decides the brief.
+
+### 34. The `.planning/` record states nothing the repository contradicts
+expected: A reader given `.planning/`, the shipped tree and full git history finds nothing the repository contradicts.
+result: issue
+reported: "22 findings, all confirmed. 7 are new; 15 are round 7's backlog, unfixed by design. Non-blocking under the 2026-09-23 gate scope."
+severity: major
+
+  **Second run of the fifth brief, scope widened per 06-11 decision 1** — phases 01-05 plan files,
+  `.planning/debug/` and `.planning/research/` named in scope. 189 files, full history.
+
+  **The seven new ones, each verified:** `STATE.md`:16 and `:48` carry the unqualified path-literal
+  universal 06-11 narrowed in the ledger and `LEGAL-REVIEW.md` but not here (`check_readme_claim_unsourced`
+  carries `'README.md'` at `:1715` and `:1723`); `REQUIREMENTS.md`:87 reads "six rounds have now
+  run" where `ROADMAP.md` reads "Seven rounds have not" and `WINDOWS.md` "seven have not";
+  `PROJECT.md`:32 calls the canonical-figures table 18-key against 19 rows after 06-11;
+  `06-UAT.md`:19 says "12 of 23 live in `.planning/`" against its own `13 (57%)` table,
+  `06-VERIFICATION.md` and `06-11-SUMMARY.md`; `06-UAT.md`:2566 and ledger id 33 say the marker
+  convention authored three findings where `06-11-SUMMARY.md`:182-188 records it authored two;
+  `06-VERIFICATION.md` frontmatter reads `gaps_closed: 23` where ten closed and thirteen went to
+  backlog; and `06-11-PLAN.md`:103's own **Verify:** line asserts per-phase plan counts
+  "7, 11, 16, 15, 3, 10" when phase 6 held **11** at `fc627ec`, the commit that created that plan as
+  the eleventh.
+
+  **The reopening condition is not triggered.** The 2026-09-23 decision reopens if a `.planning/`
+  defect is shown to propagate into a shipped file. Every divergence this round runs the other way:
+  the record is stale and the shipped file is correct (the path-literal universal, the 18-key table),
+  or the record is current and the shipped reproduction is stale (B6's ledger id 33). Round 7
+  predicted this shape and supplied three advance test cases; round 8 adds four more and no
+  counterexample. **The scoping stands on a second round of evidence.**
+
 ## Gate scope decision — 2026-09-23
 
 **Decided by the project owner, a human, in the round-7 verify session.** Not by the executing agent.
@@ -2577,9 +2742,9 @@ predicts; a counterexample retires it.
 
 ## Summary
 
-total: 29
+total: 34
 passed: 5
-issues: 23
+issues: 28
 pending: 0
 skipped: 1
 blocked: 0
@@ -2591,6 +2756,7 @@ Round 4: tests 13-16 — 0 passed, 4 issues (G-06-13, G-06-14, G-06-15, G-06-16)
 Round 5: tests 17-20 — 0 passed, 4 issues (G-06-17, G-06-18, G-06-19, G-06-20), all closed by 06-09.
 Round 6: tests 21-24 — 1 passed, 3 issues (G-06-21, G-06-22, G-06-23), all closed by 06-10.
 Round 7: tests 25-29 — 0 passed, 4 blocking issues (G-06-25 … G-06-28) + 1 re-scoped to backlog (G-06-29), 23 findings; first run at five briefs. Ten in shipped files, thirteen in `.planning/`.
+Round 8: tests 30-34 — 0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 backlog (G-06-34); 12 shipped-file findings, 22 in `.planning/` (7 new). First round in eight to refute a reader claim on re-measurement rather than re-reading, and the first in which the fourth brief returned nothing unique.
 
 **Round 7: the count held and the location moved.** Twenty-three checkably-false statements, against
 twenty-five in round 6, eighteen in round 5, seventeen in round 4, eleven in round 3, fourteen in
@@ -3143,7 +3309,10 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-25
   truth: "A cold read of README by someone who did not write it finds no checkably-false statement"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-23
+  resolved_by: "06-11 tasks C1 and C7-C8 (commits 991f35a, 4285c29, 8988d3a, 9656ca7). publish-location-drift extended to README's third placeholder-bearing command, the in-session /plugin marketplace add form, rather than the sentence narrowed — mutation probe with an unmutated control shows all three positions firing and the control at 0. The checker docstring now points at README's ## Status, where the 23-file enumeration lives. The path-literal universal was qualified in the checker and in both copies of ledger id 17."
   reason: "Round 7, 2 readers. 1 finding: README:45-46 claims publish-location-drift fails the build if ANY command or manifest carrying the placeholder drifts in owner segment; the /plugin marketplace add form at :79 is a command carrying it, its owner segment can be changed to a different owner, and the build stays green at 0 violations. The checker reads only two of README's three placeholder-bearing commands (SKILLS_CLI_INSTALL_RE, MARKETPLACE_ADD_RE). The stated ceiling covers repository-name-only drift under an unchanged owner, which is a different case from the one demonstrated. Authored c850219 (06-06), the commit that bounded this same sentence. Separately, README:226's known-open 'drafted twice' (WINDOWS id 30) tripped a reader for the third consecutive round — recorded as a recurrence, not a new gap."
   severity: major
   test: 25
@@ -3155,7 +3324,10 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-26
   truth: "The reproduction-boundary material holds up to readers who did not write it"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-23
+  resolved_by: "06-11 tasks C5, C6 and C2C3C9 (commits 4c3e911, ea8ff65, fa6111f). Q2/Q5's 20% keyed to its own canonical rfp-question-weight-mid row and the tier relabelled to match bench-deal-brief.md; RESULTS-mod04.md addresses the measurement by round and counts nine genuine sonnet-5 sessions. The economic-buyer partition was re-derived by AST (2 module-level, 9 across 6 functions) and the marker-form universal dissolved with the convention that carried it."
   reason: "Round 7, 2 readers. 3 findings. (1) :426-430 announces 'the enclosing scope of every hit named' then partitions 11 grep hits as 1 module-level + 10 inside seven functions; AST attribution gives 2 module-level + 9 inside six, and the seventh named function _mutate_record_citation_unresolvable contains no occurrence — authored 5e9b6de (06-10). (2) :23-27 states every dated in-place marker is 'in one of four forms' and names a grep that 'lists every one'; :65 carries a fifth form, *Correction withdrawn 2026-09-22 (06-09)*, which the grep does not return and which calls itself 'this marker' — authored aeb8bfc (06-10), the commit that widened this same claim from one form to four to fix this same defect class. Four readers converged on it. (3) :907-908 calls sections 1-3 'the three not performed findings' while section 3's own heading reads 'PERFORMED AT 06-02, BUT NOT COLD' — authored 36fbf6c (06-05)."
   severity: major
   test: 26
@@ -3169,7 +3341,10 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-27
   truth: "No two committed files state things that cannot both be true"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-23
+  resolved_by: "06-11 tasks C4, C5, C6 and C7 (commits a60607e, 4c3e911, ea8ff65, 4285c29). The Human observations lead-in now labels sections 1-3 by what they share rather than by a performance claim section 3's heading contradicts; the deal-brief interface sentence, the RESULTS-mod04.md row reference and sonnet-5 count, and the check_repo.py docstring section pointer were each corrected against the file they name."
   reason: "Round 7, 2 sweep readers bound to no named file. 5 findings in three files the file-named briefs do not cover. (1) examples/deal-brief.md:99-100 'every percentage traces to exactly one row below' — Q2 and Q5 are 20% and trace to no row; they pass only by raw-value collision with rfp-security-weight, which :58 declares a distinct scheme (probe with unmutated control: deleting that row makes the checker itself report the Q2/Q5 20% as unlisted). (2) :114 calls 15% 'the two mid-weighted scored RFP questions (Q3 and Q4)' when they are the two lowest of five; the sibling brief uses correct top/mid/low labelling for the same structure. (3) RESULTS-mod04.md:963 points at 'the fourth row' of a three-row table. (4) tools/check_repo.py:6-9 names README's '## Repository layout' as the single place its 23-file scope is written down; the enumeration is at README:180 under '## Status' — authored d448ed6 (06-10). (5) RESULTS-mod04.md:177 calls all 10 sonnet-5 sessions genuine, then names one of them as carrying the contamination fingerprint; the file's own 11-of-19 tally gives 9."
   severity: major
   test: 27
@@ -3189,7 +3364,10 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
 
 - gap_id: G-06-28
   truth: "The sentences any gap-closure round added survive checking"
-  status: failed
+  status: resolved
+  previous_status: failed
+  resolved_at: 2026-09-23
+  resolved_by: "06-11 tasks C8 and C2C3C9 (commits 8988d3a, 9656ca7, fa6111f). The 'none of the three carries a path literal' universal was restated at the edge that holds — check_readme_claim_unsourced does carry README.md twice — in the checker and in both copies of ledger id 17. The inline correction-marker convention that authored two of the round's findings was retired: 43 dated markers removed, the change record moved to git history. The widened gap-closure range stays; marginal yield 1 in 23, exit condition not met."
   reason: "Round 7, 1 reader over d67012e^..HEAD (2,991-line diff, 17 files). 4 findings: D, C and A recorded under tests 26 and 25, plus tools/check_repo.py:7434 'None of the three carries a path literal in its body, so a static scan would have found zero of the three' — check_readme_claim_unsourced carries 'README.md' at :1710 and :1718 and does read it, so the scan would have found one of three; the narrower CLAIM_SOURCE_GLOB point survives (authored ca6e9d4, 06-10). Convergence 3 of 4, against round 6's 3 of 5. Change 1 measured and paid a second time: the README:45-46 clause returns 0 added-line matches over the 06-10 range d33b78a^..HEAD and 1 over d67012e^..HEAD, pinned to ad073b9. The same measurement corrected this round's own first attribution of that finding, which a pickaxe on the surviving substring had filed under 04-13."
   severity: major
   test: 28
@@ -3226,3 +3404,93 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
     - "Establish why three LEGAL-REVIEW.md corrections did not reach the ledger they reproduce, and make the ledger the edit target"
     - "Add SHA reachability to the checkable classes: git merge-base --is-ancestor over every commit-shaped SHA in .planning/"
     - "Correct the DIST-05 ordinal, the COVERAGE.md universal, the two 06-UAT.md figures, four ROADMAP.md rows and the STATE.md total"
+
+- gap_id: G-06-30
+  truth: "A cold read of README by someone who did not write it finds no checkably-false statement"
+  status: failed
+  reason: "Round 8, 2 readers. 1 finding: README:291 states 'README carries two kinds of number and enforces one of them'; :307 names a third case — figures quoted from a results file in prose outside the claim region — which :299-300's own definition of inventory (counts what the repository contains rather than measuring model behaviour) excludes, and which sits outside the region :291-292 confines measured claims to. The 'three' at :302 is the three inventory items of :299, all disposed of by :303-304. :291 authored d67012e (06-05); :307 authored f10f8fc (06-06), the round that corrected 06-05's claim and added a category without reopening the universal. Two findings refuted: the 23-file claim (re-measured by audit hook over a true subprocess — 23 including the interpreter's load of the script, matching README item for item; both reporting readers had Python execution blocked) and dangling .planning/ references (harness artifact: readers 1-7 get the tree with .planning/ stripped)."
+  severity: major
+  test: 30
+  artifacts:
+    - path: "README.md"
+      issue: "line 291 asserts two kinds of number; line 307 names a third that is neither"
+  missing:
+    - "State three kinds at :291, or bound the sentence to the two the enforcement discussion covers and introduce :307's case as outside that frame"
+    - "Add the interpreter's own script load to README:181-184's gloss, so a reader who cannot execute does not derive 22 — two readers did this round"
+
+- gap_id: G-06-31
+  truth: "The reproduction-boundary material holds up to readers who did not write it"
+  status: failed
+  reason: "Round 8, 2 readers. 7 findings, all confirmed. B7 is not a prose defect: LEGAL-REVIEW.md:74-75 states two named content items are 'open and routed to .planning/WINDOWS.md for a decision before wider distribution' — Ardent Digital and Gina Almeida — and :1067 states 'a collision was found and is routed as a new open item'. Neither name appears in WINDOWS.md; the only collision rows, ids 1 and 18, both read fixed. :660-700 records both collisions as real, one against a person whose name and role both land close to the brief's invented character. B6: :1033/:1100/:1101-1102 reproduce a 32-entry ledger while :1083 in the same file cites ledger id 33, added by 743b1bb. B1: :416-417's 'NUMBERING.md and the two deal briefs' omits four shipped files carrying pain under the checker's own pattern. B2: :399-400 and :403 contradict inside one sweep. B3: :70-71's 2026-09-21 universal against :198's live re-fetch on 2026-09-22. B4: :1083's 'Seven rounds of the pattern' against :951/:1014's own fourth/fifth ordinals — authored 9656ca7, 06-11. B5: owner.url placed in marketplace.json's plugin entry; it is top-level."
+  severity: blocker
+  test: 31
+  artifacts:
+    - path: "LEGAL-REVIEW.md"
+      issue: "lines 74-75, 70-71, 399-400/403, 416-417, 786-787, 1033/1100/1101-1102, 1067, 1083"
+    - path: ".planning/WINDOWS.md"
+      issue: "no open entry exists for the Ardent Digital / Gina Almeida collisions that LEGAL-REVIEW.md routes to it"
+  missing:
+    - "Open a ledger entry for the two name collisions, or correct :74-75 and :1067 to state where the decision actually sits — the launch gate claim must match the register"
+    - "Re-render the reproduced ledger at 33 entries, and make the reproduction generated from the fence rather than hand-maintained"
+    - "Extend the :416-417 enumeration to the four further files, or scope it to the labels other than pain"
+    - "Reconcile :399-400 with :403 — both describe the same tracked-tree sweep"
+    - "Bound :70-71 to the checks performed that day, or restate it over the dates that occur"
+    - "Qualify :1083 to this phase's rounds, or carry the pattern's own ordinal"
+    - "Move owner.url to the top-level object in :786-787"
+
+- gap_id: G-06-32
+  truth: "No two committed files state things that cannot both be true"
+  status: failed
+  reason: "Round 8, 2 sweep readers bound to no named file. 2 findings, both confirmed, both literals that 06-11's own C5 edit falsified in files it did not open. C1: evals/benchmark/bench-deal-brief.md:28's 'grep -c ^|.*20% returns four for each brief' now returns 4 and 5 — the fifth row, rfp-question-weight-mid | 20%, was created by 4c3e911. Sentence authored 2e93a0c (06-08), true until this round. C2: tools/check_repo.py:682-684's '13 spelled cardinals were measured in its prose' returns 16 under the file's own SPELLED_CARDINAL_RE; measured across the range as 13 at fd1b17b (04-07, which wrote it), 13 at 991f35a^, 15 at 4c3e911, 16 at HEAD. Change 5 re-ran nineteen literals at 80641fd and every one held; neither of these was in that set, because change 5 covers literals the round writes and not literals the round breaks."
+  severity: major
+  test: 32
+  artifacts:
+    - path: "evals/benchmark/bench-deal-brief.md"
+      issue: "line 28, quoted grep result falsified by 4c3e911"
+    - path: "tools/check_repo.py"
+      issue: "lines 682-684, spelled-cardinal count falsified by 4c3e911 and ae3ea90"
+  missing:
+    - "Re-derive both counts at HEAD and restate them, or address the figures by rule rather than by count"
+    - "Widen change 5 from 'literals this round committed' to 'literals whose result this round's edits could move' — the reverse index is: for each file the round edited, every committed command literal anywhere in the tree that reads it"
+
+- gap_id: G-06-33
+  truth: "The sentences any gap-closure round added survive checking"
+  status: failed
+  reason: "Round 8, 1 reader over d67012e^..HEAD (3,056-line patch, 18 files, shipped only). 2 findings, both confirmed, both also returned by other briefs — C1 under test 32 and B6 under test 31. Change 1 measured at 8eca37d: the C1 literal returns 0 added-line matches over the narrow 991f35a^..HEAD and 1 over the widened d67012e^..HEAD, and 2e93a0c is an ancestor of 991f35a^. Marginal yield 1, a third consecutive round of one; the exit condition (a round whose widening reaches nothing the narrow range would have) is not met and change 1 stays. Separately and for the first time, reader 7 returned nothing unique to itself — every finding was also reached by a file-named or sweep brief. Recorded as a measurement, not as a decision."
+  severity: major
+  test: 33
+  artifacts:
+    - path: "evals/benchmark/bench-deal-brief.md"
+      issue: "line 28 — reachable only through the widened range"
+  missing:
+    - "Keep the widened range: marginal yield 1 in 12 shipped-file findings, exit condition not met"
+    - "Record reader 7's uniqueness yield again in round 9; two consecutive rounds of zero unique findings is the question to put to the brief"
+
+- gap_id: G-06-34
+  truth: "The .planning/ record states nothing the repository contradicts"
+  status: backlog
+  blocking: false
+  disposition: "Non-blocking under the gate scope decision of 2026-09-23. All 22 findings are confirmed and stand; they close on their own merits, not on the phase gate. Supersedes and absorbs G-06-29, whose 15 unfixed findings this round re-found."
+  reason: "Round 8, second run of the fifth brief at the scope 06-11 decision 1 widened it to (phases 01-05 plan files, .planning/debug/, .planning/research/). 1 reader, 22 findings — 7 new, 15 re-found from G-06-29 and unfixed by design. New: STATE.md:16 and :48 carry the path-literal universal 06-11 narrowed everywhere else; REQUIREMENTS.md:87 reads 'six rounds' against ROADMAP.md's and WINDOWS.md's seven; PROJECT.md:32 calls the canonical-figures table 18-key against 19 rows; 06-UAT.md:19 says 12 of 23 in .planning/ against its own 13 (57%) table and three other files; 06-UAT.md:2566 and ledger id 33 credit the marker convention with three findings against 06-11-SUMMARY.md's recorded two; 06-VERIFICATION.md frontmatter reads gaps_closed: 23 where ten closed; 06-11-PLAN.md:103's own Verify line asserts phase-6 plan count 10 when the commit that wrote it made 11. The reopening condition is NOT triggered: every .planning/-vs-shipped divergence this round has the record stale and the shipped file correct, or the record current and the shipped reproduction stale — no defect propagated outward."
+  severity: major
+  test: 34
+  artifacts:
+    - path: ".planning/STATE.md"
+      issue: "lines 16 and 48 (path-literal universal), 12-13 (plan totals), 31, 76"
+    - path: ".planning/REQUIREMENTS.md"
+      issue: "line 87 round count, line 64 CI-command ordinal"
+    - path: ".planning/PROJECT.md"
+      issue: "line 32, 18-key against 19 rows"
+    - path: ".planning/ROADMAP.md"
+      issue: "lines 37, 206, 268, 364, 366"
+    - path: ".planning/WINDOWS.md"
+      issue: "ids 11, 15, 29, 30, 33 — JSON fence is the source of truth"
+    - path: ".planning/phases/06-legal-review-gate-launch/06-VERIFICATION.md"
+      issue: "frontmatter gaps_closed: 23 against ten closed"
+    - path: ".planning/phases/06-legal-review-gate-launch/06-11-PLAN.md"
+      issue: "line 103, Verify figure false at the commit that wrote it"
+  missing:
+    - "Carry 06-11's path-literal narrowing into STATE.md, the one copy it did not reach"
+    - "Correct the round count, the ordinal, the key count, the two 06-UAT.md figures, the VERIFICATION frontmatter and the ROADMAP rows"
+    - "Correct WINDOWS.md through the JSON fence and re-render, per the ledger's own edit rule"
+    - "Add SHA reachability to the checkable classes — G-06-29 named this and it was not applied; fc801a9 was cited 8 times in 06-UAT.md at 8eca37d, before this entry, and is still reachable from no ref. The count is pinned to that SHA because writing it down changed it — this round's change-5 pass caught its own sentence"
