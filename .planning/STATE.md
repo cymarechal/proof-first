@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 current_phase: 06
 current_phase_name: Legal Review Gate & Launch
 status: awaiting_verification
-stopped_at: "Round-6 gap closure complete: 06-10 closed G-06-21/22/23 in 27 tasks, six files, 33 commits. Shipped catalogue_matches_registry() — the first code this phase has put behind the scope-absolute class — and refused the wider scope check on a measurement. Six deviations recorded, two of them the plan's own figures falsified by the tree. All ten CI commands green. LEG-04/LEG-05 stay unchecked. Next: /gsd-verify-work 06 for round 7, against the five-brief standing set."
-last_updated: "2026-09-22T21:05:00.000Z"
-state_head: be727e6bc86a4c66161c84cd79bd0bcc0d5976ed
+stopped_at: "Round-8 gap closure complete: 06-12 closed G-06-30/31/32/33 in 12 tasks, five files, 12 fix commits. Two structural outputs: the launch gate stopped misreporting itself — the two open name collisions LEGAL-REVIEW.md had said since 06-02 were routed to the register now have ledger id 34 — and change 5 widened from the literals a round writes to a reverse index over the files a round edits (ledger id 35), back-tested against the two literals 06-11 falsified. Six deviations recorded, one of them a false sentence the plan itself supplied. All ten CI commands green. LEG-04/LEG-05 stay unchecked. Next: /gsd-verify-work 06 for round 9, against the five-brief standing set."
+last_updated: "2026-09-23T05:40:00.000Z"
+state_head: 3f828f0
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 62
-  completed_plans: 62
+  total_plans: 64
+  completed_plans: 64
   percent: 67
-last_activity: 2026-09-22
-last_activity_desc: "Phase 06 round-6 gap closure, plan 06-10. Twenty-seven tasks across LEGAL-REVIEW.md, SOURCES.md, evals/conformance/RESULTS-mod04.md, tools/check_repo.py, WINDOWS.md and 06-UAT.md, in 33 commits. The round settled the enforcement-scope question WINDOWS id 17 has carried as a candidate since 06-08: it SHIPPED catalogue_matches_registry(), which asserts the checker's own violation-code catalogue against ALL_CHECK_CODES in both directions and caught the live instance of 57 listed against 58 implemented, and it REFUSED the frozen path-to-readers map on a measurement — the three readers whose absence produced the round's findings all reach their paths through module constants or a glob and carry no path literal in their bodies, so the static scan that would assert the map without tracing would have found none of them. Three false scope absolutes in one comment block were replaced by a read-tracer measurement of which check_* frame opens which path. Six deviations from the plan, all recorded and none silent: two of the plan's own figures were falsified by the tree (task 15's 'second attempt in each case' holds for two of three timeouts, and task 6's 'correct to four' was overtaken by task 5 before task 6 ran), three same-class defects beyond the gap's enumeration were found by checking the instances it listed, and the self-audit found two in the round's own added sentences. The round's new change-5 rule was run against the round itself and caught the change-1 measurement moving from 0 to 1; all three copies are now pinned to 66322b1, and the post-SUMMARY pass over eleven literals came back clean. Code-review gate: two Info findings in the new code, both fixed, including a SyntaxWarning the first fix introduced on every checker invocation. All ten CI commands green throughout. LEG-04 and LEG-05 stay unchecked — closure is round 7's independent read, not this round's self-check."
+last_activity: 2026-09-23
+last_activity_desc: "Phase 06 round-8 gap closure, plan 06-12. Twelve tasks across README.md, LEGAL-REVIEW.md, tools/check_repo.py, evals/benchmark/bench-deal-brief.md and .planning/WINDOWS.md, in twelve fix commits plus the SUMMARY, its post-SUMMARY pass and the code-review gate. The round closed the launch-gate finding round 8 opened: LEGAL-REVIEW.md told a reader at four sites that Ardent Digital and Gina Almeida were open items routed to .planning/WINDOWS.md for a decision before wider distribution, and grep -c returned 0 for each name in that file while the only collision rows, ids 1 and 18, both read fixed. The items are genuinely open — examples/deal-brief.md still carries both names and the review says neither collision is closed by it — so the routing landed as ledger id 34 rather than the sentences being deleted, appended through the JSON fence and naming both names so the grep that failed now succeeds. The claim had stood since 6cc615a (06-02); that commit, not a remembered round count, is what the record now cites. The round's other structural output is ledger id 35: change 5 widened from the literals a round writes to a reverse index over the files a round edits. 06-11 re-ran nineteen literals at 80641fd and all nineteen held, while its own 4c3e911 falsified two committed literals it never re-derived — and only one of the two sat in a file it never opened, the other in tools/check_repo.py which it edited three times. Back-tested over 06-11's edit set at 8eca37d: 4 edited shipped files named by 5, 2, 7 and 12 others, surfacing 59 command literals and 994 stated measurements, returning both. Its first run on this round surfaced 77 literals and broke none. Six deviations from the plan, all recorded: three were defects in the round's own first drafts caught before commit (a false 'enforces only the first' in README, a false causal link between two unrelated ordinal sequences, and a run-on the owner.url fix created), one was the ledger section's own date universal falsified by adding rows dated later, one was a second ledger write the plan had not anticipated forcing a second re-render, and one was a false sentence the plan itself supplied and the self-audit caught after commit. Every plan figure was re-derived before its edit and all but that one held. The reproduced ledger was re-rendered from the fence twice, fence first both times, and now reads 35 entries and 15 open against windows status. Code-review gate: two Info findings in the round's own docstring edits, both fixed. All ten CI commands green throughout. LEG-04 and LEG-05 stay unchecked — closure is round 9's independent read, not this round's self-check."
 ---
 
 # Project State
@@ -28,46 +28,59 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 06 (Legal Review Gate & Launch) — AWAITING VERIFICATION
-Plan: 10 of 10
-Status: All plans summarized; round-6 gaps closed; awaiting round 7's independent read
+Plan: 12 of 12
+Status: All plans summarized; round-8 gaps closed; awaiting round 9's independent read
 
-**Next action: `/gsd-verify-work 06` for round 7.** 06-10 closed G-06-21, G-06-22 and G-06-23 at
-source — twenty-seven tasks, six files, 33 commits — and, as every closing round before it has,
-wrote defects doing so. Four were found inside the round: two by the widened self-audit and two by
-the code-review gate. That is not a substitute for an independent read: six rounds of cold reads have
-each found what the round's own self-check missed, which is `WINDOWS.md` id 12's standing closure
-condition and the reason LEG-04 and LEG-05 stay unchecked.
+**Next action: `/gsd-verify-work 06` for round 9.** 06-12 closed G-06-30 through G-06-33 at
+source — twelve tasks, five files, twelve fix commits — and, as every closing round before it has,
+wrote defects doing so. Six were found inside the round: two false sentences caught in its own
+first drafts before their commits, one date universal its own new rows falsified and it corrected in
+the same task, one false sentence the plan supplied that the self-audit caught after commit, and two
+by the code-review gate. That is not a substitute
+for an independent read: eight rounds of cold reads have each found what the round's own self-check
+missed, which is `WINDOWS.md` id 12's standing closure condition and the reason LEG-04 and LEG-05
+stay unchecked.
 
-**What this round shipped, and what it refused.** The largest defect class round 6 found was the
-scope absolute — six instances, five in `check_repo.py`, three inside one comment block a previous
-round had already edited. `catalogue_matches_registry()` now asserts in `--self-test` that the
-checker's own violation-code catalogue names exactly the codes `ALL_CHECK_CODES` registers, in both
-directions; it caught the live instance, 57 listed against 58 implemented. The wider check — a
-frozen `path → reading-checks` map asserted without tracing — was refused on a measurement: the
-three readers whose absence produced the round's findings all reach their paths through module
-constants or a glob and carry no path literal in their bodies, so that scan would have found none of
-them. Seventh fuzzy proxy refused. The three false absolutes were instead replaced by a read-tracer
-measurement of which `check_*` frame opens which path.
+**The launch-gate finding, and how it closed.** `LEGAL-REVIEW.md` told a reader at four sites that
+**Ardent Digital** and **Gina Almeida** were open items routed to `.planning/WINDOWS.md` for a
+decision before wider distribution. `grep -c` returned **0** for each name in that file, and the
+only collision rows — ids 1 and 18 — both read `fixed`. The items are genuinely open:
+`examples/deal-brief.md` still carries both names and the review's own text says neither collision
+is closed by it. So the routing landed rather than the sentences being deleted — **ledger id 34**,
+appended through the JSON fence, one open row covering both rename decisions, naming both names so
+the grep that failed now succeeds. The claim had stood since `6cc615a` (06-02); that commit, not a
+remembered round count, is what the record now cites.
 
-**What round 7 runs.** Five briefs, eight readers, amended in `06-UAT.md`'s standing-set section and
-`WINDOWS.md` id 17:
+**The instrument the round widened.** Change 5 re-ran the literals a round *writes*. 06-11 re-ran
+nineteen at `80641fd` and all nineteen held, while its own `4c3e911` falsified two committed
+literals it never re-derived — and only one of those sat in a file 06-11 never opened; the other sat
+in `tools/check_repo.py`, which it opened and edited three times. **Ledger id 35** records the
+widened rule: for every file a round edits, re-run every committed command literal and re-derive
+every stated measurement in every *other* shipped file that names that path. Back-tested over
+06-11's edit set at `8eca37d` — 4 edited shipped files named by 5, 2, 7 and 12 others, surfacing 59
+command literals and 994 stated measurements — it returns both of the literals that motivated it, by
+their own wording. Two ceilings were found by building it and both are declared on the row: it is
+file-scoped rather than sentence-scoped, and it only finds the wrapped claim because the scan
+flattens whitespace first.
 
-- `README.md` contradiction hunt — 2 readers (it returned zero for the first time in round 6; one
-  zero is not a trend, so it runs again unchanged)
+**What round 9 runs.** The same five briefs and eight readers as round 8, unchanged in
+`06-UAT.md`'s standing-set section and `WINDOWS.md` id 17:
+
+- `README.md` contradiction hunt — 2 readers
 - `LEGAL-REVIEW.md` reproduction-boundary material — 2 readers
-- Whole-tree sweep, bound to no named file — 2 readers, kept: the second produced 4 unique findings,
-  16% of round 6, and it retires only after two consecutive zero-yield rounds
-- What **any** gap-closure round rewrote — 1 reader, `d67012e^..HEAD` (notation corrected this round;
-  the two-dot form excluded the range's own first commit)
-- **`.planning/` record sweep — 1 reader (new)**, given `.planning/` with the shipped tree available
-  for checking. Three of round 6's twenty-five findings were invisible to all seven readers by
-  construction, because every reader tree strips `.planning/`.
+- Whole-tree sweep, bound to no named file — 2 readers. Round 8 was the **first** of the two
+  consecutive zero-unique-yield rounds change 2's exit condition needs; round 9 decides whether the
+  second reader retires.
+- What **any** gap-closure round rewrote — 1 reader. Change 1's marginal yield was 1 of 10 for a
+  third consecutive round; the exit condition is not met, so it is kept and recorded again.
+- `.planning/` record sweep — 1 reader. Its findings are tracked backlog under the 2026-09-23 gate
+  scope (`WINDOWS.md` id 33), not blockers.
 
-**Two process rules now bind every closure plan.** The self-audit reads the round's own added
-sentences **plus** every `.planning/` file the round edited. And every plan ends by re-running the
-command literals it committed, after the SUMMARY lands — the window no self-audit can cover. Both
-paid immediately: the first found two defects in this round's own sentences, the second caught a
-measurement that had moved from 0 to 1 inside the round.
+**Three process rules now bind every closure plan.** The self-audit reads the round's own added
+sentences **plus** every `.planning/` file the round edited. Every plan ends by re-running its
+committed command literals after the SUMMARY lands — now at the widened reverse-index scope. And a
+record that says an item is routed somewhere is a checkable claim about that somewhere: grep the
+destination before writing the sentence, and again before believing it.
 
 ## Performance Metrics
 

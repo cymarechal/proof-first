@@ -305,7 +305,7 @@ Plans:
   1. A legal review gate passes before public launch, with MEDDIC-family trademark status (including the MEDDPICC genericness ruling) reconfirmed against current sources.
   2. Every claim and badge in README derives only from committed benchmark results in RESULTS.md, stating model versions and date.
 
-**Plans**: 11 of 12 plans executed — 4 original, plus 8 gap-closure plans (06-05 .. 06-12), one per round of the cold read. 06-12 is planned and not yet executed. The phase is NOT complete: LEG-04 and LEG-05 stay unchecked until a round of independent cold reads returns no checkably-false statement, which is `WINDOWS.md` id 12's standing closure condition. Eight rounds have not. Since 2026-09-23 the blocking gate is bounded to files that ship; round 8 returned ten findings there and twenty-two in `.planning/`, the latter tracked as non-blocking backlog under G-06-34.
+**Plans**: 12 of 12 plans executed — 4 original, plus 8 gap-closure plans (06-05 .. 06-12), one per round of the cold read. 06-12 executed 2026-09-23. The phase is NOT complete: LEG-04 and LEG-05 stay unchecked until a round of independent cold reads returns no checkably-false statement, which is `WINDOWS.md` id 12's standing closure condition. Eight rounds have not. Since 2026-09-23 the blocking gate is bounded to files that ship; round 8 returned ten findings there and twenty-two in `.planning/`, the latter tracked as non-blocking backlog under G-06-34.
 
 - [x] 06-01-PLAN.md
 - [x] 06-02-PLAN.md
@@ -318,6 +318,7 @@ Plans:
 - [x] 06-09-PLAN.md
 - [x] 06-10-PLAN.md
 - [x] 06-11-PLAN.md
+- [x] 06-12-PLAN.md
 
 **Wave 1**
 
@@ -346,6 +347,10 @@ Plans:
 **Gap closure Wave 10** *(closes UAT round 6 — G-06-21, G-06-22, G-06-23)*
 
 - [x] 06-10 — The twenty-five checkably-false statements round 6's seven readers found, across `LEGAL-REVIEW.md`, `evals/conformance/RESULTS-mod04.md`, `tools/check_repo.py` and `SOURCES.md`; the first mechanical guard this phase has shipped against the scope-absolute class (`catalogue_matches_registry()` in `--self-test`), with the wider scope check refused on a measurement; three false scope absolutes replaced by a read-tracer measurement; and a standing set for round 7 that adds a `.planning/` brief, widens the self-audit scope, and re-runs committed command literals after the SUMMARY lands
+
+**Gap closure Wave 12** *(closes UAT round 8 — G-06-30, G-06-31, G-06-32, G-06-33)*
+
+- [x] 06-12 — The ten checkably-false statements round 8's eight readers found in shipped files, across `README.md`, `LEGAL-REVIEW.md`, `tools/check_repo.py` and `evals/benchmark/bench-deal-brief.md`; the launch-gate finding closed by making the routing land rather than by deleting the sentences, so the two open name collisions now have the register row `LEGAL-REVIEW.md` had claimed since 06-02 (ledger id 34); and the standing set's own instrument widened — change 5 moves from the literals a round writes to a reverse index over the files a round edits (ledger id 35), back-tested against the two findings that motivated it
 
 Cross-cutting constraints:
 
