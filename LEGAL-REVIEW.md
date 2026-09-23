@@ -797,9 +797,10 @@ Three is the number, and it is a count of carriers rather than of occurrences. T
 four here: `_owner_segment`'s four GitHub URL forms are a normalisation input, not a count of
 anything this sentence is about. `PUBLISH_LOCATION_CARRIERS` holds three carriers;
 `_publish_locations_in` reads eight structured positions across them — `homepage` and `repository`
-in `plugin.json`, the same two fields plus `owner.url` in `marketplace.json`'s plugin entry, and the
+in `plugin.json`; in `marketplace.json`, the same two fields inside its plugin entry plus the
+top-level `owner.url`, which sits beside `plugins` rather than inside a plugin entry; and the
 argument following `npx skills add `, `claude plugin marketplace add ` and the in-session
-`/plugin marketplace add ` in `README.md`; and the literal placeholder occurs nine times,
+`/plugin marketplace add ` in `README.md`. The literal placeholder occurs nine times,
 reproducible by `git grep -o '<owner>/<repo>' -- .claude-plugin README.md | wc -l`. The check
 compares one owner segment per carrier, so three is what this sentence needed.
 

@@ -3741,12 +3741,13 @@ def _publish_locations_in(repo_root, rel_path):
     states, read from structured positions only, never from a loose scan
     of every link in the file: for plugin.json, its `homepage` and
     `repository` values; for marketplace.json, its plugin entry's same two
-    fields plus `owner.url`; for README.md, the argument following any of
-    the literal command prefixes `npx skills add `,
+    fields plus the top-level `owner.url`, which sits beside `plugins`
+    rather than inside a plugin entry; for README.md, the argument
+    following any of the literal command prefixes `npx skills add `,
     `claude plugin marketplace add ` and `/plugin marketplace add ` (route
-    2's in-session form) on a line. Every position is reduced
-    to its owner segment via _owner_segment. Returns an empty set when the
-    carrier does not exist or states nothing at any of its positions."""
+    2's in-session form) on a line. Every position is reduced to its owner
+    segment via _owner_segment. Returns an empty set when the carrier does
+    not exist or states nothing at any of its positions."""
     if not (repo_root / rel_path).exists():
         return set()
 
