@@ -18,7 +18,7 @@ round_6_result: "1 passed, 3 issues — G-06-21, G-06-22 and G-06-23 opened 2026
 round_7: "06-10 gap closure — tests 25-29; the standing set as 06-10 amended it: five briefs, eight readers, with a new `.planning/` record sweep. Headless `claude -p` was available again, so the harness returned to the rounds 1-5 recipe."
 round_7_result: "0 passed, 5 issues — G-06-25 through G-06-29 opened 2026-09-23; 23 findings, none refuted. 12 of 23 live in `.planning/`, found by the new fifth brief on its first run — including three ledger rows whose `LEGAL-REVIEW.md` twins 06-10 corrected, and a gap closure credited to a commit reachable from no ref. 9 of 23 authored by a gap-closure round (5 by the last). Changes 1, 2 and 5 all measured; none met its exit condition."
 round_8: "06-11 gap closure — tests 30-34; the standing set as 06-11 recorded it: five briefs, eight readers, the `.planning/` brief at one reader with phases 01-05, debug/ and research/ named in scope. Headless `claude -p` on claude-opus-5, eight separate sessions, one output file each."
-round_8_result: "0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 non-blocking backlog (G-06-34). 12 findings in shipped files, 22 in `.planning/` of which 7 are new. Two reader claims refuted — the first refutations in two rounds, and both came from readers who could not execute Python. Change 1 paid 1 again; change 2 returned its first zero. The round's structural finding: 06-11's own edit falsified two committed command literals in files it never opened, and change 5 cannot see that class."
+round_8_result: "0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 non-blocking backlog (G-06-34). 10 findings in shipped files (A1, B1-B7, C1, C2), 22 in `.planning/` of which 7 are new. Two reader claims refuted — the first refutations in two rounds, and both came from readers who could not execute Python. Change 1 paid 1 again; change 2 returned its first zero. The round's structural finding: 06-11's own edit falsified two committed command literals in files it never opened, and change 5 cannot see that class."
 ---
 
 ## Current Test
@@ -2756,7 +2756,7 @@ Round 4: tests 13-16 — 0 passed, 4 issues (G-06-13, G-06-14, G-06-15, G-06-16)
 Round 5: tests 17-20 — 0 passed, 4 issues (G-06-17, G-06-18, G-06-19, G-06-20), all closed by 06-09.
 Round 6: tests 21-24 — 1 passed, 3 issues (G-06-21, G-06-22, G-06-23), all closed by 06-10.
 Round 7: tests 25-29 — 0 passed, 4 blocking issues (G-06-25 … G-06-28) + 1 re-scoped to backlog (G-06-29), 23 findings; first run at five briefs. Ten in shipped files, thirteen in `.planning/`.
-Round 8: tests 30-34 — 0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 backlog (G-06-34); 12 shipped-file findings, 22 in `.planning/` (7 new). First round in eight to refute a reader claim on re-measurement rather than re-reading, and the first in which the fourth brief returned nothing unique.
+Round 8: tests 30-34 — 0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 backlog (G-06-34); 10 shipped-file findings, 22 in `.planning/` (7 new). First round in eight to refute a reader claim on re-measurement rather than re-reading, and the first in which the fourth brief returned nothing unique.
 
 **Round 7: the count held and the location moved.** Twenty-three checkably-false statements, against
 twenty-five in round 6, eighteen in round 5, seventeen in round 4, eleven in round 3, fourteen in
@@ -3463,7 +3463,7 @@ consecutive round of `WINDOWS.md` id 17's pattern, and the fourth in which a mec
     - path: "evals/benchmark/bench-deal-brief.md"
       issue: "line 28 — reachable only through the widened range"
   missing:
-    - "Keep the widened range: marginal yield 1 in 12 shipped-file findings, exit condition not met"
+    - "Keep the widened range: marginal yield 1 in 10 shipped-file findings, exit condition not met"
     - "Record reader 7's uniqueness yield again in round 9; two consecutive rounds of zero unique findings is the question to put to the brief"
 
 - gap_id: G-06-34
