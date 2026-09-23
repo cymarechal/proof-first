@@ -87,6 +87,12 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **LEG-04**: A legal review gate passes before public launch, with the MEDDIC-family trademark status reconfirmed against current sources — *VERIFIED 2026-09-23 in Round 10. Readers 3 and 4 independently audited LEGAL-REVIEW.md line-by-line across all 1,132 lines, external dockets, case citations, dates, regexes, and AST partitionings, and both confirmed 0 checkably-false statements. Gate passed.*
 - [x] **LEG-05**: README claims and badges derive only from committed benchmark results, with the model versions and date stated — *VERIFIED 2026-09-23 in Round 10. Independent cold reads across Readers 1, 2, and 5 confirmed all claim-region figures recompute from committed raw records, model versions and dates are strictly stated, all counts and layout structures align with the shipped tree, and no checkably-false statements remain in README.md or across shipped files. Gate passed.*
 
+### Human Polish & First Impressions
+
+- [ ] **POL-01**: Writer gets a dedicated prose mechanics rule (`PF-4.5`) explicitly forbidding em-dashes (`—`) and double hyphens (`--`) in presales drafting and checking, recommending split sentences, commas, or parentheses instead.
+- [ ] **POL-02**: Repository documentation, skill files, references, and examples are free of em-dashes (`—`), removing conspicuous LLM styling tells.
+- [ ] **POL-03**: README.md is redesigned to be user-friendly, inviting, and presales-focused, with prominent value propositions, clear quick-start commands, and compelling before/after examples while preserving all CI integrity anchors.
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -180,15 +186,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LEG-01 | Phase 1 | Complete |
 | LEG-02 | Phase 1 | Complete |
 | LEG-03 | Phase 1 | Complete |
-| LEG-04 | Phase 6 | Pending |
-| LEG-05 | Phase 6 | Pending |
+| LEG-04 | Phase 6 | Complete |
+| LEG-05 | Phase 6 | Complete |
+| POL-01 | Phase 7 | Planned |
+| POL-02 | Phase 7 | Planned |
+| POL-03 | Phase 7 | Planned |
 
 **Coverage:**
 
-- v1 requirements: 53 total
-- Mapped to phases: 53
+- v1 requirements: 56 total
+- Mapped to phases: 56
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-10*
-*Last updated: 2026-09-10 after roadmap creation — 53/53 requirements mapped across 6 phases*
+*Last updated: 2026-09-23 after adding Phase 7 — 56/56 requirements mapped across 7 phases*

@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
-current_phase: 06
-current_phase_name: Legal Review Gate & Launch
-status: complete
-stopped_at: "Phase 06 verified in Round 10: 0 blocking defects in shipped files, LEGAL-REVIEW.md returned 0 findings across both Readers 3 & 4, all 10 CI commands green, 0 cross-file contradictions, Phase 06 launch gate cleared."
-last_updated: "2026-09-23T08:30:00.000Z"
+current_phase: 07
+current_phase_name: Human Polish & First Impressions
+status: ready_to_plan
+stopped_at: "Phase 07 added: Human Polish & First Impressions. Ready to plan."
+last_updated: "2026-09-23T11:35:00.000Z"
 state_head: HEAD
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 6
-  total_plans: 65
+  total_plans: 68
   completed_plans: 65
-  percent: 100
+  percent: 96
 last_activity: 2026-09-23
-last_activity_desc: "Round 10 verification completed: independent cold reads confirmed zero open blocking defects in shipped files. Phase 06 Launch Gate cleared."
+last_activity_desc: "Added Phase 07: Human Polish & First Impressions (Em-dash cleanup, PF-4.5 rule, and README redesign)"
 ---
 
 # Project State
@@ -23,13 +23,13 @@ last_activity_desc: "Round 10 verification completed: independent cold reads con
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** A technical evaluator finishes the document believing the author genuinely understands their problem — because complex things were made simple without being made wrong.
-**Current focus:** Phase 06 — Legal Review Gate & Launch (COMPLETE)
+**Current focus:** Phase 07 — Human Polish & First Impressions
 
 ## Current Position
 
-Phase: 06 (Legal Review Gate & Launch) — COMPLETE (LAUNCH GATE PASSED)
-Plan: 13 of 13
-Status: Phase 06 verified; 0 blocking defects open in shipped files; 1 non-blocking backlog (G-06-38)
+Phase: 07 (Human Polish & First Impressions) — READY TO PLAN
+Plan: 0 of 3
+Status: Phase 07 added to roadmap; ready for planning.
 
 **Round 10 verification completed.** Independent cold reads across Readers 1, 2, 3, 4, 5, and 8
 confirmed zero open blocking defects across the entire 310-file shipped tree. Both independent readers
@@ -232,6 +232,10 @@ Recent decisions affecting current work:
 - [Phase 05]: Judged persuasion result reported as measured: skill loses 7/3/38 win/tie/loss on persuasive_force despite winning on evidence and clarity — material to Phase 6 LEG-05 README claims
 - [Phase 05]: $18.21 recorded as generation cost only; judge-call cost is unrecoverable from committed records (run_judgement lacks cost_usd/usage fields) and is disclosed as a schema gap, not estimated
 - [Phase 02]: 02-10: CAT-10 gap-closure round measured live (140 sessions, paired n=5): exclusion clause eliminates all over-fires (p_attr=0.0016) but causes a must-fire regression, so pre-committed Branch 4 reverts it; CAT-10 stays [ ], WINDOWS id 24 stays open with measured counts, next lever (H1 audience-clause removal) is named but unfunded.
+
+### Roadmap Evolution
+
+- Phase 07 added: Human Polish & First Impressions (Em-dash cleanup across repo, PF-4.5 rule against em-dashes and double-hyphens, and user-friendly README.md redesign).
 
 ### Pending Todos
 
