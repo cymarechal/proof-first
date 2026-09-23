@@ -11,11 +11,26 @@ Every worked example in this repository grounds its numbers in [examples/deal-br
 
 **RFP and RFI response**
 
+> [!WARNING]
+> **Before: Unproven AI Presales Fluff (Zero metrics, unverified marketing preamble)**
+
 ✗ "Kestrel Systems Group brings decades of experience delivering large-scale cloud transformations for complex, regulated enterprises across many industries. Our proven methodology and world-class team have consistently delivered exceptional outcomes for clients facing challenges like Halverton Mutual's. Before turning to the specific migration approach Question 1 asks for, it is worth noting the breadth of our platform expertise and the strength of our partner ecosystem. Our approach is comprehensive and follows industry best practices, backed by a proven cut-over methodology and rigorous testing."
+
+> [!TIP]
+> **After: Proof-First Presales Discipline (Direct response to Question 1, verified metrics)**
 
 ✓ "Question 1, the highest-weighted scored question in this RFP at 30%, asks for the migration approach and cut-over plan. Kestrel Systems Group moves Halverton Mutual's 850-VM VMware vSphere estate and 40 Oracle Database instances to Amazon EC2 and Amazon Aurora PostgreSQL. Each cut-over runs inside its own scheduled maintenance window. Settlement-batch completion is validated against the required 6-hour window before the next cut-over proceeds."
 
 Rules applied: PF-2.1, MC-11.
+
+```diff
+- ✕ BEFORE (Unproven AI Fluff):
+- "Kestrel Systems Group brings decades of experience delivering large-scale cloud transformations...
+-  Our proven methodology and world-class team have consistently delivered exceptional outcomes..."
++ ✓ AFTER (Proof-First Response):
++ "Question 1, the highest-weighted scored question in this RFP at 30%, asks for the migration approach...
++  Kestrel moves Halverton Mutual's 850-VM vSphere estate and 40 Oracle DB instances to EC2 and Aurora..."
+```
 
 | Presales Dimension | ✕ Typical AI Presales Fluff | ✓ Proof-First Presales Response |
 | :--- | :--- | :--- |
@@ -25,9 +40,6 @@ Rules applied: PF-2.1, MC-11.
 | **Operational Proof** | Fluff (*"proven cut-over methodology"*) | Testable constraint: **6-hour maintenance window** |
 | **Tone and Style** | 87-word marketing preamble, passive voice | Punchy active sentences, max 25 words, zero em-dashes |
 
-> [!IMPORTANT]
-> **The Presales Reality:** Evaluators and CFOs discount marketing rhetoric immediately. Proof First forces coding agents to replace empty superlatives with hard metrics, operational constraints, and testable commitments.
-
 `PF-` (prose discipline) and `MC-` (deal qualification completeness) are this project's two rule namespaces. `NUMBERING.md` defines every ID; `skills/proof-first/references/checklist.md` indexes them.
 
 The other three artifact families this skill classifies (solution proposal, executive summary, and demo and discovery material) each have full before/after pairs in [`examples/before-after.md`](examples/before-after.md).
@@ -35,33 +47,16 @@ The other three artifact families this skill classifies (solution proposal, exec
 ## How Proof First Works
 
 ```mermaid
-flowchart TD
-    In["Customer RFP, Proposal Draft, or Deal Notes"] --> Engine{"proof-first Engine"}
+graph TD
+    A["<b>Presales Input</b><br/>RFPs · Proposals · Discovery Notes"] --> B["<b>proof-first Skill</b>"]
     
-    subgraph S1["1. Write Mode (Drafting)"]
-        Engine -->|Draft| W["Evidence-First Generation"]
-        W --> W1["Answer scored questions directly"]
-        W --> W2["Anchor metrics and testable SLAs"]
-        W --> W3["Enforce 25-word sentence ceiling"]
-    end
+    B --> C["<b>1. Write Mode (Drafting)</b><br/>Direct answers · Scored RFP questions · 25-word ceiling"]
+    B --> D["<b>2. Check Mode (Review)</b><br/>Buzzword deletion test · Evidence audits · Zero em-dashes"]
+    B --> E["<b>3. Audit Mode (Qualification)</b><br/>8 MEDDPICC dimensions · [GAP] tags · Deal scorecard"]
     
-    subgraph S2["2. Check Mode (Review)"]
-        Engine -->|Review| C["Fluff and Integrity Audit"]
-        C --> C1["Flag unevidenced assertions"]
-        C --> C2["Run deletion test on buzzwords"]
-        C --> C3["Strip AI em-dashes and passives"]
-    end
-    
-    subgraph S3["3. Audit Mode (Qualification)"]
-        Engine -->|Qualify| M["MEDDPICC Completeness"]
-        M --> M1["Audit 8 deal dimensions"]
-        M --> M2["Tag unknown facts with [GAP]"]
-        M --> M3["Generate qualification scorecard"]
-    end
-    
-    W1 --> Out["Winning, Scored Presales Deliverables"]
-    C3 --> Out
-    M3 --> Out
+    C --> F["<b>Executive-Ready Presales Deliverable</b><br/>Grounded facts · Testable SLAs · Verified win themes"]
+    D --> F
+    E --> F
 ```
 
 ### Rule Families at a Glance
@@ -171,6 +166,9 @@ This repository maintains rigorous mechanical guarantees wired into continuous i
 | **Clarity** | **32** | 3 | 13 | Wins 67% of pairs; enforces 25-word maximum sentence ceiling |
 | **Persuasive Force** | 7 | 3 | **38** | Expected tradeoff: trades sales hyperbole for factual density |
 
+<details>
+<summary><b>Statistical Benchmark Details and Evaluation Records</b></summary>
+
 <!-- claim-region:start -->
 
 The benchmark ran on 2026-09-18 across `claude-opus-5` and `claude-sonnet-5` and recorded 96
@@ -206,6 +204,8 @@ wants to judge it themselves.
 
 <!-- claim-region:end -->
 
+</details>
+
 ### Known Limitations
 
 - **No human evaluation:** All benchmark ratings are model-judged rubrics (`claude-opus-5` and `claude-sonnet-5`).
@@ -225,6 +225,9 @@ CI runs `python3 tools/generate_derivatives.py --check` to prevent stale artifac
 ## Repository layout
 
 The tree below shows this repository's layout:
+
+<details>
+<summary><b>Click to expand full repository layout tree</b></summary>
 
 ```
 proof-first/
@@ -285,6 +288,8 @@ proof-first/
 ├── NUMBERING.md
 └── README.md
 ```
+
+</details>
 
 The skill files live under `skills/proof-first/`. Root-level evaluation suites, tools, and compliance records stay at the repository root and do not ship to an installed agent.
 
