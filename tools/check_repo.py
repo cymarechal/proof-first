@@ -679,13 +679,19 @@ Violation codes implemented in this file:
                       file's quoted lines only. examples/deal-brief.md
                       is out of scope because the brief is the
                       definition of what counts as invented, and a count
-                      it states is by construction not invented -- 13
-                      spelled cardinals were measured in its prose,
-                      including a party name containing a number word.
+                      it states is by construction not invented. Its
+                      prose carries spelled cardinals throughout,
+                      including a party name containing a number word,
+                      and none of them sits on a ✗ or ✓ line -- this
+                      check opens no file but examples/before-after.md.
                       skills/** is out of scope because the same party
                       name appears there and because a per-rule
                       illustrative pair reads naturally with a spelled
-                      count -- 5 raw regex matches were measured there.
+                      count -- 5 matches sit on ✗ or ✓ lines across
+                      those files. A raw scan of their whole text finds
+                      far more, in ordinary prose this check never
+                      reads; the 5 is the mark-line count, which is the
+                      only one this scope decision turns on.
                       One of them ("Nine", in the party name "Vantage
                       Nine Consulting") is a proper noun the check's own
                       two-token exemption would excuse even if the check
@@ -3364,12 +3370,16 @@ def check_before_after_spelled_count(repo_root):
     half remains open. Declared ceiling: the scan is this one file's
     quoted lines only. examples/deal-brief.md is out of scope because
     the brief is the definition of what counts as invented, and a count
-    it states is by construction not invented -- 13 spelled cardinals
-    were measured in its prose, including a party name containing a
-    number word. skills/** is out of scope because the same party name
-    appears there and because a per-rule illustrative pair reads
-    naturally with a spelled count -- 5 raw regex matches were measured
-    there. One of them ("Nine", in the party name "Vantage Nine
+    it states is by construction not invented. Its prose carries spelled
+    cardinals throughout, including a party name containing a number
+    word, and none of them sits on a ✗ or ✓ line -- this check opens no
+    file but BEFORE_AFTER_PATH. skills/** is out of scope because the
+    same party name appears there and because a per-rule illustrative
+    pair reads naturally with a spelled count -- 5 matches sit on ✗ or ✓
+    lines across those files. A raw scan of their whole text finds far
+    more, in ordinary prose this check never reads; the 5 is the
+    mark-line count, which is the only one this scope decision turns
+    on. One of them ("Nine", in the party name "Vantage Nine
     Consulting") is a proper noun the check's own two-token exemption
     would excuse even if the check applied to that path, leaving 4
     would-be violations. The proper-noun heuristic (matched word and

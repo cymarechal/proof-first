@@ -25,9 +25,12 @@ keys differently named rows — a scored question's weight in one row, a scoring
 weight in another — so bare values were always going to coincide across differently keyed rows.
 *Corrected 2026-09-22 (06-08):* this passage previously put a count on those meanings ("four
 different meanings inside this brief alone and three inside the other"). It was wrong under both
-available counting rules — `grep -c '^|.*20%'` returns four for each brief, and distinct meanings
-are two here and three there — and a count of *meanings* is not checkable by any command, which is
-why no count of meanings replaces it. The occurrence count is scoped to table rows deliberately: an
+available counting rules. The row-scoped occurrence count was four for *each* brief when the
+sentence was written, not four and three: `grep -c '^|.*20%'` read 4 in both files at `2e93a0c`.
+That count has since moved — at `4c3e911` it reads 4 here and 5 in `examples/deal-brief.md` — which
+is why it is pinned to a commit rather than left as a live claim. Distinct meanings are two here and
+three there, and a count of *meanings* is not checkable by any command at all, which is why no count
+of meanings replaces it. The occurrence count is scoped to table rows deliberately: an
 unscoped `grep -c '20%'` over this file counts this paragraph's own mentions too, which is how the
 sentence being corrected would have gone stale a second time. The argument does not need either
 number. What is accurate, and weaker than what it replaces: every figure here is keyed to Thornfield Freight
