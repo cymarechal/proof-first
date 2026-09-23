@@ -32,6 +32,11 @@
       "number": "6",
       "name": "Legal Review Gate & Launch",
       "status": "complete"
+    },
+    {
+      "number": "7",
+      "name": "Human Polish & First Impressions",
+      "status": "complete"
     }
   ],
   "next": {

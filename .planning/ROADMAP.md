@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Distribution & Worked Examples** - Ship the skill through every promised channel with before/after examples citing real rule numbers. (completed 2026-09-21)
 - [x] **Phase 5: Evaluation Harness** - Prove the skill works with a reproducible, multi-model, persuasion-aware benchmark. (completed 2026-09-20)
 - [x] **Phase 6: Legal Review Gate & Launch** - Clear trademark risk and publish a README whose claims are sourced only from the benchmark that actually ran. (completed 2026-09-23)
-- [ ] **Phase 7: Human Polish & First Impressions** - Eliminate em-dashes across repo, add PF-4.5 rule against em-dashes and double-hyphens, and redesign README.md to be inviting and user-friendly.
+- [x] **Phase 7: Human Polish & First Impressions** - Eliminate em-dashes across repo, add PF-4.5 rule against em-dashes and double-hyphens, and redesign README.md to be inviting and user-friendly. (completed 2026-09-23)
 
 ## Phase Details
 
@@ -372,7 +372,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 | 4. Distribution & Worked Examples | 15/15 | Complete    | 2026-09-21 |
 | 5. Evaluation Harness | 3/3 | Complete    | 2026-09-20 |
 | 6. Legal Review Gate & Launch | 13/13 | Complete    | 2026-09-23 |
-| 7. Human Polish & First Impressions | 0/3 | Planned     | - |
+| 7. Human Polish & First Impressions | 3/3 | Complete    | 2026-09-23 |
 
 ### Phase 7: Human Polish & First Impressions
 
@@ -383,9 +383,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (4 and 5 have n
 
 Plans:
 
-- [ ] 07-01-PLAN.md — Add PF-4.5 rule to SKILL.md, NUMBERING.md, and checklist.md, and regenerate derivative artifacts
-- [ ] 07-02-PLAN.md — Sweep and replace em-dashes across all repo documentation, skill files, and references
-- [ ] 07-03-PLAN.md — Redesign README.md to be user-friendly and compelling, preserving CI hooks and verification
+- [x] 07-01-PLAN.md — Add PF-4.5 rule to SKILL.md, NUMBERING.md, and checklist.md, and regenerate derivative artifacts
+- [x] 07-02-PLAN.md — Sweep and replace em-dashes across all repo documentation, skill files, and references
+- [x] 07-03-PLAN.md — Redesign README.md to be user-friendly and compelling, preserving CI hooks and verification
 
 ---
 *Roadmap created: 2026-09-10*
