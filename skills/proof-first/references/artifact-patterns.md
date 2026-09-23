@@ -2,7 +2,7 @@
 
 Open this file before classifying a document into an artifact family, or before applying
 that family's own conventions in either mode. Classification is decided and named before any
-rule in this file or in the prose catalog is applied — in Write mode, as the assumed family
+rule in this file or in the prose catalog is applied: in Write mode, as the assumed family
 the writer states up front; in Check mode, as the family a finding is checked against. Each
 family's conventions live only here, never folded into the prose catalog in `SKILL.md`.
 
@@ -15,27 +15,27 @@ it is addressed to, and what artefact the reader expects back. Apply all three b
 any rule, in either mode.
 
 - A document answering the buyer's own scored questions, addressed to a scoring committee,
-  expected back as a compliant response the committee can grade — an **RFP and RFI response**.
+  expected back as a compliant response the committee can grade: an **RFP and RFI response**.
 - A document answering how the work would actually be delivered, addressed to a technical
-  buyer, expected back as an architecture and a delivery plan — a **Solution proposal**.
+  buyer, expected back as an architecture and a delivery plan: a **Solution proposal**.
 - A document answering why the person who signs should sign, addressed to that person,
-  expected back as a one-page case for the decision — an **Executive summary**.
+  expected back as a one-page case for the decision: an **Executive summary**.
 - A document answering "show me," addressed to a room in a discovery conversation or a demo
-  session, expected back as a script or a set of proof-of-concept success criteria — **Demo and
+  session, expected back as a script or a set of proof-of-concept success criteria: **Demo and
   discovery material**.
 
 **No family fits:** state the closest-fitting family by name, say plainly that the document
 does not fit it, and apply only the conventions that are family-independent. Never force a
-genuine mismatch silently into one of the four — a half-proposal, half-discovery-summary
+genuine mismatch silently into one of the four: a half-proposal, half-discovery-summary
 document is reported as exactly that, not quietly filed under whichever family is closer.
 
 A structural-ordering finding names the artifact family and the convention label it breaks, and
-cites no rule number — no numbered namespace, `PF-` or `MC-`, covers these conventions.
+cites no rule number; no numbered namespace, `PF-` or `MC-`, covers these conventions.
 
 ## RFP and RFI response
 
 A response to a formally issued RFP or RFI is scored by a committee working from the buyer's
-own written rubric, not read for impression by a single reader — every convention below exists
+own written rubric, not read for impression by a single reader; every convention below exists
 because a scored response has a different physics than a proposal or a summary.
 
 **Order:** the direct answer to the question being scored comes first, before the context, the
@@ -47,13 +47,13 @@ answering the question has already cost points to a competitor who answered firs
 answer to what was actually asked, in the first sentences of each section.
 
 **Compliance apart from value:** the statement of what the vendor does and does not meet is
-kept in its own place, separate from the argument for why the approach is worth choosing — an
+kept in its own place, separate from the argument for why the approach is worth choosing: an
 evaluator scoring compliance reads a yes or a no there, not an argument. Blending the two makes
 the evaluator hunt through persuasive prose to find a scoring answer, which is the failure this
 convention names.
 
 **Mirror the buyer's criteria:** the response follows the buyer's own stated evaluation
-criteria, in the buyer's own order and the buyer's own words — never reorganised into the
+criteria, in the buyer's own order and the buyer's own words, never reorganised into the
 vendor's preferred sequence, and never renamed into the vendor's own vocabulary. Halverton
 Mutual keeps two separate weighting schemes apart: a three-row weighted evaluation-criteria
 table (technical approach at 55%, commercial model at 25%, security posture at 20%) and five
@@ -73,10 +73,10 @@ treatment.
 from the current estate to the target one, not presented as a component inventory. Halverton
 Mutual's narrative moves from an on-premises VMware vSphere and Oracle Database estate to a
 target of Amazon EC2, Amazon Aurora PostgreSQL, and AWS Control Tower for landing-zone
-governance — the story is the path between those two states, not a list of either one alone.
+governance: the story is the path between those two states, not a list of either one alone.
 
 **Capability mapping:** every capability the buyer stated they need is mapped to what delivers
-it, with the capability stated first and the product named second as the means — the same
+it, with the capability stated first and the product named second as the means, following the same
 sentence shape `PF-1.9` already requires for the prose catalog, cited here rather than
 restated.
 
@@ -85,7 +85,7 @@ vendor cannot retire is stated plainly rather than omitted. Halverton Mutual's R
 SOC 2 Type II report, and Kestrel Systems Group holds only a SOC 2 Type I report today; Kestrel
 Systems Group's own most comparable prior migration programme took longer than Halverton
 Mutual's examination window. Neither risk has an honest mitigation available before this
-proposal ships — the convention is to say so, naming the gap plainly, never to invent one.
+proposal ships: the convention is to say so, naming the gap plainly, never to invent one.
 
 ## Executive summary
 
@@ -95,13 +95,13 @@ person, and read once before any other document in the response.
 **Order:** the problem reframe comes first, then the business case, then the capability list.
 
 **Problem reframe:** the summary opens by restating the buyer's own situation, in the buyer's
-own words, before naming any product, vendor, or capability — the same opening rule `PF-0.1`
+own words, before naming any product, vendor, or capability, mirroring opening rule `PF-0.1`
 already states for the whole catalog, cited here rather than restated.
 
 **Business case:** the case is stated before any capability list, in the terms the person who
 signs is measured on, and it carries its evidence or a marker in place of it. Diane Osoria, the person who signs,
 states she is measured on run-rate reduction and a clean regulatory
-examination — the business case is built from those terms, never from architecture elegance she
+examination. The business case is built from those terms, never from architecture elegance she
 has said she does not weigh.
 
 **Capability list last:** a capability list that arrives before the case has been made is the
@@ -116,7 +116,7 @@ or a demo session, and it is read once, live, rather than at leisure.
 proof-of-concept success criteria the demo sets up, then the follow-up.
 
 **Discovery notes:** what the buyer said is recorded in the buyer's own words and attributed to
-the person who said it, so a later document can cite it as supplied customer source material —
+the person who said it, so a later document can cite it as supplied customer source material:
 Marcus Feld's own words about wanting a landing zone he can actually govern are recorded as his,
 not paraphrased into the vendor's own vocabulary.
 

@@ -1,19 +1,19 @@
 # NUMBERING.md
 
 Authoritative ID registry for Proof First's two rule namespaces. This file is the single source
-of truth `tools/check_repo.py` reads its ranges from — widening a range here changes enforcement
+of truth `tools/check_repo.py` reads its ranges from: widening a range here changes enforcement
 everywhere, not just in this document.
 
 ## Namespaces
 
 `PF-<section>.<n>` addresses the numbered prose rule catalog. `MC-<n>` addresses the completeness
 audit this repository derives from the MEDDIC/MEDDICC qualification family. The audit's eight
-blocks are this repository's own selection and spell none of that family's acronyms — their
-initials run M-E-D-D-P-P-C-C — so "the MEDDICC completeness audit" is not an accurate name for the
+blocks are this repository's own selection and spell none of that family's acronyms (their
+initials run M-E-D-D-P-P-C-C), so "the MEDDICC completeness audit" is not an accurate name for the
 `MC-` namespace and is not used for it. See `LEGAL-REVIEW.md`'s `WINDOWS.md` id 6 entry.
 
-The two namespaces are disjoint: no ID exists in both. A citation is always prefixed — never a bare
-number — because a check-mode report can audit both catalogs in the same line, and `PF-2.3` and
+The two namespaces are disjoint: no ID exists in both. A citation is always prefixed (never a bare
+number) because a check-mode report can audit both catalogs in the same line, and `PF-2.3` and
 `MC-2` printed side by side must never be mistaken for the same kind of thing that two bare numbers
 (`2.3` and `2`) drawn from unrelated catalogs would be.
 
@@ -22,7 +22,7 @@ number — because a check-mode report can audit both catalogs in the same line,
 | Section | Range | Concern | Allocated | Next free |
 |---|---|---|---|---|
 | PF-0 | PF-0.1-PF-0.9 | Opening / Reframe | 1 | PF-0.2 |
-| PF-1 | PF-1.1-PF-1.28 | Structure — the message-articulation spine | 9 | PF-1.26 |
+| PF-1 | PF-1.1-PF-1.28 | Structure: the message-articulation spine | 9 | PF-1.26 |
 | PF-2 | PF-2.1-PF-2.20 | Proof and Integrity | 11 | PF-2.18 |
 | PF-3 | PF-3.1-PF-3.10 | Specificity and Buzzwords | 3 | PF-3.4 |
 | PF-4 | PF-4.1-PF-4.20 | Prose Mechanics | 5 | PF-4.6 |
@@ -45,19 +45,19 @@ than inferring it from a number.
 | Positive Business Outcomes | PF-1.25-PF-1.28 |
 
 Ceiling: `PF-1.28`, four slots per element, uniform headroom. Twenty slots do not divide evenly
-across seven elements — six elements would get three slots and Positive Business Outcomes (the
+across seven elements: six elements would get three slots and Positive Business Outcomes (the
 element most likely to grow, since it is where quantified outcome rules land) would get only two,
 forcing an early major-version widening. Widening to 28 exercises the explicit "unless planning
 surfaces a reason to widen a block" clause this phase's context recorded for exactly this
 situation, and gives every element the same room to grow. This supersedes the `PF-1.20` figure
 proposed in `.planning/research/ARCHITECTURE.md:166`, which was a research proposal, not a locked
-decision — seven elements do not divide evenly into twenty slots.
+decision: seven elements do not divide evenly into twenty slots.
 
 ## PF-2 sub-blocks
 
 `PF-2`'s reserved range (`PF-2.1`-`PF-2.20`) is carved into two named sub-blocks: Proof rules
 attach evidence and name its source; Integrity rules refuse fabrication and flag what needs human
-review. A rule added later to Integrity must not land next to a Proof rule — the two are
+review. A rule added later to Integrity must not land next to a Proof rule: the two are
 different jobs, and the range split keeps a contributor from inferring the wrong one from a bare
 number.
 
@@ -132,7 +132,7 @@ adds `MC-*` rows as the completeness audit is written.
 ## Deprecated IDs
 
 A retired ID is recorded here with the version it was retired in and what absorbed it, and it is
-never reassigned to new content in any future version — the guarantee only holds if it has always
+never reassigned to new content in any future version: the guarantee only holds if it has always
 held. Zero rules are deprecated as of this plan.
 
 | ID | Deprecated in | Absorbed by |
@@ -141,7 +141,7 @@ held. Zero rules are deprecated as of this plan.
 ## Range exhaustion
 
 A section's reserved range is a hard ceiling. An allocated ID above its section's ceiling, below
-its section's start, or inside another section's range is a build failure, not a judgement call —
+its section's start, or inside another section's range is a build failure, not a judgement call:
 `tools/check_repo.py` exits non-zero on it. Widening a range is a major-version action recorded in
 this file, naming the version that widened it. The same rule holds for MC dimension blocks: an ID
 outside the reserved MC range is a build failure.
@@ -159,5 +159,5 @@ may renumber a rule, and only with a published migration note.
 To find the next free ID in a section or dimension block: if the section or block has zero
 allocations, the next free ID is that section's or block's range start (for example, the next free
 ID in `PF-2` with zero allocations is `PF-2.1`). If the section or block has allocations, the next
-free ID is one above the highest allocated ID in that section or block — never a gap-filling reuse
+free ID is one above the highest allocated ID in that section or block: never a gap-filling reuse
 of a deprecated number.

@@ -11,7 +11,7 @@ Concepts here are paraphrased from publicly described sales frameworks. Not affi
 
 The dimension blocks below are ordered the way `NUMBERING.md` reserves their ID ranges. That
 order is inherited numbering-scheme structure, fixed in this repository's registry before this
-file was written — it states nothing about which order is correct or original for the
+file was written; it states nothing about which order is correct or original for the
 methodology these dimensions derive from.
 
 This audit contains 8 checks across 8 dimensions.
@@ -23,7 +23,7 @@ A document missing this dimension never names the figure the person who signs is
 on, or names one with no stated baseline to move it from. The person who signs for Halverton Mutual
 states her own run-rate target directly: $2,300,000 is the number she answers for, not a
 capability the vendor prefers to lead with. A metric can also be present in name and missing in
-substance — the nightly settlement batch job's required window is stated, but Halverton Mutual
+substance: the nightly settlement batch job's required window is stated, but Halverton Mutual
 has never instrumented how far the job overruns it, so no baseline exists to report. A document
 inventing an overrun figure for that job, instead of marking the missing baseline, has fabricated
 what this dimension asks it to name honestly.
@@ -47,8 +47,8 @@ words, or a `[MC-6 GAP: what is missing]` marker where neither was captured.
 
 A document missing this dimension substitutes the vendor's own preferred framing for the buyer's
 stated evaluation criteria, or blends separate weighting schemes the buyer keeps apart. Halverton
-Mutual scores bidders on three weighted criteria — technical approach, commercial model, and
-security posture — and separately scores five RFP questions against their own weights. A document
+Mutual scores bidders on three weighted criteria (technical approach, commercial model, and
+security posture) and separately scores five RFP questions against their own weights. A document
 that reorders those criteria into the vendor's preferred sequence, or that merges the two weighting
 schemes into one, has not mirrored the buyer's own evaluation.
 
@@ -71,7 +71,7 @@ stated, or a `[MC-16 GAP: what is missing]` marker where one of those was never 
 A document missing this dimension treats the path to signature as a single step, when the buyer's
 own process is a sequence of named reviews with named owners. Halverton Mutual's proposal moves
 through a security review, a procurement review, and a legal review, each with its own named owner,
-and two of the three with a stated duration in business days — the third has no duration the buyer
+and two of the three with a stated duration in business days (the third has no duration the buyer
 has stated. A document that omits a review, invents a duration the buyer never gave, or rounds a
 partially-stated review up to fully specified, has not stated the reviews it must clear honestly.
 
@@ -90,7 +90,7 @@ without a fabricated number attached, or explicitly marking that no baseline exi
 dimension; inventing an overrun figure to replace a genuinely missing one does not.
 
 **Replace with:** the cost in the buyer's own words and its stated figure where one exists, or a
-`[MC-26 GAP: no baseline stated]` marker where the buyer has never measured it — an explicitly
+`[MC-26 GAP: no baseline stated]` marker where the buyer has never measured it: an explicitly
 marked missing baseline satisfies this dimension.
 
 ### MC-31 — Name the person inside the buyer who carries this internally
@@ -113,7 +113,7 @@ only to assert a capability that rival supposedly lacks. Halverton Mutual is wei
 bidders, including Ardent Digital, the incumbent managed-services provider already running a
 majority share of the estate, and Vantage Nine Consulting; the buyer's own technical evaluator has
 stated a preference for extending the incumbent's contract rather than migrating. Naming these
-alternatives without asserting what a named rival cannot do satisfies this dimension — a claim
+alternatives without asserting what a named rival cannot do satisfies this dimension; a claim
 about a competitor's inability is a prose integrity hazard, not this dimension's job to make.
 
 **Replace with:** the named alternatives the buyer is weighing and any stated preference among
@@ -133,5 +133,5 @@ it read the document as is permitted and is not a finding.
 
 This file is not a scoring rubric, and it is not a pass/fail gate that substitutes for a human's
 judgment about whether a document is ready to send. It is not a qualification tool for a live
-deal — it asks questions of a document and reports what the document does not contain; it does
+deal: it asks questions of a document and reports what the document does not contain; it does
 not decide whether the underlying deal itself is winnable.

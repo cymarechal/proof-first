@@ -15,7 +15,7 @@ publicly, is paraphrase. A contiguous run of a source's own wording, a source's 
 reproduced in its order, a source's diagram or figure, and a term coined by a source and adopted
 here as this repository's own label are each reproduction, and none of them ships.
 
-This is a semantic judgement — no tool in this project's stated stack performs it, and
+This is a semantic judgement: no tool in this project's stated stack performs it, and
 `tools/check_repo.py` does not attempt it. The one string in this repository for which equality is
 defined mechanically is the attribution pointer in `NOTICES.md`, compared byte for byte after
 stripping leading and trailing whitespace, with no Unicode normalisation and no case folding.

@@ -10,12 +10,12 @@ Halverton Mutual, a fictional United States mid-market insurance and retirement 
 
 ## Parties
 
-- **Halverton Mutual** — the buyer: a mid-market insurance and retirement services firm running its policy administration and settlement estate on-premises.
-- **Kestrel Systems Group** — the proposing integrator: the bidder whose voice every worked example in this repository writes in.
-- **Ardent Digital** — a rival bidder and also the incumbent managed-services provider currently running Halverton Mutual's on-premises estate.
-- **Vantage Nine Consulting** — a rival bidder competing for the same contract.
+- **Halverton Mutual** (the buyer): a mid-market insurance and retirement services firm running its policy administration and settlement estate on-premises.
+- **Kestrel Systems Group** (the proposing integrator): the bidder whose voice every worked example in this repository writes in.
+- **Ardent Digital** (a rival bidder): the incumbent managed-services provider currently running Halverton Mutual's on-premises estate.
+- **Vantage Nine Consulting** (a rival bidder): competing for the same contract.
 
-All four parties are invented. The platform names used below — VMware vSphere, Oracle Database, Amazon EC2, Amazon Aurora PostgreSQL, and AWS Control Tower — are real products, named only as the migration's source and target, never set against each other or against a real competitor.
+All four parties are invented. The platform names used below (VMware vSphere, Oracle Database, Amazon EC2, Amazon Aurora PostgreSQL, and AWS Control Tower) are real products, named only as the migration's source and target, never set against each other or against a real competitor.
 
 ## Estate and target platforms
 
@@ -23,22 +23,22 @@ Halverton Mutual's current estate runs on VMware vSphere across 850 virtual mach
 
 ## People and roles
 
-- **Diane Osoria** — Chief Financial Officer, the economic buyer. Cares about run-rate reduction and a clean regulatory examination.
-- **Marcus Feld** — Vice President of Infrastructure, the champion. Cares about a governable landing zone and an end to manual failover.
-- **Priya Raghunathan** — Chief Architect, the technical evaluator. Cares about operational continuity and is openly skeptical of migrating away from the incumbent.
-- **Tom Weatherly** — Procurement Lead. Cares about a clean, comparable scoring process across all three bidders.
-- **Gina Almeida** — Associate General Counsel. Cares about contractual exposure in the proposed commitments.
+- **Diane Osoria**: Chief Financial Officer, the economic buyer. Cares about run-rate reduction and a clean regulatory examination.
+- **Marcus Feld**: Vice President of Infrastructure, the champion. Cares about a governable landing zone and an end to manual failover.
+- **Priya Raghunathan**: Chief Architect, the technical evaluator. Cares about operational continuity and is openly skeptical of migrating away from the incumbent.
+- **Tom Weatherly**: Procurement Lead. Cares about a clean, comparable scoring process across all three bidders.
+- **Gina Almeida**: Associate General Counsel. Cares about contractual exposure in the proposed commitments.
 
 ## Pain points
 
-- The nightly settlement batch job regularly overruns its 6-hour window, and Halverton Mutual has never instrumented by how much — there is no measured baseline for this overrun, only the fact that it happens.
+- The nightly settlement batch job regularly overruns its 6-hour window, and Halverton Mutual has never instrumented by how much: there is no measured baseline for this overrun, only the fact that it happens.
 - Oracle Database licensing costs are an increasing share of the estate's current annual run rate, with no ceiling in sight under the existing on-premises model.
 - The VMware vSphere estate is at capacity, constraining the rollout of new policy-administration features that Marcus Feld's team wants to ship.
 - Failover across the 850-VM estate is a manual process, which extends incident response time whenever a host fails.
 
 ## Timeline
 
-Proposals are due to Halverton Mutual on 2026-10-30. Halverton Mutual's next regulatory examination opens in 8 months, and Halverton wants the Oracle estate off-premises before that window opens. Kestrel Systems Group's own most comparable prior migration programme took 14 months — longer than the examination window Halverton is working against.
+Proposals are due to Halverton Mutual on 2026-10-30. Halverton Mutual's next regulatory examination opens in 8 months, and Halverton wants the Oracle estate off-premises before that window opens. Kestrel Systems Group's own most comparable prior migration programme took 14 months, longer than the examination window Halverton is working against.
 
 ## Inconvenient facts
 
@@ -51,7 +51,7 @@ These facts are in this brief on purpose: they give the integrity requirements r
 
 ## Customer source material
 
-The material below is written in Halverton Mutual's own voice, not Kestrel Systems Group's — its purpose is to supply words that exist outside the sentence a later example is writing.
+The material below is written in Halverton Mutual's own voice, not Kestrel Systems Group's: its purpose is to supply words that exist outside the sentence a later example is writing.
 
 ### Scored RFP questions
 
@@ -67,14 +67,14 @@ These percentages score the five RFP questions against each other and are distin
 
 ### Discovery call quotes
 
-- Marcus Feld: "We need a landing zone we can actually govern — right now every VM is a snowflake."
+- Marcus Feld: "We need a landing zone we can actually govern; right now every VM is a snowflake."
 - Priya Raghunathan: "Honestly, I'd rather extend the Ardent Digital contract than gamble on a migration during an exam year."
 - Diane Osoria: "I'm measured on run-rate reduction and a clean exam, not on architecture elegance."
-- Tom Weatherly: "Every vendor gets scored against the same five questions — no exceptions, no side conversations."
+- Tom Weatherly: "Every vendor gets scored against the same five questions: no exceptions, no side conversations."
 
 ### Economic buyer stated priorities
 
-- "I need the current annual run rate down from $2,300,000 — that is the number I answer for."
+- "I need the current annual run rate down from $2,300,000; that is the number I answer for."
 - "A clean regulatory examination matters more to me than any feature list."
 - "I will not sign a contract that locks us into one vendor's commercial terms for longer than this term."
 
@@ -99,8 +99,7 @@ This file carries facts only. It holds no rule content and no persuasion techniq
 Every dollar amount, date, percentage, and count cited anywhere in this repository's examples has a
 row below. `tools/check_repo.py` treats this table as an interface: it fails the build if a figure
 elsewhere in `examples/` has no matching row here, or if two rows in this table claim the same key.
-What it matches on is the formatted value and not the key, so where two rows carry the same value —
-`rfp-question-weight-mid` and `rfp-security-weight` both read 20% — the check cannot tell which of
+What it matches on is the formatted value and not the key, so where two rows carry the same value (`rfp-question-weight-mid` and `rfp-security-weight` both read 20%), the check cannot tell which of
 them a figure means. The key is what says that, and reading it is a reader's job rather than the
 build's. This is the value-collision ceiling `unlisted-figure`'s own docstring declares, and it
 declares a second one that bears on the sentence above: the check reads currency, percentages and

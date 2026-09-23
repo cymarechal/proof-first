@@ -7,7 +7,7 @@ string that every framework-touching file in this repository must carry.
 ## Scope of this file
 
 `LICENSE` governs copyright in this repository's original content, and this file, `NOTICES.md`,
-governs trademark and attribution — the two files touch without overlapping, and neither should
+governs trademark and attribution. The two files touch without overlapping, and neither should
 be read as covering the other's territory.
 
 The MIT grant in `LICENSE` conveys copyright permissions in this repository's original content
@@ -24,7 +24,7 @@ repository, because a notice that arrives after the content it covers has alread
 ## Attribution pointer
 
 The following string is the canonical, verbatim attribution pointer. A human contributor and
-`tools/check_repo.py` both read this fenced block as the single source of truth for the string —
+`tools/check_repo.py` both read this fenced block as the single source of truth for the string;
 neither restates it from memory.
 
 ```
@@ -111,6 +111,6 @@ to Challenger Inc. or its trademark successors.
 Last reviewed: 2026-09-21
 
 None of the three statements above positions this project as a version, an implementation, an
-edition, or an automation of the named framework — each states only that concepts associated with
+edition, or an automation of the named framework: each states only that concepts associated with
 the mark are paraphrased here, in this repository's own words, with no more use of the mark than
 is needed to identify what the concepts derive from.

@@ -12,7 +12,7 @@ README_STATUS_HEADING below, and the bullet is anchored by its opening words
 rather than by a line number, because a line number in README moves whenever a
 bullet above it is edited.
 It does not read framework source material and it cannot judge whether a
-paraphrase reproduces proprietary text — that judgement is Phase 6's legal
+paraphrase reproduces proprietary text: that judgement is Phase 6's legal
 review gate (LEG-04). It imports
 only the Python standard library; no package-manager dependency is
 introduced by this file or by the CI job that runs it.
@@ -51,7 +51,7 @@ Violation codes implemented in this file:
                       section declaring no sub-blocks keeps exactly the
                       section-range behaviour, unchanged). Declared ceiling:
                       when a section's sub-blocks tile its whole reserved
-                      range — which both PF-1 and PF-2 currently do — this
+                      range: which both PF-1 and PF-2 currently do: this
                       test adds nothing beyond the section-range test; it
                       exists so a future narrowed or gapped sub-block table
                       is enforced rather than decorative.
@@ -165,7 +165,7 @@ Violation codes implemented in this file:
                       the two required keys (`name`, `description`), or
                       repeats a column-zero key. A repeated key is
                       reported rather than silently kept as a last-value-
-                      wins merge — the first value is what the parser
+                      wins merge: the first value is what the parser
                       keeps, but the repetition itself is the violation.
                       Declared ceiling: this parser recognises only a
                       column-zero key, a `|` block scalar, and an
@@ -210,7 +210,7 @@ Violation codes implemented in this file:
                       NUMBERING.md's Allocated IDs table, naming both the
                       stated and the registry figures. Declared ceiling:
                       this check compares the two stated numbers against
-                      the registry only — it does not detect a stated
+                      the registry only: it does not detect a stated
                       total that is right while a rule body is missing
                       from the file entirely; that direction is
                       catalog-id-drift's.
@@ -223,7 +223,7 @@ Violation codes implemented in this file:
                       Reframe convergence must resolve into a single
                       instruction rather than several a writer has to
                       reconcile. Declared ceiling: it counts PF-0 rows and
-                      nothing else — a single row whose body states two
+                      nothing else: a single row whose body states two
                       opening rules in prose passes.
   mc-count-unstated - a skill folder's references/completeness-audit.md
                       exists and contains no line matching the frozen MC
@@ -241,7 +241,7 @@ Violation codes implemented in this file:
                       Allocated IDs table, naming both the stated and the
                       registry figures. Declared ceiling: this check
                       compares the two stated numbers against the registry
-                      only — it does not detect a stated total that is
+                      only: it does not detect a stated total that is
                       right while a check body is missing from the file
                       entirely; that direction is mc-catalog-id-drift's.
   artifact-family-section-missing - a skill folder's
@@ -252,7 +252,7 @@ Violation codes implemented in this file:
                       material). Absence of the file is not a violation,
                       matching this checker's established posture for
                       references/completeness-audit.md. Declared ceiling:
-                      this check is heading presence only — it says nothing
+                      this check is heading presence only: it says nothing
                       about whether a section's content is correct or
                       complete, and it does not check that each section
                       carries exactly one **Order:** line or that the
@@ -338,7 +338,7 @@ Violation codes implemented in this file:
                       5,000-token progressive-disclosure budget; a file
                       under 500 lines with unusually long lines can still
                       exceed that token budget, which this check cannot
-                      detect on its own — skill-token-budget-exceeded is
+                      detect on its own: skill-token-budget-exceeded is
                       the companion check for that direction.
   skill-token-budget-exceeded - a skills/*/SKILL.md's estimated token
                       count exceeds 5,000, the Agent Skills
@@ -346,7 +346,7 @@ Violation codes implemented in this file:
                       CAT-08 ("under 500 lines, approximately 5,000
                       tokens"). No tokenizer is available to a standard-
                       library-only checker, so this check estimates
-                      tokens as word_count * 1.3 — a word-to-token ratio
+                      tokens as word_count * 1.3: a word-to-token ratio
                       calibrated against this project's own sibling
                       skill (`simple-english/SKILL.md`), which
                       02-RESEARCH.md measured at 3,664 words and recorded
@@ -357,7 +357,7 @@ Violation codes implemented in this file:
                       the whole file including its frontmatter block, not
                       the post-frontmatter body alone; and a different
                       estimator (for example characters / 4) gives a
-                      materially different figure for the same file —
+                      materially different figure for the same file -
                       this check uses one stated estimator consistently,
                       never the more favourable of several. This check
                       previously fired against this repository's own
@@ -1326,7 +1326,7 @@ def run_id_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# examples/deal-brief.md — figure integrity (D-10)
+# examples/deal-brief.md: figure integrity (D-10)
 # ---------------------------------------------------------------------------
 
 def parse_deal_brief(path):
@@ -1430,7 +1430,7 @@ def run_figure_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# NOTICES.md — attribution integrity (D-14)
+# NOTICES.md: attribution integrity (D-14)
 # ---------------------------------------------------------------------------
 
 FENCE_CONTENT_RE = re.compile(r'```[^\n]*\n(.*?)\n```', re.S)
@@ -1496,7 +1496,7 @@ NOTICES_CHECK_CODES = ['pointer-missing', 'pointer-duplicated', 'pointer-unparse
 
 
 # ---------------------------------------------------------------------------
-# LICENSE.md — license integrity (LEG-01)
+# LICENSE.md: license integrity (LEG-01)
 # ---------------------------------------------------------------------------
 
 def check_license_missing(repo_root):
@@ -1530,7 +1530,7 @@ def run_license_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# README.md — results pointer integrity (CR-02)
+# README.md: results pointer integrity (CR-02)
 #
 # This is a repository-level documentation check, not a catalog check: it
 # does not depend on NUMBERING.md or on any skills/*/SKILL.md path. It
@@ -1868,7 +1868,7 @@ def check_readme_layout_tree_stale(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# evals/conformance/RESULTS-mod04.md — verdict-breakdown enumeration
+# evals/conformance/RESULTS-mod04.md: verdict-breakdown enumeration
 # integrity (03-REVIEW.md WR-01 gap closure)
 #
 # This is a repository-level documentation check, not a catalog check: it
@@ -2006,7 +2006,7 @@ def run_results_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# SOURCES.md — approved-source provenance (LEG-04)
+# SOURCES.md: approved-source provenance (LEG-04)
 # ---------------------------------------------------------------------------
 
 SOURCES_PATH = 'SOURCES.md'
@@ -2354,7 +2354,7 @@ def run_sources_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# NOTICES.md — framework statements integrity (LEG-02)
+# NOTICES.md: framework statements integrity (LEG-02)
 # ---------------------------------------------------------------------------
 
 def check_framework_statements(repo_root):
@@ -2435,7 +2435,7 @@ def run_notices_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# skills/*/SKILL.md — frontmatter integrity (D-33)
+# skills/*/SKILL.md: frontmatter integrity (D-33)
 #
 # No general-purpose config-format parser exists in the standard library and
 # none is added here (D-33). Only six top-level keys are ever legal, so a
@@ -2793,7 +2793,7 @@ def check_mc_rule_in_skill(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# skills/*/SKILL.md — stated rule count vs registry (D-32)
+# skills/*/SKILL.md: stated rule count vs registry (D-32)
 # ---------------------------------------------------------------------------
 
 COUNT_SENTENCE_RE = re.compile(r'^This catalog contains (\d+) rules in (\d+) numbered sections\.$')
@@ -3144,7 +3144,7 @@ def check_catalog_opening_rule_count(allocated, repo_root):
 
 
 # ---------------------------------------------------------------------------
-# skills/*/SKILL.md — progressive-disclosure ceiling (CAT-08)
+# skills/*/SKILL.md: progressive-disclosure ceiling (CAT-08)
 # ---------------------------------------------------------------------------
 
 SKILL_LINE_CEILING = 500
@@ -5192,14 +5192,14 @@ def _mutate_skill_family_order_gate_missing(root):
     ordered_pass = (
         "1. Family-order pass (mandatory): re-scan the response you just drafted, "
         "from its first character, before returning it, and confirm the line "
-        "naming the artifact family — or stating **No family fits:** — stands "
+        "naming the artifact family, or stating **No family fits:**, stands "
         "before any rule marker, meaning no `PF-` or `MC-` citation appears "
         "earlier in the response. When one does, move the family line to the "
         "top and re-check before returning."
     )
     presence_only_pass = (
         "1. Family-line pass (mandatory): confirm the response's first line "
-        "names the artifact family or states **No family fits:** — a response "
+        "names the artifact family or states **No family fits:**: a response "
         "failing this is not ready to return."
     )
     assert ordered_pass in text, (
@@ -6089,11 +6089,11 @@ to Challenger Inc. or its trademark successors.
 
 
 def _good_skill():
-    return "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n"
+    return "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n"
 
 
 def _bad_skill():
-    return "### PF-9.9 — Mutation-only rule\n\nBody text citing no registered ID.\n"
+    return "### PF-9.9: Mutation-only rule\n\nBody text citing no registered ID.\n"
 
 
 def _good_checklist():
@@ -6431,7 +6431,7 @@ def _skill_body_at_line_count(n, extra_lines):
     return '\n'.join(lines) + '\n'
 
 
-_LINE_CEILING_HEADING = ['### PF-0.1 — Opening rule', '', 'Body text for the opening rule.']
+_LINE_CEILING_HEADING = ['### PF-0.1: Opening rule', '', 'Body text for the opening rule.']
 
 
 def _skill_at_line_count(n):
@@ -6471,9 +6471,9 @@ def _checklist_for_catalog_count():
 
 def _catalog_count_extra_lines(count_line):
     lines = [
-        '### PF-0.1 — Opening rule', '', 'Body text.', '',
-        '### PF-1.1 — Rule one', '', 'Body text.', '',
-        '### PF-1.2 — Rule two', '', 'Body text.', '',
+        '### PF-0.1: Opening rule', '', 'Body text.', '',
+        '### PF-1.1: Rule one', '', 'Body text.', '',
+        '### PF-1.2: Rule two', '', 'Body text.', '',
     ]
     if count_line is not None:
         lines.append(count_line)
@@ -6621,15 +6621,15 @@ def _mc_checklist():
 def _good_completeness_audit():
     """Defines exactly the two IDs _mc_numbering() allocates."""
     return (
-        "### MC-1 — Fixture metric rule one\n\nBody text for fixture rule one.\n\n"
-        "### MC-2 — Fixture metric rule two\n\nBody text for fixture rule two.\n"
+        "### MC-1: Fixture metric rule one\n\nBody text for fixture rule one.\n\n"
+        "### MC-2: Fixture metric rule two\n\nBody text for fixture rule two.\n"
     )
 
 
 def _bad_completeness_audit():
     """Omits MC-2 -- present in NUMBERING.md and the checklist, missing
     from this file, the divergence mc-catalog-id-drift must catch."""
-    return "### MC-1 — Fixture metric rule one\n\nBody text for fixture rule one.\n"
+    return "### MC-1: Fixture metric rule one\n\nBody text for fixture rule one.\n"
 
 
 def _good_artifact_patterns():
@@ -7008,9 +7008,9 @@ def _good_derivative(digest):
     families = '\n'.join(ARTIFACT_FAMILY_SECTIONS)
     return (
         f"{stamp}\n\n"
-        "### PF-0.1 — Fixture rule\n\n"
-        "### MC-1 — Fixture check\n\n"
-        "### MC-5 — Fixture check\n\n"
+        "### PF-0.1: Fixture rule\n\n"
+        "### MC-1: Fixture check\n\n"
+        "### MC-5: Fixture check\n\n"
         f"{families}\n"
     )
 
@@ -7028,8 +7028,8 @@ def _stale_derivative(digest):
     families = '\n'.join(h for h in ARTIFACT_FAMILY_SECTIONS if h != 'Executive summary')
     return (
         f"{stamp}\n\n"
-        "### PF-0.1 — Fixture rule\n\n"
-        "### MC-1 — Fixture check\n\n"
+        "### PF-0.1: Fixture rule\n\n"
+        "### MC-1: Fixture check\n\n"
         f"{families}\n"
     )
 
@@ -7042,9 +7042,9 @@ def _no_stamp_derivative():
     fixture."""
     families = '\n'.join(ARTIFACT_FAMILY_SECTIONS)
     return (
-        "### PF-0.1 — Fixture rule\n\n"
-        "### MC-1 — Fixture check\n\n"
-        "### MC-5 — Fixture check\n\n"
+        "### PF-0.1: Fixture rule\n\n"
+        "### MC-1: Fixture check\n\n"
+        "### MC-5: Fixture check\n\n"
         f"{families}\n"
     )
 
@@ -7114,7 +7114,7 @@ def _good_skill_family_gate():
     family-line gate requires -- the silent case for
     skill-family-line-gate-missing."""
     return (
-        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Family-line pass: confirm the first line names the artifact family "
         "or states **No family fits:**.\n"
@@ -7125,7 +7125,7 @@ def _bad_skill_family_gate():
     """A SKILL.md whose self-check section is present but names neither
     anchor -- the firing case for skill-family-line-gate-missing."""
     return (
-        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Subtractive pass: find the violations to remove.\n"
     )
@@ -7136,7 +7136,7 @@ def _good_skill_family_order_gate():
     ordering gate requires -- the silent case for
     skill-family-order-gate-missing."""
     return (
-        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Family-order pass: re-scan the drafted response and confirm the "
         "artifact family line stands before any rule marker; states "
@@ -7151,7 +7151,7 @@ def _bad_skill_family_order_gate():
     skill-family-order-gate-missing, isolating the ordering check from
     its presence-only sibling."""
     return (
-        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Family-line pass: confirm the first line names the artifact family "
         "or states **No family fits:**.\n"
@@ -7316,7 +7316,7 @@ def _capitalized_skill_family_gate():
     skill-family-line-gate-missing, exactly as it already does for its
     case-insensitive sibling check_skill_family_order_gate()."""
     return (
-        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Family-line pass: confirm the first line names the Artifact Family "
         "or states **No Family Fits:**.\n"
@@ -7380,9 +7380,9 @@ def _mc_checklist_for_count():
 
 def _mc_count_audit_headings():
     return (
-        "### MC-1 — Fixture metric rule one\n\nBody text.\n\n"
-        "### MC-2 — Fixture metric rule two\n\nBody text.\n\n"
-        "### MC-6 — Fixture economic buyer rule\n\nBody text.\n"
+        "### MC-1: Fixture metric rule one\n\nBody text.\n\n"
+        "### MC-2: Fixture metric rule two\n\nBody text.\n\n"
+        "### MC-6: Fixture economic buyer rule\n\nBody text.\n"
     )
 
 
@@ -7400,12 +7400,12 @@ def _mismatched_mc_count_completeness_audit():
 
 def _token_budget_good_skill():
     return _skill_body_at_line_count(
-        10, ['### PF-0.1 — Opening rule', '', 'Short body text, well under the token budget.'])
+        10, ['### PF-0.1: Opening rule', '', 'Short body text, well under the token budget.'])
 
 
 def _token_budget_bad_skill():
     filler_words = ' '.join(['word'] * 4200)
-    return _skill_body_at_line_count(20, ['### PF-0.1 — Opening rule', '', filler_words])
+    return _skill_body_at_line_count(20, ['### PF-0.1: Opening rule', '', filler_words])
 
 
 DOCSTRING_CATALOGUE_MARKER = 'Violation codes implemented in this file:'
@@ -8883,7 +8883,7 @@ def self_test():
             print("FAIL: readme-layout-tree-stale did not fire on an evals/ subdirectory absent from the layout tree")
             all_ok = False
         if len(tree_stale_violations) != 1:
-            print(f"FAIL: readme-layout-tree-stale produced {len(tree_stale_violations)} violations, expected 1 — __pycache__ must be skipped")
+            print(f"FAIL: readme-layout-tree-stale produced {len(tree_stale_violations)} violations, expected 1: __pycache__ must be skipped")
             all_ok = False
         elif '__pycache__' in tree_stale_violations[0]:
             print("FAIL: readme-layout-tree-stale reported __pycache__, which it is specified to skip")
