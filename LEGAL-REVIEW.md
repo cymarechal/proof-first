@@ -74,8 +74,9 @@ records were re-fetched live on 2026-09-22, and the cold-read rounds this record
 2026-09-21 to 2026-09-23. That is the whole of what the token means here, and it is not a statement
 that the content is clear to publish.
 
-Two named content items are open and routed to `.planning/WINDOWS.md` for a decision before wider
-distribution — **Ardent Digital** and **Gina Almeida**, both under `## Name collisions`. The
+Two named content items are open and carried as `.planning/WINDOWS.md` id 34, awaiting a decision
+before wider distribution — **Ardent Digital** and **Gina Almeida**, both under `## Name
+collisions`. The
 reproduction-boundary section ends on live questions rather than findings — three of them, carried as
 items 5 and 6 of `## What remains open` — and `WINDOWS.md` id 29 is open against the PF-1 sub-block
 list. A reader who wants one sentence should take this one:
@@ -721,9 +722,10 @@ That said, the two collisions worth acting on are **Ardent Digital** and **Gina 
 neither is closed by this review. Ardent Digital is cast as the incumbent being displaced and a
 losing rival bidder — an adverse role, against a name a real company trades under. Gina Almeida
 matches a real individual on name and on professional role at once. Both are recorded here and
-routed to `WINDOWS.md` as open items for a rename decision before wider distribution. The remaining
-four person collisions are common-name coincidences in neutral roles and are recorded without a
-recommended action.
+carried as `WINDOWS.md` id 34 — one open row covering the two rename decisions. The row was opened
+at round 8: this section had said since 06-02 (`6cc615a`) that both were routed to the register,
+and no row in it carried either name. The remaining four person collisions are common-name
+coincidences in neutral roles and are recorded without a recommended action.
 
 ## USPTO register lookups
 
@@ -745,9 +747,9 @@ failures were recorded: a lookup's outcome is reported as observed on the day, i
 ## What remains open
 
 1. **Rename decision for `Ardent Digital`** in `examples/deal-brief.md`. An exact-name collision with
-   a real trading company, in an adverse role. Routed to `WINDOWS.md`.
+   a real trading company, in an adverse role. Carried as `WINDOWS.md` id 34.
 2. **Rename decision for `Gina Almeida`** in `examples/deal-brief.md`. An exact-name collision with a
-   real individual whose profession matches the role the brief assigns. Routed to `WINDOWS.md`.
+   real individual whose profession matches the role the brief assigns. Carried as the same id 34.
 3. **The register state for Reg. No. 6,489,058 will change.** It was observed live and active on
    2026-09-21 against a court order directing its cancellation and a docket still under motion
    practice. This is a fact with a shelf life, and the next review re-reads it rather than carrying
@@ -1079,7 +1081,7 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 
 | id | Phase | What it records | Disposition | Why |
 |---|---|---|---|---|
-| 1 | 01 | Name-collision search for examples/deal-brief.md's invented names | **Fixed** | Re-run in 06-02; a collision was found and is routed as a new open item. |
+| 1 | 01 | Name-collision search for examples/deal-brief.md's invented names | **Fixed** | Re-run in 06-02. The search is done; the two collisions worth acting on are carried as the open id 34. |
 | 2 | 01 | D-07/P-05 boundary check (no sentence compares two real products or co | **Fixed** | Closed in an earlier phase. |
 | 3 | 02 | Reproduction-boundary read of PF-0.1/PF-3.1 against SOURCES.md | **Closed on reasoning** | No shipped content changed. Closed on 06-02's read, restated at 06-05. Recorded as `fixed` in WINDOWS.md, which has no fourth state. |
 | 4 | 02 | D-31 trigger pressure-test | **Fixed** | Closed in an earlier phase. |
