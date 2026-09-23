@@ -355,7 +355,9 @@ Two positions on the same eight strings, and they were opposites. **This review 
 checker's.** Seven of the eight are source-coined; "Metric" alone is ordinary business English. The
 prong engages for seven names, not two.
 
-What follows, checked by `git grep -iln` over the tracked tree rather than recalled:
+What follows, checked by `git grep -iln` over the tracked tree rather than recalled. The tracked
+tree includes `.planning/`, so each bullet below names the slice it is read over wherever that slice
+is narrower than the whole tree:
 
 - **No shipped skill file carries any of the seven.** Not `skills/proof-first/SKILL.md`, not any
   `references/*.md`, not `output-styles/proof-first.md`, not `prompts/system-prompt.md`. This is not
@@ -396,8 +398,10 @@ What follows, checked by `git grep -iln` over the tracked tree rather than recal
   That case difference in the briefs' headings is not a defence — this repository's own matcher for
   these exact labels is case-insensitive (`check_repo.py`'s `_source_label_pattern`, which compiles
   every label with `re.IGNORECASE`).
-- **"Decision Process" and "Competition" appear in `NUMBERING.md` and nowhere else** outside this
-  file and the checker.
+- **Outside `.planning/`, this record and the checker, "Decision Process" and "Competition" appear
+  in `NUMBERING.md` and nowhere else.** They are the two of the seven that reach neither deal brief.
+  Inside `.planning/` both appear in many files, as the last bullet records — that bullet is read
+  over the whole tracked tree and not over this narrower slice.
 - Neither `completeness-audit.md` nor any other `references/*.md` carries any of the seven; that
   file's `###` headings are MC ids plus rule titles written in this repository's own words.
 - All seven appear throughout `.planning/`, which is tracked in this repository.
