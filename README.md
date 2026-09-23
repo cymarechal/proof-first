@@ -180,15 +180,18 @@ What exists today:
   above. A live run opens 23 files: `SKILL.md` and all five of its reference files,
   `NUMBERING.md`, `SOURCES.md`, `NOTICES.md`, `LEGAL-REVIEW.md`, `LICENSE`, `README.md`, both
   `examples/*.md`, both derivatives, both `.claude-plugin/` manifests, all four
-  `evals/*/RESULTS*.md` reports, and itself. Of the items listed above this line, six are never
-  opened: the five eval scripts `evals/lint.py`, `evals/trigger/run_trigger_test.py`,
-  `evals/conformance/run_conformance.py`, `evals/routes/run_routes.py` and
-  `evals/benchmark/run_benchmark.py`, and the prose file `evals/pressure-tests.md`. Each of those
-  five scripts carries its own `--self-test`, and CI runs all of them separately — see
-  `.github/workflows/ci.yml` for the full list of ten commands. Below this line,
-  `tools/generate_derivatives.py`, `evals/proxy-sources.md`, `evals/benchmark/scenarios.json`,
-  `evals/benchmark/bench-deal-brief.md` and the CI workflow itself are likewise not opened by the
-  checker.
+  `evals/*/RESULTS*.md` reports, and itself. The 23rd is the interpreter's own load of
+  `tools/check_repo.py`. No frame inside the checker opens the script — a reader who counts only
+  the checker's own reads finds every file on this list but that one, which is why the count is 23
+  and not 22. An `open`-audit hook over a real `python3 tools/check_repo.py` subprocess sees all 23.
+  Of the items listed above this line, six are never opened: the five eval scripts
+  `evals/lint.py`, `evals/trigger/run_trigger_test.py`, `evals/conformance/run_conformance.py`,
+  `evals/routes/run_routes.py` and `evals/benchmark/run_benchmark.py`, and the prose file
+  `evals/pressure-tests.md`. Each of those five scripts carries its own `--self-test`, and CI runs
+  all of them separately — see `.github/workflows/ci.yml` for the full list of ten commands.
+  Below this line, `tools/generate_derivatives.py`, `evals/proxy-sources.md`,
+  `evals/benchmark/scenarios.json`, `evals/benchmark/bench-deal-brief.md` and the CI workflow
+  itself are likewise not opened by the checker.
 - `tools/generate_derivatives.py` — the generator that writes the output style and the system
   prompt from the skill content, with a `--check` mode CI runs to fail a stale derivative.
 - `.github/workflows/ci.yml` — the one CI job; it runs the checker, its self-test and mutation
