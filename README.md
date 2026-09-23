@@ -288,18 +288,18 @@ behind an anchored figure this README states.
 The conformance limitation above is a separate measurement from the persuasion benchmark reported
 in the claim region, and the two are never combined into one figure.
 
-README carries two kinds of number and enforces one of them. Measured claims live inside the claim
-region, the block delimited above by the frozen pair of `claim-region` HTML comments. Every number
-in that block is sourced from a committed results file under `evals/`, states the model versions
-and the date it was produced, and is checked by `tools/check_repo.py` — `readme-claim-unsourced`
-fails the build on a claim-region number that appears in no committed results file, and
-`readme-claim-unanchored` fails it on a claim-region paragraph that carries a number without a
-model string and a date.
+README carries three kinds of number. Only the first is checked as a class; the second is checked
+in one place and the third nowhere. Measured claims live inside the claim region, the block
+delimited above by the frozen pair of `claim-region` HTML comments. Every number in that block is
+sourced from a committed results file under `evals/`, states the model versions and the date it was
+produced, and is checked by `tools/check_repo.py` — `readme-claim-unsourced` fails the build on a
+claim-region number that appears in no committed results file, and `readme-claim-unanchored` fails
+it on a claim-region paragraph that carries a number without a model string and a date.
 
-The other kind is inventory: the 31 rules, the 28 worked pairs, the paths in the layout tree. Those
+The second kind is inventory: the 31 rules, the 28 worked pairs, the paths in the layout tree. Those
 count what this repository contains rather than measuring model behaviour, so they carry no model
 string and no date, and the two claim-region codes stop at the end marker rather than reaching them.
-One of the three is checked: `readme-layout-tree-stale` fails the build when an immediate
+One of those three items is checked: `readme-layout-tree-stale` fails the build when an immediate
 subdirectory of `evals/` exists and this README's layout tree does not name it. The two counts are
 not. `catalog-count-mismatch` compares `SKILL.md`'s own stated count against `NUMBERING.md` and
 never opens this file, and outside the claim region no code in `check_repo.py` reads a stated count
