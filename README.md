@@ -1,6 +1,9 @@
 # Proof First: Technical Presales Discipline for Coding Agents
 
-A coding agent skill for technical presales, RFPs, and solution proposals that eliminates generic AI fluff, enforces real metrics, and catches invented claims before executive buyers see them.
+[![CI](https://github.com/cymarechal/technical-presales/actions/workflows/ci.yml/badge.svg)](https://github.com/cymarechal/technical-presales/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+A coding agent skill for technical presales, RFPs, and solution proposals that eliminates generic AI fluff, enforces real metrics, and catches unverified claims before executive buyers see them.
 
 ## Before and after
 
@@ -9,39 +12,89 @@ Every worked example in this repository grounds its numbers in [examples/deal-br
 **RFP and RFI response**
 
 ✗ "Kestrel Systems Group brings decades of experience delivering large-scale cloud transformations for complex, regulated enterprises across many industries. Our proven methodology and world-class team have consistently delivered exceptional outcomes for clients facing challenges like Halverton Mutual's. Before turning to the specific migration approach Question 1 asks for, it is worth noting the breadth of our platform expertise and the strength of our partner ecosystem. Our approach is comprehensive and follows industry best practices, backed by a proven cut-over methodology and rigorous testing."
+
 ✓ "Question 1, the highest-weighted scored question in this RFP at 30%, asks for the migration approach and cut-over plan. Kestrel Systems Group moves Halverton Mutual's 850-VM VMware vSphere estate and 40 Oracle Database instances to Amazon EC2 and Amazon Aurora PostgreSQL. Each cut-over runs inside its own scheduled maintenance window. Settlement-batch completion is validated against the required 6-hour window before the next cut-over proceeds."
 
 Rules applied: PF-2.1, MC-11.
+
+| Presales Dimension | ✕ Typical AI Presales Fluff | ✓ Proof-First Presales Response |
+| :--- | :--- | :--- |
+| **Opening Lead** | Generic vendor pedigree (*"decades of experience"*) | Direct answer citing scored question and weight (30%) |
+| **Scope and Inventory** | Vague adjectives (*"large-scale"*, *"complex"*) | Concrete counts: **850 VMs**, **40 Oracle instances** |
+| **Architecture** | Empty assertion (*"platform expertise"*) | Target engines: **Amazon EC2**, **Aurora PostgreSQL** |
+| **Operational Proof** | Fluff (*"proven cut-over methodology"*) | Testable constraint: **6-hour maintenance window** |
+| **Tone and Style** | 87-word marketing preamble, passive voice | Punchy active sentences, max 25 words, zero em-dashes |
+
+> [!IMPORTANT]
+> **The Presales Reality:** Evaluators and CFOs discount marketing rhetoric immediately. Proof First forces coding agents to replace empty superlatives with hard metrics, operational constraints, and testable commitments.
 
 `PF-` (prose discipline) and `MC-` (deal qualification completeness) are this project's two rule namespaces. `NUMBERING.md` defines every ID; `skills/proof-first/references/checklist.md` indexes them.
 
 The other three artifact families this skill classifies (solution proposal, executive summary, and demo and discovery material) each have full before/after pairs in [`examples/before-after.md`](examples/before-after.md).
 
-## Why Proof First?
+## How Proof First Works
 
-Generic LLMs generate presales copy full of corporate boilerplate ("seamless integration", "world-class methodology", "cutting-edge innovation"). Technical evaluators and CFOs discount this instantly: it signals that the vendor has no real evidence and did not listen.
+```mermaid
+flowchart TD
+    In["Customer RFP, Proposal Draft, or Deal Notes"] --> Engine{"proof-first Engine"}
+    
+    subgraph S1["1. Write Mode (Drafting)"]
+        Engine -->|Draft| W["Evidence-First Generation"]
+        W --> W1["Answer scored questions directly"]
+        W --> W2["Anchor metrics and testable SLAs"]
+        W --> W3["Enforce 25-word sentence ceiling"]
+    end
+    
+    subgraph S2["2. Check Mode (Review)"]
+        Engine -->|Review| C["Fluff and Integrity Audit"]
+        C --> C1["Flag unevidenced assertions"]
+        C --> C2["Run deletion test on buzzwords"]
+        C --> C3["Strip AI em-dashes and passives"]
+    end
+    
+    subgraph S3["3. Audit Mode (Qualification)"]
+        Engine -->|Qualify| M["MEDDPICC Completeness"]
+        M --> M1["Audit 8 deal dimensions"]
+        M --> M2["Tag unknown facts with [GAP]"]
+        M --> M3["Generate qualification scorecard"]
+    end
+    
+    W1 --> Out["Winning, Scored Presales Deliverables"]
+    C3 --> Out
+    M3 --> Out
+```
 
-Proof First enforces a strict technical writing discipline:
-- **Evidence-first claims:** Every capability statement requires verifiable facts, customer-stated metrics, or an explicit `[GAP]` marker.
-- **No invented facts:** If a baseline or metric was not provided, the skill cuts the claim and flags the gap instead of hallucinating.
-- **No buzzwords:** Runs an aggressive deletion test on empty adjectives.
-- **MEDDPICC completeness:** Audits drafts against 8 critical deal qualification dimensions.
-- **Human prose:** Forbids AI clichés, including em-dashes, passives, and compound buzzwords.
+### Rule Families at a Glance
+
+Proof First enforces 32 prose discipline rules (`PF-`) and 8 qualification dimensions (`MC-`):
+
+| Rule Family | Scope and Focus | Core Enforcements |
+| :--- | :--- | :--- |
+| **PF-1: Quantification** | Concrete metrics, baselines, and numbers | Every capability claim must cite an adjacent figure or baseline |
+| **PF-2: Scored Alignment** | RFP question answering and weight prioritization | Address highest-weighted questions first; answer before elaborating |
+| **PF-3: Evidence and Verification** | Proof points, references, and testable constraints | Unproven claims require explicit `[GAP]` tags; zero hallucinated facts |
+| **PF-4: Prose Discipline** | Technical clarity, tone, and sentence structure | Max 25 words per sentence, active voice, zero em-dashes (`PF-4.5`) |
+| **PF-5: Solution Framing** | Architecture, migration, and operational boundaries | State assumptions upfront; specify cut-over maintenance windows |
+| **PF-6: Anti-Patterns** | Banned buzzwords and deletion test | Cuts empty adjectives (*"seamless"*, *"world-class"*, *"robust"*) |
+| **MC: MEDDPICC Audit** | Deal qualification completeness | Scans metrics, economic buyer, decision criteria, paper process, etc. |
 
 ## Install
 
 Proof First installs across coding agents and harnesses with zero dependencies:
 
 ### 1. Skills CLI (Universal)
+
 Install with the `skills` CLI ([skills.sh](https://skills.sh)) for Cursor, Codex, Copilot, Gemini CLI, Antigravity, OpenCode, and others:
 
 ```bash
 npx skills add cymarechal/technical-presales
 ```
 
-This auto-detects installed coding agents and places `skills/proof-first/` into the target agent configuration directory. The CLI also accepts a local directory path (e.g. `skills add .`).
+> [!TIP]
+> **Universal Agent Detection:** The Skills CLI automatically discovers your installed AI agents and places `skills/proof-first/` directly into their active skills folders. The CLI also accepts a local directory path (e.g. `skills add .`).
 
 ### 2. Claude Code Plugin
+
 Install directly from the marketplace manifest:
 
 ```bash
@@ -56,6 +109,7 @@ Or inside an active Claude Code session:
 ```
 
 ### 3. Claude Code Output Style
+
 `output-styles/proof-first.md` is a persistent output style generated mechanically from the skill rules. Copy it to your user or project output styles directory:
 
 ```bash
@@ -66,29 +120,39 @@ cp output-styles/proof-first.md ~/.claude/output-styles/
 Or copy to `.claude/output-styles/` in your repository root to scope the style to that project. Then select `proof-first` in `/config`.
 
 ### 4. Direct System Prompt
+
 For harnesses or tools without native skill support, copy the standalone prompt from `prompts/system-prompt.md` into your custom system instructions or agent prompt file (`AGENTS.md`).
 
-## Core Capabilities and Prompt Recipes
+## Quick-Start Prompt Recipes
 
-Proof First operates in three core modes:
+Proof First operates across three primary workflows:
 
 ### 1. Evidence-First Drafting (Write Mode)
+
 Drafts an RFP answer, proposal section, executive summary, or discovery script grounded in supplied customer notes.
 
 > **Prompt:**
-> "Draft an RFP response to Question 2 using Proof First discipline. Here are our discovery notes and customer requirements: [paste notes]. Target family: RFP answer."
+> ```text
+> Draft an RFP response to Question 2 using Proof First discipline. Here are our discovery notes and customer requirements: [paste notes]. Target family: RFP answer.
+> ```
 
 ### 2. Proposal and RFP Review (Check Mode)
+
 Audits an existing draft, flagging unevidenced assertions, missing baselines, buzzwords, and compliance commitments before submission.
 
 > **Prompt:**
-> "Review this solution proposal section in check mode. Flag all unevidenced claims, buzzwords, and commitments: [paste draft]."
+> ```text
+> Review this solution proposal section in check mode. Flag all unevidenced claims, buzzwords, and commitments: [paste draft].
+> ```
 
 ### 3. Deal Qualification Audit (MEDDPICC)
+
 Runs an independent completeness check against the 8 core qualification dimensions (metrics, economic buyer, decision criteria, decision process, paper process, cost of inaction, champion, competition).
 
 > **Prompt:**
-> "Run a completeness audit on this executive summary against the 8 qualification dimensions. Highlight every gap and provide a status verdict."
+> ```text
+> Run a completeness audit on this executive summary against the 8 qualification dimensions. Highlight every gap and provide a status verdict.
+> ```
 
 ## Status
 
@@ -99,7 +163,13 @@ This repository maintains rigorous mechanical guarantees wired into continuous i
 - **Mutation Tested:** 58 distinct structural mutations are verified by `tools/check_repo.py --mutation-test`.
 - **Fresh Derivatives:** `tools/generate_derivatives.py --check` ensures `output-styles/proof-first.md` and `prompts/system-prompt.md` remain in exact sync with `skills/proof-first/SKILL.md`.
 
-### What the benchmark measured
+### Benchmark Results
+
+| Evaluation Dimension | Skill-On Wins | Ties | Skill-Off Wins | Measured Takeaway |
+| :--- | :---: | :---: | :---: | :--- |
+| **Evidence Density** | **45** | 1 | 2 | Wins 94% of pairs; eliminates ungrounded marketing claims |
+| **Clarity** | **32** | 3 | 13 | Wins 67% of pairs; enforces 25-word maximum sentence ceiling |
+| **Persuasive Force** | 7 | 3 | **38** | Expected tradeoff: trades sales hyperbole for factual density |
 
 <!-- claim-region:start -->
 
