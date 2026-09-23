@@ -6,8 +6,8 @@
   "author": {
     "name": "Proof First contributors"
   },
-  "homepage": "https://github.com/<owner>/<repo>",
-  "repository": "https://github.com/<owner>/<repo>",
+  "homepage": "https://github.com/cymarechal/technical-presales",
+  "repository": "https://github.com/cymarechal/technical-presales",
   "license": "MIT",
   "keywords": ["presales", "rfp", "proposal", "technical-writing"]
 }

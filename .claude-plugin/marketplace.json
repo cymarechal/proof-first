@@ -2,7 +2,7 @@
   "name": "proof-first",
   "owner": {
     "name": "Proof First contributors",
-    "url": "https://github.com/<owner>"
+    "url": "https://github.com/cymarechal"
   },
   "description": "Write or check RFP and RFI responses, solution proposals, executive summaries, and demo or discovery documents for technical presales and bid teams.",
   "plugins": [
@@ -15,8 +15,8 @@
       "author": {
         "name": "Proof First contributors"
       },
-      "homepage": "https://github.com/<owner>/<repo>",
-      "repository": "https://github.com/<owner>/<repo>",
+      "homepage": "https://github.com/cymarechal/technical-presales",
+      "repository": "https://github.com/cymarechal/technical-presales",
       "license": "MIT",
       "keywords": ["presales", "rfp", "proposal", "technical-writing"]
     }

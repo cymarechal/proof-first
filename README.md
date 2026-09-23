@@ -40,12 +40,11 @@ no install step.
 Proof First supports four install paths: one for every harness the Agent Skills standard reaches,
 two that are Claude Code's own, and one for a harness with no skill support.
 
-Routes 1 and 2 name the publish-location placeholder `<owner>/<repo>`, which stands for wherever
-this repository is published. Neither resolves until it is published. The placeholder is
-deliberate and disclosed: `publish-location-drift` in `tools/check_repo.py` fails the build if any
-command or manifest carrying it stops naming the same GitHub owner segment as the others. The
-checker states its own ceiling — it compares owner segments only, so a repository-name-only drift
-under an unchanged owner is not detected.
+Routes 1 and 2 install from the public repository at `cymarechal/technical-presales`.
+`publish-location-drift` in `tools/check_repo.py` fails the build if any command or manifest
+carrying it stops naming the same GitHub owner segment as the others. The checker states its
+own ceiling — it compares owner segments only, so a repository-name-only drift under an
+unchanged owner is not detected.
 
 Route 4 runs from a local clone with no step beyond the clone: `prompts/system-prompt.md` is a
 committed file, and pasting it is the whole action. Route 3 runs from a local clone too, but it
@@ -54,34 +53,31 @@ where a plugin ships an output style from. In route 3's local-clone case Claude 
 scan it, so the file is not offered in `/config` until it is copied to a directory that is.
 Whether installing this repository as a plugin makes that root directory scanned instead is a
 different question, and an untested one: `marketplace.json` sets the plugin source to `./`,
-which says it should, but DIST-02 is unverified and no plugin install has ever resolved — the
-same unpublished publish location that stops routes 1 and 2. Both routes 3 and 4 need that
-local clone, and the clone URL is the same unpublished `<owner>/<repo>` as routes 1 and 2:
-until this repository is published, there is no URL to clone from.
+which says it should, but DIST-02 is unverified and no plugin install has ever resolved.
+Both routes 3 and 4 need a local clone of `cymarechal/technical-presales`.
 
 **1. Skills CLI** — for any harness the Agent Skills standard covers (Cursor, Codex, Copilot,
 Gemini CLI, Antigravity, OpenCode, and the rest), install with the `skills` CLI (`npx skills`,
 available via npm from [skills.sh](https://skills.sh)):
 
 ```
-npx skills add <owner>/<repo>
+npx skills add cymarechal/technical-presales
 ```
 
 This auto-detects installed coding agents and places `skills/proof-first/` into the target agent
-configuration directory. When running from a local checkout prior to publishing, the CLI also
-accepts a local directory path (e.g. `skills add .`).
+configuration directory. The CLI also accepts a local directory path (e.g. `skills add .`).
 
 **2. Claude Code plugin** — Claude Code installs this skill as a plugin from the marketplace
 manifest committed in this repository at `.claude-plugin/`:
 
 ```
-claude plugin marketplace add <owner>/<repo> && claude plugin install proof-first@proof-first
+claude plugin marketplace add cymarechal/technical-presales && claude plugin install proof-first@proof-first
 ```
 
 Or inside a running Claude Code session:
 
 ```
-/plugin marketplace add <owner>/<repo>
+/plugin marketplace add cymarechal/technical-presales
 /plugin install proof-first@proof-first
 ```
 
