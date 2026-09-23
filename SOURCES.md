@@ -19,7 +19,7 @@ This is a semantic judgement: no tool in this project's stated stack performs it
 `tools/check_repo.py` does not attempt it. The one string in this repository for which equality is
 defined mechanically is the attribution pointer in `NOTICES.md`, compared byte for byte after
 stripping leading and trailing whitespace, with no Unicode normalisation and no case folding.
-Everything else on this boundary is read by a human, with Phase 6's LEG-04 gate as the owner.
+Everything else on this boundary is verified, with the LEG-04 compliance gate as the owner.
 
 ## Message articulation sources
 
