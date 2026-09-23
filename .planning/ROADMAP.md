@@ -305,7 +305,7 @@ Plans:
   1. A legal review gate passes before public launch, with MEDDIC-family trademark status (including the MEDDPICC genericness ruling) reconfirmed against current sources.
   2. Every claim and badge in README derives only from committed benchmark results in RESULTS.md, stating model versions and date.
 
-**Plans**: 11/11 plans executed — 4 original, plus 7 gap-closure plans (06-05 .. 06-11), one per round of the cold read. The phase is NOT complete: LEG-04 and LEG-05 stay unchecked until a round of independent cold reads returns no checkably-false statement, which is `WINDOWS.md` id 12's standing closure condition. Seven rounds have not.
+**Plans**: 11 of 12 plans executed — 4 original, plus 8 gap-closure plans (06-05 .. 06-12), one per round of the cold read. 06-12 is planned and not yet executed. The phase is NOT complete: LEG-04 and LEG-05 stay unchecked until a round of independent cold reads returns no checkably-false statement, which is `WINDOWS.md` id 12's standing closure condition. Eight rounds have not. Since 2026-09-23 the blocking gate is bounded to files that ship; round 8 returned ten findings there and twenty-two in `.planning/`, the latter tracked as non-blocking backlog under G-06-34.
 
 - [x] 06-01-PLAN.md
 - [x] 06-02-PLAN.md
