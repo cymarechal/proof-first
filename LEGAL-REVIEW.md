@@ -1043,11 +1043,13 @@ scope is corrected; id 16 is unaffected.
 
 ## Ledger disposition
 
-Every entry in this project's cross-phase defect register, and what was decided about it at the
-Phase 6 launch gate on 2026-09-21. The register itself is `.planning/WINDOWS.md`, which is tracked
+Every entry in this project's cross-phase defect register, and what was decided about it. Entries 1
+through 32 were dispositioned at the Phase 6 launch gate on 2026-09-21; 33 and 34 were opened
+afterwards, on 2026-09-23, and each carries its own date below. The register itself is
+`.planning/WINDOWS.md`, which is tracked
 in this repository and which README cites by entry number — but `.planning/` is this project's own
 working record rather than published documentation, and a reader has no reason to go looking there.
-It is reproduced here in full for that reason: 32 entries, none left undecided.
+It is reproduced here in full for that reason: 34 entries, none left undecided.
 
 Four labels, and the fourth was added at this round because the first three did not describe what
 had actually happened to two entries:
@@ -1113,13 +1115,16 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 30 | 06 | README's claim region says "drafted twice" without the 3 repeats | **Open — v2** | `evals/benchmark/RESULTS.md`'s `n` column reads 3 in all 32 rows of its mechanical-proxy table and 6 in all 96 rows of its judged table, so a reader who takes "drafted twice" as a per-scenario draft count is contradicted by a committed file. The sentence is defensible read as naming the two conditions rather than the drafts, and the clause after it gives the 96 generations and 48 averaged pairs from which the three repeats are recoverable — which is why it is recorded rather than rewritten. The row stays open on the observation that readers keep tripping on the sentence, not on a claim that nothing contradicts it: `RESULTS.md` has been committed since Phase 5 and does. |
 | 31 | 06 | Two reasoning critiques of the id-6 prong answers | **Open — v2** | Judgements about argument quality, not checkable falsehoods: prong 2 leans on a thinness test `SOURCES.md` does not state, and prong 4 records position instead of disposing. 06-07 removed prong 2's two other unrecorded grounds (a "many independent publishers" lookup nothing records, and a mnemonic the same entry had retired), which narrows the prong-2 answer to the thinness test alone and makes this row the whole of what carries it. |
 | 32 | 06 | `evals/proxy-sources.md`'s two source rows were never re-fetched | **Open — v2** | The last file whose provenance rested on the expired no-network premise. Restated in the past tense by 06-06; re-fetching was out of that round's scope. |
+| 33 | 06 | Gate scope bounded to shipped files by the project owner | **Open — v2** | Decided 2026-09-23 by the project owner, a human, in the round-7 verify session rather than by the executing agent. Findings inside `.planning/` are recorded and tracked but do not block phase completion; the blocking gate covers everything in `git archive HEAD` outside `.planning/` and `.claude/`. Grounded on seven rounds of measurement rather than on preference — the entry carries the per-round figures and the rejected alternative. A scope decision rather than a defect, carried open because the scope it sets is still in force. |
+| 34 | 06 | Rename decisions for the two deal-brief name collisions | **Open — v2** | Opened 2026-09-23 at round 8. This file had said since 06-02 that **Ardent Digital** and **Gina Almeida** were routed to the register, and no row in it carried either name. The collision search itself is done (ids 1 and 18); what is open is the decision on each name. Owner: the project owner. Closes when each is renamed in `examples/deal-brief.md`, or kept with the reason recorded on the row. |
 
-Counts after this sweep: **9 fixed, 2 closed on reasoning, 9 waived, 12 open**, totalling 32.
-`.planning/WINDOWS.md`'s frontmatter reads `fixed_count: 11, waived_count: 9, open_count: 12,
-total_count: 32` — the same 32 entries, with the two `closed on reasoning` rows folded into its
-`fixed` count for want of a fourth state. The twelve open entries are the four routed to v2 with
+Counts as of round 8: **9 fixed, 2 closed on reasoning, 9 waived, 14 open**, totalling 34.
+`.planning/WINDOWS.md`'s frontmatter reads `fixed_count: 11, waived_count: 9, open_count: 14,
+total_count: 34` — the same 34 entries, with the two `closed on reasoning` rows folded into its
+`fixed` count for want of a fourth state. The fourteen open entries are the four routed to v2 with
 owners (20, 21, 22, 24), the one opened at this review (29), four that turn on someone's decision
-rather than on more work (11, 12, 16, 17), and three opened by round 2's gap closure (30, 31, 32).
-None of the twelve is open with an empty reason in this table; 30, 31 and 32 carry their reason in
+rather than on more work (11, 12, 16, 17), three opened by round 2's gap closure (30, 31, 32), the
+gate-scope decision recorded at round 7 (33), and the rename decisions opened at round 8 (34).
+None of the fourteen is open with an empty reason in this table; 30 through 34 carry their reason in
 their `WINDOWS.md` description rather than in a separate field, since they were opened rather than
 re-dispositioned.
