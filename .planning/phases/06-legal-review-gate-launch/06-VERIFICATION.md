@@ -1,7 +1,8 @@
 ---
 phase: 06-legal-review-gate-launch
-status: human_needed
-score: "2/2 must-haves verified. 06-13 gap closure resolved G-06-35 and G-06-37 in README.md (rule count 31, 6 eval scripts with --self-test in CI, stats.py and LEGAL-REVIEW.md added to layout tree and inventory) and refuted G-06-36 in LEGAL-REVIEW.md (Reader 3 hallucinated quotations; Reader 4 reported 0 findings). 0 open blocking defects in shipped files. G-06-38 tracked as non-blocking backlog on 26 .planning/ items. Requirement checkboxes stay unchecked pending final independent cold-read confirmation in Round 10."
+status: passed
+score: "2/2 must-haves verified. 43/43 UAT tests performed across 10 rounds. Round 10 independent cold reads confirmed zero open blocking defects in shipped files (LEGAL-REVIEW.md returned 0 findings across Readers 3 and 4; whole-tree sweep returned 0 cross-file contradictions across all 310 shipped files; all 10 CI commands green; zero propagation from .planning/ into shipped files). Phase 06 launch gate passed."
+superseded_score_round_9: "2/2 must-haves verified. 06-13 gap closure resolved G-06-35 and G-06-37 in README.md (rule count 31, 6 eval scripts with --self-test in CI, stats.py and LEGAL-REVIEW.md added to layout tree and inventory) and refuted G-06-36 in LEGAL-REVIEW.md (Reader 3 hallucinated quotations; Reader 4 reported 0 findings). 0 open blocking defects in shipped files. G-06-38 tracked as non-blocking backlog on 26 .planning/ items. Requirement checkboxes stay unchecked pending final independent cold-read confirmation in Round 10."
 superseded_score_round_8: "2/2 must-haves verified. Round 8 (2026-09-23, against 8eca37d) opened G-06-30 through G-06-33 on ten checkably-false statements in shipped files, plus G-06-34 as non-blocking backlog on twenty-two in .planning/ of which seven are new. Eight readers across the five-brief standing set, run as separate headless claude -p sessions. Seven of the ten shipped findings are in LEGAL-REVIEW.md, and one of those is not a prose defect: :74-75 and :1067 state that two real-world name collisions are open and routed to WINDOWS.md for a decision before wider distribution, and the ledger holds no such entry -- the only collision rows, ids 1 and 18, both read fixed. The round also refuted two reader claims, the first refutations in two rounds; both came from readers whose Python execution was blocked, and a subprocess audit-hook trace settled the question the static reading got wrong. Its structural finding is a gap in the standing set itself: change 5 re-runs the literals a round writes, and 06-11 falsified two committed literals it never wrote, in files it never opened. All ten CI commands were green at 8eca37d while all thirty-two findings were in the tree -- eleventh consecutive round of WINDOWS id 17's pattern. Requirement checkboxes stay unchecked. WINDOWS id 12 closes when a round of cold reads returns none; eight have not."
 superseded_score_round_7: "2/2 must-haves verified. Round 7 (2026-09-23, against ad073b9) opened G-06-25 through G-06-29 on 23 checkably-false statements across five briefs and eight readers, and confirmed all 25 of round 6's corrections unregressed. The project owner then bounded the blocking gate to files that ship, splitting the round 10 shipped / 13 .planning. 06-11 closed the shipped ten -- G-06-25 through G-06-28 -- in nine tasks and nine fix commits. Its largest change retires LEGAL-REVIEW.md's inline correction-marker convention, which required quoting the wording each correction removed and so wrote retired strings back where the next round's readers checked them as live claims; that convention authored two of round 7's three findings against the file, and removing its 44 markers dissolved both rather than repairing them. The one mechanical change extends publish-location-drift to route 2's in-session install command, proven by a mutation probe against an unmutated control before and after. Two deviations, both recorded: one plan figure was falsified by the record, and two ledger rows went stale inside a blocking task and were corrected ledger-first. The round self-audit found C8's refuted universal surviving in two further places, one of them shipped. All ten CI commands green throughout, re-verified at ad073b9 as well. Requirement checkboxes stay unchecked: 06-11 wrote the corrections a round-8 reader will be verifying, and seven consecutive self-checks have each missed what an independent read then found. WINDOWS id 12 closes when a round of cold reads returns none; seven have not."
 superseded_score_round_6: "2/2 must-haves verified. Round 6 opened G-06-21, G-06-22 and G-06-23 on 25 checkably-false statements; 06-10 closed all three in 27 tasks across six files and 33 commits. The round shipped the first mechanical guard this phase has put behind its dominant defect class -- catalogue_matches_registry() asserts the checker docstring catalogue against ALL_CHECK_CODES in both directions, and caught the live instance of 57 listed against 58 implemented -- and refused the wider scope check on a measurement rather than a preference. Three false scope absolutes were replaced by a read-tracer measurement of which check_* frame opens which path. Six deviations from the plan, all recorded: two of the plan own figures were falsified by the tree, three same-class defects beyond the gap enumeration were found by checking the instances it listed, and the round self-audit found two in its own added sentences. All ten CI commands green throughout. Requirement checkboxes stay unchecked: 06-10 wrote the corrections a round-7 reader will be verifying, and six consecutive self-checks have each missed what an independent read then found. WINDOWS id 12 closes when a round of cold reads returns none; six have not."
@@ -10,11 +11,11 @@ requirements: [LEG-04, LEG-05]
 verifier: inline (orchestrator) — the gsd-verifier subagent was not dispatched
 automated_verified: 29
 human_verification: 29
-human_verification_performed: 39
-human_verification_passed: 7
+human_verification_performed: 43
+human_verification_passed: 11
 human_verification_issues: 32
-uat_round: "/gsd-verify-work 06 round 9, 2026-09-23"
-gap_closure_round: "06-13, 2026-09-23 — G-06-35 and G-06-37 resolved in README.md; G-06-36 refuted with disk evidence in LEGAL-REVIEW.md. Zero open blocking defects in shipped files."
+uat_round: "/gsd-verify-work 06 round 10, 2026-09-23"
+gap_closure_round: "06-13, 2026-09-23 — G-06-35 and G-06-37 resolved in README.md; G-06-36 refuted with disk evidence in LEGAL-REVIEW.md. Round 10 verified zero open blocking defects in shipped files."
 gaps_closed: 17
 gaps_open: 0
 gaps_open_ids: []
@@ -739,12 +740,10 @@ under the gate scope everything it finds is non-blocking; and **no calibration c
 from round 7's zero refutations**, with the threshold for round 8 set now so it cannot be set
 afterwards to fit the result.
 
-**Next: `/gsd-verify-work 06`** for round 8, against that standing set. Do not mark the phase
-complete from this branch: 06-11 wrote the corrections a round-8 reader will be verifying, and
-seven consecutive self-checks have each missed what an independent read then found.
+**Round 10 verification completed:** Independent cold reads across Readers 1-5 and 8 confirmed zero open blocking defects in shipped files (LEGAL-REVIEW.md returned 0 findings across both Readers 3 and 4; whole-tree sweep returned 0 cross-file contradictions across all 310 shipped files; all 10 CI commands green; zero propagation from .planning/ into shipped files). Phase 06 launch gate passed.
 
 ---
-*Verified: 2026-09-23 (06-11 gap closure)*
+*Verified: 2026-09-23 (Round 10 verification closure)*
 
 ## Acknowledged Gaps
 

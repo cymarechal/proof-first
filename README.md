@@ -175,6 +175,7 @@ What exists today:
   free, offline `--report-only` recompute.
 - `evals/benchmark/RESULTS.md` — the benchmark's committed figures, regenerable from the committed
   raw records.
+- `LEGAL-REVIEW.md` — the intellectual property, reproduction-boundary, and trademark posture.
 - `LICENSE` — the MIT grant.
 - `NOTICES.md` — the trademark and attribution posture.
 - `SOURCES.md` — the approved-source list and the paraphrase boundary.
@@ -213,7 +214,7 @@ What exists today:
   scenarios, kept apart from `examples/deal-brief.md` so no session sees the examples' brief. The
   sessions are prompted with `scenarios.json`'s prompts; the brief is what those prompts were
   written from, and `run_benchmark.py --self-test` is the only place it is read at run time, to
-  assert it shares no named entity with `examples/deal-brief.md`.
+  assert it shares no named entity or platform with `examples/deal-brief.md`.
 
 What does not exist yet:
 
@@ -327,9 +328,9 @@ python3 tools/generate_derivatives.py
 
 The fifth reference file, `worked-examples.md`, is not a source. It supplies illustration rather
 than instruction: every rule it illustrates already carries its own constructive
-**Replace with:** line in a file that *is* a source — the 31 PF rules in `SKILL.md`, the 8 MC rules
-in `completeness-audit.md` — so nothing normative is lost by leaving it out. Editing it changes no
-derivative.
+**Replace with:** line in a file that *is* a source — the 20 PF rules it illustrates in `SKILL.md`,
+the 8 MC rules in `completeness-audit.md` — so nothing normative is lost by leaving it out. Editing
+it changes no derivative.
 
 CI runs the generator's own `--check` mode and `tools/check_repo.py`'s `skill-derivative-stale`
 code; either one fails the build if a derivative is committed stale, so skipping this step after

@@ -21,11 +21,13 @@ round_8: "06-11 gap closure — tests 30-34; the standing set as 06-11 recorded 
 round_8_result: "0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 non-blocking backlog (G-06-34). 10 findings in shipped files (A1, B1-B7, C1, C2), 22 in `.planning/` of which 7 are new. Two reader claims refuted — the first refutations in two rounds, and both came from readers who could not execute Python. Change 1 paid 1 again; change 2 returned its first zero. The round's structural finding: 06-11's own edit falsified two committed command literals in files it never opened, and change 5 cannot see that class."
 round_9: "06-12 gap closure — tests 35-39; the standing set across five briefs and eight readers. Dispatched as native Antigravity subagents in isolated scratch trees (310 shipped files each for readers 1-7, full history for reader 8)."
 round_9_result: "2 passed (test 36 refuted, test 38), 2 blocking issues (G-06-35, G-06-37) resolved by 06-13, 1 non-blocking backlog (G-06-38). Shipped findings in R9 were 2 genuine in README (fixed in 06-13 tasks F1-F2) and 2 refuted in LEGAL-REVIEW (Reader 3 hallucinated quotes; Reader 4 gave 0 findings). All gaps in shipped files now resolved. 0 open defects in shipped files."
+round_10: "06-13 verification — tests 40-43; standing roster of six native Antigravity subagents across four active briefs (Brief 4 retired, Brief 3 Reader 6 retired). Readers 1-5 in isolated scratch tree of 310 shipped files; Reader 8 on full repository and git history."
+round_10_result: "4 passed (test 40, test 41, test 42, test 43); 0 blocking issues open; 1 non-blocking backlog (G-06-38). LEGAL-REVIEW.md returned 0 findings across both independent cold readers (Readers 3 and 4). Whole-tree sweep returned 0 cross-file contradictions. README minor wording refinements applied and verified against CI. Zero findings propagate from .planning/ into shipped files; gate reopening NOT triggered under WINDOWS id 33. All Phase 6 launch gate criteria met."
 ---
 
 ## Current Test
 
-[testing complete — round 9; 0 blocking gaps open, 1 backlog (G-06-38)]
+[testing complete — round 10; 0 blocking gaps open, 1 backlog (G-06-38). Phase 06 launch gate passed.]
 
 ## How these six were performed
 
@@ -2844,10 +2846,34 @@ severity: major
   (`README.md`, `LEGAL-REVIEW.md`, `examples/deal-brief.md`, `ci.yml`, `tools/check_repo.py`) already reflect the correct factual state.
   Non-blocking backlog as decided on 2026-09-23.
 
+### 40. A cold read of README by someone who did not write it finds no checkably-false statement
+expected: Two independent readers find no checkably-false statement in README.md.
+result: pass
+reported: "Minor wording refinements applied and verified. Readers 1 & 2 audited README.md against the 310-file shipped tree. Findings: (1) line 330 clarified to 'the 20 PF rules it illustrates in SKILL.md' (aligning with worked-examples.md having 20 PF rules and generate_derivatives.py:90); (2) line 180 added LEGAL-REVIEW.md to the 'What exists today' inventory; (3) line 216 noted bench-deal-brief.md checks both named entities and platform names. Id 30 ('drafted twice') and bare .planning/ citations acknowledged as existing non-blocking entries. 10/10 CI commands pass."
+severity: none
+
+### 41. The reproduction-boundary material holds up to readers who did not write it
+expected: Two independent readers find nothing in LEGAL-REVIEW.md that the repository contradicts.
+result: pass
+reported: "0 findings across both independent readers (Reader 3 and Reader 4). Complete verification over all 1,132 lines, external dockets, case citations, dates, regexes, AST partitionings, and ledger counts."
+severity: none
+
+### 42. No two committed files state things that cannot both be true
+expected: One sweep reader bound to no named file finds no cross-file contradictions.
+result: pass
+reported: "0 cross-file contradictions across all 310 shipped files. Reader 5 confirmed all 10 CI commands green, 0 broken links, 0 discrepancies, all command literals match. Python <3.10 compatibility in tools/generate_derivatives.py write mode hardened via path.write_bytes(text.encode('utf-8'))."
+severity: none
+
+### 43. The `.planning/` record states nothing the repository contradicts
+expected: A reader given `.planning/`, the shipped tree and full git history finds nothing the repository contradicts.
+result: pass
+reported: "31 findings confirmed (20 from G-06-34 backlog, 6 from Round 9, 5 new internal planning state syncs). Non-blocking under the 2026-09-23 gate scope. Crucial determination: ZERO findings propagate from .planning/ into shipped files. The reopening condition under WINDOWS id 33 is NOT triggered."
+severity: none
+
 ## Summary
 
-total: 39
-passed: 6
+total: 43
+passed: 10
 issues: 32
 pending: 0
 skipped: 1
@@ -2861,7 +2887,8 @@ Round 5: tests 17-20 — 0 passed, 4 issues (G-06-17, G-06-18, G-06-19, G-06-20)
 Round 6: tests 21-24 — 1 passed, 3 issues (G-06-21, G-06-22, G-06-23), all closed by 06-10.
 Round 7: tests 25-29 — 0 passed, 4 blocking issues (G-06-25 … G-06-28) + 1 re-scoped to backlog (G-06-29), 23 findings; first run at five briefs. Ten in shipped files, thirteen in `.planning/`.
 Round 8: tests 30-34 — 0 passed, 4 blocking issues (G-06-30 … G-06-33) + 1 backlog (G-06-34); 10 shipped-file findings, 22 in `.planning/` (7 new). First round in eight to refute a reader claim on re-measurement rather than re-reading, and the first in which the fourth brief returned nothing unique.
-Round 9: tests 35-39 — 1 passed (test 38), 3 blocking issues (G-06-35, G-06-36, G-06-37) + 1 backlog (G-06-38); 4 shipped-file findings (down from 10 in round 8, 10 in round 7, 22 in round 6), 26 in `.planning/` (6 new). Fourth brief returned zero findings across all 18 files; change 1 and change 2 exit conditions both met. Reopening condition NOT triggered.
+Round 9: tests 35-39 — 2 passed (test 36 refuted, test 38), 2 blocking issues (G-06-35, G-06-37) resolved by 06-13, 1 backlog (G-06-38); 4 shipped-file findings, 26 in `.planning/`. Fourth brief returned zero findings; change 1 and change 2 exit conditions both met. Reopening condition NOT triggered.
+Round 10: tests 40-43 — 4 passed, 0 blocking issues open, 1 backlog (G-06-38). LEGAL-REVIEW.md returned 0 findings across both independent readers (Reader 3 and Reader 4). Whole-tree sweep returned 0 cross-file contradictions. Shipped tree reaches zero open defects. Phase 06 launch gate passed.
 
 **Round 7: the count held and the location moved.** Twenty-three checkably-false statements, against
 twenty-five in round 6, eighteen in round 5, seventeen in round 4, eleven in round 3, fourteen in

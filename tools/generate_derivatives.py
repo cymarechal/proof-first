@@ -246,17 +246,17 @@ def _render_both(repo_root):
 def write_derivatives(repo_root):
     """Render both derivatives and write them. The output is a pure
     function of the source bytes: calling this twice in a row on an
-    unchanged tree leaves both files byte-identical. newline='\\n' pins
-    the output line ending to LF on every platform -- without it,
-    Path.write_text() translates '\\n' to os.linesep, so regenerating on
-    a platform whose native line ending is CRLF would write different
-    bytes than this repository ships, and before this fix --check could
-    not see that difference."""
+    unchanged tree leaves both files byte-identical. Writing utf-8
+    bytes pins the output line ending to LF on every platform without
+    relying on Python 3.10+'s Path.write_text(newline=...) -- without
+    it, Path.write_text() translates '\\n' to os.linesep on Windows, so
+    regenerating on a platform whose native line ending is CRLF would
+    write different bytes than this repository ships."""
     rendered = _render_both(repo_root)
     for rel, text in rendered.items():
         path = repo_root / rel
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding='utf-8', newline='\n')
+        path.write_bytes(text.encode('utf-8'))
 
 
 def check_derivatives(repo_root):
