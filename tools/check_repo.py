@@ -5097,10 +5097,11 @@ def _mutate_catalog_count_mismatch(root):
     line so it disagrees with the registry."""
     path = root / 'skills' / 'proof-first' / 'SKILL.md'
     text = path.read_text(encoding='utf-8')
-    text = text.replace(
-        'This catalog contains 31 rules in 6 numbered sections.',
-        'This catalog contains 30 rules in 6 numbered sections.',
-        1,
+    text = re.sub(
+        r'This catalog contains (\d+) rules in (\d+) numbered sections\.',
+        r'This catalog contains 99 rules in \2 numbered sections.',
+        text,
+        count=1,
     )
     path.write_text(text, encoding='utf-8')
 

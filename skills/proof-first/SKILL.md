@@ -28,7 +28,7 @@ Select a mode before drafting or reviewing anything:
 
 Apply the rule catalog below in either mode. Cite only rule numbers defined in this file or listed in `references/checklist.md`; never a number recalled from memory, and never a number outside the stated total below. An invented rule number is a worse failure than no citation at all. In either mode, no rule ID is cited and no finding is reported before the artifact family is named.
 
-This catalog contains 31 rules in 6 numbered sections.
+This catalog contains 32 rules in 6 numbered sections.
 
 ## Marker vocabulary
 
@@ -233,6 +233,12 @@ Name the actor performing the verb as the sentence's subject, so the reader know
 A sentence carrying two claims lets one ride on the other's evidence, so a reader who checks one number assumes the other has been checked too.
 
 **Replace with:** split the sentence and attach evidence to each claim separately.
+
+### PF-4.5 — No em-dashes
+
+Do not use em-dashes or double hyphens to link clauses. Em-dashes are a common tell of LLM-generated prose that distracts technical evaluators and weakens argument structure.
+
+**Replace with:** split into two sentences, or use commas, parentheses, or colons.
 
 ## PF-5 — Consistency and voice
 

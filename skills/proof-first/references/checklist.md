@@ -39,6 +39,7 @@ ship to an installed copy of this skill.
 | PF-4.2 | Active voice |
 | PF-4.3 | Modal discipline |
 | PF-4.4 | One claim per sentence |
+| PF-4.5 | No em-dashes |
 | PF-5.1 | Keep an explicit before/after contrast |
 | PF-5.2 | Address the buyer's stated priorities in the second person |
 | PF-5.3 | Keep an evidenced claim unhedged |
