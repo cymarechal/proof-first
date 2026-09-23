@@ -1044,12 +1044,12 @@ scope is corrected; id 16 is unaffected.
 ## Ledger disposition
 
 Every entry in this project's cross-phase defect register, and what was decided about it. Entries 1
-through 32 were dispositioned at the Phase 6 launch gate on 2026-09-21; 33 and 34 were opened
+through 32 were dispositioned at the Phase 6 launch gate on 2026-09-21; 33, 34 and 35 were opened
 afterwards, on 2026-09-23, and each carries its own date below. The register itself is
 `.planning/WINDOWS.md`, which is tracked
 in this repository and which README cites by entry number — but `.planning/` is this project's own
 working record rather than published documentation, and a reader has no reason to go looking there.
-It is reproduced here in full for that reason: 34 entries, none left undecided.
+It is reproduced here in full for that reason: 35 entries, none left undecided.
 
 Four labels, and the fourth was added at this round because the first three did not describe what
 had actually happened to two entries:
@@ -1117,14 +1117,15 @@ this file's counts split them out, and `WINDOWS.md`'s fold them into `fixed`.
 | 32 | 06 | `evals/proxy-sources.md`'s two source rows were never re-fetched | **Open — v2** | The last file whose provenance rested on the expired no-network premise. Restated in the past tense by 06-06; re-fetching was out of that round's scope. |
 | 33 | 06 | Gate scope bounded to shipped files by the project owner | **Open — v2** | Decided 2026-09-23 by the project owner, a human, in the round-7 verify session rather than by the executing agent. Findings inside `.planning/` are recorded and tracked but do not block phase completion; the blocking gate covers everything in `git archive HEAD` outside `.planning/` and `.claude/`. Grounded on seven rounds of measurement rather than on preference — the entry carries the per-round figures and the rejected alternative. A scope decision rather than a defect, carried open because the scope it sets is still in force. |
 | 34 | 06 | Rename decisions for the two deal-brief name collisions | **Open — v2** | Opened 2026-09-23 at round 8. This file had said since 06-02 that **Ardent Digital** and **Gina Almeida** were routed to the register, and no row in it carried either name. The collision search itself is done (ids 1 and 18); what is open is the decision on each name. Owner: the project owner. Closes when each is renamed in `examples/deal-brief.md`, or kept with the reason recorded on the row. |
+| 35 | 06 | The round's literal re-run rule widened to a reverse index | **Open — v2** | Recorded 2026-09-23 at round 8, after the forward-only rule missed two falsified literals in files the round never opened. The widened rule re-runs every committed command literal and re-derives every stated measurement in every other shipped file that names a path the round edited. Back-tested over the previous round's edit set: it returns both misses by their own wording. A rule in force rather than a defect, carried open for the same reason id 33 is. |
 
-Counts as of round 8: **9 fixed, 2 closed on reasoning, 9 waived, 14 open**, totalling 34.
-`.planning/WINDOWS.md`'s frontmatter reads `fixed_count: 11, waived_count: 9, open_count: 14,
-total_count: 34` — the same 34 entries, with the two `closed on reasoning` rows folded into its
-`fixed` count for want of a fourth state. The fourteen open entries are the four routed to v2 with
+Counts as of round 8: **9 fixed, 2 closed on reasoning, 9 waived, 15 open**, totalling 35.
+`.planning/WINDOWS.md`'s frontmatter reads `fixed_count: 11, waived_count: 9, open_count: 15,
+total_count: 35` — the same 35 entries, with the two `closed on reasoning` rows folded into its
+`fixed` count for want of a fourth state. The fifteen open entries are the four routed to v2 with
 owners (20, 21, 22, 24), the one opened at this review (29), four that turn on someone's decision
 rather than on more work (11, 12, 16, 17), three opened by round 2's gap closure (30, 31, 32), the
-gate-scope decision recorded at round 7 (33), and the rename decisions opened at round 8 (34).
-None of the fourteen is open with an empty reason in this table; 30 through 34 carry their reason in
-their `WINDOWS.md` description rather than in a separate field, since they were opened rather than
-re-dispositioned.
+gate-scope decision recorded at round 7 (33), and two recorded at round 8 — the rename decisions
+(34) and the widened literal re-run rule (35). None of the fifteen is open with an empty reason in
+this table; 30 through 35 carry their reason in their `WINDOWS.md` description rather than in a
+separate field, since they were opened rather than re-dispositioned.
