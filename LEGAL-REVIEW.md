@@ -67,9 +67,12 @@ can reach the "file" spelling and read the catalogue's as absent. Three readers 
 sentence against both docstrings. Making the two agree is a separate `check_repo.py` edit with its
 own risk, and is backlog rather than done here.
 
-So: every check named below was performed on 2026-09-21 and its outcome written down, including the
-register lookup that failed and the one not attempted. That is the whole of what the token means
-here, and it is not a statement that the content is clear to publish.
+So: the source pass below was performed on 2026-09-21 and every outcome written down, including the
+register lookup that failed and the one not attempted. Where a check carries a different date, that
+date is stated at the check rather than folded into this one — two do: the three book edition
+records were re-fetched live on 2026-09-22, and the cold-read rounds this record reports ran from
+2026-09-21 to 2026-09-23. That is the whole of what the token means here, and it is not a statement
+that the content is clear to publish.
 
 Two named content items are open and routed to `.planning/WINDOWS.md` for a decision before wider
 distribution — **Ardent Digital** and **Gina Almeida**, both under `## Name collisions`. The
