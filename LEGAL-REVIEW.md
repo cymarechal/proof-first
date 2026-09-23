@@ -413,10 +413,17 @@ every one of them, because every cited line still existed — the clearest avail
 that code's declared ceiling, produced by the commit that added it.
 
 On that definition none of the seven reaches an installed user at all, because the only files that do
-are `skills/proof-first/**` and the two derivatives, and the checker holds those clean. Where the
-seven do sit — `NUMBERING.md` and the two deal briefs — is committed and publicly readable, which is
-a different and weaker kind of exposure. This entry uses "ships" only in `README.md`'s sense from
-here on, and says "committed" for the other.
+are `skills/proof-first/**` and the two derivatives, and the checker holds those clean. Where they do
+sit is committed and publicly readable, which is a different and weaker kind of exposure — and the
+spread is uneven, so it is enumerated rather than summarised. Outside `.planning/`, this record and
+`tools/check_repo.py`, the committed tree holds them like this. All seven sit in `NUMBERING.md`.
+Five also sit in the two deal briefs: every one but `Decision Process` and `Competition`. And `pain`
+alone reaches four files beyond those — `examples/before-after.md`, the conformance fixture
+`evals/conformance/fixtures/D-demo-discovery.md`, and one raw record each under
+`evals/benchmark/raw/` and `evals/routes/raw/`. One of the four, `examples/before-after.md`, matches
+only through the optional plural that `_SOURCE_LABEL_PLURALIZABLE` gives `pain` and no other label.
+This entry uses "ships" only in `README.md`'s sense from here on, and says "committed" for the
+other.
 
 **Why the disposition does not move, said plainly rather than left for a reader to notice.** Going
 from two conceded names to seven is a material widening, and the honest test is whether the closure
