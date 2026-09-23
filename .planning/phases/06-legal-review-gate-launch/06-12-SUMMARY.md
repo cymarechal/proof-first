@@ -225,3 +225,32 @@ This plan does not close the phase. `WINDOWS.md` id 12 and the LEG-04/LEG-05
 checkboxes stay open until a round of cold reads returns none; **eight have run
 and none has**. Round 9 reads what this round wrote — including, for the first
 time, under the reverse index this round put in the ledger.
+
+## Change 5 at its widened scope, run after this SUMMARY landed
+
+The new rule (ledger id 35), run for the first time on the round that wrote it. Edit set:
+`README.md`, `LEGAL-REVIEW.md`, `tools/check_repo.py`, `evals/benchmark/bench-deal-brief.md`.
+Those four are named by 4, 5, 12 and 2 other shipped files, surfacing **77** command literals.
+Every runnable one whose result reads an edited file was re-run at `890de51`, and every one held:
+
+- `grep -c '^|.*20%'` — 4 in the bench brief, 5 in `examples/deal-brief.md`, matching the values
+  this round pinned to `4c3e911`. The prose this round added to that paragraph raises the
+  *unscoped* `grep -c '20%'`, which is why the paragraph states no number for it.
+- `grep -in 'economic buyer' tools/check_repo.py` → 11; `grep -in 'paper process'` → 1;
+  `grep -n "it declares a pass over is complete"` → 1; `grep -c subprocess` → 0. All four survive
+  this round's three edits to that file.
+- `git grep -o '<owner>/<repo>' -- .claude-plugin README.md | wc -l` → 9, after a README edit.
+- The scoped spine sweep → exactly the three shipped files; the diagram-markup sweep → this record
+  alone; the wrap-tolerant one-per-CotM sweep → `NUMBERING.md`, this record and `.planning/`
+  artifacts only; the publishers sweep → this record, `WINDOWS.md` and three Phase 6 planning
+  artifacts, still three after two new `06-12` artifacts landed.
+- The open-audit trace over a true `python3 tools/check_repo.py` subprocess → still 23 files.
+
+One class the widened rule reaches that the forward rule did not, checked explicitly: this round
+moved line numbers throughout `LEGAL-REVIEW.md`, so every `path`:N citation *into* the four edited
+files was re-swept. Outside `.planning/` there are none, and `record-citation-unresolvable` is green
+on the in-file ones.
+
+Also re-checked after the SUMMARY, against the auto-flip this project has now seen four times: no
+`[x]` stands beside an UNVERIFIED requirement, and LEG-04 and LEG-05 read `Pending`. All ten CI
+commands green; `gsd-tools windows status` → `ok: true`.
