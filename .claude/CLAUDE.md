@@ -224,5 +224,5 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 ## Developer Profile
 
 > Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
-> This section is managed by `generate-claude-profile` -- do not edit manually.
+> This section is managed by `generate-claude-profile`. Do not edit manually.
 <!-- GSD:profile-end -->

@@ -37,7 +37,7 @@ Measured 2026-09-18 across claude-opus-5, claude-sonnet-5 (96 generations record
 | claude-sonnet-5 | solution-proposal-2 | skill-off | 3 | 6.3 | 6-7 |
 | claude-sonnet-5 | solution-proposal-2 | skill-on | 3 | 6.3 | 4-8 |
 
-Per-cell direction, skill-on against skill-off, over 16 (model, scenario) cells: 8 lower, 1 equal, 7 higher. Stated as a count and not a rate -- 16 cells does not support a percentage.
+Per-cell direction, skill-on against skill-off, over 16 (model, scenario) cells: 8 lower, 1 equal, 7 higher. Stated as a count and not a rate (16 cells does not support a percentage).
 
 ## Judged persuasion
 
@@ -207,12 +207,12 @@ Unscoreable judgements: 0.
 
 ## Honest caveats
 
-- Position bias: every judged pair is scored in both orders (order1/order2, with which text is labeled A and which is labeled B swapped) and the two orders are averaged per dimension before this report reads them -- that averaging is what cancels position bias, not merely a disclosure that it exists.
+- Position bias: every judged pair is scored in both orders (order1/order2, with which text is labeled A and which is labeled B swapped) and the two orders are averaged per dimension before this report reads them, with averaging canceling position bias rather than merely disclosing that it exists.
 - Judge-family bias: the judge is a Claude model and the texts are Claude output, so family bias is possible.
 - Baseline prompt parity: the skill-off condition receives a materially shorter prompt (no skill text, no explicit instruction to attach evidence or watch sentence length) than skill-on. This measures default, unguided model behavior against skill-guided behavior, not against the best a careful human prompt-writer could achieve without the skill.
-- Proxy provenance: the mechanical proxy counts above come from evals/lint.py, whose own docstring states it counts observable proxies for the rules, not the rules themselves -- a violation count is not a compliance verdict on a document.
+- Proxy provenance: the mechanical proxy counts above come from evals/lint.py, whose own docstring states it counts observable proxies for the rules, not the rules themselves; a violation count is not a compliance verdict on a document.
 - Sample size: each cell above is measured at 3 repeats. This sample size is not powered to detect statistical significance; treat differences smaller than the observed range as noise. Every mean is rounded to one decimal place using Python's default round-half-to-even rule; the unrounded values remain recoverable from evals/benchmark/raw/.
-- Judge construct validity: the scores under Judged persuasion are one language model's rating of these texts against the rubric build_judge_prompt() sends it -- a proxy for how a technical evaluator might react, not a measurement of real buyer behavior or of any commercial outcome. No human evaluator scored any of these texts, and no score here should be read as predicting one.
+- Judge construct validity: the scores under Judged persuasion are one language model's rating of these texts against the rubric build_judge_prompt() sends it; a proxy for how a technical evaluator might react, not a measurement of real buyer behavior or of any commercial outcome. No human evaluator scored any of these texts, and no score here should be read as predicting one.
 
 ## Reproduce
 

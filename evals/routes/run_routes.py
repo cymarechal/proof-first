@@ -3,7 +3,7 @@
 
 This script measures exactly one thing: whether the output style and the
 pasted system prompt deliver the same discipline to a live session as the
-installed skill folder does. Three arms -- skill-on, style-on, prompt-on --
+installed skill folder does. Three arms (skill-on, style-on, prompt-on)
 receive byte-identical prompts from evals/benchmark/scenarios.json, the same
 model, the same effort and the same tool restrictions, and differ only in how
 the rule catalog reaches the session. It measures nothing else: no persuasion
@@ -39,7 +39,7 @@ executive-summary-1 at claude-sonnet-5 --effort low):
 
 All three routes discriminate against the unrouted control on both signals,
 so all three stay in ROUTES and none is dropped. The output style was proven
-on the FIRST activation form tried -- STYLE_ACTIVATION_FORMS[0],
+on the FIRST activation form tried: STYLE_ACTIVATION_FORMS[0],
 'settings-json': the style file copied into the session's
 .claude/output-styles/ with a .claude/settings.json naming it. The two
 fallback forms 'settings-flag' and 'settings-local-json' were never needed
@@ -77,8 +77,8 @@ Usage:
   python3 evals/routes/run_routes.py --report-only [--raw-dir PATH] [--out PATH]
       Offline recompute: reads every committed record under --raw-dir,
       recomputes every count, mean and range, and rewrites
-      RESULTS-routes.md. Makes zero subprocess calls and zero network calls
-      -- the self-test proves this by replacing subprocess.run with a
+      RESULTS-routes.md. Makes zero subprocess calls and zero network calls:
+      the self-test proves this by replacing subprocess.run with a
       function that raises.
 
 No session driven by this file is isolated from skill, plugin and settings
@@ -103,7 +103,7 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 ROUTES_DIR = pathlib.Path(__file__).resolve().parent
 
 # The four family names are skills/proof-first/references/artifact-patterns.md's
-# own section headings. Frozen -- a fifth value or a missing one is a
+# own section headings. Frozen: a fifth value or a missing one is a
 # load_scenarios() error, never a silent pass-through.
 FAMILIES = ('rfp-rfi', 'solution-proposal', 'executive-summary', 'demo-discovery')
 
@@ -213,14 +213,14 @@ CAVEAT_TEXT = {
     'sample size': (
         'Sample size: one model, one effort level, and a small number of repeats per cell. This '
         'is not powered to detect statistical significance. Treat any difference smaller than the '
-        'observed range as noise, and read "not distinguished" as exactly that -- not as '
+        'observed range as noise, and read "not distinguished" as exactly that, not as '
         '"equivalent." Every mean is rounded to one decimal place; the unrounded values remain '
         'recoverable from evals/routes/raw/.'
     ),
     'scenario coverage': (
         'Scenario coverage: the run authorised at this plan\'s spend checkpoint was the reduced '
-        'matrix -- one scenario per artifact family rather than the two per family the committed '
-        'scenario set holds. All four families are covered, but with a single scenario each a '
+        'matrix (one scenario per artifact family rather than the two per family the committed '
+        'scenario set holds). All four families are covered, but with a single scenario each a '
         'family-general effect cannot be separated from that one scenario\'s own quirks. It also '
         'means the skill-on arm here is not directly comparable with the eight-scenario skill-on '
         'arm in evals/benchmark/RESULTS.md, so no cross-check against that benchmark run is offered.'
@@ -241,8 +241,8 @@ class SessionFailedError(RuntimeError):
 
     Carries the exit code (or -1 for a non-exit-code failure) and a stderr /
     reason string, so the caller records a diagnosable `unscoreable` reason
-    instead of scoring stdout -- which, on a non-timeout failure, is
-    typically a short error string rather than real generated text -- as if
+    instead of scoring stdout (which, on a non-timeout failure, is
+    typically a short error string rather than real generated text) as if
     it were real data. Copied in shape from
     evals/benchmark/run_benchmark.py's SessionFailedError, guarding the same
     bug class its docstring documents in full (MOD-04's
@@ -371,7 +371,7 @@ def route_extra_argv(route, style_form=None, prompt_src=None):
     skill-on and style-on add nothing in their default forms: both install
     files into the session's own project directory and let discovery find
     them. prompt-on appends the generated system prompt by absolute path.
-    The settings-flag style form is the one exception -- it is a probe
+    The settings-flag style form is the one exception: it is a probe
     fallback, and it passes the setting inline rather than writing it.
     """
     style_form = style_form or STYLE_ACTIVATION_FORM
@@ -498,14 +498,14 @@ def run_route_session(model, effort, route, scenario, repeat, timeout_s,
     write its record to the frozen filename template, and return
     (record, wrote_new).
 
-    `wrote_new` is False when the cell's raw file already exists -- no
+    `wrote_new` is False when the cell's raw file already exists (no
     subprocess call is made in that case, which is the resumability property
-    that makes an interrupted matrix cost only its remaining cells.
+    that makes an interrupted matrix cost only its remaining cells).
 
     Raises SessionFailedError on a non-zero exit, an `is_error: true`
     envelope, or an unparseable envelope; the caller writes an `unscoreable`
     record rather than letting the failure end the run. A session that exits
-    0 with `is_error: false` but returns empty text does not raise -- this
+    0 with `is_error: false` but returns empty text does not raise: this
     function writes the `unscoreable` record for it directly.
 
     The temp dir is removed on every path out of this function, success and
@@ -857,7 +857,7 @@ def build_routes_results_md(aggregated, model, effort, routes, as_of_date,
     lines.append('')
     lines.append(
         '`conformant` means a family phrase appeared in the opening window with no rule marker '
-        'before it -- which includes a session that cited no rule at all. It is therefore not a '
+        'before it (including a session that cited no rule at all). It is therefore not a '
         'count of rule-citing sessions, and a `conformant` total may legitimately exceed the '
         'same arm\'s activated count in the Activation table. The two tables answer different '
         'questions and are not expected to agree.'
@@ -903,8 +903,8 @@ def generate_report(raw_dir=None, out_path=None, model=None, effort=None,
     """Offline recompute: load every raw record, aggregate, render, and (if
     `out_path` is given) write.
 
-    Raises ValueError, naming the reason, when `raw_dir` holds zero records
-    -- an empty report is never rendered as a successful run, and no file is
+    Raises ValueError, naming the reason, when `raw_dir` holds zero records:
+    an empty report is never rendered as a successful run, and no file is
     written in that case. Makes zero subprocess calls of its own beyond the
     content-addressed `git hash-object` this path never reaches; self_test()
     proves the no-subprocess property directly by replacing subprocess.run
@@ -915,7 +915,7 @@ def generate_report(raw_dir=None, out_path=None, model=None, effort=None,
     """
     records = load_raw_records(raw_dir)
     if not records:
-        raise ValueError(f'no raw records found under {raw_dir} -- nothing to report')
+        raise ValueError(f'no raw records found under {raw_dir}: nothing to report')
 
     aggregated = aggregate(records)
     if model is None:
@@ -949,7 +949,7 @@ def probe_routes(model=DEFAULT_MODEL, effort=DEFAULT_EFFORT, scenarios=None,
 
     Refuses to drive more than PROBE_SESSION_CAP sessions. Returns the list
     of records driven, in order. Every record is written to `probe_dir` in
-    the full schema -- a probe that decides whether the matrix runs is
+    the full schema: a probe that decides whether the matrix runs is
     evidence, not scratch work.
     """
     probe_dir = pathlib.Path(probe_dir) if probe_dir is not None else PROBE_DIR
@@ -965,7 +965,7 @@ def probe_routes(model=DEFAULT_MODEL, effort=DEFAULT_EFFORT, scenarios=None,
         nonlocal driven
         if driven >= PROBE_SESSION_CAP:
             raise RuntimeError(
-                f'probe session cap of {PROBE_SESSION_CAP} reached -- refusing to drive more')
+                f'probe session cap of {PROBE_SESSION_CAP} reached: refusing to drive more')
         driven += 1
         try:
             record, _wrote = session_fn(
@@ -1041,8 +1041,8 @@ def self_test():
         temp dirs only.
 
         A patched subprocess.run also intercepts _git_blob_sha()'s
-        `git hash-object` call, whose cwd is REPO_ROOT -- a directory that
-        always exists. Asserting temp-dir removal against that entry would
+        `git hash-object` call, whose cwd is REPO_ROOT (a directory that
+        always exists). Asserting temp-dir removal against that entry would
         report a surviving temp dir that was never a temp dir.
         """
         return [c for c in captured if c and pathlib.Path(c).name.startswith('proof-first-routes-')]

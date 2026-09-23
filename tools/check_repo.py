@@ -143,7 +143,7 @@ Violation codes implemented in this file:
                       same three-way comparison catalog-id-drift uses for
                       the PF namespace. A skill folder with no
                       completeness-audit.md yields no violations for that
-                      folder -- absence is not failure, matching this
+                      folder: absence is not failure, matching this
                       checker's established posture. Declared ceiling:
                       this check compares ID sets only, exactly like
                       catalog-id-drift; it says nothing about whether a
@@ -155,7 +155,7 @@ Violation codes implemented in this file:
                       every MC rule to be defined in that reference file,
                       never blended into the prose catalog; this check
                       turns that requirement into a build failure. Declared
-                      ceiling: this matches heading shape only -- it cannot
+                      ceiling: this matches heading shape only: it cannot
                       distinguish a genuine rule definition from a heading
                       that merely happens to look like one.
   frontmatter-unparseable - a skills/*/SKILL.md's frontmatter block has no
@@ -190,7 +190,7 @@ Violation codes implemented in this file:
                       longer than 1024 characters, naming the measured
                       length and the bound it broke. A frontmatter with no
                       `description` key at all is frontmatter-unparseable's
-                      missing-required-key case, not this code's -- the
+                      missing-required-key case, not this code's: the
                       length evaluation below only runs once the key is
                       known to be present. Declared ceiling: 200 is
                       this project's own chosen floor, not a
@@ -260,7 +260,7 @@ Violation codes implemented in this file:
                       the rule 03-03-PLAN.md's own verification command
                       applies, stated here because "element label" is
                       defined in no committed file: the bold `**Label:**`
-                      lines that are not **Order:** lines -- thirteen inside
+                      lines that are not **Order:** lines: thirteen inside
                       the four family sections plus **No family fits:** in
                       the classification section. The file carries eighteen
                       bold labels in total; the other four are the
@@ -277,13 +277,13 @@ Violation codes implemented in this file:
                       references/artifact-patterns.md spells it. Fires once
                       per missing anchor, naming the file and which anchor
                       is missing. A SKILL.md with no self-check section at
-                      all yields no violations -- the declared ceiling,
+                      all yields no violations: the declared ceiling,
                       required so every pre-existing synthetic
                       _good_skill() fixture (none of which defines this
                       section) stays silent and the whole suite is not
                       disabled. Declared ceiling: this check asserts the
                       instruction text is present. It cannot assert a live
-                      session obeys it -- that is a model-behaviour
+                      session obeys it: that is a model-behaviour
                       property no file-reading checker observes;
                       evals/conformance/run_conformance.py is the
                       instrument for that. Its passing does not mean MOD-04
@@ -296,16 +296,16 @@ Violation codes implemented in this file:
                       case-insensitively. This is the sibling of
                       skill-family-line-gate-missing, extended from
                       presence of the family line to its position ahead
-                      of any rule marker -- the residual failure mode
+                      of any rule marker: the residual failure mode
                       03-08 measured (rule-before-family). Fires once per
                       missing anchor, naming the file and which anchor is
                       missing. A SKILL.md with no self-check section at
-                      all yields no violations -- the same declared
+                      all yields no violations: the same declared
                       ceiling its sibling uses, required so every
                       pre-existing synthetic _good_skill() fixture stays
                       silent. Declared ceiling: this check asserts the
                       instruction text is present. It cannot assert a
-                      live session obeys it -- that is a model-behaviour
+                      live session obeys it: that is a model-behaviour
                       property no file-reading checker observes;
                       evals/conformance/run_conformance.py is the
                       instrument for that. Its passing does not mean
@@ -320,14 +320,14 @@ Violation codes implemented in this file:
                       this is a literal-string scan over a closed,
                       enumerated list, not the semantic paraphrase
                       judgement SOURCES.md states no tool in this stack
-                      performs -- it catches a known label returning, and a
+                      performs: it catches a known label returning, and a
                       novel one has no string to match; (2) the
                       ordinary-English word for a measurement is
                       deliberately excluded from the list, because this
                       repository's own MC-1 and integrity rules use it as
                       ordinary business English, and including it would
                       fire on legitimate content; (3) it scans shipped
-                      skill content only -- NUMBERING.md's frozen registry
+                      skill content only: NUMBERING.md's frozen registry
                       labels are out of scope (evaluated under trademark review).
   skill-too-long    - a skills/*/SKILL.md exceeds 500 lines, naming the
                       measured count and the ceiling. Silent at exactly
@@ -364,12 +364,12 @@ Violation codes implemented in this file:
   readme-results-pointer-missing - README.md does not contain the literal
                       path 'evals/conformance/RESULTS-mod04.md'. This is a
                       repository-level documentation check, not a catalog
-                      check -- it does not depend on NUMBERING.md or on any
+                      check: it does not depend on NUMBERING.md or on any
                       skills/*/SKILL.md path. Declared ceiling: this check
                       asserts one literal path string is present in
                       README.md. It does not assert that the file at that
                       path exists, that the figures in it are current, or
-                      that the prose around the pointer is accurate -- a
+                      that the prose around the pointer is accurate: a
                       human read is the only thing that establishes the
                       last of those; this check only makes the measurement
                       discoverable and makes its silent disappearance from
@@ -383,8 +383,8 @@ Violation codes implemented in this file:
                       unstated/mismatch code pair the PF and MC catalog
                       counts use (catalog-count-unstated/-mismatch,
                       mc-count-unstated/-mismatch), because both triggers
-                      here are the same defect -- an itemization a reader
-                      cannot re-derive -- against a free-prose file, not
+                      here are the same defect (an itemization a reader
+                      cannot re-derive), against a free-prose file, not
                       two distinct authoring errors against a frozen
                       sentence template. Counts a parenthetical item
                       carrying a standalone 'xN' multiplier as N and any
@@ -416,7 +416,7 @@ Violation codes implemented in this file:
                       exist. Declared ceiling (no fetch): this check does
                       not fetch the recorded URL. A URL that has rotted,
                       moved, or never resolved reads identical here to a
-                      live one -- the lookup happens once, by hand, when
+                      live one: the lookup happens once, by hand, when
                       the row is confirmed, and CI reads only the
                       committed record. A build that fails because a third
                       party had an outage is not a build failure worth
@@ -474,7 +474,7 @@ Violation codes implemented in this file:
                       disk and its name does not appear in README.md's
                       `## Repository layout` section. Closes the gap
                       readme-layout-legend-drift's own docstring declares
-                      it does not cover -- whether the tree matches the
+                      it does not cover: whether the tree matches the
                       filesystem. Scoped to evals/ because that is where
                       this repository adds families, and to one level
                       because a full tree diff would fire on __pycache__
@@ -494,7 +494,7 @@ Violation codes implemented in this file:
                       unreadable gate is neither a passed gate nor a silent
                       one. The marker is compared byte for byte after
                       stripping leading and trailing whitespace, with no
-                      case folding -- the attribution pointer's equality
+                      case folding: the attribution pointer's equality
                       discipline, for the same reason. Silent when
                       LEGAL-REVIEW.md does not exist, so a repository that
                       has not yet run a review is not retroactively in
@@ -502,7 +502,7 @@ Violation codes implemented in this file:
                       call; it reads two committed files. Declared ceiling
                       (frozen literal, not prose): a review record that
                       describes a pass in prose without that exact line is
-                      not detected -- the marker is frozen rather than
+                      not detected: the marker is frozen rather than
                       fuzzy-matched on purpose, because a fuzzy match over
                       prose is unreliable. Declared ceiling (no
                       semantics): it does not judge whether the review
@@ -515,7 +515,7 @@ Violation codes implemented in this file:
                       offending statement with the framework name as its
                       subject, so two stale statements are two
                       distinguishable rows under the (code, subject) sort.
-                      A date on or after the review date is silent -- later
+                      A date on or after the review date is silent: later
                       is fine, earlier is the defect. Silent when
                       LEGAL-REVIEW.md is absent or carries no parseable
                       review date, because there is nothing to compare
@@ -527,7 +527,7 @@ Violation codes implemented in this file:
                       Declared ceiling (date, not truth): it does not judge
                       whether a statement is correct, only whether it
                       carries a date consistent with the review claiming to
-                      have produced it -- a thoroughly wrong statement
+                      have produced it: a thoroughly wrong statement
                       re-dated today passes. Declared ceiling (coverage):
                       it reads the `Last reviewed:` line only; the
                       `Paraphrase boundary:` element stays unchecked by any
@@ -545,7 +545,7 @@ Violation codes implemented in this file:
                       manifests is not a violation. Declared ceiling: the
                       manifest comparison resolves its single comparison
                       value from the alphabetically first skill that states
-                      a version -- unchanged and exact when exactly one
+                      a version: unchanged and exact when exactly one
                       skill states one, the live case; in a multi-skill
                       repository a manifest could still agree with that one
                       skill and disagree with another with no manifest-
@@ -560,7 +560,7 @@ Violation codes implemented in this file:
                       PLUGIN_REQUIRED_KEYS is enforced against --
                       plugin.json's top-level object and marketplace.json's
                       plugins[0] entry, the object `claude plugin
-                      marketplace add` actually reads -- or, once both
+                      marketplace add` actually reads, or, once both
                       objects parse, one of MARKETPLACE_ENTRY_EQUAL_KEYS
                       (description, displayName, author, license, keywords)
                       disagrees between them, or plugin.json's `name`
@@ -570,7 +570,7 @@ Violation codes implemented in this file:
                       object, or that object's `source` is not the literal
                       `./`. Also fires when plugin.json states a `name` and
                       the repository ships anything other than exactly one
-                      skills/*/ folder, naming how many were found -- zero
+                      skills/*/ folder, naming how many were found: zero
                       and multiple are worded differently, since zero means
                       the manifest names a skill that is not there and
                       multiple means it names one of several without saying
@@ -579,11 +579,11 @@ Violation codes implemented in this file:
                       presence at both positions, the five-field equality,
                       and the folder-name equality only, and the
                       folder-name equality is verified (not merely
-                      not-skipped) only in the one-skill case -- the
+                      not-skipped) only in the one-skill case: the
                       multi-skill and zero-skill cases are reported as
                       unverifiable rather than resolved. `name`, `version`,
                       `homepage` and `repository` are deliberately excluded
-                      from MARKETPLACE_ENTRY_EQUAL_KEYS -- `name` and
+                      from MARKETPLACE_ENTRY_EQUAL_KEYS: `name` and
                       `version` are separately owned by this same check's
                       folder-name assertion and by
                       plugin-manifest-version-mismatch respectively, and
@@ -591,11 +591,11 @@ Violation codes implemented in this file:
                       publish-location-drift at owner-segment granularity,
                       which permits the two manifests to write the same
                       publish location in four different GitHub URL
-                      syntaxes -- an exact-string check on those two fields
+                      syntaxes: an exact-string check on those two fields
                       would contradict that. It never validates a value's
                       semantics beyond presence and equality, never reaches
                       the network, and says nothing about whether a real
-                      `claude plugin marketplace add` succeeds -- that is a
+                      `claude plugin marketplace add` succeeds: that is a
                       manual smoke test recorded in 04-VALIDATION.md.
   before-after-family-missing - examples/before-after.md, if it exists,
                       is missing one of the four frozen ARTIFACT_FAMILY_
@@ -611,7 +611,7 @@ Violation codes implemented in this file:
                       half is genuinely a rewrite rather than a
                       restatement of the rule's own wording, or whether
                       the rewrite obeys its family's stated ordering
-                      convention -- those are semantic judgements this
+                      convention: those are semantic judgements this
                       repository's stack does not perform, and they stay
                       with end-of-phase UAT.
   before-after-citation-missing - examples/before-after.md, if it exists,
@@ -630,14 +630,14 @@ Violation codes implemented in this file:
                       carries a sentence over PF41_WORD_CEILING (25)
                       words, PF-4.1's own stated ceiling, counted as
                       words delimited by whitespace after bracketed
-                      marker spans are removed -- one stated definition,
+                      marker spans are removed: one stated definition,
                       not an implied one. Fires once per over-ceiling
                       sentence, naming the file, the measured word
                       count, the ceiling, and the sentence's opening
                       words. Absence of a path is not a violation,
                       checked before any read. Declared ceiling: only
                       lines beginning with the check character are
-                      inspected -- a ✗ column is the deliberately
+                      inspected: a ✗ column is the deliberately
                       non-compliant exhibit its pair exists to contrast
                       against, and holding it to the rule would delete
                       the contrast; bracketed marker spans are removed
@@ -652,7 +652,7 @@ Violation codes implemented in this file:
   before-after-spelled-count - a ✗ or ✓ column line in
                       examples/before-after.md names a word-spelled
                       cardinal from two through twelve (SPELLED_CARDINAL_RE;
-                      one is deliberately excluded -- English uses it as
+                      one is deliberately excluded: English uses it as
                       an article far more often than as a count), unless
                       the matched word and the whitespace-delimited word
                       immediately after it both begin with an uppercase
@@ -677,13 +677,13 @@ Violation codes implemented in this file:
                       it states is by construction not invented. Its
                       prose carries spelled cardinals throughout,
                       including a party name containing a number word,
-                      and none of them sits on a ✗ or ✓ line -- this
+                      and none of them sits on a ✗ or ✓ line: this
                       check opens no file but examples/before-after.md
                       (BEFORE_AFTER_PATH).
                       skills/** is out of scope because the same party
                       name appears there and because a per-rule
                       illustrative pair reads naturally with a spelled
-                      count -- 5 matches sit on ✗ or ✓ lines across
+                      count: 5 matches sit on ✗ or ✓ lines across
                       those files. A raw scan of their whole text finds
                       many more, and every one of the extras is in
                       ordinary prose this check never reads; the 5 is
@@ -710,11 +710,11 @@ Violation codes implemented in this file:
                       Absence of a path is not a violation, checked
                       before any read. This is an explicitly disclosed
                       proxy for SKILL.md line 261's "No list of applied
-                      rules follows the prose", never a verdict on it
-                      -- the verdict stays with end-of-phase UAT.
+                      rules follows the prose", never a verdict on it:
+                      the verdict stays with end-of-phase UAT.
                       Declared ceiling: it catches one narration shape
                       only. It does not detect narration phrased as
-                      self-reference to the document's own ordering --
+                      self-reference to the document's own ordering:
                       a sentence announcing that the answer stands
                       first rather than simply placing it first carries
                       no listed connective and is invisible here; that
@@ -740,9 +740,9 @@ Violation codes implemented in this file:
                       arguments) disagree, or a manifest carrier
                       exists and states none at all while another existing
                       carrier states one. Each value is normalised across
-                      four GitHub URL forms before comparison -- HTTPS,
+                      four GitHub URL forms before comparison (HTTPS,
                       plaintext HTTP, scheme-less, and the SSH remote form
-                      `git remote -v` prints -- so two carriers naming the
+                      `git remote -v` prints), so two carriers naming the
                       same owner in different syntaxes agree rather than
                       falsely disagreeing. A carrier yielding no match at
                       all (README.md before any install command is
@@ -758,8 +758,8 @@ Violation codes implemented in this file:
                       is not detected.
   skill-derivative-stale - output-styles/proof-first.md or
                       prompts/system-prompt.md, if present, carries a
-                      stamp -- the file's first line matching the frozen
-                      generated-by pattern -- recording a sha256 digest
+                      stamp (the file's first line matching the frozen
+                      generated-by pattern), recording a sha256 digest
                       and a source-path list. Fires when a present
                       derivative carries no such stamp; when its recorded
                       source-path list differs from this checker's own
@@ -773,7 +773,7 @@ Violation codes implemented in this file:
                       checked before any read. Declared ceiling: the
                       recorded hash proves a derivative was produced from
                       some version of the named sources, not that the
-                      generator's own derivation logic is correct -- a
+                      generator's own derivation logic is correct: a
                       bug there that dropped a rule would still produce a
                       matching hash. It proves structural freshness only
                       and says nothing about a live session's conduct. A
@@ -783,14 +783,14 @@ Violation codes implemented in this file:
                       runs in CI as a second, independent guard.
   derivative-rule-coverage-incomplete - output-styles/proof-first.md or
                       prompts/system-prompt.md, if present, is missing a
-                      '### <ID> -- ' rule heading for one of
+                      '### <ID> — ' rule heading for one of
                       NUMBERING.md's allocated PF- or MC- IDs, or is
                       missing one of the four frozen
                       ARTIFACT_FAMILY_SECTIONS headings. Absence of both
                       derivatives, or absence of NUMBERING.md, is not a
                       violation. Declared ceiling: this proves every
                       shipped rule heading and every artifact-family
-                      heading reaches each derivative -- a structural
+                      heading reaches each derivative: a structural
                       statement about content presence. It proves nothing
                       about what a model does with that content, nothing
                       about whether a session driven by a derivative
@@ -807,7 +807,7 @@ Violation codes implemented in this file:
                       (MARKETPLACE_ADD_RE), or the literal
                       output-styles/proof-first.md or
                       prompts/system-prompt.md path. Reads README.md's raw
-                      text, never strip_fences -- every anchor lives
+                      text, never strip_fences: every anchor lives
                       inside a fenced command block, and stripping fences
                       would find none of them. Fires once per missing
                       anchor. Absence of README.md is not a violation,
@@ -817,7 +817,7 @@ Violation codes implemented in this file:
                       command is correct, that it resolves, that its
                       argument names a real repository, or that the four
                       routes appear under the '## Install' heading rather
-                      than scattered elsewhere -- publish-location-drift
+                      than scattered elsewhere: publish-location-drift
                       owns the argument's consistency, and nothing owns
                       the command's correctness until the repository is
                       published.
@@ -825,7 +825,7 @@ Violation codes implemented in this file:
                       README_BEFORE_AFTER_HEADING, README_INSTALL_HEADING,
                       or README_STATUS_HEADING (the '## Before and
                       after', '## Install', and '## Status' headings), or
-                      -- only once all three are present -- the before/
+                      (only once all three are present) the before/
                       after heading does not precede both the install and
                       the status heading. Fires once per missing heading,
                       and once naming the order found and the order
@@ -837,7 +837,7 @@ Violation codes implemented in this file:
                       '## Before and after' section actually contains a
                       pair, whether the pair is any good, or whether a
                       reader experiences the file as leading with
-                      examples -- the first of those is
+                      examples: the first of those is
                       before-after-family-missing's job over a different
                       file, and the last two are manual judgments left to
                       end-of-phase UAT.
@@ -854,7 +854,7 @@ Violation codes implemented in this file:
                       naming the line number and the line's opening
                       words. Declared ceiling: comparison is whole-line
                       code-point equality with no Unicode normalisation,
-                      no case folding and no whitespace collapsing -- the
+                      no case folding and no whitespace collapsing: the
                       same convention pointer-missing already states, so
                       a reproduction differing only in an invisible code
                       point is reported as drift, which is the intended
@@ -880,12 +880,12 @@ Violation codes implemented in this file:
                       counted as physical lines from the top of the raw
                       file, so one long paragraph written as a single
                       physical line counts once while the same prose
-                      hard-wrapped counts many times -- a stated
+                      hard-wrapped counts many times: a stated
                       definition, not an implied one, and the reason the
                       ceiling carries margin. It asserts the example
                       arrives early, never that the example is good,
                       that the prose above it is necessary, or that the
-                      pair below it is complete -- readme-example-drift
+                      pair below it is complete: readme-example-drift
                       owns the reproduction's fidelity and
                       readme-before-after-order owns the section
                       ordering. It reads only the ballot-cross
@@ -900,7 +900,7 @@ Violation codes implemented in this file:
                       parentheses, or a tree marker the legend prose
                       never mentions. Returns no violation before any
                       read when README.md does not exist, and when the
-                      layout heading itself is absent -- a README with
+                      layout heading itself is absent: a README with
                       no layout section is silent, not violating,
                       matching publish-location-drift's stated decision
                       that a carrier with nothing to say is silent.
@@ -915,8 +915,8 @@ Violation codes implemented in this file:
                       shape is a short lowercase token inside double
                       quotes in prose and inside parentheses in the
                       tree, bounded to at most 20 characters each; a
-                      marker written in any other shape -- bracketed,
-                      uppercase, or longer than the stated bound -- is
+                      marker written in any other shape (bracketed,
+                      uppercase, or longer than the stated bound) is
                       invisible to this check. And it reads only the
                       layout section, so a marker vocabulary introduced
                       elsewhere in README is out of scope.
@@ -929,7 +929,7 @@ Violation codes implemented in this file:
                       '.claude/output-styles/'). Returns no violation
                       before any read when README.md does not exist,
                       and returns no violation when README never names
-                      README_OUTPUT_STYLE_PATH at all -- a README
+                      README_OUTPUT_STYLE_PATH at all: a README
                       stating no output-style route has nothing for
                       this code to say. Fires once. Declared ceiling:
                       this check asserts the README tells a reader
@@ -950,8 +950,8 @@ Violation codes implemented in this file:
                       whether any benchmark has compared a session
                       driven by a derivative against a session with the
                       skill folder installed. Fires when
-                      ROUTES_RESULTS_PATH exists in the tree -- that is,
-                      when such a comparison IS committed -- and a
+                      ROUTES_RESULTS_PATH exists in the tree (that is,
+                      when such a comparison IS committed) and a
                       present derivative still carries the literal
                       STALE_COMPARISON_CLAIM asserting that none has.
                       One violation per offending derivative, naming the
@@ -972,7 +972,7 @@ Violation codes implemented in this file:
                       measurement that falsifies it sits in the tree.
   benchmark-run-claim-stale - the same regression, one literal over.
                       Fires when BENCHMARK_RESULTS_PATH exists in the
-                      tree -- that is, when a benchmark HAS run -- and a
+                      tree (that is, when a benchmark HAS run) and a
                       file in BENCHMARK_CLAIM_PATHS still carries the
                       literal STALE_BENCHMARK_RUN_CLAIM. One violation
                       per offending file. Scans the generated
@@ -987,7 +987,7 @@ Violation codes implemented in this file:
                       when BENCHMARK_RESULTS_PATH does not exist: with
                       no benchmark committed the sentence is true.
                       Declared ceiling: literal-substring presence and
-                      nothing more -- it does not read the results
+                      nothing more: it does not read the results
                       file's contents, does not judge whether the
                       replacement sentence is accurate, and cannot see
                       the same false claim restated in other words.
@@ -1001,15 +1001,15 @@ Violation codes implemented in this file:
                       four rounds of cold reads on this repository kept
                       producing citation-drift findings, every one of them
                       a line number that was right when written and wrong
-                      after the cited file was edited -- usually by the
+                      after the cited file was edited: usually by the
                       round that wrote the citation. Declared
                       ceiling, and it is narrower than it looks: this
                       checks that a citation RESOLVES, not that the cited
                       lines say what the citing sentence claims. Measured,
                       not asserted: replayed over this repository's full
-                      history as measured at 06-08 -- 435 commits then, 164
+                      history as measured at 06-08 (435 commits then, 164
                       citation-instances, 14 distinct spellings, 37 commits
-                      carrying at least one -- this code fired ZERO times.
+                      carrying at least one), this code fired ZERO times.
                       The figures are pinned to that measurement, not
                       restated as a live count: 06-08's own commits moved
                       three of the four (only the 14 distinct spellings
@@ -1019,18 +1019,18 @@ Violation codes implemented in this file:
                       and pointed at the wrong content, including the
                       SKILL.md:63 misquote and the NUMBERING.md:26-40
                       slip. This code catches none of them. It is future insurance against three shapes
-                      that have not yet occurred here -- a path that names
-                      no file, a range past end-of-file, an inverted range
-                      -- and it must not be cited as a guard over citation
+                      that have not yet occurred here (a path that names
+                      no file, a range past end-of-file, an inverted range),
+                      and it must not be cited as a guard over citation
                       accuracy, which remains a human read. It also stays
                       silent on a retired citation quoted inside a
                       correction paragraph, which still resolves, and on
-                      anything inside a fenced block -- it reads
+                      anything inside a fenced block: it reads
                       strip_fences() output, so a fence that illustrates the
                       `path`:N format is documentation rather than a
                       citation. Corrected 06-09: this said "like every other
                       content-scanning code here", which is false in the
-                      majority direction -- of this file's 51 check_*
+                      majority direction: of this file's 51 check_*
                       functions, 15 call strip_fences and 36 do not, several
                       of them saying so in their own docstrings. The
                       sentence needs no comparison and now makes none.
@@ -1078,7 +1078,7 @@ EXAMPLE_PROSE_PATHS = (
 )
 
 # PF-4.1's own stated ceiling ("No sentence runs longer than 25 words").
-# This value must track that rule's own text -- changing it here without
+# This value must track that rule's own text; changing it here without
 # changing the rule would put the checker and the catalog into disagreement.
 PF41_WORD_CEILING = 25
 
@@ -1098,7 +1098,7 @@ SPELLED_CARDINAL_RE = re.compile(
 NARRATION_CONNECTIVE_RE = re.compile(r'rather than|,\s*not\b|instead of', re.I)
 
 # An explicitly-labelled proxy list belonging to this checker only, never
-# to the rule catalog itself -- the catalog's own vocabulary for the
+# to the rule catalog itself: the catalog's own vocabulary for the
 # alternative a rule rejects. The deletion test remains the standard;
 # this list is a regex proxy for one narrow narration shape, not a
 # restatement of it.
@@ -1203,7 +1203,7 @@ def parse_pf_subblocks(path):
     '## PF-<n> sub-blocks' section, reusing split_sections/table_rows rather
     than a second table reader. A section with no such heading (PF-0, PF-3,
     PF-4, and PF-5 as of this writing) is simply absent from the returned
-    mapping -- absence means "no sub-blocks declared", not a defect, and
+    mapping: absence means "no sub-blocks declared", not a defect, and
     check_range_id below keeps exactly today's section-range-only behaviour
     for it."""
     text = path.read_text(encoding='utf-8')
@@ -1529,7 +1529,7 @@ def run_license_checks(repo_root):
 # This is a repository-level documentation check, not a catalog check: it
 # does not depend on NUMBERING.md or on any skills/*/SKILL.md path. It
 # asserts only that the literal results-pointer path string is present in
-# README.md, unconditionally -- it is not gated on the file the path names
+# README.md, unconditionally: it is not gated on the file the path names
 # actually existing on disk.
 # ---------------------------------------------------------------------------
 
@@ -1542,7 +1542,7 @@ def check_readme_results_pointer(repo_root):
     discover this repository's one committed measurement from the same
     README that would otherwise claim no measurement exists (CR-02).
 
-    Returns no violation when README.md itself does not exist -- no
+    Returns no violation when README.md itself does not exist: no
     fixture root in this suite ships a bare repo with no README.md at all,
     and a missing README.md is a different, unrelated failure mode this
     check does not own.
@@ -1551,7 +1551,7 @@ def check_readme_results_pointer(repo_root):
     in README.md. It does not assert that the file at that path exists,
     that the figures in it are current, or that the prose around the
     pointer is accurate. A human read is the only thing that establishes
-    the last of those -- this check only makes the measurement discoverable
+    the last of those: this check only makes the measurement discoverable
     and makes its silent disappearance from README a gate failure, nothing
     more."""
     violations = []
@@ -1584,7 +1584,7 @@ def run_readme_checks(repo_root):
     # file, after SKILLS_CLI_INSTALL_RE and MARKETPLACE_ADD_RE (Phase 4,
     # 04-04) or after README_BEFORE_AFTER_HEADING/
     # README_FIRST_EXAMPLE_MAX_LINE/README_LAYOUT_HEADING (Phase 4,
-    # 04-09) -- each reuses module-level patterns declared at those
+    # 04-09): each reuses module-level patterns declared at those
     # later points rather than declaring a second copy, so each is
     # defined where those patterns already exist. Python resolves these
     # names at call time, not at def time, so calling them here (before
@@ -1632,7 +1632,7 @@ CLAIM_SOURCE_GLOB = 'evals/*/RESULTS*.md'
 _MARKDOWN_IMAGE_RE = re.compile(r'!\[[^\]]*\]\(([^)]*)\)')
 
 # Badge policy, frozen: build status and license only. Neither carries a
-# measured product claim -- a CI badge reports that ten offline commands
+# measured product claim: a CI badge reports that ten offline commands
 # exited zero, and a license badge states what LICENSE already states. No
 # badge may carry a number this repository has not measured, which is why
 # every shields.io endpoint and every dynamic badge is refused rather than
@@ -1694,7 +1694,7 @@ def check_readme_claim_unsourced(repo_root):
     """Check that every number inside README's claim region appears in a
     committed results file (LEG-05).
 
-    README legitimately carries numbers that are not measured claims -- a
+    README legitimately carries numbers that are not measured claims: a
     rule count, a worked-pair count, the figures inside the before/after
     example. A whole-file check would have to whitelist all of those, which
     is unmaintainable, or be switched off, which is useless. The region is
@@ -1709,7 +1709,7 @@ def check_readme_claim_unsourced(repo_root):
     Declared ceiling (substring matching): a token is sourced if it appears
     anywhere in the corpus as a substring, so `48` is sourced by any file
     containing `1948`. This check exists to catch a number invented out of
-    nothing, not to prove provenance to the digit -- the pointer to the
+    nothing, not to prove provenance to the digit: the pointer to the
     results file is what does that."""
     violations = []
     region, error = _claim_region(repo_root)
@@ -1777,8 +1777,8 @@ def check_readme_badge_unlisted(repo_root):
 
     A badge is read as third-party verification. BADGE_ALLOW_LIST admits
     build status and license only, because neither asserts anything about
-    document quality. Everything else -- any shields.io endpoint, any
-    dynamic badge, any badge carrying a number -- is refused.
+    document quality. Everything else (any shields.io endpoint, any
+    dynamic badge, any badge carrying a number) is refused.
 
     README carries no images at all today, so this code ships silent and
     stands as a gate against a future addition rather than a cleanup of an
@@ -1820,7 +1820,7 @@ def check_readme_layout_tree_stale(repo_root):
     gap, at one level: every immediate subdirectory of evals/ that exists
     on disk must appear in README's layout tree. evals/routes/ existed on
     disk, was referenced twice in README prose, and was absent from the
-    tree -- and nothing caught it.
+    tree, and nothing caught it.
 
     Scoped to evals/ because that is where this repository adds families,
     and to one level because a full tree diff would fire on __pycache__ and
@@ -1833,7 +1833,7 @@ def check_readme_layout_tree_stale(repo_root):
     Declared ceiling (presence, not placement): it checks that the
     directory's name appears somewhere in the tree text. It does not check
     that the entry sits in the right place, that its children are listed,
-    or that every path the tree names still exists -- only that no family
+    or that every path the tree names still exists; only that no family
     on disk is missing from it."""
     violations = []
     path = repo_root / 'README.md'
@@ -1870,14 +1870,14 @@ def check_readme_layout_tree_stale(repo_root):
 # reads exactly RESULTS_BREAKDOWN_PATH, the one file holding this
 # project's only committed measurement, and requires that any
 # verdict-breakdown bullet's stated count agree with its own parenthetical
-# enumeration -- the exact defect class 03-REVIEW.md WR-01 found and
+# enumeration: the exact defect class 03-REVIEW.md WR-01 found and
 # 03-13 hand-corrected. This check makes the class mechanically guarded
 # rather than protecting only today's instance.
 # ---------------------------------------------------------------------------
 
 RESULTS_BREAKDOWN_PATH = 'evals/conformance/RESULTS-mod04.md'
 
-# Frozen against run_conformance.py's own verdict vocabulary -- a
+# Frozen against run_conformance.py's own verdict vocabulary: a
 # reworded copy here would silently stop matching the lines it exists to
 # guard.
 RESULTS_VERDICT_LABELS = ('conformant', 'no-family', 'rule-before-family', 'unscoreable')
@@ -1897,8 +1897,8 @@ def check_results_breakdown_count(repo_root):
 
     Walks the file (after strip_fences()) line by line, joining each
     bullet matching '- {verdict-label}: {count}' with its continuation
-    lines -- a following line that is non-blank, begins with whitespace,
-    and does not itself start a new bullet or heading -- and collapsing
+    lines (a following line that is non-blank, begins with whitespace,
+    and does not itself start a new bullet or heading), and collapsing
     the joined line's whitespace to single spaces. A line whose label is
     not one of RESULTS_VERDICT_LABELS is not a verdict-breakdown bullet at
     all (e.g. the 03-08 section's '- claude-sonnet-5: 12 attempted ...'
@@ -1906,7 +1906,7 @@ def check_results_breakdown_count(repo_root):
 
     For the parenthetical that follows the count, if any, splits its
     contents on commas and sums one per item, except an item carrying a
-    standalone 'xN' multiplier token contributes N -- so two items naming
+    standalone 'xN' multiplier token contributes N, so two items naming
     the same fixture (e.g. 'A-rfp-answer x2') are never merged, and the
     sum does not depend on item order. An empty parenthetical sums to
     zero.
@@ -1922,7 +1922,7 @@ def check_results_breakdown_count(repo_root):
     distinct authoring errors against a frozen sentence template.
 
     Returns no violations when RESULTS_BREAKDOWN_PATH does not exist,
-    checked before any read -- the same declared ceiling every other
+    checked before any read: the same declared ceiling every other
     optional-file check in this module uses, so a fixture root shipping
     no results file stays silent and the suite is not disabled.
 
@@ -2006,8 +2006,8 @@ def run_results_checks(repo_root):
 SOURCES_PATH = 'SOURCES.md'
 
 # The three '## ' headings whose bodies carry source tables. Every other
-# heading in SOURCES.md is prose -- the rule, the reproduction boundary,
-# the out-of-bounds list -- and carries no rows to check. Naming the three
+# heading in SOURCES.md is prose (the rule, the reproduction boundary,
+# the out-of-bounds list) and carries no rows to check. Naming the three
 # rather than scanning every table means a future prose section that
 # happens to contain a Markdown table is not read as a source list.
 SOURCES_TABLE_HEADINGS = (
@@ -2031,7 +2031,7 @@ def check_source_row_unconfirmed(repo_root):
     Reads the three tables named by SOURCES_TABLE_HEADINGS with the
     existing split_sections()/table_rows() pair. A row is in scope only
     when its Status cell is exactly 'verified' after whitespace stripping,
-    compared case-sensitively -- the same no-case-folding discipline this
+    compared case-sensitively: the same no-case-folding discipline this
     module applies to the attribution pointer. An 'unverified' row is an
     honest statement that the source has not been confirmed yet; firing on
     it would make the pre-review state a build failure and would force
@@ -2039,7 +2039,7 @@ def check_source_row_unconfirmed(repo_root):
 
     An in-scope row must carry both an absolute URL and a retrieval date in
     its Where cell. The URL test is a plain 'https://' prefix test over
-    whitespace-delimited tokens rather than a general URL regex -- what
+    whitespace-delimited tokens rather than a general URL regex: what
     counts as a well-formed URL is an argument this check does not need to
     have, and a bare prefix test cannot be satisfied by prose. The date
     must match '(retrieved YYYY-MM-DD)' AND parse with
@@ -2048,14 +2048,14 @@ def check_source_row_unconfirmed(repo_root):
 
     A row whose cell count is not SOURCES_ROW_CELLS fires once naming the
     parse failure. Skipping it silently would let a row that lost its
-    Status column be read as out of scope -- the failure mode a checker
+    Status column be read as out of scope: the failure mode a checker
     exists to prevent.
 
     Returns no violations when SOURCES.md does not exist, checked before
     any read: the same declared ceiling every other optional-file check in
     this module uses, so a fixture root shipping no sources file stays
     silent and the rest of the suite is not disabled. This is deliberately
-    not the check_license_missing precedent -- SOURCES.md is not required
+    not the check_license_missing precedent: SOURCES.md is not required
     to exist the way LICENSE is.
 
     Declared ceiling (no fetch): this check does not fetch the recorded
@@ -2125,7 +2125,7 @@ def check_source_row_unconfirmed(repo_root):
 LEGAL_REVIEW_PATH = 'LEGAL-REVIEW.md'
 
 # One frozen line, compared byte for byte after stripping leading and
-# trailing whitespace, with no case folding -- the same equality discipline
+# trailing whitespace, with no case folding: the same equality discipline
 # check_pointer applies to the attribution pointer, and for the same reason:
 # a gate marker a reader could satisfy three different ways is not a marker.
 GATE_STATUS_PREFIX = 'Gate status:'
@@ -2147,7 +2147,7 @@ _LAST_REVIEWED_RE = re.compile(r'^Last reviewed: (.+)$', re.M)
 
 def _framework_section(text, heading):
     """Bound one framework statement from its heading to the next '### ' or
-    '## ' heading -- the same bounding check_framework_statements() uses.
+    '## ' heading: the same bounding check_framework_statements() uses.
     Returns None when the heading is absent."""
     heading_idx = text.find(heading)
     if heading_idx == -1:
@@ -2182,7 +2182,7 @@ def check_source_gate_incomplete(repo_root):
 
     check_source_row_unconfirmed() above asserts that an individual row
     claiming confirmation names its evidence. It says nothing about
-    completeness -- a review record could declare a pass over a file with
+    completeness: a review record could declare a pass over a file with
     five rows still reading 'unverified' and no check would notice. This
     code closes that half.
 
@@ -2194,7 +2194,7 @@ def check_source_gate_incomplete(repo_root):
 
     Also fires when LEGAL-REVIEW.md exists and carries no gate line at all,
     or carries more than one: an unreadable gate is not a passed gate, and
-    it is not a silent one either -- silence there would let the marker be
+    it is not a silent one either: silence there would let the marker be
     deleted to route around the check.
 
     Silent when LEGAL-REVIEW.md does not exist, so a repository that has not
@@ -2206,7 +2206,7 @@ def check_source_gate_incomplete(repo_root):
     Declared ceiling (frozen literal, not prose): a declared pass is read as
     one exact line. A review record that describes a pass in prose without
     that line is not detected. The marker is a frozen string rather than a
-    fuzzy phrase match on purpose -- a fuzzy match over prose is brittle.
+    fuzzy phrase match on purpose: a fuzzy match over prose is brittle.
 
     Declared ceiling (no semantics): it does not judge whether the review
     behind a declared pass was any good, only whether the file it declares a
@@ -2227,7 +2227,7 @@ def check_source_gate_incomplete(repo_root):
         violations.append((subject, (
             f"source-gate-incomplete {LEGAL_REVIEW_PATH} carries {len(gate_values)} readable "
             f"'{GATE_STATUS_PREFIX}' line(s) with value(s) {gate_values or 'none'}; exactly one "
-            f"reading {' or '.join(GATE_STATUS_VALUES)} is required -- an unreadable gate is not "
+            f"reading {' or '.join(GATE_STATUS_VALUES)} is required: an unreadable gate is not "
             f"a passed gate"
         )))
         return violations
@@ -2269,13 +2269,13 @@ def check_framework_statement_stale_review(repo_root):
     does not parse as ISO-8601, or one whose date precedes the review date.
     The framework name is the violation's subject, so two stale statements
     produce two distinguishable rows under the live run's (code, subject)
-    sort. A statement dated on or after the review date is silent -- later
+    sort. A statement dated on or after the review date is silent: later
     is fine, earlier is the defect.
 
     Silent when LEGAL-REVIEW.md does not exist or carries no parseable
     review date: there is nothing to compare against, and inventing a
     comparison would make the code fire for a reason it cannot name. Silent
-    when NOTICES.md does not exist -- framework-statement-missing owns that
+    when NOTICES.md does not exist: framework-statement-missing owns that
     condition and firing here too would double-report one defect.
 
     Declared ceiling (no fetch): this check performs no network call.
@@ -2287,7 +2287,7 @@ def check_framework_statement_stale_review(repo_root):
 
     Declared ceiling (coverage): it reads the 'Last reviewed:' line only.
     The 'Paraphrase boundary:' element remains unchecked by any code in this
-    module -- check_framework_statements() asserts 'Non-affiliation' and
+    module: check_framework_statements() asserts 'Non-affiliation' and
     'Rights-holder' and does not reach it."""
     violations = []
     review_date = _review_date(repo_root)
@@ -2323,7 +2323,7 @@ def check_framework_statement_stale_review(repo_root):
             violations.append((name, (
                 f"framework-statement-stale-review NOTICES.md {name} statement was last "
                 f"reviewed {stated.isoformat()}, before {LEGAL_REVIEW_PATH}'s review date "
-                f"{review_date.isoformat()} -- the review that claims to have produced it "
+                f"{review_date.isoformat()}: the review that claims to have produced it "
                 f"did not re-read it"
             )))
     violations.sort(key=lambda v: (v[0], v[1]))
@@ -2431,8 +2431,8 @@ def run_notices_checks(repo_root):
 #
 # No general-purpose config-format parser exists in the standard library and
 # none is added here (D-33). Only six top-level keys are ever legal, so a
-# targeted extractor -- in parse_notices's style of finding a specific known
-# shape line by line, not a general parser -- is sufficient.
+# targeted extractor (in parse_notices's style of finding a specific known
+# shape line by line, not a general parser) is sufficient.
 # ---------------------------------------------------------------------------
 
 ALLOWED_FRONTMATTER_KEYS = frozenset({
@@ -2448,12 +2448,12 @@ FRONTMATTER_KEY_RE = re.compile(r'^([A-Za-z][A-Za-z0-9_-]*):(.*)$')
 
 def parse_frontmatter(path):
     """Parse the frontmatter block of a SKILL.md file with a targeted,
-    stdlib-only extractor -- not a general-purpose parser. Returns
+    stdlib-only extractor: not a general-purpose parser. Returns
     (keys, problems): keys maps each column-zero key found to its value as
     a plain scalar, a `|` block scalar's joined body, or a nested map's raw
     indented text kept as an opaque string (the way parse_notices already
     keeps a fenced block's content opaque). problems is a list of
-    human-readable structural defects -- no opening delimiter at the file's
+    human-readable structural defects: no opening delimiter at the file's
     first line, no closing delimiter, or a column-zero key repeated (kept
     at its FIRST value, never silently overwritten by a later one). Key
     order carries no meaning: the parser reads keys into a mapping and
@@ -2514,7 +2514,7 @@ def _skill_metadata_version(skill_path):
     """Return the version string a SKILL.md's frontmatter `metadata` block
     states, or None if the file has no `metadata` key or that key's opaque
     text has no `version:` sub-key. Built on parse_frontmatter, which keeps
-    a nested map's value as opaque indented text (D-33) -- this applies one
+    a nested map's value as opaque indented text (D-33); this applies one
     small, targeted regex over that opaque string rather than adding a
     general YAML parser."""
     keys, _ = parse_frontmatter(skill_path)
@@ -2524,7 +2524,7 @@ def _skill_metadata_version(skill_path):
 
 
 def _load_json_manifest(repo_root, rel_path):
-    """Load a .claude-plugin/*.json manifest with stdlib json only -- these
+    """Load a .claude-plugin/*.json manifest with stdlib json only: these
     are genuine JSON files, unlike SKILL.md's hand-parsed frontmatter, so no
     targeted extractor is needed here. Returns (data, error): (None, None)
     when the file does not exist (absence is not a violation, matching this
@@ -2590,7 +2590,7 @@ def run_frontmatter_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# Skill catalog ID-set integrity (D-32) -- closes the drift a third file
+# Skill catalog ID-set integrity (D-32): closes the drift a third file
 # holding PF IDs (references/checklist.md) can create: an ID registered in
 # NUMBERING.md's Allocated IDs table but missing from the checklist, or a
 # rule heading defined in SKILL.md with no registry row at all.
@@ -2603,7 +2603,7 @@ MC_HEADING_RE = re.compile(r'^### (MC-\d+) — ')
 def parse_skill_catalog(path):
     """Return the ordered list of PF IDs a SKILL.md *defines* via its rule
     headings. This is distinct from the citation tokens check_undefined_id
-    already scans for -- a heading defines a rule, a bracketed marker or a
+    already scans for: a heading defines a rule, a bracketed marker or a
     prose reference only cites one."""
     text = strip_fences(path.read_text(encoding='utf-8'))
     ids = []
@@ -2650,7 +2650,7 @@ def _three_way_id_diff(code, sets_by_label):
     sets_by_label is an ordered sequence of exactly three (label, id_set)
     pairs. Returns one (id, message) tuple per ID that is not present in
     all three sets, naming which labels it is present in and which it is
-    missing from -- the same comparison shape and message wording
+    missing from: the same comparison shape and message wording
     check_catalog_id_drift has always produced, now shared by construction
     rather than by copy-paste, so a future rule about definitional
     agreement cannot be fixed in one namespace and silently drift from the
@@ -2710,7 +2710,7 @@ def check_mc_catalog_id_drift(allocated, repo_root):
     """Compare three sets per installed skill folder: the MC subset of
     NUMBERING.md's Allocated IDs, references/completeness-audit.md's
     defined-heading IDs, and references/checklist.md's '## MC rules'
-    listed rows -- the MC-namespace sibling of check_catalog_id_drift,
+    listed rows: the MC-namespace sibling of check_catalog_id_drift,
     sharing its comparison body via _three_way_id_diff.
 
     Absence is not failure: if a skill folder has no
@@ -2723,7 +2723,7 @@ def check_mc_catalog_id_drift(allocated, repo_root):
     NUMBERING.md, missing from the other two" and fire on every one of
     those known-good fixtures, breaking the whole self-test suite.
     Declared ceiling: like catalog-id-drift, this check compares ID sets
-    only -- it says nothing about whether a cited MC-# token is valid,
+    only: it says nothing about whether a cited MC-# token is valid,
     which is undefined-id's job."""
     violations = []
     skill_paths = sorted(repo_root.glob(SKILL_GLOB))
@@ -2763,9 +2763,9 @@ def check_mc_rule_in_skill(repo_root):
     AUD-02 requires every MC rule to be defined in
     references/completeness-audit.md, never blended into the prose
     catalog; this turns that requirement into a build failure instead of
-    a convention -- the structural half of AUD-02 that mc-catalog-id-drift
+    a convention: the structural half of AUD-02 that mc-catalog-id-drift
     does not cover, since that check never reads SKILL.md at all. Declared
-    ceiling: this matches heading shape only -- it cannot distinguish a
+    ceiling: this matches heading shape only: it cannot distinguish a
     genuine rule definition from a heading that merely happens to look
     like one."""
     violations = []
@@ -2832,7 +2832,7 @@ def check_mc_count(allocated, repo_root, mc_ranges):
     parse_numbering's mc_ranges) those rows fall into.
 
     Absence of completeness-audit.md is not a violation, checked before any
-    set is computed for that folder -- the same declared ceiling
+    set is computed for that folder: the same declared ceiling
     mc-catalog-id-drift and mc-rule-in-skill both carry, and required for
     the same reason: no existing self-test fixture root that reaches this
     function ships that file, so an unguarded implementation would report
@@ -2873,14 +2873,14 @@ def check_mc_count(allocated, repo_root, mc_ranges):
 
 
 # ---------------------------------------------------------------------------
-# Artifact-family section presence (P3-08) -- the four frozen artifact-family
+# Artifact-family section presence (P3-08): the four frozen artifact-family
 # section headings in references/artifact-patterns.md are a build-enforced
 # structure, not a convention: SKILL.md's classification instruction, Phase
 # 4's committed examples, and Phase 5's linter all read them verbatim.
 # ---------------------------------------------------------------------------
 
 ARTIFACT_FAMILY_SECTIONS = (
-    # Frozen interface (P3-11) -- do not reword, re-case, pluralise, or
+    # Frozen interface (P3-11): do not reword, re-case, pluralise, or
     # reorder these four strings. SKILL.md's classification instruction,
     # Phase 4's committed before/after examples, and Phase 5's linter all
     # bind to them exactly as written here.
@@ -2907,7 +2907,7 @@ def check_artifact_family_sections(repo_root):
     section carries.
 
     Return no violations for a folder whose references/artifact-patterns.md
-    does not exist, checked before any read -- the same declared ceiling
+    does not exist, checked before any read: the same declared ceiling
     mc-catalog-id-drift, mc-rule-in-skill, and mc-count all share: no
     existing self-test fixture root ships that file, so an unguarded
     implementation would fire on every one of them and disable the whole
@@ -2916,17 +2916,17 @@ def check_artifact_family_sections(repo_root):
     Declared ceiling: this check is heading presence only. It says nothing
     about whether a section's content is correct or complete, and it does
     not check that each section carries exactly one **Order:** line or that
-    the fourteen frozen element labels are present -- that parity is
+    the fourteen frozen element labels are present: that parity is
     enforced at plan level, the same way the rule-heading-versus-**Replace
     with:**-count parity is. Fourteen under the rule 03-03-PLAN.md's own
     verification command applies, stated here because "element label" is
     defined in no committed file: the bold `**Label:**` lines that are not
-    **Order:** lines -- thirteen inside the four family sections plus
+    **Order:** lines: thirteen inside the four family sections plus
     **No family fits:** in the classification section. The file carries
     eighteen bold labels in total; the other four are the **Order:** lines
     this sentence counts separately. Corrected 06-09: both this docstring
     and the catalogue entry said "fifteen", which is reachable under no
-    rule and never was -- the same 18/4/13 split held at 6bc2dab, where the
+    rule and never was: the same 18/4/13 split held at 6bc2dab, where the
     sentence was written. The miscount is inherited: 03-03-PLAN.md's prose
     says fifteen while its own verification command lists fourteen.
 
@@ -2966,12 +2966,12 @@ def check_skill_family_line_gate(repo_root):
     missing anchor, naming the file and which anchor is missing.
 
     Return no violations for a skill folder with no self-check section at
-    all -- the declared ceiling, required so every pre-existing synthetic
+    all: the declared ceiling, required so every pre-existing synthetic
     _good_skill() fixture (none of which defines this section) stays
     silent and the whole suite is not disabled.
 
     Declared ceiling: this check asserts the instruction text is present.
-    It cannot assert a live session obeys it -- that is a model-behaviour
+    It cannot assert a live session obeys it: that is a model-behaviour
     property no file-reading checker observes;
     evals/conformance/run_conformance.py is the instrument for that. Its
     passing does not mean MOD-04 is mechanically verified."""
@@ -3004,18 +3004,18 @@ def check_skill_family_order_gate(repo_root):
     literal 're-scan' and the literal 'before any rule marker', matched
     case-insensitively. This is the sibling of
     check_skill_family_line_gate(), extended from presence of the family
-    line to its position ahead of any rule marker -- the residual failure
+    line to its position ahead of any rule marker: the residual failure
     mode (rule-before-family) 03-08 measured after the presence-only gate
     was already satisfied. Fires once per missing anchor, naming the file
     and which anchor is missing.
 
     Return no violations for a skill folder with no self-check section at
-    all -- the same declared ceiling its sibling uses, required so every
+    all: the same declared ceiling its sibling uses, required so every
     pre-existing synthetic _good_skill() fixture (none of which defines
     this section) stays silent and the whole suite is not disabled.
 
     Declared ceiling: this check asserts the instruction text is present.
-    It cannot assert a live session obeys it -- that is a model-behaviour
+    It cannot assert a live session obeys it: that is a model-behaviour
     property no file-reading checker observes;
     evals/conformance/run_conformance.py is the instrument for that. Its
     passing does not mean MOD-04 is mechanically verified."""
@@ -3044,7 +3044,7 @@ def check_skill_family_order_gate(repo_root):
 SOURCE_COINED_LABELS = (
     # Frozen list (03-07 GAP B). Seven entries: four two-word labels, two
     # single-word labels, and one single-word label ('pain') matched with
-    # an optional plural -- see _source_label_pattern. The ordinary-English
+    # an optional plural (see _source_label_pattern). The ordinary-English
     # word for a measurement ('metric') is deliberately excluded; see this
     # module's docstring.
     'economic buyer',
@@ -3072,11 +3072,11 @@ def check_source_label_in_skill_content(repo_root):
     SOURCE_COINED_LABELS. Fire once per file-and-label pair, naming the
     relative path, the label, and the first line number where it occurs.
 
-    Declared ceilings -- see this module's docstring for the full
+    Declared ceilings (see this module's docstring for the full
     statement: (1) literal-string scan, not the semantic paraphrase
     judgement SOURCES.md states no tool in this stack performs; (2) the
     ordinary-English word for a measurement is deliberately excluded from
-    the list; (3) scans shipped skill content only -- NUMBERING.md's
+    the list; (3) scans shipped skill content only: NUMBERING.md's
     frozen registry labels are out of scope (evaluated under trademark review)."""
     violations = []
     for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
@@ -3209,7 +3209,7 @@ def run_catalog_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# examples/before-after.md -- EX-02's family coverage and citation guarantee
+# examples/before-after.md: EX-02's family coverage and citation guarantee
 # (Phase 4, 04-02). Reuses ARTIFACT_FAMILY_SECTIONS (declared above) rather
 # than a second typed copy of the four frozen family strings.
 # ---------------------------------------------------------------------------
@@ -3312,7 +3312,7 @@ def check_example_sentence_length(repo_root):
     Returns an empty list before any read for a path that does not exist.
 
     Declared ceiling: only lines beginning with the check character are
-    inspected -- a ✗ column is the deliberately non-compliant exhibit its
+    inspected: a ✗ column is the deliberately non-compliant exhibit its
     pair exists to contrast against, and holding it to the rule would
     delete the contrast; bracketed marker spans are removed before
     counting, so a long marker never forces a split, a stated definition
@@ -3365,10 +3365,10 @@ def check_before_after_spelled_count(repo_root):
     the brief is the definition of what counts as invented, and a count
     it states is by construction not invented. Its prose carries spelled
     cardinals throughout, including a party name containing a number
-    word, and none of them sits on a ✗ or ✓ line -- this check opens no
+    word, and none of them sits on a ✗ or ✓ line; this check opens no
     file but examples/before-after.md (BEFORE_AFTER_PATH). skills/** is
     out of scope because the same party name appears there and because a
-    per-rule illustrative pair reads naturally with a spelled count -- 5
+    per-rule illustrative pair reads naturally with a spelled count: 5
     matches sit on ✗ or ✓ lines across those files. A raw scan of their
     whole text finds many more, and every one of the extras is in
     ordinary prose this check never reads; the 5 is the mark-line count,
@@ -3407,7 +3407,7 @@ def check_example_rule_narration(repo_root):
     """For each path in EXAMPLE_PROSE_PATHS that exists, fire on a ✓
     column line pairing a listed contrastive connective
     (NARRATION_CONNECTIVE_RE) with one of NARRATION_META_TERMS within
-    NARRATION_WINDOW_CHARS characters of the connective -- one narration
+    NARRATION_WINDOW_CHARS characters of the connective: one narration
     shape only, an explicitly disclosed proxy for SKILL.md line 261's
     "No list of applied rules follows the prose", never a verdict on it.
     Returns an empty list before any read for a path that does not
@@ -3415,7 +3415,7 @@ def check_example_rule_narration(repo_root):
 
     Declared ceiling: it catches one narration shape only. It does not
     detect narration phrased as self-reference to the document's own
-    ordering -- a sentence announcing that the answer stands first
+    ordering: a sentence announcing that the answer stands first
     rather than simply placing it first carries no listed connective
     and is invisible here; that instance was found by an adversarial
     human-substitute read, was repaired by hand in 04-05, and remains a
@@ -3475,7 +3475,7 @@ def run_example_checks(repo_root):
 
 # ---------------------------------------------------------------------------
 # .claude-plugin/plugin.json and .claude-plugin/marketplace.json (Phase 4,
-# 04-01) -- the Claude Code plugin distribution channel.
+# 04-01): the Claude Code plugin distribution channel.
 # ---------------------------------------------------------------------------
 
 def check_plugin_manifest_version(repo_root):
@@ -3486,14 +3486,14 @@ def check_plugin_manifest_version(repo_root):
     Fires once per manifest whose version disagrees with the skill's, and
     once per manifest when the skill states no version to compare against
     at all. A manifest that fails to parse as JSON is silently skipped
-    here -- that is plugin-manifest-invalid's job, not this code's. Also
+    here: that is plugin-manifest-invalid's job, not this code's. Also
     fires once, independent of either manifest, when two or more shipped
     skills each state a metadata.version and those stated versions are
     not all equal, naming every disagreeing skill and its version.
     Declared ceiling: the manifest comparison above still resolves its
     single comparison value from the alphabetically first skill that
-    states a version -- unchanged when exactly one skill states one, the
-    live case -- so in a multi-skill repository a manifest could agree
+    states a version (unchanged when exactly one skill states one, the
+    live case), so in a multi-skill repository a manifest could agree
     with that one skill and disagree with another without a
     manifest-level violation naming that disagreement; the skills'
     mutual disagreement is what fires instead, via the check just
@@ -3568,18 +3568,18 @@ MARKETPLACE_ENTRY_EQUAL_KEYS = ('description', 'displayName', 'author', 'license
 def check_plugin_manifest_invalid(repo_root):
     """Assert both plugin manifests are well-formed. `PLUGIN_REQUIRED_KEYS`
     presence is enforced at two positions: `plugin.json`'s top-level object
-    and `marketplace.json`'s `plugins[0]` entry -- the object
+    and `marketplace.json`'s `plugins[0]` entry: the object
     `claude plugin marketplace add` actually reads. Required-key presence
     at both positions is proven exhaustively by `--self-test`'s
-    required-key coverage matrix -- one assertion per key per position, 18
-    cells in all -- so the claim is verified rather than sampled by a
+    required-key coverage matrix (one assertion per key per position, 18
+    cells in all), so the claim is verified rather than sampled by a
     single fixture. Also asserts plugin.json's `name` equal to the single
     shipped skill folder name, and marketplace.json's
     `owner`/`plugins`/`source` shape correct. Once both objects parse,
     `MARKETPLACE_ENTRY_EQUAL_KEYS` (`description`, `displayName`, `author`,
     `license`, `keywords`) must agree between the marketplace plugin entry
     and plugin.json's top-level object, compared only where the key is
-    present on both sides -- presence is the required-key loop's job, so
+    present on both sides: presence is the required-key loop's job, so
     double-reporting one absence as two defects would mislead. `name` is
     excluded from that set because plugin.json's `name` is separately held
     equal to the shipped skill folder name, and `version` because
@@ -3588,19 +3588,19 @@ def check_plugin_manifest_invalid(repo_root):
     them at owner-segment granularity, normalising the HTTPS, plaintext
     HTTP, scheme-less and SSH remote forms to the same owner, so the two
     manifests are permitted to write the same publish location in
-    different syntaxes -- an exact-string equality check on those two
+    different syntaxes: an exact-string equality check on those two
     fields would contradict that and misfire on a mixed-URL-form
     manifest pair that is otherwise correct. Returns an empty list before
     any read when neither manifest exists. Declared ceiling: the
     required-key loop, its matrix, and the equality guard all assert
-    presence/agreement only -- no deeper value semantics, and nothing
+    presence/agreement only: no deeper value semantics, and nothing
     about whether a real `claude plugin marketplace add` succeeds. The
     folder-name equality check is verified only when exactly one skill
     folder matches SKILL_GLOB, the live case; when the repository ships
     zero or more than one skill folder while plugin.json states a `name`,
     the equality itself cannot be resolved against a single shipped
     skill, so this fires naming the ambiguity (how many skill folders
-    were found) instead of silently skipping the check -- zero and
+    were found) instead of silently skipping the check: zero and
     multiple are reported with different wording, because zero means the
     manifest names a skill that is not there and multiple means it names
     one of several without saying which."""
@@ -3639,7 +3639,7 @@ def check_plugin_manifest_invalid(repo_root):
                 violations.append((PLUGIN_MANIFEST_PATH, (
                     f"plugin-manifest-invalid {PLUGIN_MANIFEST_PATH} states name "
                     f"'{name_value}', but {len(skill_dirs)} skill folders exist "
-                    f"({', '.join(skill_dirs)}) -- the name cannot be checked against a "
+                    f"({', '.join(skill_dirs)}): the name cannot be checked against a "
                     f"single shipped skill folder"
                 )))
 
@@ -3705,11 +3705,11 @@ IN_SESSION_MARKETPLACE_ADD_RE = re.compile(r'/plugin marketplace add ([^\s`]+)')
 
 def _owner_segment(value):
     """Normalise one of four GitHub URL forms a contributor plausibly
-    writes -- the HTTPS form (https://github.com/<owner>/<repo>), the
+    writes: the HTTPS form (https://github.com/<owner>/<repo>), the
     plaintext HTTP form (http://github.com/<owner>/<repo>), the
     scheme-less form (github.com/<owner>/<repo>), and the SSH remote form
     (git@github.com:<owner>/<repo>.git, exactly as `git remote -v`
-    prints it) -- then return the text before the first remaining '/',
+    prints it); then return the text before the first remaining '/',
     or the whole remainder if there is none: the GitHub account/org
     segment, the one granularity every carrier position (a full
     owner/repo URL, or owner.url's bare owner URL) can state. Tries each
@@ -3717,12 +3717,12 @@ def _owner_segment(value):
     value already stripped is never stripped twice; after whichever
     prefix matched (or none), strips surrounding whitespace, a trailing
     slash, and a trailing '.git' suffix (the SSH form carries one, the
-    HTTPS form usually does not -- left on, it would make the repository
+    HTTPS form usually does not; left on, it would make the repository
     segment disagree between two forms of the same repository even once
     the owner agrees). Declared ceiling: this does not recognise a
     GitHub Enterprise or other self-hosted host, and it compares the
     owner segment only, so two carriers naming the same owner and
-    different repositories are treated as agreeing -- the granularity
+    different repositories are treated as agreeing: the granularity
     check_publish_location_drift's own docstring already claims and this
     normalisation preserves rather than widens."""
     v = value
@@ -3857,7 +3857,7 @@ def run_plugin_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# README.md -- install-path coverage and before/after ordering (Phase 4,
+# README.md: install-path coverage and before/after ordering (Phase 4,
 # 04-04). DIST-06's structural half: every promised install route has a
 # stated anchor, and the before/after lead-in precedes both the install
 # and the status sections. Defined here, after SKILLS_CLI_INSTALL_RE and
@@ -3865,7 +3865,7 @@ def run_plugin_checks(repo_root):
 # patterns rather than declaring a third copy of either command prefix.
 # Both codes join README_CHECK_CODES / run_readme_checks() above, which
 # already calls them by name (Python resolves module-level names at call
-# time, not at def time) -- there is no fourth README aggregator.
+# time, not at def time): there is no fourth README aggregator.
 # ---------------------------------------------------------------------------
 
 # The output-style path literal, referenced both by README_INSTALL_ANCHORS'
@@ -3961,8 +3961,8 @@ def check_readme_install_paths(repo_root):
 def check_readme_before_after_order(repo_root):
     """For README.md, require README_BEFORE_AFTER_HEADING,
     README_INSTALL_HEADING, and README_STATUS_HEADING to each be present
-    as an exact '## ' heading line, and -- only once all three are
-    present -- require the before/after heading's line index to be lower
+    as an exact '## ' heading line, and, only once all three are
+    present, require the before/after heading's line index to be lower
     than both the install and the status heading's line index. Fires once
     per absent heading, and once naming the order found and the order
     required when all three are present but out of order. Returns an
@@ -3972,7 +3972,7 @@ def check_readme_before_after_order(repo_root):
     position only. It says nothing about whether the '## Before and
     after' section actually contains a pair, whether the pair is any
     good, or whether a reader experiences the file as leading with
-    examples -- the first of those is before-after-family-missing's job
+    examples: the first of those is before-after-family-missing's job
     over a different file, and the last two are manual judgments left to
     end-of-phase UAT."""
     violations = []
@@ -4015,13 +4015,13 @@ def check_readme_example_drift(repo_root):
     reason check_readme_install_paths gives: the reproduced lines are
     plain prose lines and fence-stripping would change what is compared.
     Returns an empty list before any read when either README.md or
-    BEFORE_AFTER_PATH does not exist -- both files are required for the
+    BEFORE_AFTER_PATH does not exist: both files are required for the
     comparison to mean anything. Fires once per README line with no
     match, naming the line number and a short prefix of the line's text.
 
     Declared ceiling: comparison is whole-line code-point equality with
     no Unicode normalisation, no case folding, and no whitespace
-    collapsing -- the same convention pointer-missing already states --
+    collapsing (the same convention pointer-missing already states):
     so a reproduction differing only in an invisible code point is
     reported as drift, which is the intended direction. It asserts
     membership, not position or completeness: README may reproduce one
@@ -4068,11 +4068,11 @@ def check_readme_example_lead_distance(repo_root):
 
     Declared ceiling: it counts physical lines from the top of the raw
     file, so a long paragraph written as one physical line counts once
-    while the same prose hard-wrapped counts many times -- a stated
+    while the same prose hard-wrapped counts many times: a stated
     definition, not an implied one, and the reason the ceiling carries
     margin. It asserts the example arrives early, never that the example
     is good, that the prose above it is necessary, or that the pair
-    below it is complete -- readme-example-drift owns the reproduction's
+    below it is complete: readme-example-drift owns the reproduction's
     fidelity and readme-before-after-order owns the section ordering. It
     reads only README_CROSS_CHAR, so a README leading with a check line
     and no ballot-cross line is reported as having no example, which is
@@ -4100,7 +4100,7 @@ def check_readme_example_lead_distance(repo_root):
 # Bounded to a lowercase letter followed by up to 19 more lowercase
 # letters or hyphens (20 characters total), so an ordinary quoted phrase
 # or a parenthesised sentence containing spaces or punctuation is not
-# mistaken for a marker -- the character class itself excludes spaces,
+# mistaken for a marker: the character class itself excludes spaces,
 # so there is no unbounded-width match to backtrack over.
 README_LAYOUT_LEGEND_MARKER_RE = re.compile(r'"([a-z][a-z-]{0,19})"')
 README_LAYOUT_TREE_MARKER_RE = re.compile(r'\(([a-z][a-z-]{0,19})\)')
@@ -4115,7 +4115,7 @@ def check_readme_layout_legend_drift(repo_root):
     README_LAYOUT_TREE_MARKER_RE), reusing FENCE_RE to isolate the tree
     away from the surrounding prose. Returns an empty list before any read
     when README.md does not exist, and returns an empty list when the
-    layout heading itself is absent -- a README with no layout section
+    layout heading itself is absent: a README with no layout section
     is silent, not violating, matching publish-location-drift's stated
     decision that a carrier with nothing to say is silent. Fires once
     per marker the prose explains that the tree never uses, and once
@@ -4129,8 +4129,8 @@ def check_readme_layout_legend_drift(repo_root):
     carries no marker should. Its marker shape is a short lowercase
     token inside double quotes in prose and inside parentheses in the
     tree, bounded to at most 20 characters each; a marker written in any
-    other shape -- bracketed, uppercase, or longer than the stated bound
-    -- is invisible to this check. And it reads only the layout section,
+    other shape (bracketed, uppercase, or longer than the stated bound)
+    is invisible to this check. And it reads only the layout section,
     so a marker vocabulary introduced elsewhere in README is out of
     scope."""
     readme_path = repo_root / 'README.md'
@@ -4175,7 +4175,7 @@ def check_readme_layout_legend_drift(repo_root):
 
 def check_readme_output_style_destination(repo_root):
     """Require README.md, if it names README_OUTPUT_STYLE_PATH anywhere,
-    to also name at least one of README_OUTPUT_STYLE_DESTINATIONS -- the
+    to also name at least one of README_OUTPUT_STYLE_DESTINATIONS: the
     directory Claude Code actually scans for output styles, as distinct
     from this repository's root-level output-styles/, which is where a
     plugin ships a style from and is scanned only once the repository is
@@ -4185,7 +4185,7 @@ def check_readme_output_style_destination(repo_root):
     and stripping fences would find nothing and pass silently. Returns
     an empty list before any read when README.md does not exist, and
     returns an empty list when README never names README_OUTPUT_STYLE_PATH
-    at all -- a README stating no output-style route has nothing for this
+    at all: a README stating no output-style route has nothing for this
     code to say. Otherwise fires once when the text names neither
     destination directory, naming the file, the route, and both
     directories it could have named.
@@ -4194,7 +4194,7 @@ def check_readme_output_style_destination(repo_root):
     directory the output-style file has to reach. It asserts nothing
     about whether the copy succeeds, whether Claude Code lists or applies
     the style, whether the stated command is correct, or whether any
-    other route is executable -- readme-install-path-missing owns anchor
+    other route is executable: readme-install-path-missing owns anchor
     presence and nothing in this repository owns route executability.
     The comparison is literal substring containment with no path
     expansion and no filesystem access, so a README naming the directory
@@ -4219,11 +4219,11 @@ def check_readme_output_style_destination(repo_root):
 
 # ---------------------------------------------------------------------------
 # output-styles/proof-first.md and prompts/system-prompt.md (Phase 4, 04-03)
-# -- DIST-05's generated-derivative freshness and coverage guarantee. This
+# DIST-05's generated-derivative freshness and coverage guarantee. This
 # is the authoritative copy of DERIVATIVE_SOURCE_NAMES and DERIVATIVE_PATHS;
 # tools/generate_derivatives.py mirrors it. Neither file imports the other
-# -- a sibling import inside tools/ would depend on how the script happens
-# to be invoked -- so the stamp's own recorded path list, checked against
+# (a sibling import inside tools/ would depend on how the script happens
+# to be invoked), so the stamp's own recorded path list, checked against
 # this tuple by check_skill_derivative_stale, is what enforces the two
 # staying in agreement (P4-13).
 # ---------------------------------------------------------------------------
@@ -4266,7 +4266,7 @@ def _derivative_stamp(path):
 
 def _hash_sources(repo_root):
     """One hashlib.sha256 over the concatenated bytes of every path in
-    DERIVATIVE_SOURCE_NAMES, in tuple order -- the identical recipe
+    DERIVATIVE_SOURCE_NAMES, in tuple order: the identical recipe
     tools/generate_derivatives.py's source_hash() uses, stated once here
     and once there, with the stamp as the bridge between them."""
     h = hashlib.sha256()
@@ -4283,7 +4283,7 @@ def check_skill_derivative_stale(repo_root):
 
     Declared ceiling: the recorded hash proves a derivative was produced
     from some version of the named sources, not that the generator's own
-    derivation logic is correct -- a bug there that dropped a rule would
+    derivation logic is correct: a bug there that dropped a rule would
     still produce a matching hash. It proves structural freshness only
     and says nothing about a live session. A hand-edit to a derivative's
     body after generation leaves the recorded hash valid, which is
@@ -4301,7 +4301,7 @@ def check_skill_derivative_stale(repo_root):
         if digest is None:
             violations.append((rel, (
                 f"skill-derivative-stale {rel} records no stamp matching the frozen "
-                f"generated-by pattern -- run python3 tools/generate_derivatives.py"
+                f"generated-by pattern: run python3 tools/generate_derivatives.py"
             )))
             continue
         if paths != DERIVATIVE_SOURCE_NAMES:
@@ -4316,14 +4316,14 @@ def check_skill_derivative_stale(repo_root):
         if digest != fresh_digest:
             violations.append((rel, (
                 f"skill-derivative-stale {rel}'s stamp records sha256:{digest}, but a fresh "
-                f"hash of the named sources is sha256:{fresh_digest} -- run "
+                f"hash of the named sources is sha256:{fresh_digest}: run "
                 f"python3 tools/generate_derivatives.py to re-sync"
             )))
     return violations
 
 
 def check_derivative_rule_coverage(allocated, repo_root):
-    """For each of DERIVATIVE_PATHS that exists, require a '### <ID> -- '
+    """For each of DERIVATIVE_PATHS that exists, require a '### <ID>: '
     rule heading (the same shape RULE_HEADING_RE and MC_HEADING_RE match)
     for every PF- and MC- ID in `allocated`, and require every string in
     ARTIFACT_FAMILY_SECTIONS to appear. Emits one violation per missing
@@ -4333,15 +4333,15 @@ def check_derivative_rule_coverage(allocated, repo_root):
     derivative does not exist.
 
     Declared ceiling: this proves every shipped rule heading and every
-    artifact-family heading reaches each derivative -- a structural
+    artifact-family heading reaches each derivative: a structural
     statement about content presence. It proves nothing about what a
     model does with that content, nothing about whether a session driven
     by a derivative reaches the same conclusions as one with the skill
     folder installed, and nothing about whether the omitted illustration
     file's absence changes anything. That second statement now has a
     committed source: evals/routes/RESULTS-routes.md, which 04-15 wrote
-    from 36 headless sessions and which reports a null result -- every
-    pair of arms overlapping -- not equivalence. This check is not that
+    from 36 headless sessions and which reports a null result (every
+    pair of arms overlapping), not equivalence. This check is not that
     measurement and does not stand in for it; read the results file.
     check_derivative_comparison_claim below is built on the same premise
     and fails the build if a derivative reasserts the old "no benchmark
@@ -4395,7 +4395,7 @@ def check_derivative_rule_coverage(allocated, repo_root):
 ROUTES_RESULTS_PATH = 'evals/routes/RESULTS-routes.md'
 
 # The exact literal the pre-04-15 generator preamble emitted. Matched as a
-# substring, case-sensitively, with no normalisation -- the sentence is
+# substring, case-sensitively, with no normalisation: the sentence is
 # generator output, so it either comes back byte-identical or it is a
 # different sentence this code deliberately does not judge.
 STALE_COMPARISON_CLAIM = 'No benchmark has compared'
@@ -4428,9 +4428,9 @@ def check_derivative_comparison_claim(repo_root):
     Returns an empty list before reading any derivative when
     ROUTES_RESULTS_PATH does not exist: with no comparison committed, the
     derivatives' claim is true and there is nothing to report. Otherwise
-    reads each present derivative raw -- no strip_fences, because the
+    reads each present derivative raw (no strip_fences, because the
     preamble is prose outside any fence and stripping would change nothing
-    except the offsets -- and emits one violation per file still carrying
+    except the offsets), and emits one violation per file still carrying
     STALE_COMPARISON_CLAIM.
 
     Declared ceiling: a two-sided literal-substring presence conjunction.
@@ -4456,7 +4456,7 @@ def check_derivative_comparison_claim(repo_root):
             violations.append((rel, (
                 f"derivative-comparison-claim-stale {rel} still states "
                 f"'{STALE_COMPARISON_CLAIM}', but {ROUTES_RESULTS_PATH} exists in this tree "
-                f"and is exactly such a comparison -- regenerate the derivatives from "
+                f"and is exactly such a comparison: regenerate the derivatives from "
                 f"tools/generate_derivatives.py rather than editing this file"
             )))
     return violations
@@ -4470,14 +4470,14 @@ def check_stale_benchmark_run_claim(repo_root):
     same shape: a two-sided literal-substring presence conjunction, gated on
     the existence of the evidence file that falsifies the sentence. Returns
     an empty list before reading anything when BENCHMARK_RESULTS_PATH does
-    not exist -- with no benchmark committed the sentence is true and there
+    not exist: with no benchmark committed the sentence is true and there
     is nothing to report.
 
     Two deliberate differences from its sibling, both of them because this
     sentence is hand-written prose rather than generator output. It matches
     case-insensitively, so a regression restoring the sentence at the start
     of a sentence is still caught. And it scans BENCHMARK_CLAIM_PATHS --
-    the derivatives plus the skill sources they are generated from -- rather
+    the derivatives plus the skill sources they are generated from, rather
     than the derivatives alone, because the origin of the sentence is a
     source file and a source-only regression would otherwise stay invisible
     until the next regeneration.
@@ -4499,7 +4499,7 @@ def check_stale_benchmark_run_claim(repo_root):
             violations.append((rel, (
                 f"benchmark-run-claim-stale {rel} still states "
                 f"'{STALE_BENCHMARK_RUN_CLAIM}', but {BENCHMARK_RESULTS_PATH} exists in this "
-                f"tree and records a benchmark that ran -- state what the benchmark does and "
+                f"tree and records a benchmark that ran: state what the benchmark does and "
                 f"does not establish rather than denying that it happened"
             )))
     return violations
@@ -4530,14 +4530,14 @@ def run_derivative_checks(repo_root):
 # Rounds 1-4 of cold reads on this repository produced 45 findings. Citation
 # defects were among them, and this code catches NONE of those: every citation
 # finding those four rounds produced was a line number that still existed and
-# pointed at the wrong content -- a semantic mismatch, not an unresolvable
+# pointed at the wrong content: a semantic mismatch, not an unresolvable
 # reference. The full-history replay recorded in the module docstring's
 # record-citation-unresolvable entry fired ZERO times.
 #
 # What this code is, therefore, is future insurance against three shapes that
 # have not yet occurred here: a path that names no file, a range past
 # end-of-file, an inverted range. It deliberately does not attempt the harder
-# half -- whether the cited lines say what the citing sentence claims -- which
+# half (whether the cited lines say what the citing sentence claims), which
 # is the semantic judgement this repository has refused to put behind a build
 # gate four times, and which is the half every citation finding so far has
 # actually been.
@@ -4548,13 +4548,13 @@ def run_derivative_checks(repo_root):
 # careful account and was written by the same commit. A block comment is the
 # first thing a maintainer reads to learn why code exists, so it is the worse
 # of the two places to overstate. Round 5 then produced two more citation
-# findings -- two derivative `path`:N pairs broken by 06-08's own first
-# commit -- and this code was silent on both, because the cited lines existed.
+# findings (two derivative `path`:N pairs broken by 06-08's own first
+# commit), and this code was silent on both, because the cited lines existed.
 # ---------------------------------------------------------------------------
 
 # The records whose citations are validated. Both are already read by other
 # codes. Scoped to these two because they are where the drift was measured,
-# not because no other file can carry a citation -- README.md is in scope
+# not because no other file can carry a citation: README.md is in scope
 # because it is where a citation would next be written, not because it
 # carries one today.
 #
@@ -4562,7 +4562,7 @@ def run_derivative_checks(repo_root):
 # citations", which was never true of README.md. Measured at 06-09 by running
 # this file's own CITATION_RE over both paths: 9 matches in LEGAL-REVIEW.md, 0
 # in README.md, identical before and after strip_fences(). Those figures are
-# pinned to that measurement, not restated as a live count -- the same
+# pinned to that measurement, not restated as a live count: the same
 # convention the record-citation-unresolvable docstring uses for its replay,
 # and for the same reason.
 CITATION_RECORD_PATHS = ('LEGAL-REVIEW.md', 'README.md')
@@ -4574,7 +4574,7 @@ CITATION_SKIP_DIRS = frozenset({'.git', '.planning'})
 # A citation is a backticked path carrying a file extension, immediately
 # followed by ':N' or ':N-M'. The backticks are load-bearing. Without them
 # this matches shell snippets, table cells and prose that put a filename and
-# a number next to each other for unrelated reasons -- the exact
+# a number next to each other for unrelated reasons: the exact
 # false-positive class that would make this gate unusable.
 CITATION_RE = re.compile(
     r'`([A-Za-z0-9_][A-Za-z0-9_./-]*\.[A-Za-z0-9]+)`:(\d+)(?:-(\d+))?'
@@ -4608,8 +4608,8 @@ def check_record_citations(repo_root):
     """Check that every `path`:N / `path`:N-M citation in
     CITATION_RECORD_PATHS resolves to a real file and a real line range.
 
-    Resolution order: an exact repository-relative path first, then -- for a
-    spelling with no directory separator -- a basename search over the tree.
+    Resolution order: an exact repository-relative path first, then, for a
+    spelling with no directory separator, a basename search over the tree.
     A range is reported when its high bound runs past the file's last line,
     when its low bound is below 1, or when the bounds are inverted.
 
@@ -4730,15 +4730,15 @@ def run_all_checks(repo_root):
 #
 # This set is deliberately empty. It previously excused
 # skill-token-budget-exceeded against skills/proof-first/SKILL.md,
-# but that finding is now closed -- optimization brought the file under the
+# but that finding is now closed: optimization brought the file under the
 # 5,000-token ceiling, so mutation-test's CONTROL step is back to an
 # unweakened "zero violations on an unmutated copy" assertion for every code,
 # with no allowance masking a future regression.
 #
 # If a future finding needs this set populated again, name the specific
-# (code, subject) pair it excuses -- e.g.
-# frozenset({('skill-token-budget-exceeded', 'skills/proof-first/SKILL.md')})
-# -- never a bare code. A bare code excuses every subject that code could
+# (code, subject) pair it excuses (e.g.
+# frozenset({('skill-token-budget-exceeded', 'skills/proof-first/SKILL.md')})),
+# never a bare code. A bare code excuses every subject that code could
 # ever fire against, so a second skill folder independently breaching the
 # same ceiling for an unrelated reason would be silently absorbed into the
 # known-open bucket instead of surfacing as the new, unexpected regression
@@ -4753,7 +4753,7 @@ KNOWN_OPEN_VIOLATIONS = frozenset()
 #
 # The self-test above proves each check fires against a hand-built fixture.
 # It cannot prove a check fires against this repository's own production
-# document shapes -- that gap is exactly what let a dead check ship named as
+# document shapes: that gap is exactly what let a dead check ship named as
 # covered (01-VERIFICATION.md). This section injects one named defect at a
 # time into a throwaway copy of the real repository files and asserts the
 # matching violation code fires, closing the class rather than today's
@@ -4777,7 +4777,7 @@ MUTATION_SOURCES = (
 
 def _copy_repo_subset(repo_root, dest):
     """Copy exactly MUTATION_SOURCES into dest. Never copies .git or
-    .planning -- only the repository-relative paths the checker reads.
+    .planning: only the repository-relative paths the checker reads.
 
     Three entries were added after the original tuple, each so that one code
     would be discrimination-proven rather than merely registered: 'evals' by
@@ -4790,7 +4790,7 @@ def _copy_repo_subset(repo_root, dest):
     copy. They are listed rather than denied, because three successive
     versions of this comment asserted that no other check read these paths and
     all three assertions were false. The block was edited three times after the
-    first absolute went into it -- 82535c7, c0fca5f and e2e4aa2 -- and each of
+    first absolute went into it (82535c7, c0fca5f and e2e4aa2), and each of
     those edits left the absolutes then standing in place. The readers below
     were measured on 2026-09-22 by running
     the live checker under a pathlib.Path.read_text wrapper that records the
@@ -4823,7 +4823,7 @@ def _copy_repo_subset(repo_root, dest):
 
 def _insert_table_rows_after_heading(text, heading, new_rows):
     """Insert new_rows immediately after the first Markdown table's
-    separator row that follows the '## {heading}' line -- the only
+    separator row that follows the '## {heading}' line: the only
     insertion point that works while a table has zero data rows."""
     lines = text.splitlines()
     heading_line = f'## {heading}'
@@ -4947,7 +4947,7 @@ def _mutate_license_missing(root):
 
 def _mutate_readme_results_pointer_missing(root):
     """Delete every line of the copied real README.md that contains the
-    results-pointer path, leaving everything else in place -- the mutation
+    results-pointer path, leaving everything else in place: the mutation
     targets exactly what the check reads."""
     path = root / 'README.md'
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -4958,7 +4958,7 @@ def _mutate_readme_results_pointer_missing(root):
 def _mutate_results_breakdown_count_mismatch(root):
     """Raise the copied real results file's Arm A no-family bullet's
     stated count above its own enumeration sum (7 -> 99), leaving the
-    parenthetical enumeration itself untouched -- isolates exactly the
+    parenthetical enumeration itself untouched: isolates exactly the
     count/enumeration disagreement this check reads. Asserts the target
     text is found before substituting, following the existing mutators'
     precedent, so a future rewording of that bullet turns into a loud
@@ -4969,7 +4969,7 @@ def _mutate_results_breakdown_count_mismatch(root):
     replacement = '- no-family: 99 ('
     assert target in text, (
         "results-breakdown-count-mismatch mutation: Arm A no-family bullet "
-        "text not found in the real results file -- has its wording changed?"
+        "text not found in the real results file: has its wording changed?"
     )
     text = text.replace(target, replacement, 1)
     path.write_text(text, encoding='utf-8')
@@ -5011,7 +5011,7 @@ def _mutate_mc_catalog_id_drift(root):
 def _mutate_mc_rule_in_skill(root):
     """Insert one MC-shaped rule heading into the copied
     skills/proof-first/SKILL.md. Because check_mc_catalog_id_drift compares
-    the registry, the audit file and the checklist -- and never SKILL.md --
+    the registry, the audit file and the checklist (and never SKILL.md)
     this mutation fires the in-skill code alone."""
     path = root / 'skills' / 'proof-first' / 'SKILL.md'
     text = path.read_text(encoding='utf-8')
@@ -5144,7 +5144,7 @@ def _mutate_skill_token_budget_exceeded(root):
 def _mutate_artifact_family_section_missing(root):
     """Delete the '## Solution proposal' heading line from the copied
     real skills/proof-first/references/artifact-patterns.md, leaving its
-    body in place -- a minimal mutation targeting exactly the heading the
+    body in place: a minimal mutation targeting exactly the heading the
     check reads."""
     path = root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md'
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -5154,7 +5154,7 @@ def _mutate_artifact_family_section_missing(root):
 
 def _mutate_skill_family_line_gate_missing(root):
     """Delete the self-check section's first numbered pass item from the
-    copied real SKILL.md -- the pass carrying the two anchors this check
+    copied real SKILL.md: the pass carrying the two anchors this check
     reads (the artifact-family phrase, the No family fits value) --
     leaving the section heading and the other two passes in place. Matched
     by its '1. ' list position rather than its pass name, so a 03-11-style
@@ -5169,7 +5169,7 @@ def _mutate_skill_family_line_gate_missing(root):
 
 def _mutate_skill_family_order_gate_missing(root):
     """Replace the copied real SKILL.md's ordering-pass wording with the
-    pre-03-11 presence-only wording -- deleting the 're-scan' /
+    pre-03-11 presence-only wording: deleting the 're-scan' /
     'before any rule marker' anchors this check reads while leaving the
     artifact-family phrase and the No family fits value (the sibling
     check's own anchors) and the other two passes untouched. Isolates
@@ -5191,7 +5191,7 @@ def _mutate_skill_family_order_gate_missing(root):
     )
     assert ordered_pass in text, (
         "skill-family-order-gate-missing mutation: ordering pass text not found "
-        "in the real SKILL.md -- has the self-check section wording changed?"
+        "in the real SKILL.md: has the self-check section wording changed?"
     )
     text = text.replace(ordered_pass, presence_only_pass)
     path.write_text(text, encoding='utf-8')
@@ -5199,7 +5199,7 @@ def _mutate_skill_family_order_gate_missing(root):
 
 def _mutate_source_label_in_skill_content(root):
     """Insert one frozen source-coined label ('economic buyer') into the
-    copied real references/artifact-patterns.md -- a minimal mutation
+    copied real references/artifact-patterns.md: a minimal mutation
     targeting exactly what the check reads."""
     path = root / 'skills' / 'proof-first' / 'references' / 'artifact-patterns.md'
     text = path.read_text(encoding='utf-8')
@@ -5233,7 +5233,7 @@ def _mutate_marketplace_entry_required_key_missing(root):
     .claude-plugin/marketplace.json's plugins[0] entry, mutating only the
     copy. This is a separate mutation from _mutate_plugin_manifest_invalid
     because that function deletes the same key from plugin.json, a
-    different position -- and position is precisely what CR-01 was about:
+    different position (and position is precisely what CR-01 was about):
     the marketplace entry's required keys were never checked at all."""
     path = root / MARKETPLACE_MANIFEST_PATH
     data = json.loads(path.read_text(encoding='utf-8'))
@@ -5253,7 +5253,7 @@ def _mutate_publish_location_drift(root):
 
 def _mutate_before_after_family_missing(root):
     """Delete the '## Solution proposal' heading line from the copied real
-    examples/before-after.md, leaving its body in place -- a minimal
+    examples/before-after.md, leaving its body in place: a minimal
     mutation targeting exactly the heading the check reads, mirroring
     _mutate_artifact_family_section_missing's shape."""
     path = root / BEFORE_AFTER_PATH
@@ -5265,7 +5265,7 @@ def _mutate_before_after_family_missing(root):
 def _mutate_before_after_citation_missing(root):
     """Strip every PF-/MC- token from the '## Demo and discovery material'
     section of the copied real examples/before-after.md, leaving every
-    other section's citations in place -- isolates exactly the one
+    other section's citations in place: isolates exactly the one
     section-level citation-absence condition this check reads."""
     path = root / BEFORE_AFTER_PATH
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -5302,7 +5302,7 @@ def _mutate_catalog_opening_rule_count(root):
 def _mutate_skill_derivative_stale(root):
     """Change one hex character of the recorded sha256 digest in the
     copied real output-styles/proof-first.md stamp line, mutating only
-    the copy -- a minimal mutation targeting exactly the digest the
+    the copy: a minimal mutation targeting exactly the digest the
     check recomputes and compares."""
     path = root / 'output-styles' / 'proof-first.md'
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -5318,7 +5318,7 @@ def _mutate_skill_derivative_stale(root):
 
 def _mutate_derivative_rule_coverage(root):
     """Delete one '### PF-' rule heading line from the copied real
-    prompts/system-prompt.md, leaving its body in place -- a minimal
+    prompts/system-prompt.md, leaving its body in place: a minimal
     mutation targeting exactly the heading shape the check reads."""
     path = root / 'prompts' / 'system-prompt.md'
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -5330,7 +5330,7 @@ def _mutate_derivative_rule_coverage(root):
 def _mutate_readme_install_path_missing(root):
     """Delete every line of the copied real README.md containing the
     skills-CLI install command prefix ('npx skills add '), mutating only
-    the copy -- removes exactly one of readme-install-path-missing's four
+    the copy: removes exactly one of readme-install-path-missing's four
     anchors, leaving the other three untouched."""
     path = root / 'README.md'
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -5341,7 +5341,7 @@ def _mutate_readme_install_path_missing(root):
 def _mutate_readme_before_after_order(root):
     """Move the copied real README.md's '## Before and after' heading
     line to immediately after its '## Status' heading line, mutating
-    only the copy -- moving the one heading line is enough to violate
+    only the copy: moving the one heading line is enough to violate
     the ordering check without relocating the section body it heads."""
     path = root / 'README.md'
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -5355,7 +5355,7 @@ def _mutate_readme_before_after_order(root):
 def _mutate_readme_example_drift(root):
     """Locate the copied real README.md's first line beginning with
     README_CROSS_CHAR and replace one phrase of it with a different
-    phrase, mutating only the copy -- reproduces the real failure mode
+    phrase, mutating only the copy: reproduces the real failure mode
     this code exists for: README drifting away from the source it names
     itself as reproduced from."""
     path = root / 'README.md'
@@ -5400,7 +5400,7 @@ def _mutate_derivative_comparison_claim(root):
     Appending rather than replacing is deliberate: the sentence this code
     watches for was deleted from the generator in 04-15 Task 4C, so there is
     no occurrence left in the real tree to edit in place. Putting it back is
-    exactly the regression the code exists to catch -- a revert or a bad
+    exactly the regression the code exists to catch: a revert or a bad
     merge restoring the pre-04-15 preamble while the measurement that
     falsifies it sits in evals/routes/RESULTS-routes.md."""
     path = root / DERIVATIVE_PATHS[0]
@@ -5421,7 +5421,7 @@ def _mutate_stale_benchmark_run_claim(root):
     sentence was corrected in 06-06 Task 3, so there is no occurrence left in
     the real tree to edit in place. Putting it back into the skill source is
     the exact regression this code exists to catch, and it is the source
-    rather than a derivative deliberately -- that is the path the real defect
+    rather than a derivative deliberately: that is the path the real defect
     took, and the path the sibling code could not see."""
     path = root / 'skills/proof-first/references/artifact-patterns.md'
     text = path.read_text(encoding='utf-8')
@@ -5515,7 +5515,7 @@ def _mutate_example_rule_narration(root):
 
 def _mutate_source_row_unconfirmed(root):
     """Re-mark the real SOURCES.md's one confirmed row as `verified` with
-    its evidence stripped back to the pre-confirmation placeholder -- the
+    its evidence stripped back to the pre-confirmation placeholder: the
     exact defect this code exists to catch: a row hand-edited to claim
     provenance that was never recorded. Mutating the real file rather than
     a fixture is what makes the code discrimination-proven instead of
@@ -5534,7 +5534,7 @@ def _mutate_source_row_unconfirmed(root):
 
 def _mutate_source_gate_incomplete(root):
     """Flip one real SOURCES.md row's Status back to `unverified` while the
-    real LEGAL-REVIEW.md keeps declaring the gate PASSED -- the defect this
+    real LEGAL-REVIEW.md keeps declaring the gate PASSED: the defect this
     code exists to catch: a pass declared over a list that is not finished."""
     path = root / SOURCES_PATH
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -5549,7 +5549,7 @@ def _mutate_source_gate_incomplete(root):
 def _mutate_framework_statement_stale_review(root):
     """Roll one real NOTICES.md statement's `Last reviewed:` date back to
     2026-09-10, the date it carried before this review, while
-    LEGAL-REVIEW.md keeps its later review date -- the defect being a
+    LEGAL-REVIEW.md keeps its later review date: the defect being a
     statement the review claims to have re-read and did not."""
     path = root / 'NOTICES.md'
     text = path.read_text(encoding='utf-8')
@@ -5688,7 +5688,7 @@ def mutation_test(repo_root):
     """Run a clean control copy, then one isolated mutation per violation
     code, and report per-code pass/fail. A code only counts as
     discrimination-proven when it was silent on the control copy and fires
-    on its mutated copy -- silent-then-fires is what actually demonstrates
+    on its mutated copy: silent-then-fires is what actually demonstrates
     the check can tell good content from bad. A code that already fires on
     the control copy cannot demonstrate that, even if it also fires after
     the mutation, so it is counted separately as confirmed-fire-only and
@@ -5697,10 +5697,10 @@ def mutation_test(repo_root):
     every code regardless of whether the control happens to be clean, so a
     future drift back over a ceiling degrades what is printed instead of
     silently invalidating it. Returns True only when the control had no
-    *unexpected* violations (KNOWN_OPEN_VIOLATIONS aside -- see that
+    *unexpected* violations (KNOWN_OPEN_VIOLATIONS aside, see that
     constant's own comment), every mutation fired its expected code, and
     every code in ALL_CHECK_CODES has a registered mutation. A
-    confirmed-fire-only code does not by itself fail the run -- it makes
+    confirmed-fire-only code does not by itself fail the run: it makes
     the run disclose rather than fail."""
     all_ok = True
     discrimination_proven = set()
@@ -5723,7 +5723,7 @@ def mutation_test(repo_root):
             all_ok = False
         # The control copy is the identical pre-state for every mutation --
         # every scratch root below starts from the same _copy_repo_subset of
-        # the same tree -- so this one control run is a sound pre-state for
+        # the same tree, so this one control run is a sound pre-state for
         # all of them; no second control run per mutation is needed.
         control_codes = {v[1].split(' ', 1)[0] for v in control_violations}
 
@@ -5758,8 +5758,8 @@ def mutation_test(repo_root):
         if fire_only:
             print(
                 f"mutation-test PASS: {len(fire_only)} codes confirmed-fire-only, not "
-                f"discrimination-proven ({', '.join(sorted(fire_only))}) -- see the FIRE-ONLY "
-                f"line above for each one's reason"
+                f"discrimination-proven ({', '.join(sorted(fire_only))}) (see the FIRE-ONLY "
+                f"line above for each one's reason)"
             )
     else:
         failed = len(ALL_CHECK_CODES) - len(discrimination_proven) - len(fire_only)
@@ -6116,7 +6116,7 @@ def _good_frontmatter():
 
 def _bad_frontmatter():
     """One root, three codes: an unknown 'author' key (not one of the six
-    allowed keys -- 'compatibility' is allowed and deliberately not used
+    allowed keys; 'compatibility' is allowed and deliberately not used
     here, see _mutate_frontmatter_unknown_key), a name that differs from
     its own directory, and a three-character description."""
     return (
@@ -6142,7 +6142,7 @@ def _dupkey_frontmatter():
 
 def _reordered_frontmatter():
     """The same allowed keys as _good_frontmatter, in a different order,
-    still valid -- and its description is exactly DESCRIPTION_MAX
+    still valid, and its description is exactly DESCRIPTION_MAX
     characters, the upper boundary, which must also stay silent."""
     return (
         "---\n"
@@ -6158,7 +6158,7 @@ def _reordered_frontmatter():
 
 
 def _overmax_frontmatter():
-    """Description at DESCRIPTION_MAX + 1 -- the one character past the
+    """Description at DESCRIPTION_MAX + 1: the one character past the
     ceiling that must fire, isolated from every other frontmatter code."""
     return (
         "---\n"
@@ -6171,7 +6171,7 @@ def _overmax_frontmatter():
 
 def _plugin_fixture_skill(version):
     """A minimal, valid SKILL.md fixture at skills/proof-first/ whose
-    frontmatter metadata.version is the given string -- the source of
+    frontmatter metadata.version is the given string: the source of
     truth the plugin-manifest-version-mismatch fixtures below compare
     their manifests against."""
     return (
@@ -6222,7 +6222,7 @@ def _marketplace_manifest_json(version, name='proof-first', source='./'):
 
 def _good_plugin_manifests(root):
     """A skill fixture stating version '0.1.0' and both manifests agreeing
-    with it and with each other -- silent on plugin-manifest-version-
+    with it and with each other; silent on plugin-manifest-version-
     mismatch."""
     _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
     _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
@@ -6231,7 +6231,7 @@ def _good_plugin_manifests(root):
 
 def _bad_plugin_manifests(root):
     """The skill fixture states '0.1.0'; plugin.json states '9.9.9' instead
-    -- disagreeing with its own fixture SKILL.md, so
+    (disagreeing with its own fixture SKILL.md), so
     plugin-manifest-version-mismatch must fire naming plugin.json.
     marketplace.json is left agreeing with the skill so this root isolates
     the one code under test."""
@@ -6270,7 +6270,7 @@ def _marketplace_entry_missing_key_manifests(root):
     via the same construction _good_plugin_manifests uses, with 'license'
     removed from marketplace.json's plugins[0] entry only. plugin.json is
     left well-formed and version-matched, so this root isolates the
-    marketplace-entry half of plugin-manifest-invalid -- the half CR-01
+    marketplace-entry half of plugin-manifest-invalid: the half CR-01
     found untested."""
     _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
     _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
@@ -6282,12 +6282,12 @@ def _marketplace_entry_missing_key_manifests(root):
 def _required_key_matrix_root(root, position, key):
     """Build one cell of the required-key coverage matrix: well-formed,
     version-matched plugin and marketplace manifests with a single named
-    key deleted from the object named by `position` -- one of the two
+    key deleted from the object named by `position` (one of the two
     literal strings 'plugin.json' or "marketplace.json's plugin entry",
     chosen so a failure message reads cleanly and names which object the
-    key was deleted from. Its job is to prove plugin-manifest-invalid
+    key was deleted from). Its job is to prove plugin-manifest-invalid
     fires for every key PLUGIN_REQUIRED_KEYS declares, at every position
-    the docstring claims to enforce it -- not just the one key at the one
+    the docstring claims to enforce it, not just the one key at the one
     position a single hand-built fixture happens to sample, which is
     exactly the gap CR-01 left open."""
     _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
@@ -6306,7 +6306,7 @@ def _marketplace_entry_field_drift_manifests(root):
     good manifests via the same construction _good_plugin_manifests uses,
     with marketplace.json's plugins[0]['keywords'] changed to a value that
     disagrees with plugin.json's, while both remain present and
-    well-formed -- so this root fires plugin-manifest-invalid for the
+    well-formed, so this root fires plugin-manifest-invalid for the
     equality guard alone, and only for the equality guard, never the
     required-key loop (both sides still carry every key)."""
     _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
@@ -6319,8 +6319,8 @@ def _marketplace_entry_field_drift_manifests(root):
 def _publish_location_drift_manifests(root):
     """A root isolating publish-location-drift: plugin.json states one
     owner, marketplace.json's plugin entry states a different one for
-    'repository' -- both manifests are otherwise well-formed and version-
-    matched, so this root fires publish-location-drift only."""
+    'repository' (both manifests are otherwise well-formed and version-
+    matched), so this root fires publish-location-drift only."""
     _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
     _write(root / PLUGIN_MANIFEST_PATH, _plugin_manifest_json('0.1.0'))
     data = json.loads(_marketplace_manifest_json('0.1.0'))
@@ -6331,12 +6331,12 @@ def _publish_location_drift_manifests(root):
 def _mixed_url_form_manifests(root):
     """A root isolating the WR-01 false positive this task fixes: all
     three publish-location carrier positions name the same owner, acme,
-    but each writes it in a different GitHub URL syntax -- plugin.json's
+    but each writes it in a different GitHub URL syntax: plugin.json's
     `repository` in the SSH form, marketplace.json's plugin entry
     `repository` in the HTTPS form, and marketplace.json's `owner.url` in
     the scheme-less form. Built by the same construction
-    _good_plugin_manifests uses -- same required keys, same version
-    agreement with the fixture skill -- so this root is silent on
+    _good_plugin_manifests uses: same required keys, same version
+    agreement with the fixture skill, so this root is silent on
     plugin-manifest-version-mismatch and plugin-manifest-invalid and
     must be silent on publish-location-drift too, once _owner_segment
     normalises all three syntaxes to the same owner."""
@@ -6357,7 +6357,7 @@ def _mixed_url_form_manifests(root):
 def _mixed_url_form_drift_manifests(root):
     """Identical to _mixed_url_form_manifests except plugin.json's
     SSH-form `repository` names a different owner, other, from the
-    acme every other carrier position states -- the proof that
+    acme every other carrier position states: the proof that
     normalising URL syntax across the four forms did not also turn
     publish-location-drift into a tautology that never fires."""
     _write(root / 'skills' / 'proof-first' / 'SKILL.md', _plugin_fixture_skill('0.1.0'))
@@ -6378,9 +6378,9 @@ def _multi_skill_manifests(root):
     """A root isolating WR-03: two skill folders exist, each stating its
     own metadata.version, and the second's version differs from the
     first's. Built by the same construction _good_plugin_manifests
-    uses -- same manifests, same first skill fixture, same version
+    uses (same manifests, same first skill fixture, same version
     agreement between plugin.json, marketplace.json and the first
-    skill -- with a second skill folder added under skills/ so the
+    skill), with a second skill folder added under skills/ so the
     folder count is two rather than one. This root is expected to also
     trip unrelated catalog/frontmatter checks from the second skill
     folder; that noise is harmless, because the two assertions this
@@ -6573,8 +6573,8 @@ def _subblock_numbering():
 
 def _mc_numbering():
     """A registry allocating a small, self-contained MC set (MC-1, MC-2)
-    inside the Metric block -- distinct from the real repository's 8-ID
-    content, per this plan's fixture-isolation discipline."""
+    inside the Metric block (distinct from the real repository's 8-ID
+    content, per this plan's fixture-isolation discipline)."""
     return """## MC reserved blocks
 | Dimension | Range |
 |---|---|
@@ -6594,7 +6594,7 @@ def _mc_numbering():
 
 def _mc_checklist():
     """The matching MC checklist fixture, used for both the good and bad
-    mc-catalog-id-drift roots -- the divergence in the bad root comes from
+    mc-catalog-id-drift roots: the divergence in the bad root comes from
     the completeness-audit fixture omitting an ID, not from this file."""
     return """## MC rules
 
@@ -6614,14 +6614,14 @@ def _good_completeness_audit():
 
 
 def _bad_completeness_audit():
-    """Omits MC-2 -- present in NUMBERING.md and the checklist, missing
-    from this file, the divergence mc-catalog-id-drift must catch."""
+    """Omits MC-2 (present in NUMBERING.md and the checklist, missing
+    from this file), the divergence mc-catalog-id-drift must catch."""
     return "### MC-1 — Fixture metric rule one\n\nBody text for fixture rule one.\n"
 
 
 def _good_artifact_patterns():
     """All four frozen artifact-family headings, each with a short filler
-    body -- self-contained, not a copy of the real file's content."""
+    body (self-contained, not a copy of the real file's content)."""
     return (
         "## RFP and RFI response\n\nFixture body.\n\n"
         "## Solution proposal\n\nFixture body.\n\n"
@@ -6631,7 +6631,7 @@ def _good_artifact_patterns():
 
 
 def _bad_artifact_patterns():
-    """Omits '## Solution proposal' -- the missing-heading case
+    """Omits '## Solution proposal': the missing-heading case
     artifact-family-section-missing exists to catch."""
     return (
         "## RFP and RFI response\n\nFixture body.\n\n"
@@ -6662,7 +6662,7 @@ def _before_after_section(heading, cross_line=True, check_line=True, citation=No
 
 def _good_before_after():
     """All four frozen family headings, in the frozen order, each with a
-    ✗ line, a ✓ line, and at least one bare PF-/MC- token -- silent on
+    ✗ line, a ✓ line, and at least one bare PF-/MC- token; silent on
     both before-after-family-missing and before-after-citation-missing."""
     return "\n".join(
         _before_after_section(heading, citation=citation)
@@ -6676,8 +6676,8 @@ def _bad_before_after():
     """Combines three of the four conditions before-after-family-missing
     and before-after-citation-missing exist to catch, isolated from the
     fourth (heading order) because the ordering comparison is only
-    meaningful once all four headings are present -- see
-    _order_bad_before_after() for that case:
+    meaningful once all four headings are present (see
+    _order_bad_before_after() for that case):
     - '## Solution proposal' is missing entirely (family-missing, missing
       heading).
     - '## RFP and RFI response' is present but carries no ✓ line
@@ -6697,7 +6697,7 @@ def _bad_before_after():
 def _order_bad_before_after():
     """All four frozen headings present and each section complete and
     cited, but 'Executive summary' and 'Solution proposal' are swapped
-    relative to ARTIFACT_FAMILY_SECTIONS' own order -- isolates the
+    relative to ARTIFACT_FAMILY_SECTIONS' own order: isolates the
     ordering condition from the other three, which this fixture does not
     exercise at all (every section here is fully compliant on its own)."""
     return "\n".join([
@@ -6711,7 +6711,7 @@ def _order_bad_before_after():
 def _long_sentence_before_after():
     """All four frozen family headings, each complete and cited, except
     'Executive summary' carries a ✓ line whose single sentence is built
-    from 30 repeated filler words -- self-evidently over PF41_WORD_CEILING
+    from 30 repeated filler words, self-evidently over PF41_WORD_CEILING
     without writing prose whose length has to be counted by eye."""
     filler_sentence = ' '.join(['filler'] * 30) + '.'
     return "\n".join([
@@ -6726,7 +6726,7 @@ def _long_sentence_worked_examples():
     """A minimal skills/proof-first/references/worked-examples.md-shaped
     fixture: one '## PF-4.1' heading, one ✗ line, and one ✓ line whose
     sentence exceeds PF41_WORD_CEILING the same way
-    _long_sentence_before_after's does -- proves the second scan path is
+    _long_sentence_before_after's does: proves the second scan path is
     genuinely read, not merely listed in EXAMPLE_PROSE_PATHS."""
     filler_sentence = ' '.join(['filler'] * 30) + '.'
     return (
@@ -6742,7 +6742,7 @@ def _spelled_count_before_after():
     word-spelled cardinal followed by an ordinary noun (the firing
     path) and 'Executive summary' carries a ✓ line naming a capitalised
     two-token phrase whose first word is a cardinal (the proper-noun
-    exemption) -- exercising both conditions in the same fixture the
+    exemption), exercising both conditions in the same fixture the
     way _bad_before_after already does for the other example codes."""
     return "\n".join([
         _before_after_section(
@@ -6765,7 +6765,7 @@ def _rule_narration_before_after():
     path) and 'Demo and discovery material' carries a ✓ line pairing a
     listed connective with a word absent from NARRATION_META_TERMS (the
     deliberate silence that keeps the signature composite rather than a
-    bare connective ban) -- exercising both conditions in the same
+    bare connective ban), exercising both conditions in the same
     fixture the way _bad_before_after already does for the other
     example codes."""
     return "\n".join([
@@ -6784,7 +6784,7 @@ def _rule_narration_before_after():
 
 def _good_readme_install():
     """All three ordering headings present in the required order, and all
-    four install anchors present -- silent on both
+    four install anchors present; silent on both
     readme-install-path-missing and readme-before-after-order. Extended
     in 04-09 Task 1 to also carry a ballot-cross line, a check line, and
     an applied-rules footer line immediately after the before/after
@@ -6811,8 +6811,8 @@ def _bad_readme_install():
     """Missing two of the four readme-install-path-missing anchors (the
     skills-CLI command and the system-prompt path), and
     '## Before and after' placed after '## Status' rather than before it
-    -- both new codes fire on this one fixture, matching the task's own
-    bad-fixture description."""
+    (both new codes fire on this one fixture, matching the task's own
+    bad-fixture description)."""
     return (
         "# Proof First\n\n"
         "## What this is\n\nFixture body.\n\n"
@@ -6837,7 +6837,7 @@ def _readme_drift_before_after():
 
 def _readme_drift_before_after_bad():
     """Same three lines as _readme_drift_before_after(), but the check
-    line differs by one word from what README reproduces -- the drift
+    line differs by one word from what README reproduces: the drift
     readme-example-drift exists to catch."""
     return (
         f"{README_CROSS_CHAR} \"Fixture non-compliant passage.\"\n"
@@ -6870,7 +6870,7 @@ def _late_example_readme():
 
 def _no_example_readme():
     """Same headings and anchors as _good_readme_install(), but with no
-    ballot-cross line at all -- readme-example-lead-distance's other
+    ballot-cross line at all: readme-example-lead-distance's other
     firing condition."""
     return (
         "# Proof First\n\n"
@@ -6887,7 +6887,7 @@ def _no_example_readme():
 def _good_readme_layout():
     """A minimal README carrying a layout heading, a prose sentence
     explaining one marker in the quoted shape, and a fenced tree using
-    that same marker on at least one entry -- silent on
+    that same marker on at least one entry; silent on
     readme-layout-legend-drift."""
     return (
         "# Proof First\n\n"
@@ -6904,9 +6904,9 @@ def _good_readme_layout():
 def _bad_readme_layout():
     """A prose sentence explaining marker \"planned\", which the tree
     never uses, and a tree using marker \"exists\", which the prose
-    never mentions -- both mismatch directions in one fixture,
+    never mentions (both mismatch directions in one fixture,
     following _bad_before_after's documented practice of combining
-    conditions."""
+    conditions)."""
     return (
         "# Proof First\n\n"
         f"{README_LAYOUT_HEADING}\n\n"
@@ -6921,7 +6921,7 @@ def _bad_readme_layout():
 
 def _good_readme_output_style():
     """A minimal README naming README_OUTPUT_STYLE_PATH as a route and
-    naming one destination directory -- silent on
+    naming one destination directory; silent on
     readme-output-style-destination-missing. A dedicated fixture rather
     than a reuse of _good_readme_install(), which names the output-style
     path with no destination and would incidentally fire this code if
@@ -6936,7 +6936,7 @@ def _good_readme_output_style():
 
 def _bad_readme_output_style():
     """Same output-style route as _good_readme_output_style(), with no
-    destination directory named anywhere -- fires
+    destination directory named anywhere: fires
     readme-output-style-destination-missing (Phase 4, 04-13)."""
     return (
         "# Proof First\n\n"
@@ -6948,7 +6948,7 @@ def _bad_readme_output_style():
 
 def _no_route_readme_output_style():
     """A README naming neither README_OUTPUT_STYLE_PATH nor either
-    destination directory -- silent on readme-output-style-destination-missing:
+    destination directory; silent on readme-output-style-destination-missing:
     a README stating no output-style route has nothing for this code to
     say (Phase 4, 04-13)."""
     return (
@@ -6961,9 +6961,9 @@ def _no_route_readme_output_style():
 def _derivative_source_fixture_files():
     """Minimal fixture content for each of the five real
     DERIVATIVE_SOURCE_NAMES paths, used by derivative_good_root and
-    derivative_bad_root below. Content is arbitrary -- only its bytes
+    derivative_bad_root below. Content is arbitrary (only its bytes
     need to be stable so a sha256 over them is reproducible within one
-    self-test run."""
+    self-test run)."""
     return {
         'skills/proof-first/SKILL.md': "See PF-0.1 for details.\n",
         'skills/proof-first/references/deletion-test.md': "Fixture deletion-test body.\n",
@@ -6989,7 +6989,7 @@ def _good_derivative(digest):
     """A derivative body carrying a correct stamp, all three fixture
     rule headings (PF-0.1, MC-1, MC-5, matching _good_numbering()'s
     Allocated IDs table), and all four frozen artifact-family
-    headings -- the silent case for both skill-derivative-stale and
+    headings: the silent case for both skill-derivative-stale and
     derivative-rule-coverage-incomplete."""
     stamp = DERIVATIVE_STAMP_RE_TEMPLATE.format(paths=', '.join(DERIVATIVE_SOURCE_NAMES), digest=digest)
     families = '\n'.join(ARTIFACT_FAMILY_SECTIONS)
@@ -7006,7 +7006,7 @@ def _stale_derivative(digest):
     """A derivative body carrying a stamp whose digest does not match a
     fresh hash of the fixture sources (simulating a source edit with no
     regeneration), and missing the MC-5 rule heading and the 'Executive
-    summary' artifact-family heading -- isolates
+    summary' artifact-family heading: isolates
     skill-derivative-stale's digest-mismatch condition and
     derivative-rule-coverage-incomplete's missing-heading /
     missing-family conditions in one fixture."""
@@ -7023,7 +7023,7 @@ def _stale_derivative(digest):
 
 def _no_stamp_derivative():
     """A derivative body with no line matching the stamp pattern at
-    all, but every rule and family heading otherwise present -- isolates
+    all, but every rule and family heading otherwise present: isolates
     skill-derivative-stale's missing-stamp condition from
     derivative-rule-coverage-incomplete, which stays silent on this
     fixture."""
@@ -7038,7 +7038,7 @@ def _no_stamp_derivative():
 
 def _comparison_derivative(carries_stale_claim):
     """A minimal derivative body for derivative-comparison-claim-stale's
-    fixtures. Carries no stamp and no rule headings -- skill-derivative-stale
+    fixtures. Carries no stamp and no rule headings: skill-derivative-stale
     and derivative-rule-coverage-incomplete fire on these roots and are
     asserted on elsewhere; what these fixtures isolate is whether the
     comparison claim is present."""
@@ -7088,8 +7088,8 @@ def _benchrun_results_file():
 def _comparison_results_file():
     """A stand-in for the committed route-equivalence report. Its CONTENTS
     are irrelevant to check_derivative_comparison_claim, which tests only
-    that the path exists -- the fixture says so plainly rather than
-    implying the check reads it."""
+    that the path exists (the fixture says so plainly rather than
+    implying the check reads it)."""
     return (
         "# Route equivalence (fixture stand-in)\n\n"
         "This file's existence is the whole signal. The check does not read it.\n"
@@ -7098,7 +7098,7 @@ def _comparison_results_file():
 
 def _good_skill_family_gate():
     """A SKILL.md whose self-check section names both anchors the
-    family-line gate requires -- the silent case for
+    family-line gate requires: the silent case for
     skill-family-line-gate-missing."""
     return (
         "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
@@ -7110,7 +7110,7 @@ def _good_skill_family_gate():
 
 def _bad_skill_family_gate():
     """A SKILL.md whose self-check section is present but names neither
-    anchor -- the firing case for skill-family-line-gate-missing."""
+    anchor: the firing case for skill-family-line-gate-missing."""
     return (
         "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
@@ -7120,7 +7120,7 @@ def _bad_skill_family_gate():
 
 def _good_skill_family_order_gate():
     """A SKILL.md whose self-check section names both anchors the
-    ordering gate requires -- the silent case for
+    ordering gate requires: the silent case for
     skill-family-order-gate-missing."""
     return (
         "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
@@ -7134,7 +7134,7 @@ def _good_skill_family_order_gate():
 def _bad_skill_family_order_gate():
     """A SKILL.md whose self-check section is present, and even names
     both of skill-family-line-gate-missing's own anchors, but names
-    neither ordering anchor -- the firing case for
+    neither ordering anchor: the firing case for
     skill-family-order-gate-missing, isolating the ordering check from
     its presence-only sibling."""
     return (
@@ -7149,7 +7149,7 @@ def _good_results_breakdown():
     """A minimal results file whose verdict-breakdown bullets all agree
     with their own enumerations: one 'xN' multiplier item, one
     single-item enumeration, and one zero count with no parenthetical at
-    all -- the silent case for results-breakdown-count-mismatch."""
+    all: the silent case for results-breakdown-count-mismatch."""
     return (
         "# Fixture results\n\n"
         "### Arm A\n\n"
@@ -7162,7 +7162,7 @@ def _good_results_breakdown():
 def _bad_results_breakdown():
     """_good_results_breakdown()'s content with the 'conformant' bullet's
     stated count raised from 3 to 4 while its enumeration (still summing
-    to 3) is left untouched -- the firing case for
+    to 3) is left untouched: the firing case for
     results-breakdown-count-mismatch."""
     return (
         "# Fixture results\n\n"
@@ -7188,8 +7188,8 @@ def _sources_table(rows):
 
 def _good_sources():
     """Every silent direction in one file: a verified row carrying both a
-    URL and a real retrieval date, and two unverified rows -- one whose
-    Where cell is a placeholder and one carrying neither URL nor date --
+    URL and a real retrieval date, and two unverified rows (one whose
+    Where cell is a placeholder and one carrying neither URL nor date),
     which are out of scope whatever they say."""
     return _sources_table([
         '| "A confirmed book" | An author | book | verified | https://example.com/a (retrieved 2026-09-21) |',
@@ -7199,7 +7199,7 @@ def _good_sources():
 
 
 def _good_sources_all_verified():
-    """_good_sources() with no unverified rows left -- the completeness
+    """_good_sources() with no unverified rows left: the completeness
     direction source-gate-incomplete must stay silent on when a gate
     declares PASSED."""
     return _sources_table([
@@ -7212,9 +7212,9 @@ def _bad_sources():
     """Three firing directions at once: a verified row with no URL, a
     verified row with a URL but no retrieval date, and a verified row
     whose date is well-shaped but not a real calendar date. The fourth row
-    is unverified -- out of scope for source-row-unconfirmed, so it does
+    is unverified (out of scope for source-row-unconfirmed, so it does
     not change this fixture's count of three, and present so that pairing
-    this file with a PASSED gate gives source-gate-incomplete a trigger."""
+    this file with a PASSED gate gives source-gate-incomplete a trigger)."""
     return _sources_table([
         '| "No URL at all" | An author | book | verified | to confirm at LEG-04 |',
         '| "URL but no date" | An author | book | verified | https://example.com/c |',
@@ -7226,7 +7226,7 @@ def _bad_sources():
 def _malformed_sources():
     """A row that lost its Status column, so its provenance cannot be read
     at all. Skipping it silently would let a row with no status be treated
-    as out of scope -- the failure a checker exists to prevent."""
+    as out of scope: the failure a checker exists to prevent."""
     return _sources_table([
         '| "A row missing a column" | An author | book | https://example.com/e (retrieved 2026-09-21) |',
     ])
@@ -7268,7 +7268,7 @@ def _claim_results_corpus(root):
 
 def _legal_review(gate='PASSED', review_date='2026-09-21'):
     """A minimal LEGAL-REVIEW.md carrying exactly one gate line and one
-    review-date line -- the two markers both 06-02 codes read."""
+    review-date line: the two markers both 06-02 codes read."""
     return (
         "# Fixture legal review\n\n"
         f"Review date: {review_date}\n\n"
@@ -7280,7 +7280,7 @@ def _legal_review(gate='PASSED', review_date='2026-09-21'):
 def _notices_statements(dates):
     """The three framework statements, bounded exactly as NOTICES.md bounds
     them, each carrying the Last reviewed date supplied for it. A None date
-    omits the line entirely -- the no-date firing direction."""
+    omits the line entirely: the no-date firing direction."""
     out = ["## Framework statements\n"]
     for heading, date in zip(
         ('Command of the Message', 'MEDDIC, MEDDICC, and related marks', 'Challenger'),
@@ -7298,7 +7298,7 @@ def _notices_statements(dates):
 
 def _capitalized_skill_family_gate():
     """A SKILL.md whose self-check section names both family-line anchors
-    with initial capitals -- proving check_skill_family_line_gate()'s
+    with initial capitals, proving check_skill_family_line_gate()'s
     WR-02 case-insensitivity fix: this must stay silent for
     skill-family-line-gate-missing, exactly as it already does for its
     case-insensitive sibling check_skill_family_order_gate()."""
@@ -7312,29 +7312,29 @@ def _capitalized_skill_family_gate():
 
 def _artifact_patterns_with_source_label():
     """_good_artifact_patterns()'s content, with one frozen source-coined
-    label ('economic buyer') inserted -- the firing case for
+    label ('economic buyer') inserted: the firing case for
     source-label-in-skill-content."""
     return _good_artifact_patterns() + "\n\nDiane Osoria, the economic buyer, signs.\n"
 
 
 def _artifact_patterns_with_metric_word():
     """_good_artifact_patterns()'s content, with the ordinary-English word
-    'metric' inserted -- deliberately excluded from SOURCE_COINED_LABELS,
+    'metric' inserted (deliberately excluded from SOURCE_COINED_LABELS),
     so this must stay silent for source-label-in-skill-content."""
     return _good_artifact_patterns() + "\n\nName the metric and its baseline.\n"
 
 
 def _mc_rule_in_skill_bad_skill():
-    """An MC-shaped rule heading defined directly inside a SKILL.md -- the
+    """An MC-shaped rule heading defined directly inside a SKILL.md: the
     structural violation mc-rule-in-skill exists to catch."""
     return "### MC-1 — Rule blended directly into SKILL.md\n\nBody text.\n"
 
 
 def _mc_numbering_for_count():
     """A self-contained MC registry spread across two dimension blocks,
-    3 rows total -- deliberately different from the real repository's
+    3 rows total (deliberately different from the real repository's
     8-checks-across-8-dimensions, so a fixture can never pass by
-    coincidence."""
+    coincidence)."""
     return """## MC reserved blocks
 | Dimension | Range |
 |---|---|
@@ -7444,7 +7444,7 @@ def catalogue_matches_registry():
     scope assertion over a frozen path -> reading-checks map, asserted without
     tracing by scanning each check_* body for the paths it names. Measured on
     2026-09-22 against the three readers whose absence from this module's
-    comments produced the round's findings -- check_record_citations reaches
+    comments produced the round's findings: check_record_citations reaches
     its paths through CITATION_RECORD_PATHS, check_source_gate_incomplete
     through SOURCES_PATH and LEGAL_REVIEW_PATH, and check_readme_claim_unsourced
     through CLAIM_SOURCE_GLOB plus the _claim_region helper. Every path the
@@ -7454,7 +7454,7 @@ def catalogue_matches_registry():
     the unqualified form of that sentence is false: check_readme_claim_unsourced
     does carry the literal 'README.md' in its body, twice, as the subject label
     on the violation tuples it returns. A scan keyed on string shape would pick
-    it up and would be reading a label, not a read -- which is the same failure
+    it up and would be reading a label, not a read, which is the same failure
     in the other direction."""
     catalogue = docstring_catalogue_codes()
     if catalogue is None:
@@ -7674,7 +7674,7 @@ def self_test():
         # Seventh/eighth roots isolate catalog-id-drift: bad_catalog_root's
         # SKILL.md defines PF-9.9 (no registry row anywhere) and its
         # checklist.md is missing PF-0.1 (registered in NUMBERING.md but
-        # absent from the checklist) -- both divergence directions in one
+        # absent from the checklist): both divergence directions in one
         # fixture. good_catalog_root keeps all three files in agreement.
         _write(bad_catalog_root / 'NUMBERING.md', _good_numbering())
         _write(bad_catalog_root / 'skills' / 'proof-first' / 'SKILL.md', _bad_skill())
@@ -7747,7 +7747,7 @@ def self_test():
         # and the checklist in agreement, with no MC-shaped heading in
         # SKILL.md. mc_bad_root's completeness-audit fixture omits MC-2
         # (firing mc-catalog-id-drift) and its SKILL.md carries an
-        # MC-shaped rule heading (firing mc-rule-in-skill) -- both codes
+        # MC-shaped rule heading (firing mc-rule-in-skill): both codes
         # isolated from each other since neither check reads the other
         # check's source file.
         _write(mc_good_root / 'NUMBERING.md', _mc_numbering())
@@ -7871,7 +7871,7 @@ def self_test():
         # unverified row; gate_open_root declares OPEN over that same
         # incomplete list, which is honest and must stay silent;
         # gate_unreadable_root has no gate line and gate_double_root has
-        # two -- neither is a passed gate and neither may be silent.
+        # two: neither is a passed gate and neither may be silent.
         _write(gate_clean_root / LEGAL_REVIEW_PATH, _legal_review())
         _write(gate_clean_root / SOURCES_PATH, _good_sources_all_verified())
         _write(gate_incomplete_root / LEGAL_REVIEW_PATH, _legal_review())
@@ -8007,7 +8007,7 @@ def self_test():
         # citation; beforeafter_order_bad_root isolates the heading-order
         # condition, which only applies once all four headings are present.
         # None of these roots ship NUMBERING.md, examples/deal-brief.md, or
-        # skills/ -- every other check silently returns no violations for a
+        # skills/: every other check silently returns no violations for a
         # root missing the file it reads, isolating the two new codes.
         _write(beforeafter_good_root / BEFORE_AFTER_PATH, _good_before_after())
         _write(beforeafter_bad_root / BEFORE_AFTER_PATH, _bad_before_after())
@@ -8035,7 +8035,7 @@ def self_test():
         # conditions. spelled_brief_root ships only the real repository's
         # examples/deal-brief.md, proving the brief's deliberate
         # out-of-scope decision is a tested assertion, not a docstring
-        # claim -- neither root ships NUMBERING.md or skills/.
+        # claim (neither root ships NUMBERING.md or skills/).
         _write(spelled_bad_root / BEFORE_AFTER_PATH, _spelled_count_before_after())
         _write(
             spelled_brief_root / 'examples' / 'deal-brief.md',
@@ -8058,7 +8058,7 @@ def self_test():
         # repository's. The good root's derivatives carry a matching digest
         # and every required heading; the bad root's output-styles derivative
         # carries a stale digest and two missing headings, and its
-        # prompts derivative carries no stamp at all but every heading --
+        # prompts derivative carries no stamp at all but every heading:
         # isolating skill-derivative-stale's missing-stamp condition from
         # derivative-rule-coverage-incomplete, which stays silent on that file.
         _write(derivative_good_root / 'NUMBERING.md', _good_numbering())
@@ -8079,7 +8079,7 @@ def self_test():
         # two. The good root ships the results file and derivatives that do
         # not carry the stale sentence. The bad root ships the results file
         # and one derivative that does. The third root ships the stale
-        # sentence in BOTH derivatives and NO results file -- the case where
+        # sentence in BOTH derivatives and NO results file: the case where
         # the sentence is simply true, and the one a presence-only check
         # would false-positive on.
         _write(comparison_good_root / ROUTES_RESULTS_PATH, _comparison_results_file())
@@ -8097,7 +8097,7 @@ def self_test():
         # (benchmark-run-claim-stale, Phase 6 06-06): the same two-sided
         # conjunction as its sibling above, so the same three roots. The bad
         # root carries the stale sentence in a SKILL SOURCE rather than a
-        # derivative -- that is the path the real 2026-09-21 defect took, and
+        # derivative: that is the path the real 2026-09-21 defect took, and
         # the path the sibling code cannot see.
         _write(benchrun_good_root / BENCHMARK_RESULTS_PATH, _benchrun_results_file())
         _write(benchrun_good_root / DERIVATIVE_SOURCE_NAMES[3], _benchrun_claim_file(False))
@@ -8118,7 +8118,7 @@ def self_test():
         # two of the four install anchors and carries '## Before and
         # after' after '## Status' rather than before it, so both new
         # codes fire. Neither root ships NUMBERING.md, examples/, or
-        # skills/ -- every other check silently returns no violations for
+        # skills/: every other check silently returns no violations for
         # a root missing the file it reads, isolating the two new codes.
         _write(readme_install_good_root / 'README.md', _good_readme_install())
         _write(readme_install_bad_root / 'README.md', _bad_readme_install())
@@ -8139,7 +8139,7 @@ def self_test():
         # (readme-example-lead-distance, Phase 4 04-09 Task 2): the late
         # root's first ballot-cross line sits past
         # README_FIRST_EXAMPLE_MAX_LINE; the none root carries no
-        # ballot-cross line at all -- both firing conditions proven
+        # ballot-cross line at all: both firing conditions proven
         # separately, neither standing in for the other.
         _write(readme_lead_late_root / 'README.md', _late_example_readme())
         _write(readme_lead_none_root / 'README.md', _no_example_readme())
@@ -8148,7 +8148,7 @@ def self_test():
         # (readme-layout-legend-drift, Phase 4 04-09 Task 3): the good
         # root's legend and tree agree on one marker; the bad root's
         # legend explains a marker the tree never uses while the tree
-        # uses a second marker the legend never mentions -- both
+        # uses a second marker the legend never mentions: both
         # mismatch directions in one fixture.
         _write(readme_layout_good_root / 'README.md', _good_readme_layout())
         _write(readme_layout_bad_root / 'README.md', _bad_readme_layout())
@@ -8324,7 +8324,7 @@ def self_test():
         readme_output_style_no_route_codes = {line.split(' ', 1)[0] for _, line in run_all_checks(readme_output_style_no_route_root)}
 
         # Union the new roots' codes into the bad-code set so the coverage
-        # loop below needs no edit -- it still just checks "did the code
+        # loop below needs no edit: it still just checks "did the code
         # fire on some known-bad fixture and stay silent on good_root".
         bad_codes |= (
             unparseable_codes | escaping_codes | bad_license_codes | readme_bad_codes
@@ -8405,7 +8405,7 @@ def self_test():
             print("FAIL: readme-example-drift did not fire on the drifted before-after fixture")
             all_ok = False
         if 'readme-example-drift' in readme_install_good_codes:
-            print("FAIL: readme-example-drift fired on readme_install_good_root, which ships no examples/before-after.md -- both-files-required precondition violated")
+            print("FAIL: readme-example-drift fired on readme_install_good_root, which ships no examples/before-after.md (both-files-required precondition violated)")
             all_ok = False
         if 'readme-example-drift' in good_codes:
             print("FAIL: readme-example-drift fired on a fixture root shipping no README.md")
@@ -8448,7 +8448,7 @@ def self_test():
             print("FAIL: derivative-comparison-claim-stale did not fire on a derivative carrying the stale claim beside a committed results file")
             all_ok = False
         if 'derivative-comparison-claim-stale' in comparison_no_results_codes:
-            print("FAIL: derivative-comparison-claim-stale fired on the stale claim with no results file -- the sentence is true there")
+            print("FAIL: derivative-comparison-claim-stale fired on the stale claim with no results file: the sentence is true there")
             all_ok = False
         if 'derivative-comparison-claim-stale' in good_codes:
             print("FAIL: derivative-comparison-claim-stale fired on a fixture root shipping no derivative files")
@@ -8462,7 +8462,7 @@ def self_test():
             print("FAIL: benchmark-run-claim-stale did not fire on a skill source carrying the stale claim beside a committed benchmark")
             all_ok = False
         if 'benchmark-run-claim-stale' in benchrun_no_results_codes:
-            print("FAIL: benchmark-run-claim-stale fired on the stale claim with no benchmark results file -- the sentence is true there")
+            print("FAIL: benchmark-run-claim-stale fired on the stale claim with no benchmark results file: the sentence is true there")
             all_ok = False
         if 'benchmark-run-claim-stale' in good_codes:
             print("FAIL: benchmark-run-claim-stale fired on a fixture root shipping no skill sources and no derivatives")
@@ -8516,7 +8516,7 @@ def self_test():
             print("FAIL: example-sentence-length did not fire on the over-ceiling examples/before-after.md fixture")
             all_ok = False
         if 'example-sentence-length' not in sentence_skill_bad_codes:
-            print("FAIL: example-sentence-length did not fire on the over-ceiling worked-examples.md fixture -- the second scan path is not being read")
+            print("FAIL: example-sentence-length did not fire on the over-ceiling worked-examples.md fixture: the second scan path is not being read")
             all_ok = False
         if 'example-sentence-length' in good_codes:
             print("FAIL: example-sentence-length fired on a fixture root shipping neither example file")
@@ -8911,14 +8911,14 @@ def self_test():
             print("FAIL: plugin-manifest-invalid did not fire when marketplace.json's plugin entry disagreed with plugin.json on a MARKETPLACE_ENTRY_EQUAL_KEYS field")
             all_ok = False
         # The fire direction is plugin_marketplace_entry_drift_codes above;
-        # these two prove the exclusion is real rather than merely stated --
+        # these two prove the exclusion is real rather than merely stated:
         # homepage/repository's mixed-URL-form root must stay silent, and so
         # must the plain well-formed, agreeing root.
         if 'plugin-manifest-invalid' in plugin_good_codes:
             print("FAIL: plugin-manifest-invalid fired on well-formed, agreeing manifests")
             all_ok = False
         if 'plugin-manifest-invalid' in plugin_mixed_url_codes:
-            print("FAIL: plugin-manifest-invalid fired on carriers naming the same owner in different GitHub URL forms -- homepage/repository must stay excluded from the equality set")
+            print("FAIL: plugin-manifest-invalid fired on carriers naming the same owner in different GitHub URL forms: homepage/repository must stay excluded from the equality set")
             all_ok = False
         if 'plugin-manifest-invalid' in good_codes:
             print("FAIL: plugin-manifest-invalid fired on a fixture root shipping no .claude-plugin/ directory")
@@ -8958,8 +8958,8 @@ def self_test():
         # Required-key coverage matrix (Task 2, closing the class CR-01
         # exposed): every member of PLUGIN_REQUIRED_KEYS must make
         # plugin-manifest-invalid fire at both positions the docstring
-        # claims to enforce it -- plugin.json's top-level object and
-        # marketplace.json's plugin entry -- not just the one key at the
+        # claims to enforce it (plugin.json's top-level object and
+        # marketplace.json's plugin entry), not just the one key at the
         # one position a single hand-built fixture happens to sample.
         # Presence is asserted, never exclusivity: deleting 'version'
         # legitimately also trips plugin-manifest-version-mismatch, and

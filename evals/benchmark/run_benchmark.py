@@ -6,7 +6,7 @@ into one figure: mechanical proxy-violation counts (computed by loading
 evals/lint.py's lint() function and running it over generated text) and judged
 persuasion (scored by a blind pairwise Claude judge with labels stripped). It
 does not itself apply the deletion test PF-3.1 states, and a mechanical proxy
-count is not a compliance verdict -- see evals/lint.py's own docstring for
+count is not a compliance verdict: see evals/lint.py's own docstring for
 that disclaimer stated in full; this file reuses it rather than restating it.
 
 It imports only the Python standard library: argparse, datetime, json,
@@ -32,7 +32,7 @@ Usage:
   python3 evals/benchmark/run_benchmark.py --report-only [--raw-dir PATH] [--out PATH]
       Offline recompute: reads every committed record under --raw-dir,
       recomputes every mean and range, and rewrites RESULTS.md. Makes zero
-      subprocess calls and zero network calls -- the self-test proves this by
+      subprocess calls and zero network calls; the self-test proves this by
       replacing subprocess.run with a function that raises.
 """
 
@@ -52,7 +52,7 @@ BENCHMARK_DIR = pathlib.Path(__file__).resolve().parent
 
 # The four family names are skills/proof-first/references/artifact-patterns.md's
 # own section headings (RFP and RFI response, Solution proposal, Executive
-# summary, Demo and discovery material). Frozen -- a fifth value or a missing
+# summary, Demo and discovery material). Frozen: a fifth value or a missing
 # one is a load_scenarios() error, never a silent pass-through.
 FAMILIES = ('rfp-rfi', 'solution-proposal', 'executive-summary', 'demo-discovery')
 CONDITIONS = ('skill-off', 'skill-on')
@@ -70,7 +70,7 @@ RESULTS_PATH = BENCHMARK_DIR / 'RESULTS.md'
 
 # Tokens that would cue the skill-off condition toward this project's own
 # disciplined-prose vocabulary rather than measuring default, unguided model
-# behavior -- checked against every scenario prompt by self_test().
+# behavior; checked against every scenario prompt by self_test().
 FORBIDDEN_PROMPT_TOKENS = ('PF-', 'MC-', 'proof-first', 'proof first', 'deletion test')
 
 # Every field a generation record must carry (Decision 7's frozen schema).
@@ -89,8 +89,8 @@ class SessionFailedError(RuntimeError):
     Carries the exit code (or -1 for a non-exit-code failure) and a stderr /
     reason string, so the caller (run_matrix, or this file's own self-test
     acting as a single-cell caller) records a diagnosable `unscoreable`
-    reason instead of scoring stdout -- which, on a non-timeout failure, is
-    typically a short error string rather than real generated text -- as if
+    reason instead of scoring stdout (which, on a non-timeout failure, is
+    typically a short error string rather than real generated text) as if
     it were real data. Copied in shape from
     evals/conformance/run_conformance.py's SessionFailedError, guarding the
     same Pitfall 1 bug class documented there in full (MOD-04's
@@ -105,14 +105,14 @@ class SessionFailedError(RuntimeError):
 
 
 def _git_blob_sha(skill_src):
-    """Return the git blob SHA of skill_src/SKILL.md -- the actual file this
+    """Return the git blob SHA of skill_src/SKILL.md: the actual file this
     run copies into every skill-on session, not necessarily the repo's HEAD
     version.
 
     Copied verbatim in shape from evals/conformance/run_conformance.py's
     _git_blob_sha(). `git hash-object` is content-addressed and needs no
     repo relationship to the target path, so it reports the correct SHA for
-    a working-tree copy or any other directory shape -- unlike `git
+    a working-tree copy or any other directory shape, unlike `git
     rev-parse HEAD:...`, which silently reports the wrong SHA for any
     materialised non-HEAD skill copy (the bug that function's own docstring
     documents fixing in this repo's history).
@@ -139,7 +139,7 @@ def _git_blob_sha(skill_src):
 def _write_json_atomic(path, record):
     """Write `record` to `path` as UTF-8 JSON with ensure_ascii=False.
 
-    pathlib.Path.write_text() opens, writes, and closes in one call -- no
+    pathlib.Path.write_text() opens, writes, and closes in one call: no
     separate flush helper is needed here, unlike
     evals/conformance/run_conformance.py's append-mode results handle
     (_write_result_line()), because this module writes one file per record
@@ -155,11 +155,11 @@ def load_scenarios(path=None):
     Raises ValueError, naming the problem, for: zero scenarios in the file, a
     duplicate `id`, a scenario missing `family`, or a `family` value outside
     the four frozen FAMILIES. Never renders an empty or malformed scenario
-    file as a successful load. Does NOT check that every family is covered --
+    file as a successful load. Does NOT check that every family is covered:
     that is a self-test-only completeness assertion over the shipped file
     (see self_test()'s family-coverage case), not a property this generic
     loader enforces on every caller (an intermediate, partially-populated
-    scenarios.json -- such as the one this plan's own Task 1 ships -- is a
+    scenarios.json, such as the one this plan's own Task 1 ships, is a
     legitimate input to this function).
     """
     path = pathlib.Path(path) if path is not None else SCENARIOS_PATH
@@ -229,7 +229,7 @@ def _unscoreable_generation_record(model, effort, condition, scenario, repeat, s
     self-test acting as a single-cell caller) after a SessionFailedError, and
     also matches the shape run_generation() itself uses when a session
     "succeeds" (exit 0, is_error false) but returns empty or whitespace-only
-    text -- either way, a failure is never written as a zero-violation
+    text: either way, a failure is never written as a zero-violation
     generation (must_haves, EVAL-05 empty edge).
     """
     skill_sha = _git_blob_sha(skill_src) if condition == 'skill-on' else None
@@ -261,7 +261,7 @@ def run_generation(model, effort, condition, scenario, repeat, skill_src, timeou
     resulting record to its frozen filename template, and return
     (record, wrote_new).
 
-    `wrote_new` is False when the cell's raw file already existed -- no
+    `wrote_new` is False when the cell's raw file already existed: no
     subprocess call is made in that case, the resumability property the
     whole matrix depends on (05-RESEARCH.md's skip-if-exists pattern, copied
     from SimpleEnglish's `generate()`).
@@ -270,13 +270,13 @@ def run_generation(model, effort, condition, scenario, repeat, skill_src, timeou
     envelope, or an unparseable envelope. The caller (run_matrix, or this
     file's own self-test acting as a single-cell caller) is responsible for
     catching that and writing an `unscoreable` record instead of letting the
-    failure propagate out of the whole run -- see
-    _unscoreable_generation_record().
+    failure propagate out of the whole run (see
+    _unscoreable_generation_record()).
 
     A session that exits 0 with `is_error: false` but returns empty or
     whitespace-only text is NOT an error from `claude -p`'s point of view,
     so it does not raise; this function instead writes and returns a record
-    with `verdict: "unscoreable"` and a reason, directly -- never a record
+    with `verdict: "unscoreable"` and a reason, directly, never a record
     with empty text left un-flagged as `generated`.
     """
     raw_dir = pathlib.Path(raw_dir) if raw_dir is not None else RAW_DIR
@@ -358,7 +358,7 @@ def _assert_family_coverage(scenarios):
     than 2 scenarios in `scenarios`.
 
     This is a self-test-only completeness assertion over the shipped
-    scenarios.json -- load_scenarios() itself does not enforce this (see its
+    scenarios.json: load_scenarios() itself does not enforce this (see its
     own docstring): an intermediate, partially-populated scenario file is a
     legitimate input to that generic loader, but the SHIPPED file must cover
     every family with at least 2 scenarios each.
@@ -381,8 +381,8 @@ def run_matrix(models, conditions, scenarios, repeats, skill_src, raw_dir, timeo
     own words: exactly one call site writes any given raw path, and this
     runner never parallelises onto a shared path.
 
-    `generation_fn` defaults to run_generation() -- which already skips a
-    cell whose raw file exists and makes no subprocess call for it -- but
+    `generation_fn` defaults to run_generation() (which already skips a
+    cell whose raw file exists and makes no subprocess call for it), but
     self_test() injects stubs with the identical keyword signature so the
     enumeration order, the skip-if-exists property, and the durability-on-
     interruption property are all checkable offline, with no `claude`
@@ -390,15 +390,15 @@ def run_matrix(models, conditions, scenarios, repeats, skill_src, raw_dir, timeo
 
     On SessionFailedError from `generation_fn`, writes an `unscoreable`
     record carrying the real reason to the cell's raw path rather than
-    raising out of the loop and losing the rest of the run -- an
+    raising out of the loop and losing the rest of the run: an
     interruption by any OTHER exception type (a genuine process kill, or a
     self-test-injected KeyboardInterrupt) still propagates immediately,
     leaving on disk exactly the records already written by cells before it.
 
     Returns the full list of (model, condition, scenario_id, repeat) tuples
-    this call enumerated, in the documented deterministic order -- derived
+    this call enumerated, in the documented deterministic order (derived
     from the JSON array order of `scenarios` and the caller-supplied
-    `models`/`conditions`/`repeats`, never from dict iteration order.
+    `models`/`conditions`/`repeats`, never from dict iteration order).
     """
     raw_dir = pathlib.Path(raw_dir) if raw_dir is not None else RAW_DIR
     todo = []
@@ -446,9 +446,9 @@ JUDGEMENT_RECORD_FIELDS = (
 
 # The judge reply is validated against this schema in Python after parsing,
 # regardless of what --json-schema enforced on the CLI side (T-05-13). One
-# call per (pair, order) must produce scores for BOTH anonymous texts -- the
+# call per (pair, order) must produce scores for BOTH anonymous texts: the
 # 96-judge-call total in 05-RESEARCH.md Decision 4 (48 pairs x 2 orders) only
-# balances if a single call scores both texts, not one -- so JUDGE_SCHEMA
+# balances if a single call scores both texts, not one, so JUDGE_SCHEMA
 # nests the three required 0-10 integer dimension keys under two top-level
 # keys, text_a and text_b, rather than a single flat 3-key object. This is a
 # documented refinement of the plan's own "JUDGE_SCHEMA ... requiring exactly
@@ -474,7 +474,7 @@ JUDGE_SCHEMA = {
 RESULTS_SECTION_HEADINGS = ('## Mechanical proxy counts', '## Judged persuasion')
 
 # The caveats EVAL-10 requires, named as dict keys so build_results_md()
-# builds its caveats section FROM this constant -- the list this file's own
+# builds its caveats section FROM this constant: the list this file's own
 # self-test checks against cannot silently drift from what the renderer
 # actually emits, because both read the same keys. No count is stated here
 # on purpose: a literal above the tuple it counts is what drifted when
@@ -494,8 +494,8 @@ CAVEAT_TEXT = {
     'position bias': (
         'Position bias: every judged pair is scored in both orders (order1/order2, with which '
         'text is labeled A and which is labeled B swapped) and the two orders are averaged per '
-        'dimension before this report reads them -- that averaging is what cancels position bias, '
-        'not merely a disclosure that it exists.'
+        'dimension before this report reads them, with averaging canceling position bias rather '
+        'than merely disclosing that it exists.'
     ),
     'judge-family bias': (
         'Judge-family bias: the judge is a Claude model and the texts are Claude output, so '
@@ -509,7 +509,7 @@ CAVEAT_TEXT = {
     ),
     'proxy provenance': (
         'Proxy provenance: the mechanical proxy counts above come from evals/lint.py, whose own '
-        'docstring states it counts observable proxies for the rules, not the rules themselves -- '
+        'docstring states it counts observable proxies for the rules, not the rules themselves; '
         'a violation count is not a compliance verdict on a document.'
     ),
     'sample size': (
@@ -521,7 +521,7 @@ CAVEAT_TEXT = {
     ),
     'judge construct validity': (
         'Judge construct validity: the scores under Judged persuasion are one language model\'s '
-        'rating of these texts against the rubric build_judge_prompt() sends it -- a proxy for '
+        'rating of these texts against the rubric build_judge_prompt() sends it; a proxy for '
         'how a technical evaluator might react, not a measurement of real buyer behavior or of '
         'any commercial outcome. No human evaluator scored any of these texts, and no score here '
         'should be read as predicting one.'
@@ -537,11 +537,11 @@ def build_judge_prompt(text_a, text_b):
     ordinary language rather than this project's own rule vocabulary. The
     built string must never contain a condition name ('skill-on'/
     'skill-off'), this project's name ('proof-first'/'Proof First'), or a
-    PF-/MC- rule-namespace token -- self_test()'s label-stripping assertion
+    PF-/MC- rule-namespace token: self_test()'s label-stripping assertion
     scans this function's OUTPUT, not its source, so the check is against
     what the judge model actually sees.
 
-    `text_a`/`text_b` are embedded verbatim -- the two texts reach the judge
+    `text_a`/`text_b` are embedded verbatim: the two texts reach the judge
     exactly as the generation records stored them, UTF-8 and unnormalised,
     with no transformation beyond the label-stripping this function already
     performs by never naming which condition produced which text. No
@@ -551,21 +551,21 @@ def build_judge_prompt(text_a, text_b):
     The persuasive_force dimension is worded to ask a question the clarity
     dimension does not (a short, active-voiced, one-claim-per-sentence text
     can still read as a checklist and score low on persuasive_force while
-    scoring high on clarity) -- 05-RESEARCH.md Decision 5's own requirement.
+    scoring high on clarity), per 05-RESEARCH.md Decision 5's own requirement.
     """
     return (
         'You are evaluating two pieces of presales writing, labeled TEXT A and TEXT B below. '
         'Score EACH text independently on three dimensions, each an integer from 0 to 10. Score '
-        'each text on its own merits -- do not let one text\'s score influence the other\'s.\n\n'
+        'each text on its own merits: do not let one text\'s score influence the other\'s.\n\n'
         'Dimensions:\n'
-        '1. evidence -- does every claim in the text carry a number, a named source, or an '
+        '1. evidence: does every claim in the text carry a number, a named source, or an '
         'explicit statement that the fact is missing, with no fabricated figures, reference '
         'customers, or benchmarks. A text stating unsupported claims as plain fact scores low; a '
         'text that backs its claims or clearly states what it cannot yet prove scores high.\n'
-        '2. clarity -- sentence length, active voice, and one claim per sentence. A text with '
+        '2. clarity: sentence length, active voice, and one claim per sentence. A text with '
         'long, passive, or claim-stacked sentences scores low; short, active, single-claim '
         'sentences score high.\n'
-        '3. persuasive_force -- would a technical evaluator finish this text believing the '
+        '3. persuasive_force: would a technical evaluator finish this text believing the '
         'author genuinely understands their specific problem, reading it as a coherent case for '
         'a decision rather than a checklist of features. Score this independently of clarity: a '
         'short, clean, well-organized text can still read as a checklist and score low here, '
@@ -582,7 +582,7 @@ def _judge_prompt_label_violations(prompt):
     name, this project's name, or a PF-/MC- rule-namespace token.
 
     Checked against the string build_judge_prompt() actually returns, never
-    against its source template -- exactly what self_test()'s label-
+    against its source template: exactly what self_test()'s label-
     stripping assertion requires.
     """
     forbidden_substrings = ('skill-on', 'skill-off', 'proof-first', 'proof first', 'Proof First')
@@ -601,12 +601,12 @@ def _validate_judge_reply(raw_text):
 
     Returns (scores_by_text, None) on success, where scores_by_text is
     {'text_a': {dim: int}, 'text_b': {dim: int}} for every dim in
-    JUDGE_DIMENSIONS -- or (None, reason) on any failure: unparseable JSON, a
+    JUDGE_DIMENSIONS, or (None, reason) on any failure: unparseable JSON, a
     non-dict top level, a missing/extra text_a/text_b key, a missing/extra
     dimension key inside either (a reply missing persuasive_force names it
     in `reason` via the `missing` list), a non-integer score (bool is
     explicitly rejected even though Python's bool is an int subclass), or a
-    score outside [0, 10]. Never raises -- the caller records `reason` as
+    score outside [0, 10]. Never raises: the caller records `reason` as
     the unscoreable reason and the record contributes to no mean.
     """
     try:
@@ -651,7 +651,7 @@ def _unscoreable_judgement_record(judge_model, judge_effort, scenario_id, model,
 
     Used both by run_judgement() itself (a reply that parses but fails
     JUDGE_SCHEMA validation) and by run_judge_matrix() (a SessionFailedError
-    from a non-zero exit, an is_error envelope, or an unparseable envelope --
+    from a non-zero exit, an is_error envelope, or an unparseable envelope,
     handled identically to the generation path, per this task's own
     behavior spec).
     """
@@ -681,17 +681,17 @@ def run_judgement(pair, order, judge_model, judge_effort, timeout_s,
 
     `pair` is a dict carrying `model`, `scenario_id`, `repeat`,
     `skill_on_text`, and `skill_off_text`. `order` is 1 (TEXT A = skill-off,
-    TEXT B = skill-on) or 2 (TEXT A = skill-on, TEXT B = skill-off) -- the
+    TEXT B = skill-on) or 2 (TEXT A = skill-on, TEXT B = skill-off): the
     both-orders swap that cancels position bias (05-RESEARCH.md Decision 5).
 
-    Installs no skill folder into the session's temp dir, unconditionally --
+    Installs no skill folder into the session's temp dir, unconditionally:
     the judge must never run under the skill it is scoring (T-05-19).
 
-    `wrote_new` is False when the cell's raw file already existed -- the same
-    skip-if-exists resumability run_generation() already provides.
+    `wrote_new` is False when the cell's raw file already existed (the same
+    skip-if-exists resumability run_generation() already provides).
 
     Raises SessionFailedError on a non-zero exit, an `is_error: true`
-    envelope, or an unparseable envelope -- exactly the generation path's own
+    envelope, or an unparseable envelope, exactly the generation path's own
     trigger set. The caller (run_judge_matrix, or this file's own self-test
     acting as a single-cell caller) is responsible for catching that and
     writing an `unscoreable` record instead of letting the failure propagate
@@ -699,7 +699,7 @@ def run_judgement(pair, order, judge_model, judge_effort, timeout_s,
 
     A reply that parses but fails JUDGE_SCHEMA validation (missing
     persuasive_force, an out-of-range or non-integer score, or a schema-
-    invalid shape) does NOT raise -- exactly like run_generation()'s empty-
+    invalid shape) does NOT raise: exactly like run_generation()'s empty-
     text case, this function writes and returns an `unscoreable` record
     directly, with `reason` naming the validation failure.
     """
@@ -802,7 +802,7 @@ def run_judge_matrix(models, scenarios, repeats, raw_dir, timeout_s, judge_model
 
     Skips a (model, scenario, repeat) triple with no matching skill-on and
     skill-off generation record on disk (or either not `verdict ==
-    'generated'`) -- a missing or failed generation is not a judge failure
+    'generated'`): a missing or failed generation is not a judge failure
     and produces no judgement record at all, never a fabricated unscoreable
     one, since 05-RESEARCH.md's cost/count arithmetic already accounts for
     judge calls only over completed generation pairs.
@@ -855,14 +855,14 @@ def average_orders(order1, order2):
     and `order2`'s per-dimension per-condition scores, or None if either
     order is missing (None) or not `verdict == 'scored'`.
 
-    A pair with only one order present -- or with an order present but not
-    scored -- is excluded from the pair aggregate rather than counted at
+    A pair with only one order present, or with an order present but not
+    scored, is excluded from the pair aggregate rather than counted at
     half weight (must_haves, EVAL-06 adjacency edge); the caller
     (judge_summary()) is responsible for counting that exclusion.
 
     Where the same condition scores the identical value in both orders (e.g.
-    7 and 7), the average is exactly that value, 7.0 -- ordinary arithmetic,
-    asserted directly by self_test().
+    7 and 7), the average is exactly that value, 7.0 (ordinary arithmetic,
+    asserted directly by self_test()).
     """
     if order1 is None or order2 is None:
         return None
@@ -882,23 +882,23 @@ def average_orders(order1, order2):
 def judge_summary(records):
     """Group judgement records into (model, scenario_id, repeat) pairs, run
     average_orders() over each pair's order1/order2, and tally win/tie/loss
-    per dimension -- comparing the pair's averaged skill-on score against its
+    per dimension: comparing the pair's averaged skill-on score against its
     averaged skill-off score, independently for each of the three
     dimensions.
 
     Returns:
       {
         'tallies': {(model, scenario_id): {dim: {'wins': n, 'ties': n, 'losses': n}}},
-        'excluded_pairs': int,  -- pairs missing an order, or with an order
-                                   present but not scored, excluded rather
-                                   than counted at half weight
+        'excluded_pairs': int,  # pairs missing an order, or with an order
+                                # present but not scored, excluded rather
+                                # than counted at half weight
         'unscoreable': [{'model', 'scenario_id', 'repeat', 'order', 'reason'}, ...],
       }
 
     An exact tie (the two averaged condition scores equal) is counted as one
     tie and is never rounded, nudged, or tie-broken into a winner (must_haves,
     EVAL-06 adjacency edge). Rendering (build_results_md()) sorts `tallies`'
-    keys itself for the model-then-scenario ascending row order -- this
+    keys itself for the model-then-scenario ascending row order; this
     function's own dict does not need to be pre-sorted.
     """
     judgement_records = [r for r in records if 'judge_model' in r]
@@ -945,7 +945,7 @@ def pooled_summary(summary):
     """Pool judge_summary()'s per-cell tallies into one win/tie/loss total
     per dimension.
 
-    Consumes judge_summary()'s OWN output -- the paired path, where each
+    Consumes judge_summary()'s OWN output: the paired path, where each
     pair's two judge orders were averaged by average_orders() before being
     compared once. It never touches load_raw_records()'s per-order records.
     That distinction is the whole point of this function, not an
@@ -956,7 +956,7 @@ def pooled_summary(summary):
     prominent figure in the repository.
 
     Pooling a tally of pairs is addition, and addition of the per-cell
-    tallies is exactly the column sum of the rendered table -- which
+    tallies is exactly the column sum of the rendered table, which
     self_test() asserts directly rather than trusting.
 
     Returns {dimension: {'wins': n, 'ties': n, 'losses': n}} for every
@@ -1057,7 +1057,7 @@ def aggregate(records, lint_fn=None):
     number (EVAL-09).
 
     `mechanical` is keyed by (model, scenario_id, condition); each value
-    reports `n` (the cell's actual record count, even when below 3 -- never
+    reports `n` (the cell's actual record count, even when below 3: never
     silently treated as if it were 3), `mean`, `min`, `max` over the
     mechanical violation counts obtained by loading evals/lint.py's own
     `lint()` and running it on each generation's text.
@@ -1069,7 +1069,7 @@ def aggregate(records, lint_fn=None):
 
     Expects each judgement record's `scores` field nested as
     `{dimension: {condition: value}}` (e.g. `{"persuasive_force": {"skill-on":
-    8, "skill-off": 5}}`) -- a documented refinement of 05-RESEARCH.md
+    8, "skill-off": 5}}`), a documented refinement of 05-RESEARCH.md
     Decision 7's worked example, whose flat `{dimension: value}` sketch does
     not by itself say which text (A or B) a given number belongs to, which
     Decision 5's own both-orders-average-per-dimension arithmetic requires
@@ -1158,7 +1158,7 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
                       required_caveats=REQUIRED_CAVEATS, judge_summary_data=None):
     """Pure function: turn aggregate()'s output into the whole RESULTS.md
     document as a string. Calling this twice on identical input returns
-    byte-identical strings (EVAL-12) -- there is no timestamp-at-render-time
+    byte-identical strings (EVAL-12): there is no timestamp-at-render-time
     or randomness anywhere in this function; every date-shaped value is an
     explicit parameter.
 
@@ -1171,13 +1171,13 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
     judgement counts); `## Honest caveats`; and `## Reproduce`. The two
     figure sections are two separately headed top-level sections and are
     never blended into one composite figure anywhere in this function
-    (EVAL-09) -- there is no code path here that sums or averages a
+    (EVAL-09): there is no code path here that sums or averages a
     mechanical count together with a judged score.
 
     `judge_summary_data` is judge_summary()'s own return shape
     (`{'tallies', 'excluded_pairs', 'unscoreable'}`) or None. The win/tie/
-    loss table's rows are emitted by iterating `sorted(tallies.items())` --
-    model ascending, then scenario id ascending -- regardless of the
+    loss table's rows are emitted by iterating `sorted(tallies.items())`
+    (model ascending, then scenario id ascending), regardless of the
     dict's own insertion order, so the rendered report is byte-stable
     across runs and across a shuffled input record order (must_haves,
     EVAL-06 ordering edge).
@@ -1216,8 +1216,8 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
         lines.append(
             f"Per-cell direction, skill-on against skill-off, over {cell_total} (model, scenario) "
             f"cells: {directions['lower']} lower, {directions['equal']} equal, "
-            f"{directions['higher']} higher. Stated as a count and not a rate -- "
-            f"{cell_total} cells does not support a percentage."
+            f"{directions['higher']} higher. Stated as a count and not a rate "
+            f"({cell_total} cells does not support a percentage)."
         )
     lines.append('')
 
@@ -1314,7 +1314,7 @@ def build_results_md(aggregated, models=None, generation_count=None, as_of_date=
 
 def _as_of_date_from_records(records):
     """Derive the report's as-of-date from the committed generation
-    records' own `timestamp` fields -- never from the render-time clock
+    records' own `timestamp` fields, never from the render-time clock
     (CR-01: a clock read at render time let the committed RESULTS.md
     headline drift two days ahead of the actual run date, because
     `--report-only` has no `--as-of-date` flag and always fell through to
@@ -1326,7 +1326,7 @@ def _as_of_date_from_records(records):
     Returns the single ISO date (`YYYY-MM-DD`) shared by every generation
     record's timestamp. If the generation records span more than one UTC
     date, returns `'{earliest} to {latest}'` rather than silently
-    collapsing a multi-day run to one date -- 05-RESEARCH.md Decision 8
+    collapsing a multi-day run to one date: 05-RESEARCH.md Decision 8
     item 1 requires the headline to carry the date the run actually
     happened on, not a fabricated single day.
 
@@ -1350,7 +1350,7 @@ def generate_report(raw_dir=None, out_path=None, models=None, generation_count=N
     render RESULTS.md's text, and (if `out_path` is given) write it.
 
     Raises ValueError, naming the reason, if `raw_dir` contains zero
-    records -- an empty report is never rendered as a successful run, and
+    records: an empty report is never rendered as a successful run, and
     no file is written at `out_path` in that case.
 
     Makes zero subprocess calls itself, and calls nothing in this module
@@ -1360,7 +1360,7 @@ def generate_report(raw_dir=None, out_path=None, models=None, generation_count=N
     raises before calling this function end to end.
 
     `as_of_date`, when not given explicitly, is derived from the loaded
-    records themselves via `_as_of_date_from_records()` -- there is no
+    records themselves via `_as_of_date_from_records()`: there is no
     clock read anywhere in this function (CR-01 fix). This makes
     `--report-only` a pure function of `raw_dir`'s committed contents:
     re-rendering the same records on any later date reproduces the exact
@@ -1368,7 +1368,7 @@ def generate_report(raw_dir=None, out_path=None, models=None, generation_count=N
     """
     records = load_raw_records(raw_dir)
     if not records:
-        raise ValueError(f'no raw records found under {raw_dir} -- nothing to report')
+        raise ValueError(f'no raw records found under {raw_dir}: nothing to report')
 
     aggregated = aggregate(records)
     judge_data = judge_summary(records)
@@ -1400,7 +1400,7 @@ def self_test():
 
     # Snapshot RESULTS_PATH's bytes (or None) before any self-test case runs,
     # so the final assertion below can prove this function never wrote to the
-    # real path -- meaningful both before 05-03's live matrix (RESULTS_PATH
+    # real path: meaningful both before 05-03's live matrix (RESULTS_PATH
     # does not exist yet) and after it (RESULTS_PATH is a real, committed
     # report generated by --report-only, which self_test() must leave alone).
     results_path_snapshot = RESULTS_PATH.read_bytes() if RESULTS_PATH.exists() else None
@@ -1646,7 +1646,7 @@ def self_test():
 
     # --- bench-deal-brief.md shares no named entity with examples/deal-brief.md ---
     # All nine invented entities in examples/deal-brief.md: four parties (:13-16, under
-    # '## Parties') and five people (:26-30). Widened from four to nine on 2026-09-22 -- README states this
+    # '## Parties') and five people (:26-30). Widened from four to nine on 2026-09-22: README states this
     # assertion covers every invented name, and it previously covered four of the nine, so a
     # bench brief reusing 'Ardent Digital' or 'Gina Almeida' would have passed unchallenged.
     shared_deal_brief_entities = (
@@ -1668,7 +1668,7 @@ def self_test():
     # Amazon EC2 would have passed. The six names are the five real products
     # examples/deal-brief.md:18 lists as its migration source and target, plus
     # the target platform's own name from :22. Declared ceiling: this is a
-    # substring check over a fixed tuple -- it proves these six names are
+    # substring check over a fixed tuple; it proves these six names are
     # absent, not that no other platform is shared, and a platform added to
     # examples/deal-brief.md must be added here by hand exactly as the entity
     # tuple must be.
@@ -1793,7 +1793,7 @@ def self_test():
     # --- durability on interruption: a stub generation_fn that writes a
     # record for each of its first two calls and then raises
     # KeyboardInterrupt on its third leaves exactly 2 records readable on
-    # disk when run_matrix() propagates that interruption -- proven by
+    # disk when run_matrix() propagates that interruption: proven by
     # reading the files back, not by inspecting an in-memory list. ---
     interrupt_state = {'n': 0}
 
@@ -1952,7 +1952,7 @@ def self_test():
         else:
             # Direct with-and-without comparison: aggregate() over a scored
             # record plus this unscoreable record must equal aggregate() over
-            # the scored record alone -- the unscoreable record contributes
+            # the scored record alone: the unscoreable record contributes
             # zero entries to 'judged' and shifts no mean, never defaulted to
             # 0 or a midpoint (must_haves, EVAL-07 empty edge).
             agg_with_unscoreable = aggregate([judgement, missing_dim_judgement])
@@ -2057,7 +2057,7 @@ def self_test():
                 cases_exercised.append('run-judge-matrix-catches-session-failed')
 
     # --- run_judge_matrix() skips a (model, scenario, repeat) with no
-    # matching generation pair on disk -- zero judge calls, zero records. ---
+    # matching generation pair on disk: zero judge calls, zero records. ---
     with tempfile.TemporaryDirectory() as tmp:
         raw_dir = pathlib.Path(tmp)
         gen_scenario = {'id': 'exec-summary-1', 'family': 'executive-summary', 'prompt': 'x'}
@@ -2275,7 +2275,7 @@ def self_test():
 
     # --- pooled totals equal the rendered per-cell table's column sums.
     # Asserted against the table's own emitted rows, not against
-    # pooled_summary() called twice -- a bug shared by both would otherwise
+    # pooled_summary() called twice: a bug shared by both would otherwise
     # cancel out and the assertion would prove nothing. ---
     pooled = pooled_summary(fixture_judge_summary)
     cell_row_re = re.compile(
@@ -2348,14 +2348,14 @@ def self_test():
     paired_result = (paired[JUDGE_DIMENSIONS[0]]['wins'], paired[JUDGE_DIMENSIONS[0]]['losses'])
     if (per_order_wins, per_order_losses) == paired_result:
         print(
-            'FAIL: the paired-versus-pooled fixture does not discriminate -- both paths agree, '
-            'so this assertion cannot detect per-order pooling'
+            'FAIL: the paired-versus-pooled fixture does not discriminate (both paths agree, '
+            'so this assertion cannot detect per-order pooling)'
         )
         all_ok = False
     elif paired_result != (0, 1):
         print(
-            f'FAIL: pooled totals took the per-order path -- expected the paired result (0 wins, '
-            f'1 loss) but got {paired_result[0]} wins, {paired_result[1]} losses'
+            f'FAIL: pooled totals took the per-order path (expected the paired result: 0 wins, '
+            f'1 loss, but got {paired_result[0]} wins, {paired_result[1]} losses)'
         )
         all_ok = False
     else:
@@ -2476,14 +2476,14 @@ def self_test():
     # function of the committed raw records, never the render-time clock.
     # Before the fix, `--report-only` fell through to
     # `datetime.datetime.now(...)` whenever `as_of_date` was not passed
-    # explicitly -- which is every real invocation, since main() never
-    # passes one -- so re-rendering the SAME committed matrix on a LATER
+    # explicitly (which is every real invocation, since main() never
+    # passes one), so re-rendering the SAME committed matrix on a LATER
     # calendar day silently moved the published headline date forward
     # (this is exactly how RESULTS.md's headline once read "Measured
     # 2026-09-20" for a matrix whose raw/ records were all timestamped
     # 2026-09-18). Prove the fix by monkey-patching the module's
-    # `datetime.datetime` class -- the only way to fake "now()" for a
-    # built-in C type -- to two different fake current dates and rendering
+    # `datetime.datetime` class (the only way to fake "now()" for a
+    # built-in C type) to two different fake current dates and rendering
     # the same fixture records under each: a clock-independent render must
     # produce byte-identical output both times, and the rendered headline
     # date must be the fixture records' OWN timestamp date, never either
@@ -2525,7 +2525,7 @@ def self_test():
         else:
             cases_exercised.append('cr01-report-only-render-is-clock-independent')
 
-    # --- self_test() never writes to the real RESULTS_PATH -- every case
+    # --- self_test() never writes to the real RESULTS_PATH: every case
     # above renders into a temporary directory only. Before 05-03's live
     # matrix this proves RESULTS_PATH still does not exist (None == None);
     # after it, this proves self_test() left the real, committed report
@@ -2533,7 +2533,7 @@ def self_test():
     # untouched. ---
     results_path_after = RESULTS_PATH.read_bytes() if RESULTS_PATH.exists() else None
     if results_path_after != results_path_snapshot:
-        print(f'FAIL: {RESULTS_PATH} was modified by self_test() -- self_test() must never write the real path')
+        print(f'FAIL: {RESULTS_PATH} was modified by self_test() (self_test() must never write the real path)')
         all_ok = False
     else:
         cases_exercised.append('self-test-never-writes-real-results-path')
@@ -2591,7 +2591,7 @@ def main():
 
     # Live mode (05-03): drive the real model x condition x scenario x repeat
     # matrix, then the judge pass over every resulting pair, both orders.
-    # Requires `claude auth status` to show loggedIn: true -- this function
+    # Requires `claude auth status` to show loggedIn: true: this function
     # does not check that itself (the operator-facing precondition is
     # verified once, by hand, before this command is ever invoked, per
     # 05-03-PLAN.md Task 3's own <precondition>); a session that is not

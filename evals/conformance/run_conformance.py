@@ -45,7 +45,7 @@ Usage:
       rewrite (03-16-PLAN.md); this file ships no committed mutation harness
       of its own, unlike `tools/check_repo.py --mutation-test`. What is
       still NOT guaranteed: two invocations appending to the same results
-      file at the same time may interleave their lines -- this tool makes
+      file at the same time may interleave their lines; this tool makes
       no parallel-safety claim, and the project's operating pattern is one
       foreground invocation at a time.
 """
@@ -86,8 +86,8 @@ MARKER_PATTERN = re.compile(r'\bPF-\d+\.\d+\b|\bMC-\d+\b')
 # SKILL.md's write-mode contract (`## Write mode`) states the output is
 # exactly three parts, in order, with the family line first. This bound is a
 # generous prefix window derived from that ordering, not a proof that the
-# matched phrase IS the contract's family line -- a declared ceiling, in the
-# same voice tools/check_repo.py's own checks state theirs.
+# matched phrase IS the contract's family line (a declared ceiling, in the
+# same voice tools/check_repo.py's own checks state theirs).
 FAMILY_LINE_WINDOW_CHARS = 400
 
 # Byte-identical to the prompt 03-05-SUMMARY.md's Live Verification section
@@ -112,9 +112,9 @@ class SessionFailedError(RuntimeError):
     this class existed, run_session() returned that error text as its
     "transcript" and the scorer legitimately found no family pattern and no
     rule marker in it, producing a false `no-family` verdict indistinguishable
-    from a genuine session that omitted the family line -- see 03-08-PLAN.md's
+    from a genuine session that omitted the family line (see 03-08-PLAN.md's
     2026-09-15T03:11:24 run block, where all ten claude-opus-5 sessions share
-    this exact signature after a usage-limit exhaustion mid-run.
+    this exact signature after a usage-limit exhaustion mid-run).
     """
 
     def __init__(self, returncode, stderr):
@@ -132,7 +132,7 @@ def score_transcript(text):
                              opening FAMILY_LINE_WINDOW_CHARS of the
                              (stripped) transcript. A family phrase
                              appearing only later, in ordinary drafted
-                             prose, does not count -- that is exactly the
+                             prose, does not count: that is exactly the
                              CR-01 false-pass this bound exists to close.
       rule-before-family  - the lowest-offset MARKER_PATTERN match (over
                              the whole transcript) starts strictly before
@@ -142,7 +142,7 @@ def score_transcript(text):
                              marker appears at all).
 
     Both searches run against the SAME string (`stripped`), so their
-    offsets are directly comparable -- computing one against `stripped` and
+    offsets are directly comparable: computing one against `stripped` and
     the other against the original `text` would silently shift every
     comparison by the length of any stripped leading whitespace.
     """
@@ -192,7 +192,7 @@ def run_session(skill_src, fixture_path, model, out_path, timeout_s):
     """Drive one live write-mode `claude -p` session in an isolated temp dir.
 
     Returns the session's captured stdout (also written to out_path).
-    Exactly one call site writes any given out_path -- concurrent writers to
+    Exactly one call site writes any given out_path: concurrent writers to
     one path is the defect that produced a false "duplicated sections"
     finding in the first UAT pass, so this runner never parallelises onto a
     shared path.
@@ -228,7 +228,7 @@ def run_session(skill_src, fixture_path, model, out_path, timeout_s):
             )
         except subprocess.TimeoutExpired as exc:
             # `subprocess.run` populates exc.stdout/exc.stderr with whatever
-            # the child had produced before the kill -- but as bytes, not
+            # the child had produced before the kill, but as bytes, not
             # str, even though this call passes text=True (CPython builds
             # TimeoutExpired from the raw accumulated chunks before
             # decoding). Normalise each stream (bytes / str / None) before
@@ -246,7 +246,7 @@ def run_session(skill_src, fixture_path, model, out_path, timeout_s):
         stderr = result.stderr or ''
 
         if result.returncode != 0:
-            # Write both streams for audit -- a failed invocation's stdout is
+            # Write both streams for audit: a failed invocation's stdout is
             # not a transcript and must never reach score_transcript().
             out_path.write_text(
                 f'[claude -p exited {result.returncode}]\n'
@@ -264,17 +264,17 @@ def _decode_stream(value):
     """Normalise a subprocess stream that may be bytes, str, or None.
 
     `TimeoutExpired.stdout`/`.stderr` come back as bytes even when the
-    original `subprocess.run` call passed `text=True` -- CPython builds the
+    original `subprocess.run` call passed `text=True`: CPython builds the
     exception from the raw accumulated chunks before the text-mode decoding
     step ever runs. A stream can also be None (nothing was captured before
     the kill). Callers must not assume either shape.
     """
     if value is None:
-        return '(empty -- no output captured before timeout)'
+        return '(empty: no output captured before timeout)'
     if isinstance(value, bytes):
         decoded = value.decode('utf-8', errors='replace')
-        return decoded if decoded else '(empty -- no output captured before timeout)'
-    return value if value else '(empty -- no output captured before timeout)'
+        return decoded if decoded else '(empty: no output captured before timeout)'
+    return value if value else '(empty: no output captured before timeout)'
 
 
 class _FlushTrackingHandle:
@@ -284,7 +284,7 @@ class _FlushTrackingHandle:
     (e.g. `['write', 'flush', 'write', 'flush']`), so behavior case 11 can
     assert the write-then-flush discipline `_write_result_line()` is
     supposed to hold, independently of what any context manager's own
-    close() does on exit. Defines only `write` and `flush` -- deliberately
+    close() does on exit. Defines only `write` and `flush`: deliberately
     no `__getattr__` delegation, so a future code path that reaches the
     results handle by any route other than `_write_result_line()` raises
     `AttributeError` loudly inside the self-test rather than being silently
@@ -307,14 +307,14 @@ class _FlushTrackingHandle:
 def self_test():
     """Offline proof the scorer discriminates known verdicts. No subprocess call.
 
-    Asserts the five inline cases from this plan's <behavior> block first --
+    Asserts the five inline cases from this plan's <behavior> block first:
     these need no fixture file and always run, proving all four verdict
     strings are discriminated even before evals/conformance/transcripts/ has
     any committed fixture. It then cross-checks the five committed
     transcript fixtures (conformant-family-first.txt,
     nonconformant-no-family.txt, nonconformant-rule-before-family.txt,
     nonconformant-no-family-late-phrase.txt and
-    conformant-family-first-late-phrase.txt -- the last two added by the
+    conformant-family-first-late-phrase.txt, the last two added by the
     CR-01 anchoring fix described in cases 8 and 9 below) if
     present: an absent fixture is not a failure (fixtures are authored in a
     later task), but a present one that no longer exhibits its named
@@ -408,7 +408,7 @@ def self_test():
     # Case 8 (CR-01): a transcript that never declares a family up front,
     # but whose drafted body contains a family phrase well past the
     # anchoring window (as an ordinary section heading), must still score
-    # `no-family` -- not `conformant` and not `rule-before-family`. This is
+    # `no-family`, not `conformant` and not `rule-before-family`. This is
     # the exact false-pass CR-01 found: a common English phrase recurring
     # naturally in drafted prose standing in for an omitted opening
     # declaration.
@@ -539,7 +539,7 @@ def self_test():
             shutil.rmtree(fake_out_dir, ignore_errors=True)
 
     # Case 7: _git_blob_sha() must hash the SKILL.md under the given
-    # skill_src, not always the repo's HEAD version -- the defect that
+    # skill_src, not always the repo's HEAD version: the defect that
     # mislabeled 03-08-PLAN.md's Branch-3 paired-baseline run with the
     # post-edit skill's SHA even though a materialised pre-edit skill was
     # actually measured (the 2026-09-15T09:13:03 run block).
@@ -583,7 +583,7 @@ def self_test():
     # as before. subprocess.run is monkeypatched to raise TimeoutExpired
     # carrying **bytes** payloads (matching what CPython actually produces
     # for TimeoutExpired.stdout/.stderr even when text=True is passed to the
-    # original call -- measured directly on this platform). Still offline:
+    # original call, measured directly on this platform). Still offline:
     # no real `claude` invocation and no network call.
     real_subprocess_run_3 = subprocess.run
 
@@ -641,19 +641,19 @@ def self_test():
     # Case 11 (03-REVIEW.md CR-01, 03-VERIFICATION.md, 03-16-PLAN.md): the
     # discriminating assertion is the recorded write-then-flush call
     # sequence on a proxy handle, and the pre-close read of the results file
-    # is its filesystem-level confirmation -- proving the bytes actually
+    # is its filesystem-level confirmation, proving the bytes actually
     # left Python's buffer before the handle was closed, not merely that a
     # context manager's own close()-on-exit flushed everything regardless.
     # The previous form of this case caught the interrupting exception
     # inside the same `with`-block whose own close-on-exit flushed the file
     # regardless of whether `_write_result_line()`'s flush call ran, so it
-    # passed identically with that line deleted -- raised as `CR-01` in
+    # passed identically with that line deleted (raised as `CR-01` in
     # 03-REVIEW.md's round-5 review and independently reproduced by
-    # 03-VERIFICATION.md's verifier. This case is the regression guard for
+    # 03-VERIFICATION.md's verifier). This case is the regression guard for
     # `_write_result_line()`'s flush call and is expected to fail if that
     # line is removed. A stub matching run_session's keyword signature
     # returns a family-first (conformant) transcript for its first two calls
-    # and raises KeyboardInterrupt on its third -- an exception type
+    # and raises KeyboardInterrupt on its third: an exception type
     # deliberately outside every handler run_matrix catches, exactly the
     # "process interrupted between sessions" condition CR-01 describes.
     # This assertion holds regardless of which exception type interrupts
@@ -743,14 +743,14 @@ def self_test():
 
 
 def _git_blob_sha(skill_src):
-    """Return the git blob SHA of skill_src/SKILL.md -- the actual file this
+    """Return the git blob SHA of skill_src/SKILL.md: the actual file this
     run copies into every session, not necessarily the repo's HEAD version.
 
     03-08-PLAN.md's own paired-baseline branch (Branch 3) passes --skill-src
     pointing at a materialised pre-edit skill directory outside the repo
     entirely. The original implementation computed `git rev-parse
     HEAD:skills/proof-first/SKILL.md`, which is silently wrong for any
-    --skill-src other than the repo's current working tree at HEAD -- it
+    --skill-src other than the repo's current working tree at HEAD: it
     would report the post-edit SHA even while measuring the pre-edit skill.
     `git hash-object` is content-addressed and needs no repo relationship to
     the target path, so it reports the correct SHA for a working-tree copy,
@@ -798,7 +798,7 @@ def run_matrix(models, fixture_stems, repeats, skill_src, transcript_dir, timeou
                session_fn=run_session):
     """Run the model x fixture x repeat matrix, writing each session's
     result line to `handle` (an already-open append-mode file handle) the
-    moment that session is scored -- never accumulated in memory.
+    moment that session is scored, never accumulated in memory.
 
     `session_fn` defaults to `run_session`; self-test injects a stub with
     the identical keyword signature so the durability property is checkable
@@ -806,11 +806,11 @@ def run_matrix(models, fixture_stems, repeats, skill_src, transcript_dir, timeou
 
     An interruption between iterations (SIGTERM, SIGKILL, an uncaught
     exception type outside the four handlers below, or external process
-    teardown) loses at most the in-flight session -- every session already
+    teardown) loses at most the in-flight session: every session already
     scored in this invocation is already flushed to disk before the next
     one starts.
 
-    Returns (scoreable_count, conformant_count, unscoreable_sessions) -- the
+    Returns (scoreable_count, conformant_count, unscoreable_sessions): the
     same three aggregates `main()` prints and appends after the loop.
     """
     scoreable_count = 0
@@ -895,7 +895,7 @@ def main():
     parser.add_argument('--repeats', type=int, default=1,
                          help='Number of repeats per model x fixture pair (default: 1).')
     parser.add_argument('--transcript-dir', default=None,
-                         help='Directory for raw transcripts (default: a fresh temp dir -- '
+                         help='Directory for raw transcripts (default: a fresh temp dir, '
                               'raw transcripts are never written into the repository).')
     parser.add_argument('--out', default=str(pathlib.Path(__file__).resolve().parent / 'RESULTS-mod04.md'),
                          help='Results file to append run blocks to.')

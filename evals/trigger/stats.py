@@ -3,7 +3,7 @@
 
 Two functions, both exact (no normal approximation):
 
-`clopper_pearson_upper(k, n, alpha=0.05)` -- the one-sided Clopper-Pearson upper
+`clopper_pearson_upper(k, n, alpha=0.05)`: the one-sided Clopper-Pearson upper
 confidence bound on a binomial rate: the smallest p such that
 P(X <= k; n, p) = alpha, i.e. the value a fresh sample of n trials from a
 true rate above this bound would be unlikely (at level alpha) to produce k or
@@ -12,14 +12,14 @@ phrasing other than the one exact sample it was computed from. A bound
 computed at n=5 for one phrasing on one day with one model says nothing about
 another phrasing, another model, or the same phrasing next month.
 
-`fisher_exact_two_tailed(a, b, c, d)` -- the exact two-tailed p-value for a
+`fisher_exact_two_tailed(a, b, c, d)`: the exact two-tailed p-value for a
 2x2 contingency table `[[a, b], [c, d]]`, computed by summing the
 hypergeometric probability of every table sharing the same marginal totals
 whose probability is at or below the observed table's. What it is NOT: a
 per-phrasing verdict. This project uses it exactly once per round, on the
 POOLED must-not-fire 2x2 (total over-fires vs. total non-fires, control vs.
 treatment). Pooling treats the five must-not-fire phrasings as exchangeable,
-which they are not -- each phrasing has its own unknown fire rate. The pooled
+which they are not, as each phrasing has its own unknown fire rate. The pooled
 p is a summary statistic about the round as a whole, not a claim about any
 single phrasing.
 
@@ -46,9 +46,9 @@ def clopper_pearson_upper(k, n, alpha=DEFAULT_ALPHA):
     k == 0: closed form. P(X <= 0; n, p) = (1 - p) ** n, so the equation
     (1 - p) ** n = alpha solves directly to p = 1 - alpha ** (1 / n).
 
-    k > 0: no closed form is used here on purpose -- the tail is inverted by
+    k > 0: no closed form is used here on purpose (the tail is inverted by
     bisection on the monotonically-decreasing CDF, so this function proves
-    the general case rather than special-casing every k.
+    the general case rather than special-casing every k).
     """
     if n <= 0:
         raise ValueError('n must be positive')
@@ -78,7 +78,7 @@ def fisher_exact_two_tailed(a, b, c, d):
     Fixes the row and column margins from the observed table, enumerates
     every table with those same margins, and sums the hypergeometric
     probability of every table at or below the observed table's own
-    probability -- the standard definition of the two-tailed exact test. A
+    probability: the standard definition of the two-tailed exact test. A
     relative tolerance on the comparison guards against floating-point
     equality silently dropping the observed table's own mirror image on the
     other tail.
@@ -115,7 +115,7 @@ _CP_CASES = [
 ]
 
 _FISHER_CASES = [
-    # (a, b, c, d, expected p to 4 dp) -- table [[a, b], [c, d]]
+    # (a, b, c, d, expected p to 4 dp) for table [[a, b], [c, d]]
     (3, 2, 0, 5, 0.1667),
     (5, 0, 0, 5, 0.0079),
     (2, 8, 0, 10, 0.4737),

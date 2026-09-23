@@ -15,8 +15,8 @@
       "author": {
         "name": "Proof First contributors"
       },
-      "homepage": "https://github.com/cymarechal/technical-presales",
-      "repository": "https://github.com/cymarechal/technical-presales",
+      "homepage": "https://github.com/cymarechal/proof-first",
+      "repository": "https://github.com/cymarechal/proof-first",
       "license": "MIT",
       "keywords": ["presales", "rfp", "proposal", "technical-writing"]
     }

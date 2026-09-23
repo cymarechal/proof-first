@@ -1,4 +1,4 @@
-# Synthetic fixture -- a rule marker precedes the family line, both inside
+# Synthetic fixture: a rule marker precedes the family line, both inside
 # the anchoring window.
 
 PF-1.17 requires a quantified proof point in the opening sentence below,

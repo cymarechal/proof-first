@@ -1,4 +1,4 @@
-# Synthetic fixture -- this is a hand-written scorer input, not real session
+# Synthetic fixture: this is a hand-written scorer input, not real session
 # output. It is engineered to exhibit exactly one property: no artifact
 # family, and no no-family value, is ever named.
 

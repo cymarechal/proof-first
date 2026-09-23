@@ -1,6 +1,6 @@
 # Proof First: Technical Presales Discipline for Coding Agents
 
-[![CI](https://github.com/cymarechal/technical-presales/actions/workflows/ci.yml/badge.svg)](https://github.com/cymarechal/technical-presales/actions/workflows/ci.yml)
+[![CI](https://github.com/cymarechal/proof-first/actions/workflows/ci.yml/badge.svg)](https://github.com/cymarechal/proof-first/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A coding agent skill for technical presales, RFPs, and solution proposals that eliminates generic AI fluff, enforces real metrics, and catches unverified claims before executive buyers see them.
@@ -82,7 +82,7 @@ Proof First installs across coding agents and harnesses with zero dependencies:
 Install with the `skills` CLI ([skills.sh](https://skills.sh)) for Cursor, Codex, Copilot, Gemini CLI, Antigravity, OpenCode, and others:
 
 ```bash
-npx skills add cymarechal/technical-presales
+npx skills add cymarechal/proof-first
 ```
 
 > [!TIP]
@@ -93,13 +93,13 @@ npx skills add cymarechal/technical-presales
 Install directly from the marketplace manifest:
 
 ```bash
-claude plugin marketplace add cymarechal/technical-presales && claude plugin install proof-first@proof-first
+claude plugin marketplace add cymarechal/proof-first && claude plugin install proof-first@proof-first
 ```
 
 Or inside an active Claude Code session:
 
 ```text
-/plugin marketplace add cymarechal/technical-presales
+/plugin marketplace add cymarechal/proof-first
 /plugin install proof-first@proof-first
 ```
 

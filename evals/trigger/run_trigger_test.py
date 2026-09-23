@@ -6,8 +6,8 @@ What this measures, and what it does not
 This runner answers exactly one question per phrasing: did the harness activate
 `proof-first` on its own, from the skill's frontmatter `description` alone, with
 nothing in the prompt naming the skill? It reads the answer from the session's
-own event stream -- a `Skill` tool-use event whose `skill` field names
-`proof-first` -- not from the prose the session produced. Reading activation out
+own event stream (a `Skill` tool-use event whose `skill` field names
+`proof-first`), not from the prose the session produced. Reading activation out
 of the prose would guess; the event stream states it.
 
 It does not measure a trigger-reliability rate. One observation per phrasing is
@@ -16,7 +16,7 @@ them. A measured rate across many phrasings and models is the eval harness's
 job (`evals/benchmark/`), not this file's. `--repeats` (added for the CAT-10
 gap-closure round) reports a `k of n` count per phrasing and, for a phrasing
 with zero fires, the exact Clopper-Pearson upper bound on its true fire rate
-from `stats.py` -- never a percentage. A bound at n=5 is 0.4507: a bound, not
+from `stats.py`, never a percentage. A bound at n=5 is 0.4507: a bound, not
 a measured rate, and it is a statement about that one phrasing under repeated
 sampling from the same harness on the same day, nothing broader.
 
@@ -26,8 +26,8 @@ Deliberately NOT passed to the session
 test. Letting the skill activate off its own `description` is the measurement,
 not a setup detail. The cost is that the operator's own user-level
 configuration under `$HOME` still loads, so other installed skills are present
-in the session -- the same condition every prior live measurement in this
-repository ran under, and disclosed rather than hidden.
+in the session (the same condition every prior live measurement in this
+repository ran under, and disclosed rather than hidden).
 
 Known ceiling, stated plainly
 -----------------------------
@@ -224,7 +224,7 @@ def aggregate_verdicts(verdicts):
     """Reduce a list of per-repeat verdict strings to (fires, scoreable).
 
     An unscoreable session is excluded from both the numerator and the
-    denominator -- it is never retried into a verdict and never rounded into
+    denominator: it is never retried into a verdict and never rounded into
     one. `fires` counts VERDICT_FIRED entries; `scoreable` counts every entry
     that is not VERDICT_UNSCOREABLE.
     """
@@ -348,8 +348,8 @@ def render_run_block(label, rows, counts, model='', harness_version='',
 # Class 3 of the defect classes 06-08 and 06-09 name: a count or inventory
 # stated in prose next to machine-readable data. 06-09 found INIT-EVENTS.md's
 # "full top-level key set" block listing 23 keys where every one of the 140
-# committed init events carries 24 -- the missing one being `subtype`, the key
-# the document's own extraction script selects on to find the event at all.
+# committed init events carries 24 (the missing one being `subtype`, the key
+# the document's own extraction script selects on to find the event at all).
 # Asserted here rather than restated, the same remedy run_benchmark.py's
 # caveat-count-matches-constant applies to its own rendered count.
 
@@ -388,7 +388,7 @@ def observed_init_key_sets(tarball_path):
     document's own extraction script makes.
 
     The tally is returned rather than discarded because the sentence this
-    guards claims two things -- that EVERY init event carries the key set, and
+    guards claims two things: that EVERY init event carries the key set, and
     that there are 140 of them. A key-set comparison alone proves neither: a
     tarball that lost half its init events still yields one distinct key set,
     and would pass. Measured, not assumed: a probe copy with 40 transcripts
@@ -445,8 +445,8 @@ _FIRED_FIXTURE = '\n'.join([
          'input': {'skill': 'proof-first', 'args': 'RFP question 4'}}]}}),
 ])
 
-# The discriminating case: the word appears all over the stream -- in the
-# available-skills list and in the model's own prose -- but no Skill tool-use
+# The discriminating case: the word appears all over the stream (in the
+# available-skills list and in the model's own prose), but no Skill tool-use
 # names it. A detector that grepped for the string would call this fired.
 _NOT_FIRED_FIXTURE = '\n'.join([
     json.dumps({'type': 'system', 'subtype': 'init', 'slash_commands': ['proof-first']}),
@@ -481,7 +481,7 @@ nothing yet.
 """
 
 # CR-01 defect (b): a sha256 somewhere else in the document is NOT the binding.
-# This is the exact edit shape the review names as the live risk -- a later,
+# This is the exact edit shape the review names as the live risk: a later,
 # unrelated hash reference added to pressure-tests.md.
 _SCOPE_DECOY_MD = """# heading
 
@@ -553,7 +553,7 @@ def self_test():
         absent_msg = str(exc)
     if 'no sha256' not in absent_msg:
         failures.append('scope_binding_verdict(None, ...) did not refuse via its absent-binding '
-                        'branch (got %r) -- a document with no recorded binding would run with '
+                        'branch (got %r): a document with no recorded binding would run with '
                         'the guard silently skipped (02-REVIEW.md CR-01 defect (a))'
                         % (absent_msg or 'no refusal at all'))
     mismatch_msg = ''
@@ -563,7 +563,7 @@ def self_test():
         mismatch_msg = str(exc)
     if 'binds its rows' not in mismatch_msg:
         failures.append('scope_binding_verdict did not refuse a hash mismatch via its mismatch '
-                        'branch (got %r) -- rows bound to a different description would be '
+                        'branch (got %r): rows bound to a different description would be '
                         'filled in as observations' % (mismatch_msg or 'no refusal at all'))
     if scope_binding_verdict('a' * 64, 'a' * 64) != 'bound':
         failures.append('scope_binding_verdict refused a correctly bound document')
@@ -572,7 +572,7 @@ def self_test():
     fires, scoreable = aggregate_verdicts(
         [VERDICT_FIRED, VERDICT_FIRED, VERDICT_DID_NOT_FIRE, VERDICT_UNSCOREABLE, VERDICT_FIRED])
     if (fires, scoreable) != (3, 4):
-        failures.append('aggregate_verdicts(...) = (%d, %d), expected (3, 4) -- an unscoreable '
+        failures.append('aggregate_verdicts(...) = (%d, %d), expected (3, 4): an unscoreable '
                          'session leaked into a numerator or a denominator' % (fires, scoreable))
 
     # --- overwrite guard (4 cases) ---
@@ -584,7 +584,7 @@ def self_test():
     except ValueError:
         guarded = True
     if not guarded:
-        failures.append('resolve_out_mode(True, True, False) did NOT raise -- a non-empty '
+        failures.append('resolve_out_mode(True, True, False) did NOT raise: a non-empty '
                          'results file could be clobbered without --append')
     if resolve_out_mode(True, True, True) != 'append':
         failures.append('resolve_out_mode(True, True, True) did not return "append"')

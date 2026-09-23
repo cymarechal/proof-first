@@ -2,10 +2,10 @@
 """Deterministic proxy-violation linter for Proof First's presales prose rules.
 
 This script counts mechanical proxies for a subset of the rule catalog in
-skills/proof-first/SKILL.md -- registered buzzword/jargon terms, unquantified
+skills/proof-first/SKILL.md: registered buzzword/jargon terms, unquantified
 superlatives, claims with no adjacent number, over-length sentences, and
 unbounded modal claims. It does not perform the deletion test PF-3.1 actually
-states (whether removing a term changes a sentence's technical meaning) --
+states (whether removing a term changes a sentence's technical meaning):
 that is a semantic judgment this file cannot make, and a violation count from
 this module is a count of mechanical proxies, never a compliance verdict on a
 document. It imports only the Python standard library; no package-manager
@@ -96,7 +96,7 @@ Violation codes implemented in this file:
                            a path this environment can resolve; it does not
                            and cannot confirm a live http(s) URL actually
                            serves the content the registry claims (see
-                           ceiling 2 above -- this linter never fetches or
+                           ceiling 2 above: this linter never fetches or
                            resolves a URL, by design and regardless of what
                            network the environment has).
 """
@@ -111,7 +111,7 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 PROXY_SOURCES_PATH = pathlib.Path(__file__).resolve().parent / 'proxy-sources.md'
 
 DISCLAIMER = (
-    "The deletion test -- whether removing a term changes a sentence's technical meaning -- "
+    "The deletion test (whether removing a term changes a sentence's technical meaning) "
     "is a semantic judgment this linter does not perform. "
     "A violation count from this module is a count of mechanical proxies for that judgment, "
     "not a compliance verdict on a document."
@@ -134,7 +134,7 @@ PROXY_TERMS = (
 # Registry-sourced (evals/proxy-sources.md's "Superlative terms" table),
 # deliberately disjoint from PROXY_TERMS so a sentence exercising
 # unquantified-superlative does not, as a side effect, also exercise
-# buzzword-term -- the two codes are tested independently.
+# buzzword-term: the two codes are tested independently.
 SUPERLATIVE_TERMS = (
     'exceptional', 'extraordinary', 'outstanding', 'unbeatable', 'unrivaled',
 )
@@ -143,7 +143,7 @@ SUPERLATIVE_TERMS = (
 # PF-4.3 names these three as the catalog's own possibility modals.
 HEDGE_TERMS = ('could', 'may', 'might')
 
-# Frozen here, not registry-sourced -- these are the catalog's own PF-2.1
+# Frozen here, not registry-sourced: these are the catalog's own PF-2.1
 # claim-verb vocabulary, not an externally-sourced buzzword/jargon list.
 CLAIM_VERBS = (
     'reduces', 'reduce', 'improves', 'improve', 'increases', 'increase', 'delivers',
@@ -151,7 +151,7 @@ CLAIM_VERBS = (
     'ensures', 'ensure', 'guarantees', 'guarantee',
 )
 
-# Frozen here, not registry-sourced -- these are grammatical function words,
+# Frozen here, not registry-sourced: these are grammatical function words,
 # not an externally-sourced buzzword/jargon list.
 CONDITION_CUES = ('if', 'when', 'where', 'unless', 'provided', 'subject to', 'once')
 
@@ -160,7 +160,7 @@ SENTENCE_WORD_CEILING = 25
 
 # SKILL.md lines 33-44's frozen marker grammar: "[<rule> GAP: ...]" or
 # "[<rule> REVIEW (<category>): ...]". Only the GAP/REVIEW forms are
-# relevant here -- the third (customer-term-retained) form marks a kept
+# relevant here: the third (customer-term-retained) form marks a kept
 # term, not a missing claim.
 MARKER_PATTERN = re.compile(r'\[(?:PF-\d+\.\d+|MC-\d+)\s+(?:GAP|REVIEW)\b')
 
@@ -232,8 +232,8 @@ def parse_proxy_sources(path):
 
 def _resolves_inside_repo(url):
     """True if url, once any file:// scheme is stripped, is a path landing
-    inside this repository -- whether given as a relative path, an absolute
-    path, or a file:// URL. A real http(s):// URL is never "inside" the repo.
+    inside this repository (whether given as a relative path, an absolute
+    path, or a file:// URL). A real http(s):// URL is never "inside" the repo.
     """
     stripped = url
     if stripped.startswith('file://'):
@@ -276,12 +276,12 @@ def check_provenance(terms, rows):
     """Cross-reference `terms` (everything this file counts) against `rows`
     (evals/proxy-sources.md's parsed table rows).
 
-    Fires proxy-term-unsourced for a term with no row at all -- the
+    Fires proxy-term-unsourced for a term with no row at all: the
     mechanical half of EVAL-02, proving every counted term traces to a row
     in the committed registry. Fires proxy-term-source-invalid for a row
     whose label is not `A`/`B` or whose URL matches no allow-listed prefix
     for that label, and proxy-term-source-is-internal for a row whose URL
-    resolves to a path inside this repository -- both checked independently
+    resolves to a path inside this repository: both checked independently
     for every row a term has, so a row that fails both is reported by both
     (defence in depth, not a single either/or branch). This is an allow-list,
     never a deny-list: a URL that does not match an allowed prefix is
@@ -338,7 +338,7 @@ def check_provenance(terms, rows):
 
 def lint(text):
     """Lint `text` and return a dict: violations, violations_total, by_code,
-    disclaimer. Text-based codes only -- registry provenance is checked
+    disclaimer. Text-based codes only: registry provenance is checked
     separately via check_provenance(), since it is a property of the
     registry file, not of any one document.
     """
@@ -373,7 +373,7 @@ def lint(text):
                     'offset': start + m.start(),
                     'match': m.group(0),
                     'message': (
-                        f"'{m.group(0)}' is an unquantified superlative (PF-3.1 proxy) -- "
+                        f"'{m.group(0)}' is an unquantified superlative (PF-3.1 proxy): "
                         "no digit appears in its sentence."
                     ),
                 })
@@ -453,7 +453,7 @@ def self_test():
 
     # Longest-match-wins: a shorter registry term nested inside a longer one
     # is never counted a second time. Uses a local ('class', 'best-in-class')
-    # pair to exercise the matching primitive directly -- 'class' is not
+    # pair to exercise the matching primitive directly: 'class' is not
     # itself a registry row in this file, so this proves the mechanism, not
     # a claim about the shipped PROXY_TERMS list.
     probe_pattern = _build_term_pattern(('class', 'best-in-class'))
@@ -478,7 +478,7 @@ def self_test():
     assert lint(CLEAN_FIXTURE)['violations_total'] == 0, lint(CLEAN_FIXTURE)
 
     # unquantified-superlative: firing and clean fixture, dedicated to this
-    # code alone -- SUPERLATIVE_TERMS is disjoint from PROXY_TERMS, so
+    # code alone: SUPERLATIVE_TERMS is disjoint from PROXY_TERMS, so
     # neither fixture also trips buzzword-term.
     SUPERLATIVE_FIRING = "This is an exceptional migration approach for the platform team."
     SUPERLATIVE_CLEAN = "This is an exceptional migration approach for the 12-person platform team."
@@ -508,8 +508,8 @@ def self_test():
     # sentence-over-ceiling: boundary asserted at both 25 (silent) and 26
     # (fires) words, word counts stated explicitly so a later edit cannot
     # silently shift the boundary.
-    SENTENCE_25_WORDS = ' '.join(['token'] * 25) + '.'  # exactly 25 words -- must stay silent
-    SENTENCE_26_WORDS = ' '.join(['token'] * 26) + '.'  # exactly 26 words -- must fire
+    SENTENCE_25_WORDS = ' '.join(['token'] * 25) + '.'  # exactly 25 words: must stay silent
+    SENTENCE_26_WORDS = ' '.join(['token'] * 26) + '.'  # exactly 26 words: must fire
     at_25 = lint(SENTENCE_25_WORDS)
     at_26 = lint(SENTENCE_26_WORDS)
     assert at_25['by_code'].get('sentence-over-ceiling', 0) == 0, at_25
@@ -572,8 +572,8 @@ def self_test():
     codes_covered.add('proxy-term-source-invalid')
 
     # proxy-term-source-is-internal: a mutated row citing this repository's
-    # own worked-examples.md as its URL fires -- asserted by its own
-    # dedicated fixture, not inferred from the label-invalid case above,
+    # own worked-examples.md as its URL fires (asserted by its own
+    # dedicated fixture, not inferred from the label-invalid case above),
     # even though this same fixture also fails the prefix check (defence in
     # depth, per Task 3's own instruction). The shipped registry produces
     # none.
@@ -616,7 +616,7 @@ def text_index(haystack, needle):
 
 def parse_proxy_sources_from_text(text):
     """Same row-parsing logic as parse_proxy_sources(), over an in-memory
-    string instead of a file path -- used by self_test() to exercise a
+    string instead of a file path, used by self_test() to exercise a
     mutated registry without writing a throwaway file to disk.
     """
     rows = []
@@ -665,7 +665,7 @@ def main():
             print('lint: 0 violations')
         else:
             for v in result['violations']:
-                print(f"{v['code']} @ {v['offset']}: {v['match']!r} -- {v['message']}")
+                print(f"{v['code']} @ {v['offset']}: {v['match']!r}: {v['message']}")
             print(f"lint: {result['violations_total']} violations")
 
     sys.exit(0 if result['violations_total'] == 0 else 1)
