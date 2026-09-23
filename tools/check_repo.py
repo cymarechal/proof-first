@@ -6089,11 +6089,11 @@ to Challenger Inc. or its trademark successors.
 
 
 def _good_skill():
-    return "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n"
+    return "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n"
 
 
 def _bad_skill():
-    return "### PF-9.9: Mutation-only rule\n\nBody text citing no registered ID.\n"
+    return "### PF-9.9 — Mutation-only rule\n\nBody text citing no registered ID.\n"
 
 
 def _good_checklist():
@@ -6431,7 +6431,7 @@ def _skill_body_at_line_count(n, extra_lines):
     return '\n'.join(lines) + '\n'
 
 
-_LINE_CEILING_HEADING = ['### PF-0.1: Opening rule', '', 'Body text for the opening rule.']
+_LINE_CEILING_HEADING = ['### PF-0.1 — Opening rule', '', 'Body text for the opening rule.']
 
 
 def _skill_at_line_count(n):
@@ -6471,9 +6471,9 @@ def _checklist_for_catalog_count():
 
 def _catalog_count_extra_lines(count_line):
     lines = [
-        '### PF-0.1: Opening rule', '', 'Body text.', '',
-        '### PF-1.1: Rule one', '', 'Body text.', '',
-        '### PF-1.2: Rule two', '', 'Body text.', '',
+        '### PF-0.1 — Opening rule', '', 'Body text.', '',
+        '### PF-1.1 — Rule one', '', 'Body text.', '',
+        '### PF-1.2 — Rule two', '', 'Body text.', '',
     ]
     if count_line is not None:
         lines.append(count_line)
@@ -6621,15 +6621,15 @@ def _mc_checklist():
 def _good_completeness_audit():
     """Defines exactly the two IDs _mc_numbering() allocates."""
     return (
-        "### MC-1: Fixture metric rule one\n\nBody text for fixture rule one.\n\n"
-        "### MC-2: Fixture metric rule two\n\nBody text for fixture rule two.\n"
+        "### MC-1 — Fixture metric rule one\n\nBody text for fixture rule one.\n\n"
+        "### MC-2 — Fixture metric rule two\n\nBody text for fixture rule two.\n"
     )
 
 
 def _bad_completeness_audit():
     """Omits MC-2 -- present in NUMBERING.md and the checklist, missing
     from this file, the divergence mc-catalog-id-drift must catch."""
-    return "### MC-1: Fixture metric rule one\n\nBody text for fixture rule one.\n"
+    return "### MC-1 — Fixture metric rule one\n\nBody text for fixture rule one.\n"
 
 
 def _good_artifact_patterns():
@@ -7008,9 +7008,9 @@ def _good_derivative(digest):
     families = '\n'.join(ARTIFACT_FAMILY_SECTIONS)
     return (
         f"{stamp}\n\n"
-        "### PF-0.1: Fixture rule\n\n"
-        "### MC-1: Fixture check\n\n"
-        "### MC-5: Fixture check\n\n"
+        "### PF-0.1 — Fixture rule\n\n"
+        "### MC-1 — Fixture check\n\n"
+        "### MC-5 — Fixture check\n\n"
         f"{families}\n"
     )
 
@@ -7028,8 +7028,8 @@ def _stale_derivative(digest):
     families = '\n'.join(h for h in ARTIFACT_FAMILY_SECTIONS if h != 'Executive summary')
     return (
         f"{stamp}\n\n"
-        "### PF-0.1: Fixture rule\n\n"
-        "### MC-1: Fixture check\n\n"
+        "### PF-0.1 — Fixture rule\n\n"
+        "### MC-1 — Fixture check\n\n"
         f"{families}\n"
     )
 
@@ -7042,9 +7042,9 @@ def _no_stamp_derivative():
     fixture."""
     families = '\n'.join(ARTIFACT_FAMILY_SECTIONS)
     return (
-        "### PF-0.1: Fixture rule\n\n"
-        "### MC-1: Fixture check\n\n"
-        "### MC-5: Fixture check\n\n"
+        "### PF-0.1 — Fixture rule\n\n"
+        "### MC-1 — Fixture check\n\n"
+        "### MC-5 — Fixture check\n\n"
         f"{families}\n"
     )
 
@@ -7114,7 +7114,7 @@ def _good_skill_family_gate():
     family-line gate requires -- the silent case for
     skill-family-line-gate-missing."""
     return (
-        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Family-line pass: confirm the first line names the artifact family "
         "or states **No family fits:**.\n"
@@ -7125,7 +7125,7 @@ def _bad_skill_family_gate():
     """A SKILL.md whose self-check section is present but names neither
     anchor -- the firing case for skill-family-line-gate-missing."""
     return (
-        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Subtractive pass: find the violations to remove.\n"
     )
@@ -7136,7 +7136,7 @@ def _good_skill_family_order_gate():
     ordering gate requires -- the silent case for
     skill-family-order-gate-missing."""
     return (
-        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Family-order pass: re-scan the drafted response and confirm the "
         "artifact family line stands before any rule marker; states "
@@ -7151,7 +7151,7 @@ def _bad_skill_family_order_gate():
     skill-family-order-gate-missing, isolating the ordering check from
     its presence-only sibling."""
     return (
-        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Family-line pass: confirm the first line names the artifact family "
         "or states **No family fits:**.\n"
@@ -7316,7 +7316,7 @@ def _capitalized_skill_family_gate():
     skill-family-line-gate-missing, exactly as it already does for its
     case-insensitive sibling check_skill_family_order_gate()."""
     return (
-        "### PF-0.1: Opening rule\n\nBody text for the opening rule.\n\n"
+        "### PF-0.1 — Opening rule\n\nBody text for the opening rule.\n\n"
         "## Self-check before delivering\n\n"
         "1. Family-line pass: confirm the first line names the Artifact Family "
         "or states **No Family Fits:**.\n"
@@ -7380,9 +7380,9 @@ def _mc_checklist_for_count():
 
 def _mc_count_audit_headings():
     return (
-        "### MC-1: Fixture metric rule one\n\nBody text.\n\n"
-        "### MC-2: Fixture metric rule two\n\nBody text.\n\n"
-        "### MC-6: Fixture economic buyer rule\n\nBody text.\n"
+        "### MC-1 — Fixture metric rule one\n\nBody text.\n\n"
+        "### MC-2 — Fixture metric rule two\n\nBody text.\n\n"
+        "### MC-6 — Fixture economic buyer rule\n\nBody text.\n"
     )
 
 
@@ -7400,12 +7400,12 @@ def _mismatched_mc_count_completeness_audit():
 
 def _token_budget_good_skill():
     return _skill_body_at_line_count(
-        10, ['### PF-0.1: Opening rule', '', 'Short body text, well under the token budget.'])
+        10, ['### PF-0.1 — Opening rule', '', 'Short body text, well under the token budget.'])
 
 
 def _token_budget_bad_skill():
     filler_words = ' '.join(['word'] * 4200)
-    return _skill_body_at_line_count(20, ['### PF-0.1: Opening rule', '', filler_words])
+    return _skill_body_at_line_count(20, ['### PF-0.1 — Opening rule', '', filler_words])
 
 
 DOCSTRING_CATALOGUE_MARKER = 'Violation codes implemented in this file:'

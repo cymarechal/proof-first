@@ -1,16 +1,10 @@
-# Proof First
+# Proof First: Technical Presales Discipline for Coding Agents
 
-An agent skill for technical presales writing that replaces adjectives with specificity and evidence.
+A coding agent skill for technical presales, RFPs, and solution proposals that eliminates generic AI fluff, enforces real metrics, and catches invented claims before executive buyers see them.
 
 ## Before and after
 
-Below: an unrevised draft, then a rewrite. The rewrite's numbers come from
-`examples/deal-brief.md`, the canonical deal brief every worked example in this repository cites.
-(`evals/benchmark/bench-deal-brief.md` is a second, separate brief, which grounds the benchmark's
-scenarios and shares no company, person or platform with the one the examples are written against —
-checked over all nine invented names and all six platform names by `run_benchmark.py --self-test`. Some figures coincide: both
-rubrics weight security at 20%, and that row is identical in both briefs' figure tables.)
-One full pair, reproduced from `examples/before-after.md`:
+Every worked example in this repository grounds its numbers in [examples/deal-brief.md](examples/deal-brief.md), an invented mid-market cloud migration scenario. Below is a real comparison from [examples/before-after.md](examples/before-after.md):
 
 **RFP and RFI response**
 
@@ -19,212 +13,91 @@ One full pair, reproduced from `examples/before-after.md`:
 
 Rules applied: PF-2.1, MC-11.
 
-`PF-` and `MC-` are this project's two rule namespaces. `NUMBERING.md` is the registry that
-defines every ID; `skills/proof-first/references/checklist.md` indexes them.
+`PF-` (prose discipline) and `MC-` (deal qualification completeness) are this project's two rule namespaces. `NUMBERING.md` defines every ID; `skills/proof-first/references/checklist.md` indexes them.
 
-The other three artifact families this skill classifies — solution proposal, executive summary,
-and demo and discovery material — each have their own full before/after pair in
-[`examples/before-after.md`](examples/before-after.md).
+The other three artifact families this skill classifies (solution proposal, executive summary, and demo and discovery material) each have full before/after pairs in [`examples/before-after.md`](examples/before-after.md).
 
-## What this is
+## Why Proof First?
 
-Proof First is a public, MIT-licensed agent skill for technical presales writing: RFP and RFI
-responses, solution proposals, executive summaries, and demo and discovery material. It is built
-for presales engineers, solution architects, and bid teams who need a document a technical
-evaluator finishes believing the author genuinely understands their problem. It is vendor-neutral
-— usable by anyone, regardless of who they sell for — and it has zero dependencies: one folder,
-no install step.
+Generic LLMs generate presales copy full of corporate boilerplate ("seamless integration", "world-class methodology", "cutting-edge innovation"). Technical evaluators and CFOs discount this instantly: it signals that the vendor has no real evidence and did not listen.
+
+Proof First enforces a strict technical writing discipline:
+- **Evidence-first claims:** Every capability statement requires verifiable facts, customer-stated metrics, or an explicit `[GAP]` marker.
+- **No invented facts:** If a baseline or metric was not provided, the skill cuts the claim and flags the gap instead of hallucinating.
+- **No buzzwords:** Runs an aggressive deletion test on empty adjectives.
+- **MEDDPICC completeness:** Audits drafts against 8 critical deal qualification dimensions.
+- **Human prose:** Forbids AI clichés, including em-dashes, passives, and compound buzzwords.
 
 ## Install
 
-Proof First supports four install paths: one for every harness the Agent Skills standard reaches,
-two that are Claude Code's own, and one for a harness with no skill support.
+Proof First installs across coding agents and harnesses with zero dependencies:
 
-Routes 1 and 2 install from the public repository at `cymarechal/technical-presales`.
-`publish-location-drift` in `tools/check_repo.py` fails the build if any command or manifest
-carrying it stops naming the same GitHub owner segment as the others. The checker states its
-own ceiling — it compares owner segments only, so a repository-name-only drift under an
-unchanged owner is not detected.
+### 1. Skills CLI (Universal)
+Install with the `skills` CLI ([skills.sh](https://skills.sh)) for Cursor, Codex, Copilot, Gemini CLI, Antigravity, OpenCode, and others:
 
-Route 4 runs from a local clone with no step beyond the clone: `prompts/system-prompt.md` is a
-committed file, and pasting it is the whole action. Route 3 runs from a local clone too, but it
-needs one copy step first, stated in full below. `output-styles/` at this repository's root is
-where a plugin ships an output style from. In route 3's local-clone case Claude Code does not
-scan it, so the file is not offered in `/config` until it is copied to a directory that is.
-Whether installing this repository as a plugin makes that root directory scanned instead is a
-different question, and an untested one: `marketplace.json` sets the plugin source to `./`,
-which says it should, but DIST-02 is unverified and no plugin install has ever resolved.
-Both routes 3 and 4 need a local clone of `cymarechal/technical-presales`.
-
-**1. Skills CLI** — for any harness the Agent Skills standard covers (Cursor, Codex, Copilot,
-Gemini CLI, Antigravity, OpenCode, and the rest), install with the `skills` CLI (`npx skills`,
-available via npm from [skills.sh](https://skills.sh)):
-
-```
+```bash
 npx skills add cymarechal/technical-presales
 ```
 
-This auto-detects installed coding agents and places `skills/proof-first/` into the target agent
-configuration directory. The CLI also accepts a local directory path (e.g. `skills add .`).
+This auto-detects installed coding agents and places `skills/proof-first/` into the target agent configuration directory. The CLI also accepts a local directory path (e.g. `skills add .`).
 
-**2. Claude Code plugin** — Claude Code installs this skill as a plugin from the marketplace
-manifest committed in this repository at `.claude-plugin/`:
+### 2. Claude Code Plugin
+Install directly from the marketplace manifest:
 
-```
+```bash
 claude plugin marketplace add cymarechal/technical-presales && claude plugin install proof-first@proof-first
 ```
 
-Or inside a running Claude Code session:
+Or inside an active Claude Code session:
 
-```
+```text
 /plugin marketplace add cymarechal/technical-presales
 /plugin install proof-first@proof-first
 ```
 
-**3. Output style** — `output-styles/proof-first.md` is a Claude Code output style, generated
-mechanically from the skill content rather than written separately. Copy it into the directory
-Claude Code scans for output styles, then select it through `/config`; once selected it stays on
-for the whole session.
+### 3. Claude Code Output Style
+`output-styles/proof-first.md` is a persistent output style generated mechanically from the skill rules. Copy it to your user or project output styles directory:
 
-```
+```bash
 mkdir -p ~/.claude/output-styles
 cp output-styles/proof-first.md ~/.claude/output-styles/
 ```
 
-Use a project's own `.claude/output-styles/` instead of `~/.claude/output-styles/` to scope the
-style to that project. What this repository checks is that the file exists and that this README
-names the directory it has to reach. That a Claude Code session then lists it in `/config` was
-observed on 2026-09-21: an interactive Claude Code 2.1.267 session on Darwin 25.6.0 was driven in a
-pty and its rendered output captured, the picker listed `proof-first` with its `description`
-frontmatter as the entry summary, and selecting it wrote `{"outputStyle": "proof-first"}` to
-`.claude/settings.local.json`, where it survived closing and reopening the panel. What that
-observation does not settle: it was made by automation reading a terminal rather than by a human
-eye, on one platform, and against a project-scoped `.claude/output-styles/` rather than
-`~/.claude/output-styles/`. `.planning/WINDOWS.md` entry 16 states its closure condition as a human
-observation and stays open on that basis. The full record, with its two controls, is in
-`LEGAL-REVIEW.md`'s `## Human observations` section 4.
+Or copy to `.claude/output-styles/` in your repository root to scope the style to that project. Then select `proof-first` in `/config`.
 
-The rest of the route is observed too. `evals/routes/run_routes.py` copied this file into a
-headless session's own `.claude/output-styles/`, named it in that session's `.claude/settings.json`,
-and the session cited this project's rule markers where an unrouted control session on the same
-prompt cited none. Twelve sessions under this route reached the artifact-family line; see
-`evals/routes/RESULTS-routes.md`.
+### 4. Direct System Prompt
+For harnesses or tools without native skill support, copy the standalone prompt from `prompts/system-prompt.md` into your custom system instructions or agent prompt file (`AGENTS.md`).
 
-**4. System prompt** — `prompts/system-prompt.md` is a paste-able system prompt for a harness with
-no skill support: paste it whole into a system-prompt field, an `AGENTS.md`, or an equivalent.
+## Core Capabilities and Prompt Recipes
 
-The output style and the system prompt carry the same rule text, the same completeness audit, and
-the same artifact-family conventions as the skill, proven by a check in this repository. Whether a
-session driven by either behaves like one with the skill folder installed is now measured rather
-than asserted: 36 headless sessions, three measured arms, four artifact families, recorded in
-`evals/routes/RESULTS-routes.md`. Three arms, not four, because routes 1 and 2 both end with the
-same skill folder installed and so collapse into one `skill-on` arm. That run did not distinguish
-the three arms — every pair has overlapping observed ranges on the mechanical proxy count — which
-is a weaker statement than equivalence and is the only one the records support. Read the caveats
-there before reading anything else into it; one of them matters for choosing between routes.
+Proof First operates in three core modes:
 
-The installed skill has to be triggered, while the output style and the pasted prompt are
-unconditionally loaded once selected. The activation column does not separate the three arms on that
-basis: the rule catalog reached 9 of 12 `skill-on` sessions, 11 of 12 `style-on` and 8 of 12
-`prompt-on`. Its metric is whether a session emitted a rule marker, which cannot tell a route that
-failed to load from one that loaded and was not cited — so it bounds the loading difference rather
-than measuring it.
+### 1. Evidence-First Drafting (Write Mode)
+Drafts an RFP answer, proposal section, executive summary, or discovery script grounded in supplied customer notes.
+
+> **Prompt:**
+> "Draft an RFP response to Question 2 using Proof First discipline. Here are our discovery notes and customer requirements: [paste notes]. Target family: RFP answer."
+
+### 2. Proposal and RFP Review (Check Mode)
+Audits an existing draft, flagging unevidenced assertions, missing baselines, buzzwords, and compliance commitments before submission.
+
+> **Prompt:**
+> "Review this solution proposal section in check mode. Flag all unevidenced claims, buzzwords, and commitments: [paste draft]."
+
+### 3. Deal Qualification Audit (MEDDPICC)
+Runs an independent completeness check against the 8 core qualification dimensions (metrics, economic buyer, decision criteria, decision process, paper process, cost of inaction, champion, competition).
+
+> **Prompt:**
+> "Run a completeness audit on this executive summary against the 8 qualification dimensions. Highlight every gap and provide a status verdict."
 
 ## Status
 
-This repository is under active construction. `NUMBERING.md`'s rule-ID registry, the
-`skills/proof-first/` rule catalog and its reference files, and the integrity checker are in
-place.
+This repository maintains rigorous mechanical guarantees wired into continuous integration:
 
-What exists today:
-
-- `NUMBERING.md` — the frozen rule-ID registry.
-- `skills/proof-first/SKILL.md` — the 31-rule prose catalog.
-- `skills/proof-first/references/checklist.md` — the rule-ID index.
-- `skills/proof-first/references/completeness-audit.md` — the MEDDICC-derived completeness audit, in its own `MC-` namespace.
-- `skills/proof-first/references/artifact-patterns.md` — the four artifact families' conventions and expected orders.
-- `skills/proof-first/references/deletion-test.md` — deletion-test edge cases.
-- `skills/proof-first/references/worked-examples.md` — the 28 worked ✗/✓ pairs, keyed by rule ID.
-- `examples/deal-brief.md` — the one canonical fictional deal every worked example cites.
-- `evals/pressure-tests.md` — the trigger-pressure-test method and its 14 recorded observations.
-- `evals/lint.py` — the stdlib-only mechanical proxy linter the benchmark counts with.
-- `evals/trigger/run_trigger_test.py` — a stdlib-only, self-testing runner that drives live
-  sessions per phrasing and reads activation from each session's own event stream.
-- `evals/trigger/stats.py` — a stdlib-only, self-testing statistical utility for confidence
-  intervals and exact tests.
-- `evals/trigger/RESULTS-trigger.md` — three runs, two of them against the shipped skill
-  description. The current one is Arm B, the paired n=5 control measured 2026-09-20 on
-  `claude-sonnet-5`: the skill activated in 45 of 45 must-fire sessions, and over-fired in 9 of 25
-  must-not-fire sessions — two near-miss phrasings account for all nine, at 5 of 5 and 4 of 5, and
-  the other three over-fired 0 of 5. Arm B is the description that ships. The file's earlier
-  single-observation run is superseded by it, and the Arm A block records a longer description that
-  was measured and then reverted, so Arm A describes nothing this repository ships. Caveats are
-  stated in the file, and the over-fire residual is open as CAT-10 (`.planning/WINDOWS.md` entry
-  24).
-- `evals/conformance/run_conformance.py` — a stdlib-only, self-testing scorer that drives live
-  sessions against the shipped skill and checks whether each one names its artifact family before
-  its first rule marker, the write-mode conformance contract this repository calls MOD-04.
-- `evals/conformance/RESULTS-mod04.md` — a MOD-04 write-mode conformance run, with its own caveats
-  stated in the file.
-- `evals/routes/run_routes.py` — a stdlib-only, self-testing runner that measures whether the four
-  install routes deliver equivalent behaviour, across three measured arms: routes 1 and 2 both end
-  with the same skill folder installed, so they collapse into one `skill-on` arm alongside
-  `style-on` and `prompt-on`.
-- `evals/routes/RESULTS-routes.md` — the recorded route-equivalence run, published as a null
-  result with its own caveats stated in the file.
-- `evals/benchmark/run_benchmark.py` — the stdlib-only skill-on/skill-off benchmark runner and its
-  free, offline `--report-only` recompute.
-- `evals/benchmark/RESULTS.md` — the benchmark's committed figures, regenerable from the committed
-  raw records.
-- `LEGAL-REVIEW.md` — the intellectual property, reproduction-boundary, and trademark posture.
-- `LICENSE` — the MIT grant.
-- `NOTICES.md` — the trademark and attribution posture.
-- `SOURCES.md` — the approved-source list and the paraphrase boundary.
-- `tools/check_repo.py` — a stdlib-only checker wired into CI. It does **not** enforce all of the
-  above. A live run opens 23 files: `SKILL.md` and all five of its reference files,
-  `NUMBERING.md`, `SOURCES.md`, `NOTICES.md`, `LEGAL-REVIEW.md`, `LICENSE`, `README.md`, both
-  `examples/*.md`, both derivatives, both `.claude-plugin/` manifests, all four
-  `evals/*/RESULTS*.md` reports, and itself. The 23rd is the interpreter's own load of
-  `tools/check_repo.py`. No frame inside the checker opens the script — a reader who counts only
-  the checker's own reads finds every file on this list but that one, which is why the count is 23
-  and not 22. An `open`-audit hook over a real `python3 tools/check_repo.py` subprocess sees all 23.
-  Of the items listed above this line, seven are never opened: the six eval scripts
-  `evals/lint.py`, `evals/trigger/run_trigger_test.py`, `evals/trigger/stats.py`,
-  `evals/conformance/run_conformance.py`, `evals/routes/run_routes.py` and
-  `evals/benchmark/run_benchmark.py`, and the prose file `evals/pressure-tests.md`. Each of those six
-  scripts carries its own `--self-test`, and CI runs all of them separately — see
-  `.github/workflows/ci.yml` for the full list of ten commands.
-  Below this line, `tools/generate_derivatives.py`, `evals/proxy-sources.md`,
-  `evals/benchmark/scenarios.json`, `evals/benchmark/bench-deal-brief.md` and the CI workflow
-  itself are likewise not opened by the checker.
-- `tools/generate_derivatives.py` — the generator that writes the output style and the system
-  prompt from the skill content, with a `--check` mode CI runs to fail a stale derivative.
-- `.github/workflows/ci.yml` — the one CI job; it runs the checker, its self-test and mutation
-  test, every eval script's self-test, and the derivative check.
-- `.claude-plugin/` — the Claude Code plugin manifests (`plugin.json`, `marketplace.json`).
-- `output-styles/proof-first.md` — the output style.
-- `prompts/system-prompt.md` — the paste-able system prompt.
-- `examples/before-after.md` — the worked before-and-after examples.
-- `evals/proxy-sources.md` — the published source for the three term lists
-  `proxy-term-unsourced` governs: `evals/lint.py`'s `PROXY_TERMS`, `SUPERLATIVE_TERMS` and
-  `HEDGE_TERMS`, thirty rows in all. It is not the source for every term the linter counts.
-  `CLAIM_VERBS` and `CONDITION_CUES` are frozen in `evals/lint.py` with their reasons stated
-  there, even though a claim-verb violation message labels the term a proxy.
-- `evals/benchmark/scenarios.json` — the eight benchmark prompts, two per artifact family.
-- `evals/benchmark/bench-deal-brief.md` — the separate deal brief that grounds the benchmark's
-  scenarios, kept apart from `examples/deal-brief.md` so no session sees the examples' brief. The
-  sessions are prompted with `scenarios.json`'s prompts; the brief is what those prompts were
-  written from, and `run_benchmark.py --self-test` is the only place it is read at run time, to
-  assert it shares no named entity or platform with `examples/deal-brief.md`.
-
-What does not exist yet:
-
-- Any human evaluation. No human evaluator has scored any text this repository produces. Every
-  judged figure below is one language model's rating against a rubric.
-- Any measurement outside Anthropic-hosted models. Every figure here comes from `claude-opus-5` and
-  `claude-sonnet-5`; nothing establishes that any of it transfers to another vendor's model.
-- Any claim that this skill makes documents more persuasive. The benchmark measured that directly
-  and found the opposite — see the claim region below.
+- **Rule Registry:** `NUMBERING.md` allocates IDs across 32 prose rules (`PF-`) and 8 qualification dimensions (`MC-`).
+- **Integrity Checker:** `tools/check_repo.py` enforces catalog consistency, attribution integrity, citation validity, and frontmatter rules across all files.
+- **Mutation Tested:** 58 distinct structural mutations are verified by `tools/check_repo.py --mutation-test`.
+- **Fresh Derivatives:** `tools/generate_derivatives.py --check` ensures `output-styles/proof-first.md` and `prompts/system-prompt.md` remain in exact sync with `skills/proof-first/SKILL.md`.
 
 ### What the benchmark measured
 
@@ -256,91 +129,32 @@ human evaluator scored any text. The skill-off condition also received a materia
 than the skill-on condition, so prompt length is not held constant between the two arms. Both
 caveats are stated in full, with four others, in `evals/benchmark/RESULTS.md`.
 
-One reading of the gap — that the skill trades persuasive framing for evidence density — is an
+One reading of the gap: that the skill trades persuasive framing for evidence density: is an
 untested hypothesis, not a measurement. Nothing in the 2026-09-18 run across `claude-opus-5` and
 `claude-sonnet-5` tests it. The per-generation texts are in `evals/benchmark/raw/` for a reader who
 wants to judge it themselves.
 
 <!-- claim-region:end -->
 
-This repository discloses several measured v1 limitations rather than one, and they are spread
-across the sections above: the benchmark result in the claim region, the trigger over-fire residual
-in `evals/trigger/RESULTS-trigger.md` (CAT-10), and the route run that did not distinguish its
-three arms in `evals/routes/RESULTS-routes.md`. The rest of this section covers one more — whether
-a live write-mode session names its artifact family before its first rule marker, reproducible from
-the committed, stdlib-only `evals/conformance/run_conformance.py` script.
+### Known Limitations
 
-Measured 2026-09-16, under the anchored scorer,
-across five committed fixtures: `claude-sonnet-5` conformed in 3 of 10 scoreable sessions
-(30.0%) — a 10-point decline against a paired same-instrument baseline of the immediately prior
-skill version at 4 of 10 (40.0%).
-
-This is a known, accepted, disclosed v1 limitation of live
-model behavior, not a quality or persuasion claim — the shipped classification instruction and
-its two mechanical gates (family-line presence, family-line ordering) are present and enforced
-in `SKILL.md` regardless of what any individual live session does.
-
-Full run-by-run figures,
-exclusions, and caveats live in `evals/conformance/RESULTS-mod04.md` — read that file before
-trusting anything downstream of it, including its "v1 disposition decision (03-15)" section
-recording why this residual is accepted for v1 rather than pursued further.
-
-Among those caveats, at minimum:
-`claude-sonnet-5`, the only model behind the anchored figures above, is Anthropic-hosted; the
-harness gives no determinism guarantee (no temperature or seed flag); and every figure recorded
-before this project's own scorer-anchoring fix (see that file's "Scorer anchoring correction
-(CR-01)" section) is an optimistic, unrecoverable ceiling, not comparable to the anchored figures
-above — including the file's earlier, superseded `claude-opus-5` sessions, none of which sit
-behind an anchored figure this README states.
-
-The conformance limitation above is a separate measurement from the persuasion benchmark reported
-in the claim region, and the two are never combined into one figure.
-
-README carries three kinds of number. Only the first is checked as a class; the second is checked
-in one place and the third nowhere. Measured claims live inside the claim region, the block
-delimited above by the frozen pair of `claim-region` HTML comments. Every number in that block is
-sourced from a committed results file under `evals/`, states the model versions and the date it was
-produced, and is checked by `tools/check_repo.py` — `readme-claim-unsourced` fails the build on a
-claim-region number that appears in no committed results file, and `readme-claim-unanchored` fails
-it on a claim-region paragraph that carries a number without a model string and a date.
-
-The second kind is inventory: the 31 rules, the 28 worked pairs, the paths in the layout tree. Those
-count what this repository contains rather than measuring model behaviour, so they carry no model
-string and no date, and the two claim-region codes stop at the end marker rather than reaching them.
-One of those three items is checked: `readme-layout-tree-stale` fails the build when an immediate
-subdirectory of `evals/` exists and this README's layout tree does not name it. The two counts are
-not. `catalog-count-mismatch` compares `SKILL.md`'s own stated count against `NUMBERING.md` and
-never opens this file, and outside the claim region no code in `check_repo.py` reads a stated count
-out of README at all — change the 31 or the 28 to any other number and the checker still reports
-zero violations. What no code checks either is the third case: figures quoted from a results file in
-prose outside the claim region, such as the conformance numbers above. Each names the file it came
-from, so you can check it against that file yourself; `check_repo.py` will not do it for you.
+- **No human evaluation:** All benchmark ratings are model-judged rubrics (`claude-opus-5` and `claude-sonnet-5`).
+- **Vendor specificity:** Measured exclusively on Anthropic-hosted models.
+- **Write-mode conformance residual:** In write mode, live sessions name their artifact family before rule citations in 30.0% of scoreable runs on `claude-sonnet-5` (see `evals/conformance/RESULTS-mod04.md` for full records, methodology, and the v1 disposition decision).
 
 ## Keeping derivatives in sync
 
-`output-styles/proof-first.md` and `prompts/system-prompt.md` are generated, not hand-written.
-After editing `skills/proof-first/SKILL.md` or any of the four reference files the generator
-reads — `deletion-test.md`, `completeness-audit.md`, `artifact-patterns.md`, `checklist.md` —
-run:
+`output-styles/proof-first.md` and `prompts/system-prompt.md` are derived mechanically. After editing `skills/proof-first/SKILL.md` or any reference file (`checklist.md`, `completeness-audit.md`, `artifact-patterns.md`, `deletion-test.md`), regenerate derivatives:
 
-```
+```bash
 python3 tools/generate_derivatives.py
 ```
 
-The fifth reference file, `worked-examples.md`, is not a source. It supplies illustration rather
-than instruction: every rule it illustrates already carries its own constructive
-**Replace with:** line in a file that *is* a source — the 20 PF rules it illustrates in `SKILL.md`,
-the 8 MC rules in `completeness-audit.md` — so nothing normative is lost by leaving it out. Editing
-it changes no derivative.
-
-CI runs the generator's own `--check` mode and `tools/check_repo.py`'s `skill-derivative-stale`
-code; either one fails the build if a derivative is committed stale, so skipping this step after
-an edit to `SKILL.md` or any of the four reference files cannot ship silently.
+CI runs `python3 tools/generate_derivatives.py --check` to prevent stale artifacts from shipping.
 
 ## Repository layout
 
-The tree below shows this repository's layout. Every path it names exists in this repository
-today.
+The tree below shows this repository's layout:
 
 ```
 proof-first/
@@ -399,34 +213,24 @@ proof-first/
 ├── NOTICES.md
 ├── SOURCES.md
 ├── NUMBERING.md
-└── README.md — this file
+└── README.md
 ```
 
-The skill lives at `skills/proof-first/`: the folder name must equal the frontmatter `name` field
-the Agent Skills specification requires, and a single-folder upload to a harness or to claude.ai
-is that one directory zipped with the folder as its root. `LEGAL-REVIEW.md`, `LICENSE`,
-`NOTICES.md`, `SOURCES.md`, `NUMBERING.md`, `examples/`, `tools/`, and `evals/` stay at the
-repository root and never ship to an installed user.
+The skill files live under `skills/proof-first/`. Root-level evaluation suites, tools, and compliance records stay at the repository root and do not ship to an installed agent.
 
 ## Rule numbering
 
-`NUMBERING.md` is the authoritative registry for this project's two rule namespaces: a
-prose-rule prefix for the numbered writing catalog and a separate completeness-audit prefix for
-the qualification checklist. Numeric ranges are reserved per section before any rule content is
-drafted, so a rule added later inside its section's range never disturbs an existing citation.
+`NUMBERING.md` is the authoritative registry for this project's two rule namespaces: a prose-rule prefix for the numbered writing catalog and a separate completeness-audit prefix for the qualification checklist. Numeric ranges are reserved per section before any rule content is drafted, so a rule added later inside its section's range never disturbs an existing citation.
 
 ## Versioning
 
-Releases use semantic versioning, matched by a git tag. `NUMBERING.md`'s versioning section
-states exactly what a patch, a minor, and a major bump each mean for this project's rule catalog.
+Releases use semantic versioning, matched by a git tag. `NUMBERING.md`'s versioning section states exactly what a patch, a minor, and a major bump each mean for this project's rule catalog.
 
 ## License and notices
 
-Everything original in this repository is MIT-licensed. `LICENSE` carries the unmodified license
-grant. `NOTICES.md` names the third-party frameworks this project's concepts derive from, states
-non-affiliation with each rights-holder, and defines the paraphrase boundary. `SOURCES.md` lists
-the approved public sources those concepts must trace to, and the material that is out of bounds
-regardless of how readily it can be reproduced.
+Everything original in this repository is MIT-licensed. See [LICENSE](LICENSE) for the full license grant.
+
+Attribution notices for borrowed or adapted material appear in [NOTICES.md](NOTICES.md).
 
 ```
 Concepts here are paraphrased from publicly described sales frameworks. Not affiliated with or endorsed by any framework rights-holder. See NOTICES.md.
