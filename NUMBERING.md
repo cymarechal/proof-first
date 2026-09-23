@@ -47,11 +47,9 @@ than inferring it from a number.
 Ceiling: `PF-1.28`, four slots per element, uniform headroom. Twenty slots do not divide evenly
 across seven elements: six elements would get three slots and Positive Business Outcomes (the
 element most likely to grow, since it is where quantified outcome rules land) would get only two,
-forcing an early major-version widening. Widening to 28 exercises the explicit "unless planning
-surfaces a reason to widen a block" clause this phase's context recorded for exactly this
-situation, and gives every element the same room to grow. This supersedes the `PF-1.20` figure
-proposed in `.planning/research/ARCHITECTURE.md:166`, which was a research proposal, not a locked
-decision: seven elements do not divide evenly into twenty slots.
+forcing an early major-version widening. Widening to 28 provides four slots per
+element and gives every element the same room to grow, avoiding premature number
+exhaustion since seven elements do not divide evenly into twenty slots.
 
 ## PF-2 sub-blocks
 
@@ -83,8 +81,8 @@ Ceiling: `MC-40`.
 
 ## Allocated IDs
 
-Rows are kept sorted ascending by ID. Phase 2 adds `PF-*` rows as prose rules are written; Phase 3
-adds `MC-*` rows as the completeness audit is written.
+Rows are kept sorted ascending by ID. The table records all allocated `PF-*` prose
+rules and `MC-*` completeness checks.
 
 | ID | Title | Defined in | Added in |
 |---|---|---|---|

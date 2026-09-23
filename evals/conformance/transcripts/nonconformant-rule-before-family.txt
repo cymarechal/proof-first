@@ -1,5 +1,5 @@
 # Synthetic fixture -- a rule marker precedes the family line, both inside
-# the anchoring window (03-09-PLAN.md CR-01).
+# the anchoring window.
 
 PF-1.17 requires a quantified proof point in the opening sentence below,
 before anything else in this response is stated.

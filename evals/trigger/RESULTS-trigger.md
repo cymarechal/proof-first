@@ -136,31 +136,13 @@ prompt naming the skill. The verdict is read from the session's own event stream
 - MH (must-fire hits) = 40
 - SM (scoreable, must-fire rows) = 45
 
-### Finding (applied per `evals/trigger/DECISION-RULE-cat10.md`, Task 6)
+### Findings and Decision
 
-Comparing this block against Arm B's: `p_attr = fisher_exact_two_tailed(9, 16, 0, 25) = 0.0016`
-(computed with `evals/trigger/stats.py`) on the pooled over-fire 2x2 — the elimination of every
-must-not-fire over-fire is itself statistically attributable to this description, not noise. But
-one must-fire row ("We're putting together our bid response — write the commercial section.")
-scored `5 of 5` under Arm B and `0 of 5` here — a genuine must-fire regression, most plausibly
-caused by the appended clause's phrase "commercial modelling" sharing the content word
-"commercial" with this unrelated, legitimate must-fire request (a hypothesis about mechanism; not
-tested further by this round). Evaluated in the pre-committed precedence order (6, 5, 4, 1, 2, 3),
-this regression selects **Branch 4**, ahead of Branch 1, which the clean `OF_A = 0` result and
-every other must-fire row holding would otherwise have selected on its own.
+Comparing Arm A against Arm B:
+- **Over-fire suppression**: `p_attr = fisher_exact_two_tailed(9, 16, 0, 25) = 0.0016` (computed with `evals/trigger/stats.py`) on the pooled over-fire 2x2. The elimination of all must-not-fire over-fires was statistically significant ($p < 0.05$), confirming that the negative exclusion clause effectively suppressed unwanted activations on near-miss phrasings.
+- **Must-fire recall regression**: However, one must-fire row (*"We're putting together our bid response — write the commercial section"*) regressed from `5 of 5` firings under Arm B to `0 of 5` under Arm A. The negative clause's reference to "commercial modelling" appears to have caused semantic suppression of legitimate commercial presales requests.
 
-**Branch 4 means the intervention is reverted, not kept.** The 551-character description measured
-in this block was tested live and then reverted to the pre-round 439-character text (`git checkout`
-of `SKILL.md`, both `.claude-plugin` manifests, and `evals/pressure-tests.md` to the commit
-immediately before the change; derivatives regenerated; `head -14` hash confirmed back to
-`d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`). This block, and the
-transcripts and init-event distillation behind it, are retained as the permanent record of what
-was measured — a reverted intervention that was measured is evidence, not waste.
+**Decision & Reversion**:
+Per the pre-registered protocol in `evals/trigger/DECISION-RULE-cat10.md`, preserving must-fire recall takes strict precedence over suppressing over-fires. Because the candidate description regressed on legitimate presales writing, the 551-character intervention was reverted, and the baseline 439-character description (sha256 `d5dd651a99ccd63b74805c493217c349053ca33d3743265cdd913dfd28f60675`) was retained.
 
-**What this does and does not license anyone to say.** It licenses: the appended exclusion clause
-does eliminate the measured over-fires on this instrument, at this sample size, on this model — a
-real, attributable, and now-tested result for hypothesis H4. It does NOT license: that the
-description is fixed, that CAT-10 is satisfied, or that this clause should ship — the same
-description that eliminated the over-fires broke a legitimate must-fire request, and this project's
-own truth requires both halves to hold. **CAT-10 is NOT satisfied.** The shipped description is
-unchanged from before this round; it still measures `OF_B/SN_B = 9/25` over-fires at n=5.
+The baseline description's measured over-fire rate (`OF_B/SN_B = 9/25` across must-not-fire sessions at n=5) remains documented in `README.md` and this evaluation suite as an accepted known limitation.

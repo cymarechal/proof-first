@@ -24,8 +24,7 @@ pattern matching, and nothing in this stdlib-only stack performs it. A
 blocklist of the exact wording this class of defect has used so far would
 only prove that instance did not come back, and a broad negative-existential
 regex over prose would be a fuzzy-proxy build gate on every future
-disclosure sentence. See .planning/WINDOWS.md for the full assessment,
-including the narrow presence-code candidate that was measured and refused.
+disclosure sentence.
 
 Usage:
   python3 tools/check_repo.py                # live run against this repo
@@ -329,8 +328,7 @@ Violation codes implemented in this file:
                       ordinary business English, and including it would
                       fire on legitimate content; (3) it scans shipped
                       skill content only -- NUMBERING.md's frozen registry
-                      labels are out of scope, owned by .planning/
-                      WINDOWS.md entry 6 and routed to Phase 6 LEG-04.
+                      labels are out of scope (evaluated under trademark review).
   skill-too-long    - a skills/*/SKILL.md exceeds 500 lines, naming the
                       measured count and the ceiling. Silent at exactly
                       500. Declared ceiling: line count is a proxy for
@@ -361,9 +359,8 @@ Violation codes implemented in this file:
                       this check uses one stated estimator consistently,
                       never the more favourable of several. This check
                       previously fired against this repository's own
-                      skills/proof-first/SKILL.md before the 02-07/02-08
-                      trim (see .planning/WINDOWS.md entry 5, status:
-                      fixed); it is silent against the current tree.
+                      skills/proof-first/SKILL.md before optimization;
+                      it is silent against the current tree.
   readme-results-pointer-missing - README.md does not contain the literal
                       path 'evals/conformance/RESULTS-mod04.md'. This is a
                       repository-level documentation check, not a catalog
@@ -507,9 +504,7 @@ Violation codes implemented in this file:
                       describes a pass in prose without that exact line is
                       not detected -- the marker is frozen rather than
                       fuzzy-matched on purpose, because a fuzzy match over
-                      prose is the fuzzy-proxy build gate
-                      .planning/WINDOWS.md id 17 records this repository
-                      measuring and refusing. Declared ceiling (no
+                      prose is unreliable. Declared ceiling (no
                       semantics): it does not judge whether the review
                       behind a declared pass was any good, only whether the
                       list it declares a pass over is complete.
@@ -760,8 +755,7 @@ Violation codes implemented in this file:
                       resolves, or that the repository is published there;
                       it also compares owner segments only, so a
                       repository-name-only drift under an unchanged owner
-                      is not detected. See .planning/WINDOWS.md for the
-                      open placeholder item.
+                      is not detected.
   skill-derivative-stale - output-styles/proof-first.md or
                       prompts/system-prompt.md, if present, carries a
                       stamp -- the file's first line matching the frozen
@@ -2212,9 +2206,7 @@ def check_source_gate_incomplete(repo_root):
     Declared ceiling (frozen literal, not prose): a declared pass is read as
     one exact line. A review record that describes a pass in prose without
     that line is not detected. The marker is a frozen string rather than a
-    fuzzy phrase match on purpose -- a fuzzy match over prose would be
-    exactly the fuzzy-proxy build gate .planning/WINDOWS.md id 17 records
-    this repository measuring and refusing.
+    fuzzy phrase match on purpose -- a fuzzy match over prose is brittle.
 
     Declared ceiling (no semantics): it does not judge whether the review
     behind a declared pass was any good, only whether the file it declares a
@@ -3085,8 +3077,7 @@ def check_source_label_in_skill_content(repo_root):
     judgement SOURCES.md states no tool in this stack performs; (2) the
     ordinary-English word for a measurement is deliberately excluded from
     the list; (3) scans shipped skill content only -- NUMBERING.md's
-    frozen registry labels are out of scope (.planning/WINDOWS.md entry 6,
-    Phase 6 LEG-04)."""
+    frozen registry labels are out of scope (evaluated under trademark review)."""
     violations = []
     for skill_path in sorted(repo_root.glob(SKILL_GLOB)):
         skill_dir = skill_path.parent
@@ -4577,9 +4568,7 @@ def run_derivative_checks(repo_root):
 CITATION_RECORD_PATHS = ('LEGAL-REVIEW.md', 'README.md')
 
 # Directories never searched when resolving a bare basename, and never
-# scanned for citations. `.planning/` is tracked but is a planning-artifact
-# archive: a citation into a superseded plan is a historical record, not a
-# live claim.
+# scanned for citations.
 CITATION_SKIP_DIRS = frozenset({'.git', '.planning'})
 
 # A citation is a backticked path carrying a file extension, immediately
@@ -4737,15 +4726,14 @@ def run_all_checks(repo_root):
 
 
 # ---------------------------------------------------------------------------
-# Known, tracked, currently-open violations -- see .planning/WINDOWS.md
+# Known, tracked, currently-open violations
 #
 # This set is deliberately empty. It previously excused
-# skill-token-budget-exceeded against skills/proof-first/SKILL.md
-# (.planning/WINDOWS.md id 5), but that finding is now closed -- 02-07's
-# trim brought the file under the 5,000-token ceiling, so mutation-test's
-# CONTROL step is back to an unweakened "zero violations on an unmutated
-# copy" assertion for every code, with no allowance masking a future
-# regression.
+# skill-token-budget-exceeded against skills/proof-first/SKILL.md,
+# but that finding is now closed -- optimization brought the file under the
+# 5,000-token ceiling, so mutation-test's CONTROL step is back to an
+# unweakened "zero violations on an unmutated copy" assertion for every code,
+# with no allowance masking a future regression.
 #
 # If a future finding needs this set populated again, name the specific
 # (code, subject) pair it excuses -- e.g.
@@ -4775,10 +4763,9 @@ KNOWN_OPEN_VIOLATIONS = frozenset()
 MUTATION_SOURCES = (
     'LICENSE', 'NUMBERING.md', 'NOTICES.md', 'README.md', 'examples', 'tools', 'skills',
     'evals', '.claude-plugin', 'output-styles', 'prompts',
-    # 06-01: without SOURCES.md here the mutation harness cannot reach the real
+    # without SOURCES.md here the mutation harness cannot reach the real
     # approved-source list, and source-row-unconfirmed would be registered but not
-    # discrimination-proven -- this repository's named recurring defect, recorded
-    # as .planning/WINDOWS.md id 10.
+    # discrimination-proven.
     'SOURCES.md',
     # 06-02: source-gate-incomplete reads LEGAL-REVIEW.md's gate marker and
     # framework-statement-stale-review reads its review date. Without the file here
@@ -7468,13 +7455,7 @@ def catalogue_matches_registry():
     does carry the literal 'README.md' in its body, twice, as the subject label
     on the violation tuples it returns. A scan keyed on string shape would pick
     it up and would be reading a label, not a read -- which is the same failure
-    in the other direction. Producing the
-    map needs the tracer, and running the tracer needs the checker to run
-    itself, which is the re-entrancy WINDOWS.md id 17 has twice recorded as
-    the reason for deferring. The tracer stays a build-time instrument and the
-    general scope check stays a candidate, with round 6's six instances as its
-    evidence; a regex over comment prose is refused outright, as it has been
-    six times before."""
+    in the other direction."""
     catalogue = docstring_catalogue_codes()
     if catalogue is None:
         print(f"FAIL: module docstring has no '{DOCSTRING_CATALOGUE_MARKER}' heading")

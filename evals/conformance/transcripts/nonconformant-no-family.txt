@@ -1,7 +1,6 @@
 # Synthetic fixture -- this is a hand-written scorer input, not real session
 # output. It is engineered to exhibit exactly one property: no artifact
-# family, and no no-family value, is ever named. This is the exact shape
-# WINDOWS.md entry 8 records for the two residual post-fix failures.
+# family, and no no-family value, is ever named.
 
 Findings open directly with the rule citations below, with no artifact-family
 line and no no-family-fits statement anywhere in this response.

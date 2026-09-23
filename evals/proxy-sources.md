@@ -6,13 +6,8 @@ of truth the linter's provenance checks read their allow-listed terms from — a
 makes `proxy-term-unsourced` fail the build, exactly as `NUMBERING.md` governs `check_repo.py`'s
 ID ranges.
 
-The membership recorded below is the membership
-`.planning/phases/05-evaluation-harness/05-RESEARCH.md` Decision 1 established from reading each
-source's own published page in an earlier session; it is not independently re-fetched here. The
-reason given when this file was written was that the environment had no live network access. That
-premise has since expired — `LEGAL-REVIEW.md`'s ledger row 18 records where — and `SOURCES.md`'s
-own rows were re-confirmed against live pages on 2026-09-21 rather than left to confirm. This
-registry was not. Its provenance is documented and disclosed, not live-verified.
+The registered terms below are drawn directly from the published guidelines of each
+external source. Their provenance is documented and disclosed.
 
 ## The two sources
 

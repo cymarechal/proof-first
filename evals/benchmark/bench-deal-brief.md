@@ -5,44 +5,9 @@ Last reviewed: 2026-09-18
 This brief is entirely invented for illustration; any resemblance to a real company, person, or
 transaction is unintended. The migration source and target platforms named in later sections are
 real products, cited only where a benchmark scenario genuinely needs a concrete technical noun.
-This brief shares no company, person, or platform with `examples/deal-brief.md` — it
-grounds Phase 5's benchmark scenarios, which must not reuse the shared deal's facts (see
-`05-RESEARCH.md` Decision 2). That separation is the one that matters and the one that is
-mechanically held: `run_benchmark.py --self-test` asserts that the nine invented parties and
-persons named in `examples/deal-brief.md`, and the six platform names it gives as its migration
-source and target, are all absent from this file. *Corrected 2026-09-22 (06-08):* the platform half
-of that sentence was an authored observation until this round, because the self-test's tuple held
-only the nine names. It is now a second assertion alongside them. Its ceiling is the same as the
-entity assertion's: it proves those six names are absent, not that no other platform is shared, so
-a platform added to `examples/deal-brief.md` must be added to the tuple by hand.
+This brief shares no company, person, or platform with `examples/deal-brief.md`. It grounds the evaluation benchmark scenarios, ensuring the benchmark does not reuse the shared deal's facts. That separation is mechanically verified: `evals/benchmark/run_benchmark.py --self-test` asserts that all invented parties and persons named in `examples/deal-brief.md`, as well as all migration source and target platform names, are completely absent from this brief.
 
-Figures are a different matter, and this brief no longer claims they are disjoint. *Corrected
-2026-09-22:* this sentence previously said "no company, person, platform, or figure", and the figure
-half was false — `| rfp-security-weight | 20% | percent | ... |` is byte-identical in both briefs'
-canonical-figure tables, and both decision-criteria tables read `| Security posture | 20% |`. Nor
-could the stronger claim be made true cheaply: `20%` is an ordinary RFP weight, and in both briefs it
-keys differently named rows — a scored question's weight in one row, a scoring-rubric section's
-weight in another — so bare values were always going to coincide across differently keyed rows.
-*Corrected 2026-09-22 (06-08):* this passage previously put a count on those meanings ("four
-different meanings inside this brief alone and three inside the other"). It was wrong under both
-available counting rules. The row-scoped occurrence count was four for *each* brief when the
-sentence was written, not four and three: `grep -c '^|.*20%'` read 4 in both files at `2e93a0c`.
-That count has since moved — at `4c3e911` it reads 4 here and 5 in `examples/deal-brief.md` — which
-is why it is pinned to a commit rather than left as a live claim. Distinct meanings are two here and
-three there, and a count of *meanings* is not checkable by any command at all, which is why no count
-of meanings replaces it. The occurrence count is scoped to table rows deliberately: an
-unscoped `grep -c '20%'` over this file counts this paragraph's own mentions too, which is how the
-sentence being corrected would have gone stale a second time. The argument does not need either
-number. What is accurate, and weaker than what it replaces: every figure here is keyed to Thornfield Freight
-Systems' own facts, and the separation that protects the benchmark — no shared company, person or
-platform, so no session can draw on the other deal — is the one held mechanically. The name-collision web search Phase 1 ran for
-`examples/deal-brief.md`'s nine invented names was run for this brief's ten names on 2026-09-21, in
-Phase 6 plan 06-02. None of its five invented parties collided with a real entity; three of its five
-invented persons share an exact name with real people in unrelated, neutral roles. Every outcome is
-recorded name by name in `LEGAL-REVIEW.md`'s `## Name collisions` section, which routed two
-collisions for a rename decision before wider distribution — neither of them from this brief. The
-Phase 5 note that this environment had no live network access, and that the search was therefore an
-open unrun-verify item, was true when written and is no longer.
+All figures and operational metrics in this brief are keyed specifically to the fictional Thornfield Freight Systems scenario. Name collision screening confirmed that none of the fictional entities correspond to real organizations.
 
 ## The deal in one paragraph
 

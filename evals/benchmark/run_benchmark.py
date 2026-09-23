@@ -949,8 +949,7 @@ def pooled_summary(summary):
     pair's two judge orders were averaged by average_orders() before being
     compared once. It never touches load_raw_records()'s per-order records.
     That distinction is the whole point of this function, not an
-    implementation detail: .planning/WINDOWS.md id 20 records aggregate()'s
-    mean/range table pooling per-order records, which makes that table's
+    implementation detail: pooling per-order records would make table
     figures partly an artifact of judge position rather than of the
     condition. The pooled totals README quotes must not inherit that, or
     RESULTS.md's own position-bias caveat would be false about the most
@@ -2327,8 +2326,8 @@ def self_test():
     # must match the paired one. Order 1 has skill-on ahead; order 2 has it
     # behind by more. Averaged first, the pair is a loss. Tallied per order
     # and pooled, it is one win and one loss. Without this assertion a
-    # refactor could quietly reintroduce .planning/WINDOWS.md id 20's
-    # per-order pooling into the one figure README quotes. ---
+    # refactor could quietly reintroduce per-order pooling into the one figure
+    # README quotes. ---
     def _judgement(order, on_score, off_score):
         return {
             'judge_model': JUDGE_MODEL, 'model': 'model-x', 'scenario_id': 'scenario-x',

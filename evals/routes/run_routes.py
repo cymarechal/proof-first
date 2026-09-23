@@ -201,8 +201,8 @@ CAVEAT_TEXT = {
         'Trigger activation is not equal across arms: the skill-on arm depends on the model '
         'deciding the skill is relevant, so its result carries whatever trigger behaviour the '
         'skill description produces. The style-on and prompt-on arms are unconditionally on. '
-        'Phase 2 measured and disclosed a trigger over-fire residual (CAT-10, .planning/WINDOWS.md '
-        'entry 24, open); the skill-on arm here inherits it.'
+        'Evaluations measured and disclosed a trigger over-fire residual (CAT-10, documented in '
+        'README.md and evals/trigger/); the skill-on arm here inherits it.'
     ),
     'system-prompt proxy': (
         'System-prompt proxy: route 4 is "paste this file into a harness with no skill support." '
@@ -223,13 +223,13 @@ CAVEAT_TEXT = {
         'scenario set holds. All four families are covered, but with a single scenario each a '
         'family-general effect cannot be separated from that one scenario\'s own quirks. It also '
         'means the skill-on arm here is not directly comparable with the eight-scenario skill-on '
-        'arm in evals/benchmark/RESULTS.md, so no cross-check against Phase 5\'s run is offered.'
+        'arm in evals/benchmark/RESULTS.md, so no cross-check against that benchmark run is offered.'
     ),
     'interactive picker': (
         'Interactive picker unobserved: a headless session has no /config picker. Whether a human '
         'sees the copied output style listed there and can select it is a different question from '
-        'whether the style\'s content reaches a session, and nothing here observes it '
-        '(.planning/WINDOWS.md entry 16, open).'
+        'whether the style\'s content reaches a session, and nothing in this headless test observes '
+        'human interactive selection.'
     ),
 }
 
